@@ -1251,3 +1251,7 @@ img[src*="raccoon-logo"] {
 header img[src*="raccoon-logo"]:hover {
   transform: scale(1.05) rotate(-2deg) !important;
 }
+
+/* Strictly hide top menu auth & nav on mobile screens (< 768px) */
+@media (max-width: 768px) { #auth-nav-container, .top-menu-auth-group { display: none !important; } }
+

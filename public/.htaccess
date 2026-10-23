@@ -1,6 +1,14 @@
 Options -Indexes +FollowSymLinks
 RewriteEngine On
 
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|htm|php)$">
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
 # 1. API requests -> api.php
 RewriteRule ^api/(.*)$ api.php?route=$1 [QSA,L]
 RewriteRule ^api/?$ api.php [QSA,L]
