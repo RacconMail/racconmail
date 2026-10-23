@@ -22,44 +22,73 @@
       localStorage.setItem('raccon_theme', 'light');
       document.documentElement.className = 'theme-light';
       document.documentElement.classList.remove('dark', 'theme-dark');
+      const themeVars = {
+        '--background': '#FFFFFF',
+        '--foreground': '#0F172A',
+        '--card': '#FFFFFF',
+        '--card-foreground': '#0F172A',
+        '--primary': '#0F172A',
+        '--primary-hover': '#1E293B',
+        '--primary-foreground': '#FFFFFF',
+        '--secondary': '#F1F5F9',
+        '--muted': '#F8FAFC',
+        '--muted-foreground': '#64748B',
+        '--border': '#E2E8F0',
+        '--border-light': '#F1F5F9'
+      };
+      for (const [k, v] of Object.entries(themeVars)) {
+        document.documentElement.style.setProperty(k, v);
+      }
     })();
   </script>
+
+  <style>
+    html, body {
+      min-height: 100%;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-background text-foreground antialiased flex flex-col justify-between transition-colors duration-200">
+<body class="min-h-screen bg-white text-slate-900 antialiased flex flex-col justify-between selection:bg-slate-900 selection:text-white">
 
   <!-- ADMIN LOGIN VIEW (Shown if not authenticated) -->
   <div id="admin-login-view" class="hidden min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-3xl bg-card p-6 sm:p-8 shadow-2xl border border-border relative overflow-hidden">
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-xs border border-slate-200 relative overflow-hidden">
       <div class="text-center mb-6">
         <img src="/raccoon-logo.png" class="h-14 w-14 mx-auto mb-2.5 object-contain" alt="Raccon Logo" />
         <span class="inline-block bg-slate-100 text-slate-800 border border-slate-200 text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
           System Administration
         </span>
-        <h2 class="font-display text-2xl font-bold">Admin Console</h2>
-        <p class="text-xs text-muted-foreground mt-1">Authorized personnel and system operators only.</p>
+        <h2 class="font-display text-2xl font-bold text-slate-900">Admin Console</h2>
+        <p class="text-xs text-slate-500 mt-1">Authorized personnel and system operators only.</p>
       </div>
 
-      <div id="login-error" class="hidden mb-4 p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-semibold"></div>
+      <div id="login-error" class="hidden mb-4 p-3 rounded-2xl bg-slate-100 border border-slate-300 text-slate-800 text-xs font-semibold"></div>
 
       <form onsubmit="adminApp.handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">Admin Email</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Admin Email</label>
           <input
             id="admin-email"
             type="email"
             required
             value="admin@racconmail.eu"
-            class="w-full rounded-xl border border-border bg-card p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-foreground"
+            class="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-slate-900"
           />
         </div>
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">Admin Password</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Admin Password</label>
           <input
             id="admin-pass"
             type="password"
             required
             placeholder="••••••••••••"
-            class="w-full rounded-xl border border-border bg-card p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-foreground"
+            class="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-slate-900"
           />
         </div>
         <button
@@ -71,55 +100,67 @@
         </button>
       </form>
 
-      <div class="mt-6 pt-4 border-t border-border text-center flex items-center justify-between text-xs text-muted-foreground">
-        <a href="/" class="hover:text-foreground font-medium">&larr; Return to Home</a>
-        <a href="/inbox" class="hover:text-foreground font-medium">Mailbox &rarr;</a>
+      <div class="mt-6 pt-4 border-t border-slate-200 text-center flex items-center justify-between text-xs text-slate-500">
+        <a href="/" class="hover:text-slate-900 font-medium">&larr; Return to Home</a>
+        <a href="/inbox" class="hover:text-slate-900 font-medium">Mailbox &rarr;</a>
       </div>
     </div>
   </div>
 
   <!-- ADMIN DASHBOARD CONSOLE (Shown after authentication) -->
-  <div id="admin-console-view" class="hidden min-h-screen flex flex-col">
-    <!-- Top Bar matching Mailbox/Site style -->
-    <header class="w-full border-b border-border bg-card px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 font-display text-base sm:text-lg font-bold">
-          <img src="/raccoon-logo.png" class="h-7 w-7 sm:h-8 sm:w-8 object-contain" alt="Raccon Logo" />
-          <span>Raccon Admin</span>
-        </div>
-        <span class="rounded-full bg-slate-100 border border-slate-200 text-slate-700 px-2.5 py-0.5 text-[10px] font-bold hidden sm:inline-flex items-center gap-1">
-          <i class="fas fa-shield-alt text-[9px] text-slate-600"></i> Zero-Knowledge Mode Active
-        </span>
+  <div id="admin-console-view" class="hidden min-h-screen flex flex-col bg-white">
+    <!-- Top Bar matching Mailbox/Site style (STATIC, NEVER OVERLAPS) -->
+    <header class="w-full border-b border-slate-200 bg-white px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3 shadow-2xs relative">
+      <!-- Brand & Admin Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
+        <a href="/" class="flex items-center gap-2 group shrink-0">
+          <img src="/raccoon-logo.png" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" alt="Raccon Logo" />
+          <div class="leading-none shrink-0">
+            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
+              <span>Raccon Admin</span>
+              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Portal</span>
+            </span>
+            <span class="text-[10px] text-slate-500 hidden sm:inline">System &bull; Members &bull; Moderation</span>
+          </div>
+        </a>
       </div>
 
-      <div class="flex items-center gap-2 text-xs font-semibold">
-
-        <a href="/inbox" class="rounded-full border border-border bg-card px-3 py-1.5 hover:bg-muted transition flex items-center gap-1.5" title="Open Mailbox">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i>
+      <!-- Action Navigation Links (Compact icon buttons on mobile: NEVER overlaps logo) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Open Mailbox">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Mailbox</span>
         </a>
-        <button onclick="adminApp.logout()" class="rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 px-3 py-1.5 transition flex items-center gap-1.5 cursor-pointer" title="Logout">
-          <i data-lucide="log-out" class="h-3.5 w-3.5 text-slate-600"></i>
+        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Community Wall">
+          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+          <span class="hidden sm:inline">Wall</span>
+        </a>
+        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
+          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+          <span class="hidden sm:inline">News</span>
+        </a>
+        <button onclick="adminApp.logout()" class="px-3 py-1.5 rounded-full border border-slate-900 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs" title="Logout">
+          <i data-lucide="log-out" class="h-3.5 w-3.5 text-white shrink-0"></i>
           <span class="hidden sm:inline">Logout</span>
         </button>
       </div>
     </header>
 
-    <!-- Subnav Tabs -->
-    <nav class="bg-card border-b border-border px-4 sm:px-6 flex items-center gap-1.5 overflow-x-auto text-xs font-bold py-2 no-scrollbar">
-      <button onclick="adminApp.setTab('overview')" id="tab-overview" class="px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer">
+    <!-- Subnav Tabs (STATIC, NEVER OVERLAPS) -->
+    <nav class="bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center gap-1.5 overflow-x-auto text-xs font-bold py-2.5 scrollbar-none relative">
+      <button onclick="adminApp.setTab('overview')" id="tab-overview" class="px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer shadow-2xs">
         📊 Overview
       </button>
-      <button onclick="adminApp.setTab('users')" id="tab-users" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+      <button onclick="adminApp.setTab('users')" id="tab-users" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
         👥 Members
       </button>
-      <button onclick="adminApp.setTab('forum')" id="tab-forum" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+      <button onclick="adminApp.setTab('forum')" id="tab-forum" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
         💬 Forum Moderation
       </button>
-      <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+      <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
         📢 Global Broadcast
       </button>
-      <button onclick="adminApp.setTab('system')" id="tab-system" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+      <button onclick="adminApp.setTab('system')" id="tab-system" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
         ⚡ Maintenance &amp; Health
       </button>
     </nav>
@@ -522,10 +563,10 @@
           const view = document.getElementById(`view-${t}`);
           if (!btn || !view) return;
           if (t === tab) {
-            btn.className = 'px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer shadow-2xs';
+            btn.className = 'px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer shadow-2xs font-bold';
             view.classList.remove('hidden');
           } else {
-            btn.className = 'px-3.5 py-1.5 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer';
+            btn.className = 'px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer font-bold';
             view.classList.add('hidden');
           }
         });
@@ -833,15 +874,15 @@
               </td>
               <td class="p-3.5 text-muted-foreground text-[11px]">${new Date(p.created_at).toLocaleDateString()}</td>
               <td class="p-3.5 text-right">
-                <button onclick="adminApp.deleteForumPost('${p.id}', '${this.escapeHtml(p.title)}')" class="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold text-[11px] cursor-pointer">
-                  <i class="fas fa-trash-alt mr-1"></i>Delete
+                <button onclick="adminApp.deleteForumPost('${p.id}', '${this.escapeHtml(p.title)}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-[11px] cursor-pointer">
+                  <i class="fas fa-trash-alt mr-1 text-slate-600"></i>Delete
                 </button>
               </td>
             </tr>
           `).join('');
           lucide.createIcons();
         } catch (err) {
-          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-500">${err.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-600">${err.message}</td></tr>`;
         }
       },
 
