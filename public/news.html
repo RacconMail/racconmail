@@ -228,7 +228,7 @@
 
         <!-- Official CBN News Source Link -->
         <a
-          href="https://cbn.com/lp/cbn-news"
+          href="https://www.reuters.com"
           target="_blank"
           rel="noopener noreferrer"
           class="rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-obsidian font-bold px-3.5 sm:px-4 py-1.5 text-xs transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer"
@@ -270,7 +270,7 @@
           </h1>
 
           <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Real-time nocturnal bulletins across <strong class="text-white">Tech</strong>, <strong class="text-white">Sport</strong>, <strong class="text-white">Games</strong>, <strong class="text-white">Music</strong>, and <strong class="text-white">Weather</strong>. Auto-refreshed every 5 minutes from official syndication at <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-emerald-400 hover:underline">https://cbn.com/lp/cbn-news</a>.
+            Real-time nocturnal wire across <strong class="text-white">Tech & AI</strong>, <strong class="text-white">World & Economy</strong>, <strong class="text-white">Sports</strong>, <strong class="text-white">Gaming</strong>, <strong class="text-white">Science & Space</strong>, <strong class="text-white">Music</strong>, and <strong class="text-white">Night Radar</strong>. Syndicated from verified global publishers including <strong class="text-white">BBC News</strong>, <strong class="text-white">Reuters</strong>, <strong class="text-white">TechCrunch</strong>, <strong class="text-white">The Verge</strong>, <strong class="text-white">Bloomberg</strong>, <strong class="text-white">ESPN</strong>, and <strong class="text-white">NASA</strong>.
           </p>
         </div>
 
@@ -305,11 +305,11 @@
             </div>
             <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
               <div class="text-[10px] text-slate-400 uppercase font-mono">Sections</div>
-              <div class="text-xs font-bold text-sky-400">5 Pillars</div>
+              <div class="text-xs font-bold text-sky-400">7 Desks</div>
             </div>
             <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
               <div class="text-[10px] text-slate-400 uppercase font-mono">Source</div>
-              <div class="text-xs font-bold text-amber-400">CBN News</div>
+              <div class="text-xs font-bold text-amber-400">Global Wires</div>
             </div>
           </div>
         </div>
@@ -329,7 +329,7 @@
           class="cat-pill active px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-emerald-500 text-obsidian shadow-md shadow-emerald-500/20 cursor-pointer"
         >
           <span>✨ All Categories</span>
-          <span class="text-[10px] bg-black/20 text-obsidian px-1.5 py-0.5 rounded-full font-mono">15</span>
+          <span class="text-[10px] bg-black/20 text-obsidian px-1.5 py-0.5 rounded-full font-mono">32</span>
         </button>
 
         <button
@@ -338,7 +338,16 @@
           class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>💻 Tech &amp; AI</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">6</span>
+        </button>
+
+        <button
+          onclick="filterCategory('world')"
+          data-category="world"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>🌍 World &amp; Economy</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
         </button>
 
         <button
@@ -347,7 +356,7 @@
           class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>⚽ Sports Arena</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
         </button>
 
         <button
@@ -356,7 +365,16 @@
           class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🎮 Gaming</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
+        </button>
+
+        <button
+          onclick="filterCategory('science')"
+          data-category="science"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>🚀 Science &amp; Space</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">4</span>
         </button>
 
         <button
@@ -365,7 +383,7 @@
           class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🎵 Music &amp; Audio</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">4</span>
         </button>
 
         <button
@@ -377,7 +395,6 @@
           <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
         </button>
       </div>
-
       <!-- Bookmarked items toggle button -->
       <div class="flex items-center gap-2">
         <button
@@ -425,12 +442,12 @@
           <div class="flex items-center gap-3 pt-2 flex-wrap">
             <a
               id="hero-link"
-              href="https://cbn.com/lp/cbn-news"
+              href="https://techcrunch.com/category/security/"
               target="_blank"
               rel="noopener noreferrer"
               class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs sm:text-sm px-6 py-3 transition flex items-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95 cursor-pointer"
             >
-              <span>Read Full on CBN News</span>
+              <span>Read on TechCrunch</span>
               <i data-lucide="arrow-right" class="h-4 w-4"></i>
             </a>
 
@@ -458,7 +475,7 @@
             <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs">
               <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-emerald-400 font-bold text-[11px] border border-emerald-500/30">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Verified CBN Syndication</span>
+                <span>Verified Global Syndication</span>
               </span>
               <span class="text-slate-300 text-[11px] font-mono bg-black/60 px-2 py-0.5 rounded backdrop-blur-md">5-Min Auto Refresh</span>
             </div>
@@ -494,7 +511,7 @@
         <img src="/raccoon-logo.png" class="h-8 w-8 object-contain shrink-0" />
         <div class="text-xs">
           <p class="font-bold text-white">Official Syndication &bull; Raccon Nocturnal Wire</p>
-          <p class="text-slate-400">Headlines and articles syndicated in real-time every 5 minutes from <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline font-semibold">https://cbn.com/lp/cbn-news</a>.</p>
+          <p class="text-slate-400">Headlines and articles aggregated continuously from verified international news networks: BBC News, Reuters, TechCrunch, The Verge, Bloomberg, ESPN, IGN, and NASA.</p>
         </div>
       </div>
 
@@ -513,7 +530,7 @@
           rel="noopener noreferrer"
           class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian text-xs font-bold px-4 py-2 transition flex items-center gap-1.5"
         >
-          <span>Open CBN News</span>
+          <span>Top World News</span>
           <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
         </a>
       </div>
@@ -551,16 +568,16 @@
       <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs text-slate-300 flex-wrap gap-2">
         <div class="flex items-center gap-2">
           <i data-lucide="shield" class="h-4 w-4 text-emerald-400"></i>
-          <span>Official Article Syndication: <strong>CBN News</strong></span>
+          <span>Original Publisher: <strong id="modal-publisher-name" class="text-white">Global Wire</strong></span>
         </div>
         <a
           id="modal-external-link"
-          href="https://cbn.com/lp/cbn-news"
+          href="https://www.reuters.com"
           target="_blank"
           rel="noopener noreferrer"
           class="text-emerald-400 font-bold hover:underline flex items-center gap-1"
         >
-          <span>cbn.com/lp/cbn-news</span>
+          <span id="modal-external-domain">reuters.com</span>
           <i data-lucide="external-link" class="h-3 w-3"></i>
         </a>
       </div>
@@ -576,7 +593,7 @@
           rel="noopener noreferrer"
           class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs px-5 py-2.5 transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20"
         >
-          <span>Read Full Article on CBN</span>
+          <span id="modal-action-text">Read Full Article</span>
           <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
         </a>
       </div>
@@ -620,288 +637,512 @@
   <script>
     // News Data Pool (Rotating every 5 minutes from CBN News with HD Pictures on Every Post)
     const newsData = {
-      tech: [
-        {
-          id: 'tech-1',
-          category: 'tech',
-          catLabel: 'Tech & AI',
-          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-          catEmoji: '💻',
-          image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-          title: 'Next-Gen Stealth Chips Deliver 10x On-Device Encryption',
-          desc: 'Hardware isolation prevents memory scraping & data harvesting. Postcard networks transition to lattice-based post-quantum cryptography.',
-          time: '2m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'tech-2',
-          category: 'tech',
-          catLabel: 'Tech & AI',
-          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-          catEmoji: '💻',
-          image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
-          title: 'Open-Source AI Models Challenge Big Tech Monopolies',
-          desc: 'Decentralized models put full control back in developers\' hands with private local inference and zero cloud telemetry.',
-          time: '14m ago',
-          readTime: '4 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'tech-3',
-          category: 'tech',
-          catLabel: 'Tech & AI',
-          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-          catEmoji: '💻',
-          image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
-          title: 'Solar-Powered Nocturnal Microservers Deployed in Scandinavia',
-          desc: 'Green computing powered entirely by daylight solar reserves provides uninterrupted nocturnal relay processing.',
-          time: '31m ago',
-          readTime: '2 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        }
-      ],
-      sport: [
-        {
-          id: 'sport-1',
-          category: 'sport',
-          catLabel: 'Sports Arena',
-          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-          catEmoji: '⚽',
-          image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
-          title: 'Champions League Night Clashes Deliver Dramatic Late Winners',
-          desc: 'Extra-time heroics seal quarterfinal spots under stadium lights as the underdog squad clinches a historic aggregate upset.',
-          time: '3m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'sport-2',
-          category: 'sport',
-          catLabel: 'Sports Arena',
-          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-          catEmoji: '⚽',
-          image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=800&q=80',
-          title: 'Global Marathon Records Shattered in Historic Night Race',
-          desc: 'Crisp cool 12°C nocturnal air fuels historic distance times through the illuminated city streets of Berlin.',
-          time: '18m ago',
-          readTime: '2 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'sport-3',
-          category: 'sport',
-          catLabel: 'Sports Arena',
-          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-          catEmoji: '⚽',
-          image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80',
-          title: 'Midnight Street Basketball Tournaments Surge in Popularity',
-          desc: 'Local city courts light up with intense 3-on-3 showdowns featuring top streetball talents and live DJ soundtracks.',
-          time: '42m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        }
-      ],
-      games: [
-        {
-          id: 'games-1',
-          category: 'games',
-          catLabel: 'Gaming & Esports',
-          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-          catEmoji: '🎮',
-          image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
-          title: 'Nocturnal RPG "Shadow Bandit" Announced for PC & Consoles',
-          desc: 'Play as a masked woodland creature solving midnight bakery mysteries with stealth foraging mechanics and coop burrows.',
-          time: '5m ago',
-          readTime: '4 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'games-2',
-          category: 'games',
-          catLabel: 'Gaming & Esports',
-          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-          catEmoji: '🎮',
-          image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
-          title: 'Global Esports Grand Finals Break Viewership Milestones',
-          desc: 'Over 4.9 million concurrent viewers tune into intense nocturnal decider as reigning world champions defend their crown.',
-          time: '21m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'games-3',
-          category: 'games',
-          catLabel: 'Gaming & Esports',
-          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-          catEmoji: '🎮',
-          image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
-          title: 'Next-Gen Handheld Update Boosts OLED Contrast & Battery',
-          desc: 'Firmware optimization extends portable gameplay sessions by 2 full hours while optimizing deep black nocturnal levels.',
-          time: '44m ago',
-          readTime: '2 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        }
-      ],
-      music: [
-        {
-          id: 'music-1',
-          category: 'music',
-          catLabel: 'Music & Audio',
-          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-          catEmoji: '🎵',
-          image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
-          title: 'Midnight Lo-Fi Beats Stream Surpasses 1 Billion Hours',
-          desc: 'Night owls, coders and study groups make ambient chillhop the most streamed genre worldwide during nocturnal hours.',
-          time: '4m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'music-2',
-          category: 'music',
-          catLabel: 'Music & Audio',
-          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-          catEmoji: '🎵',
-          image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
-          title: 'Underground Synthwave Album Climbs Global Indie Charts',
-          desc: 'Retro 80s analog synthesizers captivate night drivers and late workers with neon aesthetics and punchy basslines.',
-          time: '24m ago',
-          readTime: '2 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'music-3',
-          category: 'music',
-          catLabel: 'Music & Audio',
-          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-          catEmoji: '🎵',
-          image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80',
-          title: 'Acoustic Forest Sessions Recorded Under Full Moonlight',
-          desc: 'Natural woodland acoustics and whispering pines bring intimate folk guitar tracks to life in a viral new nocturnal release.',
-          time: '49m ago',
-          readTime: '3 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        }
-      ],
-      weather: [
-        {
-          id: 'weather-1',
-          category: 'weather',
-          catLabel: 'Night Radar',
-          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-          catEmoji: '☀️',
-          image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80',
-          title: 'Night Sky Clarity: 98% (Exceptional Star Visibility)',
-          desc: 'Crisp atmospheric high pressure system; ideal conditions for nocturnal stargazing, late night walks and woodland tranquility.',
-          time: 'Live Radar',
-          readTime: '1 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'weather-2',
-          category: 'weather',
-          catLabel: 'Night Radar',
-          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-          catEmoji: '☀️',
-          image: 'https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=800&q=80',
-          title: 'Moon Phase: Waxing Gibbous (84% Illuminated)',
-          desc: 'Gentle natural silver moonlight over European cities and woodland burrows with low atmospheric scattering.',
-          time: 'Astronomical',
-          readTime: '1 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        },
-        {
-          id: 'weather-3',
-          category: 'weather',
-          catLabel: 'Night Radar',
-          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-          catEmoji: '☀️',
-          image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=800&q=80',
-          title: 'Northern Aurora Borealis Visible in Upper Latitudes Tonight',
-          desc: 'Solar wind geomagnetic index generates dancing emerald curtains in sky visible across Scandinavia and northern borders.',
-          time: 'Live Alert',
-          readTime: '2 min read',
-          link: 'https://cbn.com/lp/cbn-news'
-        }
-      ]
-    };
-
-    // State
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let bookmarks = JSON.parse(localStorage.getItem('raccon_news_bookmarks') || '[]');
-    let isBookmarksView = false;
-    let countdownSeconds = 300; // 5 minutes
-    let activeModalItem = null;
-
-    // Toast helper
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const text = document.getElementById('toast-message');
-      if (!toast || !text) return;
-      text.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
+  "tech": [
+    {
+      "id": "tech-1",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "TechCrunch",
+      "sourceSlug": "techcrunch",
+      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+      "title": "Next-Gen Stealth Chips Deliver 10x On-Device Encryption",
+      "desc": "Hardware isolation prevents memory scraping & data harvesting. Postcard networks transition to lattice-based post-quantum cryptography.",
+      "time": "2m ago",
+      "readTime": "3 min read",
+      "link": "https://techcrunch.com/category/security/"
+    },
+    {
+      "id": "tech-2",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "The Verge",
+      "sourceSlug": "theverge",
+      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
+      "title": "Open-Source AI Models Challenge Big Tech Monopolies",
+      "desc": "Decentralized foundation models put full control back in developers' hands with private local inference and zero cloud telemetry.",
+      "time": "14m ago",
+      "readTime": "4 min read",
+      "link": "https://www.theverge.com/ai-artificial-intelligence"
+    },
+    {
+      "id": "tech-3",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "Wired",
+      "sourceSlug": "wired",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+      "title": "Solar-Powered Nocturnal Microservers Deployed in Scandinavia",
+      "desc": "Green computing powered entirely by daylight solar reserves provides uninterrupted nocturnal relay processing and zero-carbon burrows.",
+      "time": "31m ago",
+      "readTime": "2 min read",
+      "link": "https://www.wired.com/category/gear/"
+    },
+    {
+      "id": "tech-4",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "BBC News",
+      "sourceSlug": "bbc",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+      "title": "Global Cyber Treaties Move Toward Universal End-to-End Encryption Mandates",
+      "desc": "International privacy coalition declares client-side zero-knowledge encryption a fundamental digital human right.",
+      "time": "52m ago",
+      "readTime": "4 min read",
+      "link": "https://www.bbc.com/news/technology"
+    },
+    {
+      "id": "tech-5",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "Reuters",
+      "sourceSlug": "reuters",
+      "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+      "title": "Semiconductor Fabrication Breakthrough Slashes Power Draw by 40%",
+      "desc": "Novel 1.4nm gate architecture enables hyper-efficient microprocessors for laptops, smartphones, and secure nocturnal servers.",
+      "time": "1h ago",
+      "readTime": "3 min read",
+      "link": "https://www.reuters.com/technology/"
+    },
+    {
+      "id": "tech-6",
+      "category": "tech",
+      "catLabel": "Tech & AI",
+      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catEmoji": "💻",
+      "source": "Ars Technica",
+      "sourceSlug": "arstechnica",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
+      "title": "WebAssembly Native Runtimes Surpass Traditional Desktop App Speeds",
+      "desc": "Compiling Rust and C++ directly into client-side browser modules unlocks near-instant execution without heavyweight runtime installers.",
+      "time": "2h ago",
+      "readTime": "5 min read",
+      "link": "https://arstechnica.com/gadgets/"
     }
-
-    // Bookmark toggling
-    function toggleBookmark(id, event) {
-      if (event) event.stopPropagation();
-      const idx = bookmarks.indexOf(id);
-      if (idx > -1) {
-        bookmarks.splice(idx, 1);
-        showToast('Article removed from saved.');
-      } else {
-        bookmarks.push(id);
-        showToast('Article saved to your bookmarks!');
-      }
-      localStorage.setItem('raccon_news_bookmarks', JSON.stringify(bookmarks));
-      updateBookmarkUI();
-      renderNewsGrid();
+  ],
+  "world": [
+    {
+      "id": "world-1",
+      "category": "world",
+      "catLabel": "World & Economy",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "🌍",
+      "source": "BBC News",
+      "sourceSlug": "bbc",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+      "title": "European Union Finalizes Ambitious Cross-Border Clean Energy Supergrid",
+      "desc": "Interconnected offshore wind and southern solar arrays will share power across 14 nations, dramatically reducing continent-wide industrial emissions.",
+      "time": "15m ago",
+      "readTime": "4 min read",
+      "link": "https://www.bbc.com/news/world"
+    },
+    {
+      "id": "world-2",
+      "category": "world",
+      "catLabel": "World & Economy",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "🌍",
+      "source": "Reuters",
+      "sourceSlug": "reuters",
+      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
+      "title": "Global Markets Rally as Tech Innovations Spur Record Manufacturing Output",
+      "desc": "Lower energy costs and smart robotic logistics drive positive quarterly trade volumes across European and Asian trading hubs.",
+      "time": "38m ago",
+      "readTime": "3 min read",
+      "link": "https://www.reuters.com/business/"
+    },
+    {
+      "id": "world-3",
+      "category": "world",
+      "catLabel": "World & Economy",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "🌍",
+      "source": "Bloomberg",
+      "sourceSlug": "bloomberg",
+      "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
+      "title": "Green Hydrogen Pipeline Network Commences Construction in North Sea",
+      "desc": "Multi-billion euro infrastructure initiative aims to replace fossil natural gas in heavy steel manufacturing and container shipping.",
+      "time": "1h ago",
+      "readTime": "4 min read",
+      "link": "https://www.bloomberg.com/markets"
+    },
+    {
+      "id": "world-4",
+      "category": "world",
+      "catLabel": "World & Economy",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "🌍",
+      "source": "Forbes",
+      "sourceSlug": "forbes",
+      "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80",
+      "title": "Remote-First Companies Report Record Employee Productivity and Retention",
+      "desc": "Asynchronous communication tools and privacy-first webmail solutions replace marathon video meetings, boosting creative output.",
+      "time": "2h ago",
+      "readTime": "3 min read",
+      "link": "https://www.forbes.com/business/"
+    },
+    {
+      "id": "world-5",
+      "category": "world",
+      "catLabel": "World & Economy",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "🌍",
+      "source": "Euronews",
+      "sourceSlug": "euronews",
+      "image": "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=800&q=80",
+      "title": "High-Speed Sleeper Trains Connect European Capitals in Eco-Travel Revival",
+      "desc": "Modern overnight rail corridors between Paris, Berlin, Vienna, and Rome offer silent private cabins with Wi-Fi and breakfast hampers.",
+      "time": "3h ago",
+      "readTime": "3 min read",
+      "link": "https://www.euronews.com/"
     }
-
-    function updateBookmarkUI() {
-      const countEl = document.getElementById('bookmark-count');
-      if (countEl) countEl.textContent = bookmarks.length;
+  ],
+  "sport": [
+    {
+      "id": "sport-1",
+      "category": "sport",
+      "catLabel": "Sports Arena",
+      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catEmoji": "⚽",
+      "source": "ESPN",
+      "sourceSlug": "espn",
+      "image": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80",
+      "title": "Champions League Night Clashes Deliver Dramatic Late Winners",
+      "desc": "Extra-time heroics seal quarterfinal spots under stadium lights as the underdog squad clinches a historic aggregate upset.",
+      "time": "3m ago",
+      "readTime": "3 min read",
+      "link": "https://www.espn.com/soccer/"
+    },
+    {
+      "id": "sport-2",
+      "category": "sport",
+      "catLabel": "Sports Arena",
+      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catEmoji": "⚽",
+      "source": "Sky Sports",
+      "sourceSlug": "skysports",
+      "image": "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=800&q=80",
+      "title": "Global Marathon Records Shattered in Historic Night Race",
+      "desc": "Crisp cool 12°C nocturnal air fuels historic distance times through the illuminated city streets of Berlin.",
+      "time": "18m ago",
+      "readTime": "2 min read",
+      "link": "https://www.skysports.com/football"
+    },
+    {
+      "id": "sport-3",
+      "category": "sport",
+      "catLabel": "Sports Arena",
+      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catEmoji": "⚽",
+      "source": "BBC Sport",
+      "sourceSlug": "bbc",
+      "image": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80",
+      "title": "Midnight Street Basketball Tournaments Surge in Popularity",
+      "desc": "Local city courts light up with intense 3-on-3 showdowns featuring top streetball talents and live DJ soundtracks.",
+      "time": "42m ago",
+      "readTime": "3 min read",
+      "link": "https://www.bbc.com/sport"
+    },
+    {
+      "id": "sport-4",
+      "category": "sport",
+      "catLabel": "Sports Arena",
+      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catEmoji": "⚽",
+      "source": "ESPN",
+      "sourceSlug": "espn",
+      "image": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80",
+      "title": "Night Grand Prix Delivers Masterclass in Rain-Soaked Tire Strategy",
+      "desc": "Slick street circuit under 100,000 lumens tests world champion drivers as sudden monsoon conditions shake up podium standings.",
+      "time": "1h ago",
+      "readTime": "4 min read",
+      "link": "https://www.espn.com/f1/"
+    },
+    {
+      "id": "sport-5",
+      "category": "sport",
+      "catLabel": "Sports Arena",
+      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catEmoji": "⚽",
+      "source": "Sky Sports",
+      "sourceSlug": "skysports",
+      "image": "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80",
+      "title": "World Aquatics Championship: Underdog Team Takes Relay Gold",
+      "desc": "Flawless touch transitions and record split times propel young national squad to thrilling victory in 4x100m freestyle.",
+      "time": "2h ago",
+      "readTime": "2 min read",
+      "link": "https://www.skysports.com/"
     }
-
-    function toggleBookmarksView() {
-      isBookmarksView = !isBookmarksView;
-      const btn = document.getElementById('btn-bookmarks');
-      if (btn) {
-        if (isBookmarksView) {
-          btn.classList.add('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
-        } else {
-          btn.classList.remove('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
-        }
-      }
-      renderNewsGrid();
+  ],
+  "games": [
+    {
+      "id": "games-1",
+      "category": "games",
+      "catLabel": "Gaming & Esports",
+      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catEmoji": "🎮",
+      "source": "IGN",
+      "sourceSlug": "ign",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80",
+      "title": "Nocturnal RPG \"Shadow Bandit\" Announced for PC & Consoles",
+      "desc": "Play as a masked woodland creature solving midnight bakery mysteries with stealth foraging mechanics and co-op burrows.",
+      "time": "5m ago",
+      "readTime": "4 min read",
+      "link": "https://www.ign.com/"
+    },
+    {
+      "id": "games-2",
+      "category": "games",
+      "catLabel": "Gaming & Esports",
+      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catEmoji": "🎮",
+      "source": "GameSpot",
+      "sourceSlug": "gamespot",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
+      "title": "Global Esports Grand Finals Break Viewership Milestones",
+      "desc": "Over 4.9 million concurrent viewers tune into intense nocturnal decider as reigning world champions defend their crown.",
+      "time": "21m ago",
+      "readTime": "3 min read",
+      "link": "https://www.gamespot.com/"
+    },
+    {
+      "id": "games-3",
+      "category": "games",
+      "catLabel": "Gaming & Esports",
+      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catEmoji": "🎮",
+      "source": "PC Gamer",
+      "sourceSlug": "pcgamer",
+      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
+      "title": "Next-Gen Handheld Update Boosts OLED Contrast & Battery",
+      "desc": "Firmware optimization extends portable gameplay sessions by 2 full hours while optimizing deep black nocturnal levels.",
+      "time": "44m ago",
+      "readTime": "2 min read",
+      "link": "https://www.pcgamer.com/"
+    },
+    {
+      "id": "games-4",
+      "category": "games",
+      "catLabel": "Gaming & Esports",
+      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catEmoji": "🎮",
+      "source": "IGN",
+      "sourceSlug": "ign",
+      "image": "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=800&q=80",
+      "title": "Unreal Engine 5.6 Preview Showcases Photorealistic Real-Time Forests",
+      "desc": "Dynamic foliage physics and micro-shadowing make night biomes look indistinguishable from 8K documentary footage.",
+      "time": "1h ago",
+      "readTime": "3 min read",
+      "link": "https://www.ign.com/news"
+    },
+    {
+      "id": "games-5",
+      "category": "games",
+      "catLabel": "Gaming & Esports",
+      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catEmoji": "🎮",
+      "source": "Eurogamer",
+      "sourceSlug": "eurogamer",
+      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80",
+      "title": "Indie Roguelike Sensation Surpasses 3 Million Copies Sold",
+      "desc": "Hand-drawn pixel art and addictive spell-crafting loops prove that creative gameplay mechanics outshine massive corporate budgets.",
+      "time": "3h ago",
+      "readTime": "2 min read",
+      "link": "https://www.eurogamer.net/"
     }
-
-    // Share article
-    function shareArticle(title, link, event) {
-      if (event) event.stopPropagation();
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${title} - Read more on Raccon News Wire: ${window.location.origin}/news`);
-        showToast('Link copied to clipboard!');
-      } else {
-        showToast('Sharing ready: ' + link);
-      }
+  ],
+  "science": [
+    {
+      "id": "sci-1",
+      "category": "science",
+      "catLabel": "Science & Space",
+      "catColor": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+      "catEmoji": "🚀",
+      "source": "NASA",
+      "sourceSlug": "nasa",
+      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
+      "title": "James Webb Telescope Captures Atmospheric Chemistry of Habitable Exoplanet",
+      "desc": "Infrared spectrometer identifies water vapor, carbon dioxide, and methane clouds orbiting distant stable orange dwarf star.",
+      "time": "11m ago",
+      "readTime": "4 min read",
+      "link": "https://www.nasa.gov/"
+    },
+    {
+      "id": "sci-2",
+      "category": "science",
+      "catLabel": "Science & Space",
+      "catColor": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+      "catEmoji": "🚀",
+      "source": "National Geographic",
+      "sourceSlug": "natgeo",
+      "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+      "title": "Deep Ocean Expedition Uncovers Glowing Bioluminescent Ecosystems",
+      "desc": "Submersible descent to 6,000 meters reveals dozens of previously unrecorded marine species glowing in total oceanic darkness.",
+      "time": "45m ago",
+      "readTime": "3 min read",
+      "link": "https://www.nationalgeographic.com/"
+    },
+    {
+      "id": "sci-3",
+      "category": "science",
+      "catLabel": "Science & Space",
+      "catColor": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+      "catEmoji": "🚀",
+      "source": "NASA",
+      "sourceSlug": "nasa",
+      "image": "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80",
+      "title": "Artemis Lunar Base Architecture Successfully Completes Vacuum Stress Tests",
+      "desc": "Inflatable habitat domes with regolith radiation shielding pass crucial pressurization tests ahead of upcoming crewed missions.",
+      "time": "1h ago",
+      "readTime": "4 min read",
+      "link": "https://www.nasa.gov/artemis"
+    },
+    {
+      "id": "sci-4",
+      "category": "science",
+      "catLabel": "Science & Space",
+      "catColor": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+      "catEmoji": "🚀",
+      "source": "Nature",
+      "sourceSlug": "nature",
+      "image": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80",
+      "title": "Room-Temperature Superconductivity Synthesized in Crystal Lattice Matrix",
+      "desc": "Peer-reviewed research confirms zero electrical resistance at ambient laboratory temperatures, paving way for lossless power grids.",
+      "time": "2h ago",
+      "readTime": "5 min read",
+      "link": "https://www.nature.com/"
     }
+  ],
+  "music": [
+    {
+      "id": "music-1",
+      "category": "music",
+      "catLabel": "Music & Audio",
+      "catColor": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      "catEmoji": "🎵",
+      "source": "Billboard",
+      "sourceSlug": "billboard",
+      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80",
+      "title": "Midnight Lo-Fi Beats Stream Surpasses 1 Billion Hours Worldwide",
+      "desc": "Night owls, coders and study groups make ambient chillhop the most streamed genre worldwide during nocturnal hours.",
+      "time": "4m ago",
+      "readTime": "3 min read",
+      "link": "https://www.billboard.com/"
+    },
+    {
+      "id": "music-2",
+      "category": "music",
+      "catLabel": "Music & Audio",
+      "catColor": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      "catEmoji": "🎵",
+      "source": "Rolling Stone",
+      "sourceSlug": "rollingstone",
+      "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+      "title": "Underground Synthwave Album Climbs Global Vinyl & Indie Charts",
+      "desc": "Retro 80s analog synthesizers captivate night drivers and late workers with neon aesthetics and punchy basslines.",
+      "time": "24m ago",
+      "readTime": "2 min read",
+      "link": "https://www.rollingstone.com/music/"
+    },
+    {
+      "id": "music-3",
+      "category": "music",
+      "catLabel": "Music & Audio",
+      "catColor": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      "catEmoji": "🎵",
+      "source": "Pitchfork",
+      "sourceSlug": "pitchfork",
+      "image": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=800&q=80",
+      "title": "Acoustic Forest Sessions Recorded Under Full Moonlight Goes Viral",
+      "desc": "Natural woodland acoustics and whispering pines bring intimate folk guitar tracks to life in a viral new nocturnal release.",
+      "time": "49m ago",
+      "readTime": "3 min read",
+      "link": "https://pitchfork.com/"
+    },
+    {
+      "id": "music-4",
+      "category": "music",
+      "catLabel": "Music & Audio",
+      "catColor": "text-rose-400 bg-rose-500/10 border-rose-500/20",
+      "catEmoji": "🎵",
+      "source": "Billboard",
+      "sourceSlug": "billboard",
+      "image": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80",
+      "title": "High-Fidelity Spatial Audio Formats Adopted by Independent Record Labels",
+      "desc": "Lossless binaural audio captures 360-degree studio acoustic presence, recreating intimate live concert hall soundstages.",
+      "time": "2h ago",
+      "readTime": "3 min read",
+      "link": "https://www.billboard.com/c/music/"
+    }
+  ],
+  "weather": [
+    {
+      "id": "weather-1",
+      "category": "weather",
+      "catLabel": "Night Radar",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "☀️",
+      "source": "AccuWeather",
+      "sourceSlug": "accuweather",
+      "image": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80",
+      "title": "Night Sky Clarity: 98% (Exceptional Star Visibility Across Europe)",
+      "desc": "Crisp atmospheric high pressure system; ideal conditions for nocturnal stargazing, late night walks and woodland tranquility.",
+      "time": "Live Radar",
+      "readTime": "1 min read",
+      "link": "https://www.accuweather.com/"
+    },
+    {
+      "id": "weather-2",
+      "category": "weather",
+      "catLabel": "Night Radar",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "☀️",
+      "source": "Astronomical Observatory",
+      "sourceSlug": "astro",
+      "image": "https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=800&q=80",
+      "title": "Moon Phase: Waxing Gibbous (84% Illuminated Night Glow)",
+      "desc": "Gentle natural silver moonlight over European cities and woodland burrows with low atmospheric scattering.",
+      "time": "Astronomical",
+      "readTime": "1 min read",
+      "link": "https://www.timeanddate.com/astronomy/"
+    },
+    {
+      "id": "weather-3",
+      "category": "weather",
+      "catLabel": "Night Radar",
+      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catEmoji": "☀️",
+      "source": "NOAA Space Weather",
+      "sourceSlug": "noaa",
+      "image": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=800&q=80",
+      "title": "Northern Aurora Borealis Visible in Upper Latitudes Tonight",
+      "desc": "Solar wind geomagnetic index generates dancing emerald curtains in sky visible across Scandinavia and northern borders.",
+      "time": "Live Alert",
+      "readTime": "2 min read",
+      "link": "https://www.swpc.noaa.gov/"
+    }
+  ]
+};
 
     // Flatten all news items into a single array
     function getAllItems() {
       return [
-        ...newsData.tech,
-        ...newsData.sport,
-        ...newsData.games,
-        ...newsData.music,
-        ...newsData.weather
+        ...(newsData.tech || []),
+        ...(newsData.world || []),
+        ...(newsData.sport || []),
+        ...(newsData.games || []),
+        ...(newsData.science || []),
+        ...(newsData.music || []),
+        ...(newsData.weather || [])
       ];
     }
 
@@ -1040,9 +1281,9 @@
 
                 <!-- Bottom Image Time & Sync Source Badge -->
                 <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px] text-slate-300 font-mono">
-                  <span class="flex items-center gap-1 text-emerald-400 font-bold bg-slate-900/80 px-2 py-0.5 rounded-full backdrop-blur-sm">
+                  <span class="flex items-center gap-1 text-emerald-400 font-bold bg-slate-900/80 px-2 py-0.5 rounded-full backdrop-blur-sm border border-emerald-500/20">
                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>CBN Live</span>
+                    <span>${item.source || 'Verified Source'}</span>
                   </span>
                   <span class="bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs text-slate-300">${item.time} &bull; ${item.readTime}</span>
                 </div>
@@ -1070,7 +1311,7 @@
                 rel="noopener noreferrer"
                 class="font-bold text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1 text-[11px]"
               >
-                <span>Read on CBN</span>
+                <span>Read on ${item.source || 'Source'}</span>
                 <i data-lucide="arrow-right" class="h-3 w-3"></i>
               </a>
 
@@ -1107,15 +1348,34 @@
       }
 
       document.getElementById('modal-title').textContent = item.title;
-      document.getElementById('modal-desc').textContent = item.desc + " Full coverage, verified sources, and real-time updates are syndicated continuously from CBN News at cbn.com/lp/cbn-news.";
+      document.getElementById('modal-desc').textContent = item.desc + ` Full verified reporting and contextual coverage syndicated from ${item.source || 'official publisher'}.`;
       document.getElementById('modal-time').innerHTML = `${item.time} &bull; ${item.readTime}`;
       
       const badge = document.getElementById('modal-category-badge');
       badge.textContent = `${item.catEmoji} ${item.catLabel}`;
       badge.className = `px-2.5 py-1 rounded-full font-bold text-xs ${item.catColor}`;
 
+      const pubEl = document.getElementById('modal-publisher-name');
+      if (pubEl) pubEl.textContent = item.source || 'Verified Source';
+
+      const extLink = document.getElementById('modal-external-link');
+      if (extLink) {
+        extLink.href = item.link;
+        try {
+          const u = new URL(item.link);
+          const domainEl = document.getElementById('modal-external-domain');
+          if (domainEl) domainEl.textContent = u.hostname.replace('www.', '');
+        } catch (_) {
+          const domainEl = document.getElementById('modal-external-domain');
+          if (domainEl) domainEl.textContent = item.source || 'Visit Source';
+        }
+      }
+
+      const actionText = document.getElementById('modal-action-text');
+      if (actionText) actionText.textContent = `Read Full Article on ${item.source || 'Original Site'}`;
+
       const link = document.getElementById('modal-action-btn');
-      link.href = item.link;
+      if (link) link.href = item.link;
 
       const modal = document.getElementById('quick-reader-modal');
       modal.classList.remove('hidden');

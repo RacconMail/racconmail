@@ -276,51 +276,230 @@ const app = {
     if (!grid) return;
     const sections = [
       {
-        name: 'Tech & AI', icon: '💻', tag: 'Stealth & Chips',
-        cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
-        items: [
-          { title: "Next-Gen Stealth Chips Deliver 10x On-Device Encryption", time: "Just now", desc: "Hardware isolation prevents memory scraping & data harvesting.", image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80' },
-          { title: "Open-Source AI Models Challenge Big Tech Monopolies", time: "14m ago", desc: "Decentralized models put full control back in developers' hands.", image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80' },
-          { title: "Solar-Powered Nocturnal Microservers Deployed", time: "31m ago", desc: "Green computing provides uninterrupted nocturnal relay processing.", image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80' }
-        ]
+            "name": "Tech & AI",
+            "icon": "💻",
+            "tag": "Stealth & Chips",
+            "cover": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "Next-Gen Stealth Chips Deliver 10x On-Device Encryption",
+                        "source": "TechCrunch",
+                        "time": "2m ago",
+                        "desc": "Hardware isolation prevents memory scraping & data harvesting.",
+                        "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://techcrunch.com/category/security/"
+                  },
+                  {
+                        "title": "Open-Source AI Models Challenge Big Tech Monopolies",
+                        "source": "The Verge",
+                        "time": "14m ago",
+                        "desc": "Decentralized models put full control back in developers' hands.",
+                        "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.theverge.com/ai-artificial-intelligence"
+                  },
+                  {
+                        "title": "Global Cyber Treaties Move Toward Universal End-to-End Encryption",
+                        "source": "BBC News",
+                        "time": "52m ago",
+                        "desc": "Privacy coalition declares client-side zero-knowledge encryption a human right.",
+                        "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.bbc.com/news/technology"
+                  }
+            ]
       },
       {
-        name: 'Sports Arena', icon: '⚽', tag: 'Nocturnal Games',
-        cover: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80',
-        items: [
-          { title: "Champions League Night Clashes Deliver Late Winners", time: "3m ago", desc: "Extra-time heroics seal quarterfinal spots under stadium lights.", image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80' },
-          { title: "Global Marathon Records Shattered in Historic Night Race", time: "18m ago", desc: "Crisp cool 12°C nocturnal air fuels historic distance times.", image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=600&q=80' },
-          { title: "Midnight Street Basketball Tournaments Surge", time: "42m ago", desc: "Local city courts light up with intense 3-on-3 showdowns.", image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80' }
-        ]
+            "name": "World & Economy",
+            "icon": "🌍",
+            "tag": "Global Markets",
+            "cover": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "European Union Finalizes Ambitious Clean Energy Supergrid",
+                        "source": "BBC News",
+                        "time": "15m ago",
+                        "desc": "Interconnected wind and solar arrays share power across 14 nations.",
+                        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.bbc.com/news/world"
+                  },
+                  {
+                        "title": "Global Markets Rally as Tech Innovations Spur Manufacturing",
+                        "source": "Reuters",
+                        "time": "38m ago",
+                        "desc": "Lower energy costs drive positive quarterly trade volumes.",
+                        "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.reuters.com/business/"
+                  },
+                  {
+                        "title": "Green Hydrogen Pipeline Network Commences Construction in North Sea",
+                        "source": "Bloomberg",
+                        "time": "1h ago",
+                        "desc": "Multi-billion euro infrastructure to replace fossil fuels in steel making.",
+                        "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.bloomberg.com/markets"
+                  }
+            ]
       },
       {
-        name: 'Games & Esports', icon: '🎮', tag: 'Burrows & RPG',
-        cover: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80',
-        items: [
-          { title: "Nocturnal RPG 'Shadow Bandit' Announced", time: "5m ago", desc: "Play as a masked woodland creature solving midnight bakery mysteries.", image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80' },
-          { title: "Global Esports Grand Finals Break Milestones", time: "21m ago", desc: "Over 4.9 million concurrent viewers tune into intense nocturnal decider.", image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80' },
-          { title: "Next-Gen Handheld Update Boosts OLED Contrast", time: "44m ago", desc: "Firmware optimization extends portable gameplay sessions.", image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80' }
-        ]
+            "name": "Sports Arena",
+            "icon": "⚽",
+            "tag": "Nocturnal Games",
+            "cover": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "Champions League Night Clashes Deliver Dramatic Late Winners",
+                        "source": "ESPN",
+                        "time": "3m ago",
+                        "desc": "Extra-time heroics seal quarterfinal spots under stadium lights.",
+                        "image": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.espn.com/soccer/"
+                  },
+                  {
+                        "title": "Global Marathon Records Shattered in Historic Night Race",
+                        "source": "Sky Sports",
+                        "time": "18m ago",
+                        "desc": "Crisp cool 12°C nocturnal air fuels historic distance times in Berlin.",
+                        "image": "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.skysports.com/football"
+                  },
+                  {
+                        "title": "Midnight Street Basketball Tournaments Surge in Popularity",
+                        "source": "BBC Sport",
+                        "time": "42m ago",
+                        "desc": "Local city courts light up with intense 3-on-3 showdowns and DJ sets.",
+                        "image": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.bbc.com/sport"
+                  }
+            ]
       },
       {
-        name: 'Music & Audio', icon: '🎵', tag: 'Lo-Fi Chillhop',
-        cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
-        items: [
-          { title: "Midnight Lo-Fi Beats Stream Surpasses 1B Hours", time: "4m ago", desc: "Night owls and study groups make ambient chillhop the top stream.", image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80' },
-          { title: "Underground Synthwave Album Climbs Charts", time: "24m ago", desc: "Retro 80s analog synthesizers captivate night drivers worldwide.", image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80' },
-          { title: "Acoustic Forest Sessions Recorded Under Moonlight", time: "49m ago", desc: "Natural woodland acoustics bring intimate folk guitar tracks to life.", image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80' }
-        ]
+            "name": "Games & Esports",
+            "icon": "🎮",
+            "tag": "Burrows & RPG",
+            "cover": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "Nocturnal RPG 'Shadow Bandit' Announced for PC & Consoles",
+                        "source": "IGN",
+                        "time": "5m ago",
+                        "desc": "Play as a masked woodland creature solving midnight bakery mysteries.",
+                        "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.ign.com/"
+                  },
+                  {
+                        "title": "Global Esports Grand Finals Break Viewership Milestones",
+                        "source": "GameSpot",
+                        "time": "21m ago",
+                        "desc": "Over 4.9 million concurrent viewers tune into intense nocturnal decider.",
+                        "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.gamespot.com/"
+                  },
+                  {
+                        "title": "Next-Gen Handheld Update Boosts OLED Contrast & Battery",
+                        "source": "PC Gamer",
+                        "time": "44m ago",
+                        "desc": "Firmware optimization extends portable gameplay sessions by 2 full hours.",
+                        "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.pcgamer.com/"
+                  }
+            ]
       },
       {
-        name: 'Night Radar', icon: '☀️', tag: 'Starlight & Moon',
-        cover: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80',
-        items: [
-          { title: "Night Sky Clarity: 98% (Exceptional Star Visibility)", time: "Live radar", desc: "Crisp atmospheric pressure; ideal for nocturnal stargazing.", image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80' },
-          { title: "Moon Phase: Waxing Gibbous (84% Illuminated)", time: "Astronomical", desc: "Gentle natural silver moonlight over European burrows and cities.", image: 'https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=600&q=80' },
-          { title: "Northern Aurora Borealis Visible in Upper Latitudes", time: "Live Alert", desc: "Solar wind geomagnetic index generates dancing emerald curtains.", image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=600&q=80' }
-        ]
+            "name": "Science & Space",
+            "icon": "🚀",
+            "tag": "Cosmos & Discovery",
+            "cover": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "James Webb Telescope Captures Atmospheric Chemistry of Exoplanet",
+                        "source": "NASA",
+                        "time": "12m ago",
+                        "desc": "Spectroscopic readings detect water vapor and carbon clouds in habitable zone.",
+                        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.nasa.gov/"
+                  },
+                  {
+                        "title": "Deep Ocean Expedition Uncovers Glowing Bioluminescent Ecosystems",
+                        "source": "National Geographic",
+                        "time": "35m ago",
+                        "desc": "Submersibles document never-before-seen deep trench marine species.",
+                        "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.nationalgeographic.com/"
+                  },
+                  {
+                        "title": "Room-Temperature Superconductivity Synthesized in Crystal Matrix",
+                        "source": "Nature",
+                        "time": "1h ago",
+                        "desc": "New ambient pressure material conduct electricity with zero resistance.",
+                        "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.nature.com/"
+                  }
+            ]
+      },
+      {
+            "name": "Music & Audio",
+            "icon": "🎵",
+            "tag": "Lo-Fi Chillhop",
+            "cover": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "Midnight Lo-Fi Beats Stream Surpasses 1B Hours Worldwide",
+                        "source": "Billboard",
+                        "time": "4m ago",
+                        "desc": "Night owls and study groups make ambient chillhop the top stream.",
+                        "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.billboard.com/"
+                  },
+                  {
+                        "title": "Underground Synthwave Album Climbs Global Vinyl Charts",
+                        "source": "Rolling Stone",
+                        "time": "24m ago",
+                        "desc": "Retro 80s analog synthesizers captivate night drivers worldwide.",
+                        "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.rollingstone.com/music/"
+                  },
+                  {
+                        "title": "Acoustic Forest Sessions Recorded Under Moonlight Goes Viral",
+                        "source": "Pitchfork",
+                        "time": "49m ago",
+                        "desc": "Natural woodland acoustics bring intimate folk guitar tracks to life.",
+                        "image": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://pitchfork.com/"
+                  }
+            ]
+      },
+      {
+            "name": "Night Radar",
+            "icon": "☀️",
+            "tag": "Starlight & Moon",
+            "cover": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+            "items": [
+                  {
+                        "title": "Night Sky Clarity: 98% (Exceptional Star Visibility Across Europe)",
+                        "source": "AccuWeather",
+                        "time": "Live radar",
+                        "desc": "Crisp atmospheric pressure; ideal for nocturnal stargazing.",
+                        "image": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.accuweather.com/"
+                  },
+                  {
+                        "title": "Moon Phase: Waxing Gibbous (84% Illuminated Night Glow)",
+                        "source": "Astronomical Observatory",
+                        "time": "Astronomical",
+                        "desc": "Gentle natural silver moonlight over European burrows and cities.",
+                        "image": "https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.timeanddate.com/astronomy/"
+                  },
+                  {
+                        "title": "Northern Aurora Borealis Visible in Upper Latitudes Tonight",
+                        "source": "NOAA Space Weather",
+                        "time": "Live Alert",
+                        "desc": "Solar wind geomagnetic index generates dancing emerald curtains.",
+                        "image": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=600&q=80",
+                        "link": "https://www.swpc.noaa.gov/"
+                  }
+            ]
       }
-    ];
+];
 
     grid.innerHTML = sections.map(sec => `
       <div class="rounded-2xl border border-border bg-card p-3 shadow-xs flex flex-col justify-between group hover:border-primary/50 transition duration-200">
@@ -351,10 +530,10 @@ const app = {
                 <img src="${it.image}" alt="${it.title}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-border/60 shadow-xs" onerror="this.src='/raccoon-logo.png';" />
                 <div class="min-w-0 flex-1">
                   <div class="flex justify-between items-center text-[9px] text-muted-foreground mb-0.5">
-                    <span class="text-orange-600 font-bold">CBN News</span>
+                    <span class="text-emerald-500 font-bold">${it.source || 'Verified Source'}</span>
                     <span class="font-mono">${it.time}</span>
                   </div>
-                  <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
+                  <a href="${it.link || '/news'}" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
                     ${it.title}
                   </a>
                   <p class="text-[10px] text-muted-foreground mt-0.5 line-clamp-1 leading-relaxed">

@@ -21,7 +21,7 @@ if (empty($_SESSION['current_user_id'])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4083745907535838" crossorigin="anonymous"></script>
+  <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
   <!-- Early Theme Initializer to prevent flash -->
   <script>
