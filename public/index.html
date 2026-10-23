@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Raccon Mail — Clever email for web &amp; mobile</title>
+  <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  
+  <!-- Google Fonts: DM Sans, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 (Same as Harmony SocialEngine) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google AdSense (Visually Hidden) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4083745907535838" crossorigin="anonymous"></script>
+
+  <!-- Tailwind CSS Configured with Harmony Theme Tokens -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: '#EFEDE9', /* Harmony warm sand body canvas */
+            foreground: '#1E293B', /* Harmony headline / body slate */
+            card: '#FFFFFF',
+            'card-alt': '#F5F5F5',
+            primary: '#208ED3', /* Harmony signature sky azure blue */
+            'primary-hover': '#1A7BB8',
+            'primary-foreground': '#FFFFFF',
+            secondary: '#F2F2F2', /* Harmony secondary button */
+            'secondary-foreground': '#212529',
+            muted: '#F6F6F6', /* Harmony search & mini menu pill */
+            'muted-foreground': '#64748B',
+            accent: '#EBF5FB', /* Harmony active badge soft blue */
+            border: '#D5D5D5', /* Harmony border */
+            'border-light': '#E2E8F0',
+            mask: '#1E293B',
+            fur: '#334155'
+          },
+          fontFamily: {
+            sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            'harmony-soft': '0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04)',
+            'harmony-card': '0 4px 20px rgba(0, 0, 0, 0.05)',
+            'harmony-btn': '0 4px 10px rgba(32, 142, 211, 0.35)',
+            'harmony-btn-hover': '0 6px 16px rgba(32, 142, 211, 0.45)'
+          },
+          borderRadius: {
+            'harmony': '20px',
+            'pill': '50px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="/css/raccoon-mail.css?v=2.6" />
+
+  <style>
+    /* Smooth Scroll and Viewport Unlocking */
+    html {
+      scroll-behavior: smooth;
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+    }
+
+    /* Harmony Canvas Background */
+    body {
+      background-color: #EFEDE9 !important;
+      color: #1E293B !important;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow-x: hidden !important;
+      overflow-y: visible !important;
+      touch-action: auto !important;
+    }
+
+    /* Raccoon Mascot Animation */
+    @keyframes raccoon-bob {
+      0%, 100% {
+        transform: translateY(0) rotate(-2deg);
+      }
+      50% {
+        transform: translateY(-8px) rotate(2deg);
+      }
+    }
+    .raccoon-anim {
+      transform-origin: bottom;
+      animation: 3.2s ease-in-out infinite raccoon-bob;
+    }
+
+    /* Rolling Cookie Physics Animation (Landing Header) */
+    @keyframes cookieRollPhysics {
+      0% {
+        left: 6px;
+        transform: scaleX(1);
+      }
+      45% {
+        left: calc(100% - 105px);
+        transform: scaleX(1);
+      }
+      50% {
+        left: calc(100% - 105px);
+        transform: scaleX(-1);
+      }
+      95% {
+        left: 6px;
+        transform: scaleX(-1);
+      }
+      100% {
+        left: 6px;
+        transform: scaleX(1);
+      }
+    }
+
+    @keyframes cookieSpinPhysics {
+      0% {
+        transform: rotate(0deg);
+      }
+      45% {
+        transform: rotate(540deg);
+      }
+      50% {
+        transform: rotate(540deg);
+      }
+      95% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .cookie-roller {
+      position: absolute;
+      animation: cookieRollPhysics 6.5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+      will-change: left, transform;
+    }
+
+    .cookie-actor {
+      display: inline-block;
+      animation: cookieSpinPhysics 6.5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+      will-change: transform;
+    }
+
+    /* Postcard airmail border stripes */
+    .stripes {
+      background: repeating-linear-gradient(
+        90deg,
+        #208ED3 0 28px,
+        #EFEDE9 28px 42px,
+        #E11D48 42px 70px,
+        #EFEDE9 70px 84px
+      );
+    }
+
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+</head>
+<body class="bg-[#EFEDE9] text-[#1E293B] antialiased selection:bg-[#EBF5FB] flex flex-col justify-between">
+
+  <div class="w-full flex flex-col justify-between">
+    <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
+    <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-xs">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <!-- Brand Logo -->
+        <a href="/" class="flex items-center gap-2.5 font-display text-xl font-bold text-[#1E293B] hover:opacity-95 transition">
+          <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-10 w-10 raccoon-anim object-contain shrink-0"/>
+          <span class="tracking-tight text-lg sm:text-xl font-bold">Raccon Mail</span>
+        </a>
+
+        <!-- Charming Animated Rolling Cookie (No Background) -->
+        <div class="hidden md:flex items-center relative overflow-hidden bg-transparent h-10 w-72 select-none cursor-pointer group" title="Click to catch the rolling cookie!" onclick="spawnCookieCrumbs(this)">
+          <div class="w-full flex items-center relative h-full">
+            <!-- The Rolling Cookie Group -->
+            <div class="cookie-roller flex items-center gap-2 top-1/2 -translate-y-1/2">
+              <span class="cookie-actor text-2xl inline-block leading-none filter drop-shadow-xs transition transform group-hover:scale-125">🍪</span>
+              <span class="text-xs opacity-60 leading-none">🐾</span>
+              <span class="cookie-status-text text-[11px] font-bold text-amber-900/70 tracking-tight whitespace-nowrap">fresh & warm!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header Nav Links & Actions -->
+        <div class="flex items-center gap-3" id="auth-nav-container">
+          <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
+          <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
+          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-5 py-2 text-sm font-semibold transition active:scale-95 inline-flex items-center gap-1.5 cursor-pointer">
+            <i class="fas fa-sign-in-alt text-xs text-[#64748B]"></i>
+            <span>Sign In</span>
+          </a>
+          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2 text-sm font-semibold transition active:scale-95 shadow-sm inline-flex items-center gap-2 cursor-pointer">
+            <span>Join Free</span>
+            <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HARMONY HERO SECTION (Moved UP for effortless clicking) -->
+    <section class="mx-auto grid max-w-6xl items-center gap-8 px-6 pt-6 pb-10 sm:pt-10 sm:pb-16 md:grid-cols-2 relative z-10">
+      <div class="relative z-20">
+        <!-- Pill Badge -->
+        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#CBD5E1] px-3.5 py-1 text-xs font-semibold text-[#208ED3] shadow-xs">
+          <i class="fas fa-shield-alt text-[#208ED3]"></i>
+          <span>Masked from spam. Always.</span>
+        </span>
+
+        <!-- Hero Headline -->
+        <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] text-[#1E293B]">
+          Where Clever Email<br/>Meets True Privacy.
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="mt-3.5 max-w-lg text-base sm:text-lg text-[#64748B] leading-relaxed">
+          Fast, private, and beautifully simple. Sealed envelopes, zero trackers, and complete control on web and smartphone.
+        </p>
+
+        <!-- Harmony Action Buttons (Moved UP, z-30, touch-friendly) -->
+        <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-3 relative z-30">
+          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-7 py-3.5 text-base font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2.5 cursor-pointer relative z-30 touch-target">
+            <span>Create Free Account</span>
+            <i class="fas fa-chevron-right text-xs bg-white/20 rounded-full w-5 h-5 flex items-center justify-center"></i>
+          </a>
+          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-6 py-3.5 text-base font-semibold transition flex items-center gap-2 cursor-pointer relative z-30 touch-target">
+            <i class="fas fa-key text-xs text-[#64748B]"></i>
+            <span>Sign In</span>
+          </a>
+        </div>
+
+        <!-- Quick Feature Badges (Harmony Line Icons) -->
+        <div class="mt-10 grid grid-cols-3 gap-4 pt-6 border-t border-[#D5D5D5]/60 text-xs text-[#64748B]">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-lock text-[11px]"></i>
+            </div>
+            <span class="font-medium text-[#1E293B]">Zero Trackers</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-bolt text-[11px]"></i>
+            </div>
+            <span class="font-medium text-[#1E293B]">Instant Sync</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-check-circle text-[11px]"></i>
+            </div>
+            <span class="font-medium text-[#1E293B]">Free Mailbox</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mascot Showcase with Speech Bubble -->
+      <div class="relative flex justify-center items-center py-6 select-none">
+        <div class="relative inline-block">
+          
+          <!-- Chat Bubble coming out of Raccoon's mouth (White background, Black text, Raccoon icon) -->
+          <div class="absolute -top-12 -left-4 sm:-top-16 sm:-left-16 md:-top-16 md:-left-20 z-30 max-w-[270px] sm:max-w-[320px] bg-white text-black px-4 py-3 sm:px-5 sm:py-3.5 rounded-3xl shadow-2xl border-2 border-[#CBD5E1] transition-transform hover:scale-105 duration-200">
+            <!-- Speech Bubble Tail pointing towards mouth -->
+            <div class="absolute -bottom-3 right-12 sm:right-16 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-white filter drop-shadow(0 2px 1px rgba(0,0,0,0.06))"></div>
+            <div class="absolute -bottom-3.5 right-12 sm:right-16 w-0 h-0 border-l-[11px] border-l-transparent border-r-[11px] border-r-transparent border-t-[13px] border-t-[#CBD5E1] -z-10"></div>
+            
+            <div class="flex items-start gap-2.5">
+              <img src="/raccoon-logo.png" alt="Raccoon icon" class="h-6 w-6 sm:h-7 sm:w-7 object-contain shrink-0 mt-0.5" />
+              <div>
+                <p class="text-xs sm:text-sm font-bold text-black leading-snug">
+                  "Psst! Mask your inbox from spam &bull; your emails are 100% private with me! 🐾"
+                </p>
+                <div class="mt-1 flex items-center gap-1.5 text-[10px] text-[#64748B] font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Nocturnal Courier &bull; Zero Trackers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img src="/raccoon-logo.png" alt="Raccon mascot with envelope" class="raccoon-anim relative w-64 sm:w-80 md:w-96 max-w-full object-contain pointer-events-none select-none"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- POSTAL STRIPES DIVIDER -->
+    <div class="stripes h-3 w-full opacity-80"></div>
+
+    <!-- WEB INBOX DEMO SECTION -->
+    <section id="web" class="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 w-full">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs font-bold text-[#208ED3] uppercase tracking-wider">Interactive Experience</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] mt-1">Your inbox, on the web</h2>
+        </div>
+        <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2.5 text-sm font-semibold transition inline-flex items-center gap-2 self-start sm:self-auto shadow-sm">
+          <span>Launch Full Webmail</span>
+          <i class="fas fa-external-link-alt text-xs"></i>
+        </a>
+      </div>
+
+      <!-- Harmony Style Mailbox Card -->
+      <div class="grid overflow-hidden rounded-[20px] border border-[#D5D5D5] bg-white shadow-harmony-card md:grid-cols-[220px_320px_1fr]">
+        
+        <!-- Sidebar -->
+        <aside class="bg-[#F8FAFC] border-r border-[#E2E8F0] p-5 text-[#1E293B] flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2.5 font-display font-bold text-[#1E293B] pb-4 border-b border-[#E2E8F0]">
+              <img src="/raccoon-logo.png" alt="Raccon" class="h-7 w-7 raccoon-anim object-contain"/>
+              <span>Raccon Mail</span>
+            </div>
+
+            <button onclick="window.location.href='/inbox'" class="mt-5 w-full rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] py-2.5 px-4 font-semibold text-white transition active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-2 text-sm">
+              <i class="fas fa-pen text-xs"></i>
+              <span>Compose</span>
+            </button>
+
+            <ul class="mt-6 space-y-1.5 text-xs font-medium text-[#64748B]">
+              <li>
+                <div class="px-3 py-2 rounded-xl bg-[#EBF5FB] text-[#208ED3] font-bold flex items-center justify-between cursor-pointer">
+                  <span class="flex items-center gap-2.5"><i class="fas fa-inbox text-sm"></i> Inbox</span>
+                  <span class="bg-[#208ED3] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+                </div>
+              </li>
+              <li>
+                <div class="px-3 py-2 rounded-xl hover:bg-[#F1F5F9] hover:text-[#1E293B] flex items-center gap-2.5 cursor-pointer transition">
+                  <i class="far fa-star text-sm"></i> Starred
+                </div>
+              </li>
+              <li>
+                <div class="px-3 py-2 rounded-xl hover:bg-[#F1F5F9] hover:text-[#1E293B] flex items-center gap-2.5 cursor-pointer transition">
+                  <i class="far fa-paper-plane text-sm"></i> Sent
+                </div>
+              </li>
+              <li>
+                <div class="px-3 py-2 rounded-xl hover:bg-[#F1F5F9] hover:text-[#1E293B] flex items-center gap-2.5 cursor-pointer transition">
+                  <i class="far fa-file-alt text-sm"></i> Drafts
+                </div>
+              </li>
+              <li>
+                <div class="px-3 py-2 rounded-xl hover:bg-[#F1F5F9] hover:text-[#1E293B] flex items-center gap-2.5 cursor-pointer transition">
+                  <i class="far fa-trash-alt text-sm"></i> Trash
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pt-4 border-t border-[#E2E8F0] text-[11px] text-[#64748B]">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+            <span>Zero-Knowledge Relay</span>
+          </div>
+        </aside>
+
+        <!-- Message List -->
+        <ul class="border-r border-[#E2E8F0] divide-y divide-[#E2E8F0] overflow-y-auto max-h-[480px] bg-white">
+          <li>
+            <button onclick="selectDemoMail(0)" id="demo-mail-0" class="w-full p-4 text-left bg-[#EBF5FB] border-l-4 border-[#208ED3] transition cursor-pointer">
+              <div class="flex justify-between text-xs font-bold text-[#1E293B]">
+                <span class="flex items-center gap-1.5"><i class="fas fa-user-circle text-[#208ED3]"></i> Rocky Raccoon</span>
+                <span class="font-normal text-[#64748B]">23:41</span>
+              </div>
+              <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Midnight snack plans 🍪</div>
+              <div class="truncate text-[11px] text-[#64748B] mt-0.5">Found the best bakery downtown...</div>
+            </button>
+          </li>
+          <li>
+            <button onclick="selectDemoMail(1)" id="demo-mail-1" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+              <div class="flex justify-between text-xs font-bold text-[#1E293B]">
+                <span class="flex items-center gap-1.5"><i class="fas fa-shield-alt text-[#208ED3]"></i> Raccon Team</span>
+                <span class="font-normal text-[#64748B]">21:10</span>
+              </div>
+              <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Welcome to Raccon Mail</div>
+              <div class="truncate text-[11px] text-[#64748B] mt-0.5">Your encrypted mailbox is active...</div>
+            </button>
+          </li>
+          <li>
+            <button onclick="selectDemoMail(2)" id="demo-mail-2" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+              <div class="flex justify-between text-xs font-bold text-[#1E293B]">
+                <span class="flex items-center gap-1.5"><i class="fas fa-university text-[#64748B]"></i> Forest Bank</span>
+                <span class="font-normal text-[#64748B]">Yesterday</span>
+              </div>
+              <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Your monthly statement</div>
+              <div class="truncate text-[11px] text-[#64748B] mt-0.5">Your acorns balance is updated...</div>
+            </button>
+          </li>
+          <li>
+            <button onclick="selectDemoMail(3)" id="demo-mail-3" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+              <div class="flex justify-between text-xs font-bold text-[#1E293B]">
+                <span class="flex items-center gap-1.5"><i class="fas fa-moon text-[#208ED3]"></i> Luna</span>
+                <span class="font-normal text-[#64748B]">Mon</span>
+              </div>
+              <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Photos from camping trip</div>
+              <div class="truncate text-[11px] text-[#64748B] mt-0.5">Here are the night snapshots!</div>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Reading Pane / Postcard View -->
+        <article id="demo-mail-viewer" class="p-6 sm:p-8 flex flex-col justify-between bg-white">
+          <div>
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 id="demo-view-subject" class="font-display text-xl sm:text-2xl font-bold text-[#1E293B]">Midnight snack plans 🍪</h3>
+                <p id="demo-view-meta" class="mt-1 text-xs text-[#64748B] flex items-center gap-2">
+                  <span class="font-semibold text-[#1E293B]">from Rocky Raccoon</span>
+                  <span>&bull;</span>
+                  <span>23:41</span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+                    <i class="fas fa-lock text-[8px]"></i> Encrypted
+                  </span>
+                </p>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button class="w-8 h-8 rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] flex items-center justify-center transition cursor-pointer" title="Star">
+                  <i class="far fa-star text-xs"></i>
+                </button>
+                <button class="w-8 h-8 rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] flex items-center justify-center transition cursor-pointer" title="Print">
+                  <i class="fas fa-print text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-[#E2E8F0]">
+              <p id="demo-view-body" class="text-sm text-[#1E293B] leading-relaxed">
+                Found the best bakery downtown with fresh warm pastries. Meet at 2am under the clocktower?
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-[#E2E8F0] flex items-center gap-3">
+            <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2.5 text-xs font-semibold transition active:scale-95 inline-flex items-center gap-2 shadow-sm">
+              <i class="fas fa-reply text-xs"></i>
+              <span>Reply</span>
+            </a>
+            <a href="/inbox" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-4 py-2.5 text-xs font-semibold transition inline-flex items-center gap-2">
+              <i class="fas fa-share text-xs"></i>
+              <span>Forward</span>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ULTRA-MODERN MOBILE APPS SECTION (Android & iOS) -->
+    <section id="app" class="relative overflow-hidden bg-white border-y border-[#D5D5D5] py-20 sm:py-24 text-[#1E293B]">
+      <!-- Background subtle decorative aura -->
+      <div class="pointer-events-none absolute -top-40 right-0 h-96 w-96 rounded-full bg-[#208ED3]/5 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-40 left-0 h-96 w-96 rounded-full bg-[#00B392]/5 blur-3xl"></div>
+
+      <div class="mx-auto max-w-6xl px-6 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#EBF5FB] text-[#208ED3] border border-[#208ED3]/20 shadow-xs mb-3">
+            <i class="fas fa-mobile-screen-button text-xs"></i>
+            <span>MULTI-PLATFORM NOCTURNAL SYNC</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1E293B] tracking-tight">
+            Your clever mailbox, everywhere on <span class="text-[#208ED3]">Android</span> &amp; <span class="text-[#1E293B]">iOS</span>
+          </h2>
+          <p class="mt-4 text-[#64748B] text-base sm:text-lg leading-relaxed">
+            Experience ultra-smooth mailbox interactions, instant push notifications, and hardware-backed encryption with zero trackers and zero ads on your favorite smartphone.
+          </p>
+        </div>
+
+        <!-- 2 Modern OS Platform Cards + Dual Mobile Device Showcase -->
+        <div class="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left Column: Android & iOS Modern Cards (7 Cols) -->
+          <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Android Card -->
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#208ED3]/40 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="w-14 h-14 rounded-2xl bg-[#3DDC84]/15 border border-[#3DDC84]/30 flex items-center justify-center text-[#3DDC84] shrink-0 text-2xl">
+                    <i class="fab fa-android"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-display text-lg font-bold text-[#1E293B]">Raccon Mail for Android</h3>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#3DDC84]/20 text-[#0F6F3A] uppercase tracking-wide">Official APK</span>
+                    </div>
+                    <p class="text-xs text-[#64748B] mt-1">Universal build • Android 7.0 through Android 16+ • High-speed APK direct download</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Android Features Pills -->
+              <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-bell text-[#3DDC84] text-[11px]"></i> Push Postcard Chimes
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-hand-pointer text-[#208ED3] text-[11px]"></i> Swipe to Archive
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-database text-[#64748B] text-[11px]"></i> Offline Storage
+                </span>
+              </div>
+
+              <!-- Android Action Row -->
+              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3">
+                <a href="/downloads/RacconMail.apk" download="RacconMail.apk" class="btn-primary rounded-full bg-[#1E293B] hover:bg-[#000000] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center gap-2.5 cursor-pointer">
+                  <i class="fab fa-android text-base text-[#3DDC84]"></i>
+                  <span>Download Android APK</span>
+                  <span class="text-xs opacity-70 font-mono ml-1">15 MB</span>
+                  <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+                </a>
+                <span class="text-xs text-[#64748B] flex items-center gap-1.5">
+                  <i class="fas fa-shield-halved text-emerald-600"></i> Signed &amp; verified package
+                </span>
+              </div>
+            </div>
+
+            <!-- iOS Card -->
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#1E293B]/30 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="w-14 h-14 rounded-2xl bg-[#000000]/10 border border-[#000000]/20 flex items-center justify-center text-[#1E293B] shrink-0 text-2xl">
+                    <i class="fab fa-apple"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-display text-lg font-bold text-[#1E293B]">Raccon Mail for iOS &amp; iPadOS</h3>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1E293B]/10 text-[#1E293B] uppercase tracking-wide">PWA Native</span>
+                    </div>
+                    <p class="text-xs text-[#64748B] mt-1">Zero App Store tracking • 1-Tap Home Screen installation • Standalone fullscreen app</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- iOS Features Pills -->
+              <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-fingerprint text-[#208ED3] text-[11px]"></i> FaceID / TouchID
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-expand text-[#1E293B] text-[11px]"></i> Immersive Fullscreen
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
+                  <i class="fas fa-lock text-emerald-600 text-[11px]"></i> Zero Telemetry
+                </span>
+              </div>
+
+              <!-- iOS Action Row with 3-Step Guide -->
+              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3">
+                <a href="/inbox" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#1E293B] border border-[#CBD5E1] px-6 py-3 font-semibold text-sm transition active:scale-95 inline-flex items-center gap-2.5">
+                  <i class="fab fa-apple text-base text-[#1E293B]"></i>
+                  <span>Launch iOS Web App</span>
+                  <i class="fas fa-arrow-up-right-from-square text-xs text-[#64748B]"></i>
+                </a>
+                <div class="flex items-center gap-2 text-[11px] text-[#64748B] bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0]">
+                  <span>On Safari:</span>
+                  <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-arrow-up-from-bracket text-[#208ED3]"></i> Share</span>
+                  <span>&rarr;</span>
+                  <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-plus-square text-[#1E293B]"></i> Add to Home Screen</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Ultra-Sleek Modern Phone Mockup (5 Cols) -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="relative w-full max-w-[320px]">
+              
+              <!-- Floating Notification Toast Pill (Top Left) -->
+              <div class="absolute -top-5 -left-6 z-20 hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-[#208ED3]/30 animate-bounce duration-1000">
+                <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" alt="Luna" />
+                <div class="text-left text-xs">
+                  <div class="font-bold text-[#1E293B] flex items-center gap-1">Luna 🐾 <span class="text-[10px] text-[#64748B] font-normal">Just now</span></div>
+                  <div class="text-[#64748B] text-[11px] truncate max-w-[150px]">Acorn reserves encrypted! 🌰</div>
+                </div>
+              </div>
+
+              <!-- Floating Battery / Encryption Badge (Bottom Right) -->
+              <div class="absolute -bottom-4 -right-4 z-20 hidden sm:flex items-center gap-2 bg-[#1E293B] text-white px-3.5 py-2 rounded-2xl shadow-xl border border-white/10 text-xs">
+                <i class="fas fa-shield-heart text-emerald-400"></i>
+                <span class="font-semibold text-[11px]">100% Private</span>
+              </div>
+
+              <!-- Hardware Phone Bezel -->
+              <div class="rounded-[44px] border-[10px] border-[#1E293B] bg-[#1E293B] p-1.5 shadow-2xl">
+                <!-- Inner Screen Container -->
+                <div class="rounded-[36px] bg-[#EFEDE9] overflow-hidden border border-black/20 text-[#1E293B] flex flex-col">
+                  
+                  <!-- Dynamic Island / Speaker Notch -->
+                  <div class="bg-[#EFEDE9] pt-2 px-6 pb-1 flex items-center justify-between text-[11px] font-bold text-[#1E293B]">
+                    <span>9:41</span>
+                    <div class="h-4 w-20 rounded-full bg-[#1E293B]"></div>
+                    <div class="flex items-center gap-1.5 text-xs text-[#1E293B]">
+                      <i class="fas fa-signal text-[10px]"></i>
+                      <i class="fas fa-wifi text-[10px]"></i>
+                      <i class="fas fa-battery-full text-xs text-emerald-600"></i>
+                    </div>
+                  </div>
+
+                  <!-- In-App Header -->
+                  <div class="p-3 bg-white border-b border-[#E2E8F0] flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-6 w-6 raccoon-anim object-contain" />
+                      <span class="font-display font-extrabold text-xs text-[#1E293B]">Raccon Mail</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                      <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Live</span>
+                    </div>
+                  </div>
+
+                  <!-- Mock Messages List -->
+                  <div class="p-3 space-y-2 text-left">
+                    <!-- Message 1 -->
+                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-[#E2E8F0] hover:border-[#208ED3] transition">
+                      <div class="flex justify-between items-center text-xs font-bold text-[#1E293B]">
+                        <span class="flex items-center gap-1.5">
+                          <span class="w-2 h-2 rounded-full bg-[#208ED3]"></span>
+                          Rocky Raccoon
+                        </span>
+                        <span class="text-[10px] text-[#64748B] font-mono">02:14</span>
+                      </div>
+                      <div class="text-xs text-[#1E293B] font-semibold mt-1">Midnight bakery heist 🥐</div>
+                      <div class="text-[11px] text-[#64748B] mt-0.5 truncate">Meet behind bakery at 3 AM sharp.</div>
+                    </div>
+
+                    <!-- Message 2 -->
+                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-[#E2E8F0]">
+                      <div class="flex justify-between items-center text-xs font-bold text-[#1E293B]">
+                        <span class="flex items-center gap-1.5">
+                          <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                          Luna Star
+                        </span>
+                        <span class="text-[10px] text-[#64748B] font-mono">23:40</span>
+                      </div>
+                      <div class="text-xs text-[#1E293B] font-semibold mt-1">Stargazing coordinates ✨</div>
+                      <div class="text-[11px] text-[#64748B] mt-0.5 truncate">Found the darkest clearing in the woods.</div>
+                    </div>
+
+                    <!-- Message 3 -->
+                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-[#E2E8F0]">
+                      <div class="flex justify-between items-center text-xs font-bold text-[#1E293B]">
+                        <span class="flex items-center gap-1.5">
+                          <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                          Forest Reserve
+                        </span>
+                        <span class="text-[10px] text-[#64748B] font-mono">Yesterday</span>
+                      </div>
+                      <div class="text-xs text-[#1E293B] font-semibold mt-1">Monthly acorn dividend 🌰</div>
+                      <div class="text-[11px] text-[#64748B] mt-0.5 truncate">4,820 acorns credited to your vault.</div>
+                    </div>
+                  </div>
+
+                  <!-- Mock Compose Floating Bar -->
+                  <div class="mt-auto p-3 bg-white border-t border-[#E2E8F0] flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-[#64748B]">3 Clever Postcards</span>
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#208ED3] text-white text-xs font-bold shadow-xs">
+                      <i class="fas fa-pencil text-[10px]"></i>
+                      <span>Compose</span>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Home Indicator -->
+                  <div class="bg-white py-1.5 flex justify-center">
+                    <div class="h-1 w-24 rounded-full bg-[#1E293B]/40"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HARMONY ULTRA-MODERN LEGAL & COMMUNITY FOOTER -->
+    <footer class="w-full border-t border-[#E2E8F0] bg-[#FDFDFD] pt-12 pb-8 mt-auto text-[#1E293B]">
+      <div class="mx-auto max-w-6xl px-6">
+        
+        <!-- 4 Described Resource Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-10 border-b border-[#E2E8F0]">
+          
+          <!-- 1. Terms of Service -->
+          <a href="/legal/terms" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs font-bold text-[#208ED3] mb-2">
+                <span class="flex items-center gap-1.5"><i class="fas fa-file-contract text-sm"></i> Legal Framework</span>
+                <i class="fas fa-arrow-right text-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
+              </div>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-[#208ED3] transition">Terms of Service</h3>
+              <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                Clear, transparent user agreements. No hidden subscription traps, no commercial lock-in, and ethical service standards.
+              </p>
+            </div>
+            <div class="mt-4 text-[11px] font-semibold text-[#208ED3] flex items-center gap-1">
+              <span>Read Agreement</span> &rarr;
+            </div>
+          </a>
+
+          <!-- 2. Privacy Policy -->
+          <a href="/legal/privacy" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-600 mb-2">
+                <span class="flex items-center gap-1.5"><i class="fas fa-shield-halved text-sm"></i> Zero-Knowledge</span>
+                <i class="fas fa-arrow-right text-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
+              </div>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-emerald-600 transition">Privacy Policy</h3>
+              <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                Zero third-party telemetry, zero ad profiling, client-side encryption, and total GDPR &amp; Swiss privacy compliance.
+              </p>
+            </div>
+            <div class="mt-4 text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+              <span>View Privacy Rights</span> &rarr;
+            </div>
+          </a>
+
+          <!-- 3. Open Source -->
+          <a href="https://github.com/racconmail/racconmail" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs font-bold text-[#1E293B] mb-2">
+                <span class="flex items-center gap-1.5"><i class="fab fa-github text-sm"></i> Public Codebase</span>
+                <i class="fas fa-external-link-alt text-[10px] text-[#64748B] group-hover:text-[#1E293B] transition"></i>
+              </div>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-[#208ED3] transition">Open Source</h3>
+              <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                Audited cryptographic protocols, verifiable server architectures, and open developer contributions on GitHub.
+              </p>
+            </div>
+            <div class="mt-4 text-[11px] font-semibold text-[#1E293B] flex items-center gap-1">
+              <span>Inspect Repository</span> &rarr;
+            </div>
+          </a>
+
+          <!-- 4. Security & Contact -->
+          <a href="mailto:support@racconmail.eu" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs font-bold text-orange-600 mb-2">
+                <span class="flex items-center gap-1.5"><i class="fas fa-envelope-shield text-sm"></i> Direct Support</span>
+                <i class="fas fa-paper-plane text-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
+              </div>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-orange-600 transition">Security &amp; Contact</h3>
+              <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
+                Direct hotline to our nocturnal engineering team at support@racconmail.eu for security disclosures &amp; member assistance.
+              </p>
+            </div>
+            <div class="mt-4 text-[11px] font-semibold text-orange-600 flex items-center gap-1">
+              <span>Email Support Team</span> &rarr;
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Bottom Copyright Row -->
+        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748B]">
+          <div class="flex items-center gap-2.5 font-medium text-[#1E293B]">
+            <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-6 w-6 object-contain" />
+            <span>&copy; 2026 Raccon Mail. Built for absolute nocturnal privacy.</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>All systems encrypted &bull; Zero trackers</span>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+  </div>
+
+  <!-- AUTH POPUP MODAL (Sign In & Join Free) -->
+  <div id="auth-modal" style="display: none;" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity" onclick="if(event.target === this) closeAuthModal()">
+    <div class="relative w-full max-w-md rounded-[24px] bg-white p-6 sm:p-8 shadow-2xl border border-[#D5D5D5] overflow-hidden transform transition-all scale-100">
+      
+      <!-- Close Button (X) -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] flex items-center justify-center transition cursor-pointer z-10" title="Close">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+
+      <!-- Mascot & Title -->
+      <div class="text-center mb-5 pt-1">
+        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-14 w-14 mx-auto raccoon-anim object-contain mb-2" />
+        <h2 id="modal-auth-heading" class="font-display text-2xl font-bold tracking-tight text-[#1E293B]">Welcome to Raccon Mail</h2>
+        <p id="modal-auth-sub" class="text-xs text-[#64748B] mt-1">Clever, encrypted nocturnal mailbox.</p>
+      </div>
+
+      <!-- Segmented Tab Switcher (Harmony Style) -->
+      <div class="flex rounded-full bg-[#F2F2F2] p-1 mb-5 text-xs font-semibold border border-[#E4E6EB]">
+        <button
+          id="modal-tab-login"
+          type="button"
+          onclick="setModalTab('login')"
+          class="flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-key text-xs"></i>
+          <span>Sign In</span>
+        </button>
+        <button
+          id="modal-tab-register"
+          type="button"
+          onclick="setModalTab('register')"
+          class="flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-sparkles text-xs"></i>
+          <span>Join Free</span>
+        </button>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="modal-error-box" class="hidden mb-4 p-3 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs font-medium flex items-center gap-2">
+        <i class="fas fa-exclamation-circle text-sm shrink-0"></i>
+        <span id="modal-error-text"></span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-[#1E293B] mb-1">Email or Username</label>
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-user text-xs"></i></div>
+            <input
+              id="m-l-email"
+              type="text"
+              required
+              placeholder="username or me@racconmail.eu"
+              autocomplete="username"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#1E293B] mb-1">Password</label>
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-lock text-xs"></i></div>
+            <input
+              id="m-l-pass"
+              type="password"
+              required
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
+            />
+            <button
+              type="button"
+              onclick="toggleModalPass('m-l-pass', 'm-l-eye-icon')"
+              class="px-4 text-[#64748B] hover:text-[#1E293B] cursor-pointer focus:outline-none"
+              title="Toggle password visibility"
+            >
+              <i id="m-l-eye-icon" class="fas fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="m-btn-login"
+          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-3 transition shadow-md touch-target flex items-center justify-center gap-2 cursor-pointer mt-2 text-white"
+        >
+          <span>Sign In to Raccon Mail</span>
+          <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+        </button>
+
+        <div class="pt-2 text-center text-xs text-[#64748B]">
+          Don't have an account yet? 
+          <button type="button" onclick="setModalTab('register')" class="font-bold text-[#208ED3] hover:underline ml-1 cursor-pointer">
+            Create an account
+          </button>
+        </div>
+      </form>
+
+      <!-- REGISTER FORM (Join Free) -->
+      <form id="modal-form-register" onsubmit="handleModalRegister(event)" class="hidden space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-[#1E293B] mb-1">Your Name</label>
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-user text-xs"></i></div>
+            <input
+              id="m-r-name"
+              type="text"
+              required
+              placeholder="e.g. Sam Bandit"
+              autocomplete="name"
+              class="flex-1 min-w-0 bg-transparent py-2 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#1E293B] mb-1">Choose Username</label>
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-at text-xs"></i></div>
+            <input
+              id="m-r-email"
+              type="text"
+              required
+              placeholder="username"
+              autocomplete="username"
+              class="flex-1 min-w-0 bg-transparent py-2 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
+            />
+            <span class="px-3 py-2 text-xs font-semibold text-[#64748B] bg-[#F6F6F6] select-none border-l border-[#CBD5E1] shrink-0">
+              @racconmail.eu
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#1E293B] mb-1">Password</label>
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-lock text-xs"></i></div>
+            <input
+              id="m-r-pass"
+              type="password"
+              required
+              minlength="5"
+              placeholder="At least 5 characters..."
+              autocomplete="new-password"
+              class="flex-1 min-w-0 bg-transparent py-2 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
+            />
+            <button
+              type="button"
+              onclick="toggleModalPass('m-r-pass', 'm-r-eye-icon')"
+              class="px-4 text-[#64748B] hover:text-[#1E293B] cursor-pointer focus:outline-none"
+              title="Toggle password visibility"
+            >
+              <i id="m-r-eye-icon" class="fas fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Anti-bot indicator -->
+        <div class="p-2.5 bg-[#EBF5FB] rounded-xl border border-[#208ED3]/20 flex items-center justify-between text-xs">
+          <span class="font-bold text-[#1E293B] flex items-center gap-1.5 text-[11px]">
+            <i class="fas fa-shield-alt text-[#208ED3]"></i> Anti-Bot Verification
+          </span>
+          <span class="text-[10px] font-bold text-[#208ED3] bg-white px-2 py-0.5 rounded-full border border-[#208ED3]/30">
+            ✓ 100% PRIVATE
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          id="m-btn-reg"
+          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-3 transition shadow-md mt-1 touch-target flex items-center justify-center gap-2 cursor-pointer text-white"
+        >
+          <span>Create Free Account</span>
+          <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+        </button>
+
+        <div class="pt-2 text-center text-xs text-[#64748B]">
+          Already have an account? 
+          <button type="button" onclick="setModalTab('login')" class="font-bold text-[#208ED3] hover:underline ml-1 cursor-pointer">
+            Sign In here
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- GOOGLE ADSENSE (Visually hidden - executes and tracks impressions automatically for site monetization) -->
+  <div id="google-adsense-container" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; opacity: 0; pointer-events: none;" aria-hidden="true">
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:1px;height:1px"
+         data-ad-client="ca-pub-4083745907535838"
+         data-ad-slot="auto"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    function openAuthModal(mode) {
+      const modal = document.getElementById('auth-modal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setModalTab(mode || 'login');
+      setTimeout(() => {
+        const inp = mode === 'register' ? document.getElementById('m-r-name') : document.getElementById('m-l-email');
+        if (inp) inp.focus();
+      }, 50);
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('auth-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+      }
+      document.body.style.overflow = '';
+      hideModalError();
+    }
+
+    function setModalTab(tab) {
+      const isLogin = tab === 'login';
+      const tabLogin = document.getElementById('modal-tab-login');
+      const tabReg = document.getElementById('modal-tab-register');
+      const formLogin = document.getElementById('modal-form-login');
+      const formReg = document.getElementById('modal-form-register');
+      
+      if (tabLogin) {
+        tabLogin.className = isLogin
+          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer'
+          : 'flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+      }
+      if (tabReg) {
+        tabReg.className = !isLogin
+          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer'
+          : 'flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+      }
+
+      if (formLogin) formLogin.classList.toggle('hidden', !isLogin);
+      if (formReg) formReg.classList.toggle('hidden', isLogin);
+
+      const heading = document.getElementById('modal-auth-heading');
+      const sub = document.getElementById('modal-auth-sub');
+      if (heading) heading.textContent = isLogin ? 'Sign In to Raccon' : 'Create Free Account';
+      if (sub) sub.textContent = isLogin ? 'Access your clever nocturnal mailbox.' : 'Instant, encrypted mailbox in seconds.';
+      hideModalError();
+    }
+
+    function showModalError(msg) {
+      const box = document.getElementById('modal-error-box');
+      const text = document.getElementById('modal-error-text');
+      if (text) text.textContent = msg;
+      if (box) box.classList.remove('hidden');
+    }
+
+    function hideModalError() {
+      const box = document.getElementById('modal-error-box');
+      if (box) box.classList.add('hidden');
+    }
+
+    function toggleModalPass(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) icon.className = 'fas fa-eye-slash text-xs';
+      } else {
+        input.type = 'password';
+        if (icon) icon.className = 'fas fa-eye text-xs';
+      }
+    }
+
+    async function handleModalLogin(e) {
+      e.preventDefault();
+      hideModalError();
+      const email = document.getElementById('m-l-email').value.trim();
+      const password = document.getElementById('m-l-pass').value;
+      const btn = document.getElementById('m-btn-login');
+
+      if (!email || !password) {
+        showModalError('Please enter both your username/email and password.');
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Signing in...</span> <i class="fas fa-spinner fa-spin text-xs"></i>';
+      }
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+        window.location.href = '/inbox';
+      } catch (err) {
+        showModalError(err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Sign In to Raccon Mail</span> <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>';
+        }
+      }
+    }
+
+    async function handleModalRegister(e) {
+      e.preventDefault();
+      hideModalError();
+      const name = document.getElementById('m-r-name').value.trim();
+      let emailInput = document.getElementById('m-r-email').value.trim().toLowerCase();
+      if (emailInput.includes('@')) {
+        emailInput = emailInput.split('@')[0];
+      }
+      emailInput = emailInput.replace(/[^a-z0-9._-]/g, '');
+      if (!emailInput) {
+        showModalError('Please choose a valid username.');
+        return;
+      }
+      const email = `${emailInput}@racconmail.eu`;
+      const password = document.getElementById('m-r-pass').value;
+      if (password.length < 5) {
+        showModalError('Password must be at least 5 characters long.');
+        return;
+      }
+
+      const btn = document.getElementById('m-btn-reg');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Creating encrypted mailbox...</span> <i class="fas fa-spinner fa-spin text-xs"></i>';
+      }
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, anti_bot_verified: true })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Registration failed');
+        window.location.href = '/inbox';
+      } catch (err) {
+        showModalError(err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Create Free Account</span> <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>';
+        }
+      }
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAuthModal();
+    });
+    const demoMails = [
+      {
+        sender: 'Rocky Raccoon',
+        time: '23:41',
+        subject: 'Midnight snack plans 🍪',
+        body: 'Found the best bakery downtown with fresh warm pastries. Meet at 2am under the clocktower?'
+      },
+      {
+        sender: 'Raccon Team',
+        time: '21:10',
+        subject: 'Welcome to Raccon Mail',
+        body: 'Welcome to your new, clever mailbox! Sealed envelopes, zero trackers, and complete privacy on web and mobile.'
+      },
+      {
+        sender: 'Forest Bank',
+        time: 'Yesterday',
+        subject: 'Your monthly statement',
+        body: 'Your acorns and berries stash report is ready for download. Account balance: 4,820 acorns.'
+      },
+      {
+        sender: 'Luna',
+        time: 'Mon',
+        subject: 'Photos from camping trip',
+        body: 'Here are the snapshots from our nocturnal adventure under the pine trees. See attached postcards!'
+      }
+    ];
+
+    function selectDemoMail(index) {
+      const m = demoMails[index];
+      if (!m) return;
+      document.getElementById('demo-view-subject').textContent = m.subject;
+      document.getElementById('demo-view-meta').innerHTML = `
+        <span class="font-semibold text-[#1E293B]">from ${m.sender}</span>
+        <span>&bull;</span>
+        <span>${m.time}</span>
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+          <i class="fas fa-lock text-[8px]"></i> Encrypted
+        </span>
+      `;
+      document.getElementById('demo-view-body').textContent = m.body;
+      for (let i = 0; i < demoMails.length; i++) {
+        const btn = document.getElementById('demo-mail-' + i);
+        if (btn) {
+          if (i === index) {
+            btn.className = 'w-full p-4 text-left bg-[#EBF5FB] border-l-4 border-[#208ED3] transition cursor-pointer';
+          } else {
+            btn.className = 'w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer';
+          }
+        }
+      }
+    }
+
+    // Interactive Rolling Cookie feedback
+    function spawnCookieCrumbs(container) {
+      if (!container) return;
+      const text = container.querySelector('.cookie-status-text');
+      const phrases = ['Crunch! 😋', 'Stolen by Raccoon! 🦝', 'Fresh baked! ✨', 'Yummy crumb! 🐾', 'Chased & caught! 🍪'];
+      const chosen = phrases[Math.floor(Math.random() * phrases.length)];
+      if (text) {
+        text.textContent = chosen;
+        setTimeout(() => { text.textContent = 'warm & fresh!'; }, 1800);
+      }
+    }
+
+    // Android App Smart Redirect: Never show static landing page inside the installed Android app
+    (async function checkAppRedirect() {
+      const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
+      if (isAndroidApp) {
+        try {
+          const res = await fetch('/api/auth/me');
+          const data = await res.json();
+          if (data.loggedIn && data.user) {
+            window.location.replace('/inbox');
+          } else {
+            window.location.replace('/auth');
+          }
+        } catch (_) {
+          window.location.replace('/auth');
+        }
+      }
+    })();
+
+    // Check auth status for header
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.loggedIn && data.user) {
+          const container = document.getElementById('auth-nav-container');
+          if (container) {
+            container.innerHTML = `
+              <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
+              <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
+              <a class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] px-5 py-2 text-sm font-semibold text-white transition active:scale-95 shadow-sm inline-flex items-center gap-2" href="/inbox">
+                <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
+                <span>Open my inbox</span>
+                <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+              </a>
+            `;
+          }
+        }
+      } catch (_) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

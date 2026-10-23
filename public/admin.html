@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Raccon Mail — System Administration Portal</title>
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4083745907535838" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#0b0f17',
+            foreground: '#f1f5f9',
+            card: '#131922',
+            primary: '#00F2FE',
+            'primary-foreground': '#080c14',
+            secondary: '#94a3b8',
+            muted: '#1a2230',
+            'muted-foreground': '#94a3b8',
+            accent: '#131922',
+            border: 'rgba(255, 255, 255, 0.05)',
+            mask: '#080c14',
+            fur: '#334155',
+            cream: '#131922'
+          },
+          fontFamily: {
+            sans: ['"DM Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="/css/raccoon-mail.css" />
+</head>
+<body class="min-h-screen bg-background text-foreground antialiased flex flex-col justify-between">
+
+  <!-- ADMIN LOGIN VIEW (Shown if not authenticated) -->
+  <div id="admin-login-view" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-3xl bg-card p-8 shadow-2xl border border-border relative overflow-hidden">
+      <div class="stripes-subtle h-2 -mx-8 -mt-8 mb-6"></div>
+      <div class="text-center mb-6">
+        <img src="/raccoon-logo.png" class="h-14 w-14 mx-auto raccoon-anim object-contain mb-2" />
+        <span class="inline-block bg-primary text-primary-foreground text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-2">SYSTEM CONSOLE</span>
+        <h2 class="font-display text-2xl font-bold">Admin Portal</h2>
+        <p class="text-xs text-muted-foreground mt-1">Authorized personnel only.</p>
+      </div>
+
+      <div id="login-error" class="hidden mb-4 p-3 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs font-semibold"></div>
+
+      <form onsubmit="adminApp.handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">Admin Email</label>
+          <input
+            id="admin-email"
+            type="email"
+            required
+            value="admin@racconmail.eu"
+            class="w-full rounded-xl border border-border bg-muted/40 p-3 text-sm outline-none focus:bg-card focus:border-primary transition"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">Admin Password</label>
+          <input
+            id="admin-pass"
+            type="password"
+            required
+            placeholder="••••••••••••"
+            class="w-full rounded-xl border border-border bg-muted/40 p-3 text-sm outline-none focus:bg-card focus:border-primary transition"
+          />
+        </div>
+        <button
+          type="submit"
+          id="btn-admin-login"
+          class="w-full rounded-full bg-primary hover:bg-black text-primary-foreground font-semibold text-sm py-3.5 transition shadow-sm"
+        >
+          Authenticate &amp; Open Console
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-border-light text-center">
+        <a href="/" class="text-xs text-muted-foreground hover:text-foreground font-medium">&larr; Return to Raccon Mail</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD CONSOLE (Shown after authentication) -->
+  <div id="admin-console-view" class="hidden min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <header class="w-full border-b border-border bg-card px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-1.5 sm:gap-2 font-display text-base sm:text-lg font-bold">
+          <img src="/raccoon-logo.png" class="h-7 w-7 sm:h-8 sm:w-8 raccoon-anim object-contain" />
+          <span>Raccon Admin</span>
+        </div>
+        <span class="rounded-full bg-amber-100 border border-amber-300 text-amber-900 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold hidden sm:inline-block">
+          👑 System Master
+        </span>
+      </div>
+
+      <div class="flex items-center gap-1.5 sm:gap-2.5 text-xs font-semibold">
+        <a href="/inbox" class="rounded-full border border-border bg-card px-2.5 sm:px-3.5 py-1.5 hover:bg-muted transition flex items-center gap-1.5" title="Go to Mailbox">
+          <i data-lucide="mail" class="h-3.5 w-3.5"></i>
+          <span class="hidden sm:inline">Mailbox</span>
+        </a>
+        <button onclick="adminApp.logout()" class="rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-2.5 sm:px-3.5 py-1.5 transition flex items-center gap-1.5 cursor-pointer" title="Logout">
+          <i data-lucide="log-out" class="h-3.5 w-3.5"></i>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Subnav Tabs (Compact & Touch-Friendly Horizontal Scroll) -->
+    <nav class="bg-muted/60 border-b border-border px-3 sm:px-6 flex items-center gap-1.5 overflow-x-auto text-xs font-bold py-1.5 no-scrollbar">
+      <button onclick="adminApp.setTab('overview')" id="tab-overview" class="px-3.5 py-1.5 rounded-full bg-primary text-primary-foreground transition shrink-0 cursor-pointer">
+        📊 Overview
+      </button>
+      <button onclick="adminApp.setTab('users')" id="tab-users" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+        👥 Users
+      </button>
+      <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+        📢 Broadcast
+      </button>
+      <button onclick="adminApp.setTab('messages')" id="tab-messages" class="px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">
+        📨 Mail Logs
+      </button>
+    </nav>
+
+    <!-- MAIN BODY -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+
+      <!-- 1. OVERVIEW & STATS -->
+      <section id="view-overview" class="space-y-4 sm:space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-3 sm:p-5 shadow-xs">
+            <span class="text-[11px] sm:text-xs font-bold text-muted-foreground">Total Users</span>
+            <p id="stat-users" class="font-display text-xl sm:text-3xl font-bold mt-1 sm:mt-2">--</p>
+            <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold mt-0.5 inline-block">Active Mailboxes</span>
+          </div>
+          <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-3 sm:p-5 shadow-xs">
+            <span class="text-[11px] sm:text-xs font-bold text-muted-foreground">Total Messages</span>
+            <p id="stat-messages" class="font-display text-xl sm:text-3xl font-bold mt-1 sm:mt-2">--</p>
+            <span class="text-[10px] sm:text-[11px] text-blue-600 font-semibold mt-0.5 inline-block">Dispatched</span>
+          </div>
+          <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-3 sm:p-5 shadow-xs">
+            <span class="text-[11px] sm:text-xs font-bold text-muted-foreground">Attachments</span>
+            <p id="stat-attachments" class="font-display text-xl sm:text-3xl font-bold mt-1 sm:mt-2">--</p>
+            <span id="stat-att-size" class="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5 inline-block truncate">-- KB</span>
+          </div>
+          <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-3 sm:p-5 shadow-xs">
+            <span class="text-[11px] sm:text-xs font-bold text-muted-foreground">Database</span>
+            <p id="stat-db-size" class="font-display text-xl sm:text-3xl font-bold mt-1 sm:mt-2">--</p>
+            <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold mt-0.5 inline-block">SQLite WAL: Healthy</span>
+          </div>
+        </div>
+
+        <!-- System Quick Actions -->
+        <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs">
+          <h3 class="font-display text-base sm:text-lg font-bold mb-3">Quick Administrator Actions</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+            <button onclick="adminApp.setTab('broadcast')" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-border bg-muted/40 hover:bg-muted text-left transition cursor-pointer">
+              <span class="font-bold text-xs sm:text-sm block">📢 Send Announcement</span>
+              <span class="text-[11px] text-muted-foreground mt-0.5 block">Broadcast to every registered user at once.</span>
+            </button>
+            <button onclick="adminApp.openAddUserModal()" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-border bg-muted/40 hover:bg-muted text-left transition cursor-pointer">
+              <span class="font-bold text-xs sm:text-sm block">👤 Create New Mailbox</span>
+              <span class="text-[11px] text-muted-foreground mt-0.5 block">Manually create account with custom credentials.</span>
+            </button>
+            <button onclick="adminApp.setTab('users')" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-border bg-muted/40 hover:bg-muted text-left transition cursor-pointer">
+              <span class="font-bold text-xs sm:text-sm block">🔑 Manage Passwords</span>
+              <span class="text-[11px] text-muted-foreground mt-0.5 block">Reset passwords or jump into any user's mailbox.</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. USER MANAGEMENT (Responsive Hybrid: Table for Desktop, Cards for Mobile) -->
+      <section id="view-users" class="hidden space-y-3 sm:space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div>
+            <h3 class="font-display text-lg sm:text-xl font-bold">Registered Mailboxes</h3>
+            <p class="text-[11px] sm:text-xs text-muted-foreground">Manage users, reset passwords, or login directly as any user.</p>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input
+              type="text"
+              id="user-search-input"
+              placeholder="Search users..."
+              oninput="adminApp.filterUsers(this.value)"
+              class="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs outline-none w-full sm:w-56"
+            />
+            <button onclick="adminApp.openAddUserModal()" class="rounded-full bg-primary hover:bg-black text-primary-foreground font-semibold text-xs px-3.5 py-1.5 transition shadow-xs flex items-center gap-1.5 shrink-0 cursor-pointer">
+              <i data-lucide="user-plus" class="h-3.5 w-3.5"></i>
+              <span class="hidden sm:inline">Add User</span>
+              <span class="sm:hidden">Add</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="rounded-2xl sm:rounded-3xl border border-border bg-card overflow-hidden shadow-xs">
+          <!-- Desktop Table -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-muted/70 text-muted-foreground border-b border-border uppercase tracking-wider font-bold text-[10px]">
+                <tr>
+                  <th class="p-3.5">User</th>
+                  <th class="p-3.5">Email</th>
+                  <th class="p-3.5">Role</th>
+                  <th class="p-3.5">Emails</th>
+                  <th class="p-3.5">Registered</th>
+                  <th class="p-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body" class="divide-y divide-border-light">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards List -->
+          <div id="users-mobile-list" class="md:hidden divide-y divide-border-light p-2 space-y-2">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. GLOBAL BROADCAST -->
+      <section id="view-broadcast" class="hidden space-y-3 sm:space-y-4">
+        <div class="rounded-2xl sm:rounded-3xl border border-border bg-card p-4 sm:p-6 shadow-xs max-w-2xl">
+          <div class="flex items-center gap-2 mb-1">
+            <i data-lucide="megaphone" class="h-5 w-5 text-amber-600"></i>
+            <h3 class="font-display text-lg sm:text-xl font-bold">Broadcast Announcement</h3>
+          </div>
+          <p class="text-[11px] sm:text-xs text-muted-foreground mb-4 sm:mb-6">This message will be delivered into the inbox of every registered user.</p>
+
+          <form onsubmit="adminApp.sendBroadcast(event)" class="space-y-3 sm:space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-muted-foreground mb-1">Subject</label>
+              <input
+                id="broad-subject"
+                type="text"
+                required
+                value="Important Update from Raccon Mail 📢"
+                class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none focus:bg-card focus:border-primary font-bold"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-muted-foreground mb-1">Message Body</label>
+              <textarea
+                id="broad-body"
+                rows="5"
+                required
+                placeholder="Type your announcement to all users..."
+                class="w-full rounded-xl border border-border bg-muted/40 p-2.5 sm:p-3 text-xs outline-none focus:bg-card focus:border-primary leading-relaxed"
+              ></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                id="btn-broadcast"
+                class="rounded-full bg-primary hover:bg-black text-primary-foreground font-semibold text-xs px-5 py-2.5 transition shadow-xs flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              >
+                <i data-lucide="send" class="h-3.5 w-3.5"></i>
+                <span>Send to All Users</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- 4. RECENT MAIL TRAFFIC (Responsive Hybrid: Table for Desktop, Cards for Mobile) -->
+      <section id="view-messages" class="hidden space-y-3 sm:space-y-4">
+        <div>
+          <h3 class="font-display text-lg sm:text-xl font-bold">Recent System Mail Traffic</h3>
+          <p class="text-[11px] sm:text-xs text-muted-foreground">Audit message logs and remove spam if necessary.</p>
+        </div>
+
+        <div class="rounded-2xl sm:rounded-3xl border border-border bg-card overflow-hidden shadow-xs">
+          <!-- Desktop Table -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-muted/70 text-muted-foreground border-b border-border uppercase tracking-wider font-bold text-[10px]">
+                <tr>
+                  <th class="p-3.5">Sender</th>
+                  <th class="p-3.5">Recipient</th>
+                  <th class="p-3.5">Subject</th>
+                  <th class="p-3.5">Date</th>
+                  <th class="p-3.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="messages-table-body" class="divide-y divide-border-light">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards List -->
+          <div id="messages-mobile-list" class="md:hidden divide-y divide-border-light p-2 space-y-2">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD USER -->
+  <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-2xl border border-border">
+      <h3 class="font-display text-lg font-bold">Create User Mailbox</h3>
+      <form onsubmit="adminApp.createUser(event)" class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">Name</label>
+          <input id="new-user-name" type="text" required placeholder="e.g. Luna Nightfall" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">Email</label>
+          <input id="new-user-email" type="email" required placeholder="luna@racconmail.eu" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">Initial Password</label>
+          <input id="new-user-pass" type="text" required value="Raccon2026!" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none font-mono" />
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="new-user-is-admin" class="rounded h-4 w-4" />
+          <label for="new-user-is-admin" class="text-xs font-semibold">Grant Administrator Role</label>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-border">
+          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted">Cancel</button>
+          <button type="submit" class="rounded-full bg-primary text-primary-foreground font-semibold text-xs px-5 py-2">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RESET PASSWORD -->
+  <div id="modal-reset-pass" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-2xl border border-border">
+      <h3 class="font-display text-lg font-bold">Reset User Password</h3>
+      <p id="reset-pass-target-email" class="text-xs text-muted-foreground mt-1">...</p>
+      <form onsubmit="adminApp.submitPasswordReset(event)" class="mt-4 space-y-3">
+        <input type="hidden" id="reset-pass-user-id" />
+        <div>
+          <label class="block text-xs font-bold text-muted-foreground mb-1">New Password</label>
+          <input id="reset-new-pass" type="text" required placeholder="Enter new password" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none font-mono" />
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-border">
+          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted">Cancel</button>
+          <button type="submit" class="rounded-full bg-primary text-primary-foreground font-semibold text-xs px-5 py-2">Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="admin-toast" class="hidden fixed bottom-6 right-6 z-50 rounded-2xl bg-primary text-primary-foreground px-5 py-3 text-xs font-semibold shadow-2xl"></div>
+
+  <!-- Admin Application Logic -->
+  <script>
+    const adminApp = {
+      users: [],
+      currentTab: 'overview',
+
+      showToast(msg) {
+        const t = document.getElementById('admin-toast');
+        t.textContent = msg;
+        t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), 3500);
+      },
+
+      async init() {
+        try {
+          const res = await fetch('/api/auth/me');
+          const data = await res.json();
+          if (data.loggedIn && data.isAdmin) {
+            document.getElementById('admin-login-view').classList.add('hidden');
+            document.getElementById('admin-console-view').classList.remove('hidden');
+            this.loadStats();
+            this.loadUsers();
+            this.loadMessages();
+          } else {
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-console-view').classList.add('hidden');
+          }
+        } catch (_) {
+          document.getElementById('admin-login-view').classList.remove('hidden');
+        }
+        lucide.createIcons();
+      },
+
+      async handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('admin-email').value.trim();
+        const password = document.getElementById('admin-pass').value;
+        const errBox = document.getElementById('login-error');
+        errBox.classList.add('hidden');
+
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Authentication failed');
+
+          this.init();
+        } catch (err) {
+          errBox.textContent = err.message;
+          errBox.classList.remove('hidden');
+        }
+      },
+
+      async logout() {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        window.location.reload();
+      },
+
+      setTab(tab) {
+        this.currentTab = tab;
+        ['overview', 'users', 'broadcast', 'messages'].forEach(t => {
+          const btn = document.getElementById(`tab-${t}`);
+          const view = document.getElementById(`view-${t}`);
+          if (t === tab) {
+            btn.className = 'px-3.5 py-1.5 rounded-full bg-primary text-primary-foreground transition shrink-0 cursor-pointer';
+            view.classList.remove('hidden');
+          } else {
+            btn.className = 'px-3.5 py-1.5 rounded-full text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer';
+            view.classList.add('hidden');
+          }
+        });
+        lucide.createIcons();
+      },
+
+      async loadStats() {
+        try {
+          const res = await fetch('/api/admin/stats');
+          const s = await res.json();
+          document.getElementById('stat-users').textContent = s.users_count;
+          document.getElementById('stat-messages').textContent = s.messages_count;
+          document.getElementById('stat-attachments').textContent = `${s.attachments_count} files`;
+          document.getElementById('stat-att-size').textContent = `${(s.attachments_size / 1024).toFixed(1)} KB stored`;
+          document.getElementById('stat-db-size').textContent = `${(s.db_size / 1024).toFixed(1)} KB`;
+        } catch (err) {
+          console.error(err);
+        }
+      },
+
+      async loadUsers() {
+        try {
+          const res = await fetch('/api/admin/users');
+          const data = await res.json();
+          this.users = data.users || [];
+          this.renderUsers(this.users);
+        } catch (err) {
+          console.error(err);
+        }
+      },
+
+      escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      },
+
+      renderUsers(list) {
+        const tbody = document.getElementById('users-table-body');
+        const mobList = document.getElementById('users-mobile-list');
+
+        if (list.length === 0) {
+          if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-muted-foreground">No users found.</td></tr>';
+          if (mobList) mobList.innerHTML = '<p class="p-6 text-center text-muted-foreground text-xs">No users found.</p>';
+          return;
+        }
+
+        // Desktop Table
+        if (tbody) {
+          tbody.innerHTML = list.map(u => `
+            <tr class="hover:bg-muted/40 transition">
+              <td class="p-3.5 font-bold flex items-center gap-2">
+                <img src="/raccoon-logo.png" class="h-6 w-6 object-cover aspect-square rounded-full border border-border shrink-0" />
+                <span class="truncate max-w-[130px]">${this.escapeHtml(u.name)}</span>
+              </td>
+              <td class="p-3.5 font-mono text-[11px] text-muted-foreground">${this.escapeHtml(u.email)}</td>
+              <td class="p-3.5">
+                ${u.is_admin ? '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold text-[10px]">ADMIN</span>' : '<span class="bg-muted text-muted-foreground px-2 py-0.5 rounded-full text-[10px]">User</span>'}
+              </td>
+              <td class="p-3.5 font-bold">${u.message_count || 0}</td>
+              <td class="p-3.5 text-muted-foreground text-[11px]">${new Date(u.created_at).toLocaleDateString()}</td>
+              <td class="p-3.5 text-right space-x-1">
+                <button onclick="adminApp.impersonateUser('${u.id}')" title="Log in as user" class="p-1.5 rounded-lg bg-muted hover:bg-primary hover:text-white transition cursor-pointer">
+                  <i data-lucide="eye" class="h-3.5 w-3.5"></i>
+                </button>
+                <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Reset Password" class="p-1.5 rounded-lg bg-muted hover:bg-primary hover:text-white transition cursor-pointer">
+                  <i data-lucide="key" class="h-3.5 w-3.5"></i>
+                </button>
+                ${!u.is_admin ? `
+                  <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Delete Account" class="p-1.5 rounded-lg bg-muted hover:bg-red-600 hover:text-white transition cursor-pointer">
+                    <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                  </button>
+                ` : ''}
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        // Mobile Cards List (Compact, touch-friendly, no horizontal clipping)
+        if (mobList) {
+          mobList.innerHTML = list.map(u => `
+            <div class="rounded-2xl border border-border bg-card p-3 shadow-xs space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 truncate">
+                  <img src="/raccoon-logo.png" class="h-8 w-8 rounded-full object-cover aspect-square border border-border shrink-0" />
+                  <div class="truncate">
+                    <div class="font-bold text-xs truncate flex items-center gap-1.5">
+                      <span>${this.escapeHtml(u.name)}</span>
+                      ${u.is_admin ? '<span class="bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold text-[9px]">ADMIN</span>' : ''}
+                    </div>
+                    <div class="text-[11px] font-mono text-muted-foreground truncate">${this.escapeHtml(u.email)}</div>
+                  </div>
+                </div>
+
+                <!-- 1-Tap Action Buttons -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <button onclick="adminApp.impersonateUser('${u.id}')" title="Log in as user" class="p-2 rounded-xl bg-muted/80 hover:bg-primary hover:text-white transition cursor-pointer" aria-label="Login as user">
+                    <i data-lucide="eye" class="h-4 w-4"></i>
+                  </button>
+                  <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Reset Password" class="p-2 rounded-xl bg-muted/80 hover:bg-primary hover:text-white transition cursor-pointer" aria-label="Reset Password">
+                    <i data-lucide="key" class="h-4 w-4"></i>
+                  </button>
+                  ${!u.is_admin ? `
+                    <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Delete Account" class="p-2 rounded-xl bg-muted/80 hover:bg-red-600 hover:text-white transition cursor-pointer" aria-label="Delete">
+                      <i data-lucide="trash-2" class="h-4 w-4 text-red-600"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-[11px] text-muted-foreground pt-1.5 border-t border-border-light">
+                <span>Emails: <strong class="text-foreground font-semibold">${u.message_count || 0}</strong></span>
+                <span>Joined: ${new Date(u.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        lucide.createIcons();
+      },
+
+      filterUsers(q) {
+        const query = q.toLowerCase();
+        const filtered = this.users.filter(u => u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query));
+        this.renderUsers(filtered);
+      },
+
+      openAddUserModal() {
+        document.getElementById('modal-add-user').classList.remove('hidden');
+      },
+
+      openResetPassModal(id, email) {
+        document.getElementById('reset-pass-user-id').value = id;
+        document.getElementById('reset-pass-target-email').textContent = `Resetting password for: ${email}`;
+        document.getElementById('reset-new-pass').value = '';
+        document.getElementById('modal-reset-pass').classList.remove('hidden');
+      },
+
+      closeModals() {
+        document.getElementById('modal-add-user').classList.add('hidden');
+        document.getElementById('modal-reset-pass').classList.add('hidden');
+      },
+
+      async createUser(e) {
+        e.preventDefault();
+        const name = document.getElementById('new-user-name').value.trim();
+        const email = document.getElementById('new-user-email').value.trim();
+        const password = document.getElementById('new-user-pass').value;
+        const is_admin = document.getElementById('new-user-is-admin').checked ? 1 : 0;
+
+        try {
+          const res = await fetch('/api/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, is_admin })
+          });
+          const d = await res.json();
+          if (!res.ok) throw new Error(d.error || 'Failed');
+          this.closeModals();
+          this.loadUsers();
+          this.loadStats();
+          this.showToast(`User ${email} created successfully`);
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      async submitPasswordReset(e) {
+        e.preventDefault();
+        const id = document.getElementById('reset-pass-user-id').value;
+        const password = document.getElementById('reset-new-pass').value;
+
+        try {
+          const res = await fetch(`/api/admin/users/${id}/password`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+          });
+          const d = await res.json();
+          if (!res.ok) throw new Error(d.error || 'Failed');
+          this.closeModals();
+          this.showToast('Password updated successfully');
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      async deleteUser(id, email) {
+        if (!confirm(`Permanently delete ${email} and all their emails?`)) return;
+        try {
+          const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Failed to delete');
+          this.loadUsers();
+          this.loadStats();
+          this.showToast(`User ${email} deleted`);
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      async impersonateUser(id) {
+        try {
+          const res = await fetch(`/api/admin/users/${id}/impersonate`, { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            window.location.href = '/inbox';
+          }
+        } catch (err) {
+          alert('Failed to switch into user mailbox: ' + err.message);
+        }
+      },
+
+      async sendBroadcast(e) {
+        e.preventDefault();
+        const subject = document.getElementById('broad-subject').value.trim();
+        const body = document.getElementById('broad-body').value.trim();
+        const btn = document.getElementById('btn-broadcast');
+
+        btn.disabled = true;
+        btn.textContent = 'Broadcasting...';
+
+        try {
+          const res = await fetch('/api/admin/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subject, body })
+          });
+          const d = await res.json();
+          if (!res.ok) throw new Error(d.error || 'Broadcast failed');
+          this.showToast(`Delivered announcement to ${d.broadcast_count} mailboxes!`);
+          document.getElementById('broad-body').value = '';
+          this.loadStats();
+        } catch (err) {
+          alert('Error: ' + err.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Send to All Users';
+        }
+      },
+
+      async loadMessages() {
+        try {
+          const res = await fetch('/api/admin/messages');
+          const data = await res.json();
+          const tbody = document.getElementById('messages-table-body');
+          const mobList = document.getElementById('messages-mobile-list');
+          const list = data.messages || [];
+
+          if (list.length === 0) {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-muted-foreground">No traffic logs found.</td></tr>';
+            if (mobList) mobList.innerHTML = '<p class="p-6 text-center text-muted-foreground text-xs">No traffic logs found.</p>';
+            return;
+          }
+
+          // Desktop Table
+          if (tbody) {
+            tbody.innerHTML = list.map(m => `
+              <tr class="hover:bg-muted/40 transition">
+                <td class="p-3.5 font-bold truncate max-w-[140px]">${this.escapeHtml(m.sender_name || m.sender_email)}</td>
+                <td class="p-3.5 font-mono text-[11px] truncate max-w-[140px] text-muted-foreground">${this.escapeHtml(m.recipient_email)}</td>
+                <td class="p-3.5 font-semibold truncate max-w-[180px]">${this.escapeHtml(m.subject || '(no subject)')}</td>
+                <td class="p-3.5 text-muted-foreground text-[11px]">${new Date(m.created_at).toLocaleString()}</td>
+                <td class="p-3.5 text-right">
+                  <button onclick="adminApp.deleteMessage('${m.id}')" title="Delete message" class="p-1.5 rounded-lg bg-muted hover:bg-red-600 hover:text-white transition cursor-pointer">
+                    <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                  </button>
+                </td>
+              </tr>
+            `).join('');
+          }
+
+          // Mobile Cards List
+          if (mobList) {
+            mobList.innerHTML = list.map(m => `
+              <div class="rounded-2xl border border-border bg-card p-3 shadow-xs space-y-2">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div class="font-bold text-xs truncate">${this.escapeHtml(m.subject || '(no subject)')}</div>
+                    <div class="text-[11px] text-muted-foreground truncate mt-0.5">
+                      <span class="font-medium text-foreground">${this.escapeHtml(m.sender_name || 'Sender')}</span> &rarr; ${this.escapeHtml(m.recipient_email)}
+                    </div>
+                  </div>
+                  <button onclick="adminApp.deleteMessage('${m.id}')" title="Delete message" class="p-2 rounded-xl bg-muted/80 hover:bg-red-600 hover:text-white transition shrink-0 cursor-pointer" aria-label="Delete">
+                    <i data-lucide="trash-2" class="h-4 w-4 text-red-600"></i>
+                  </button>
+                </div>
+                <div class="text-[10px] text-muted-foreground text-right pt-1 border-t border-border-light">
+                  ${new Date(m.created_at).toLocaleString()}
+                </div>
+              </div>
+            `).join('');
+          }
+
+          lucide.createIcons();
+        } catch (err) {
+          console.error(err);
+        }
+      },
+
+      async deleteMessage(id) {
+        if (!confirm('Delete this message from system?')) return;
+        try {
+          await fetch(`/api/admin/messages/${id}`, { method: 'DELETE' });
+          this.loadMessages();
+          this.loadStats();
+          this.showToast('Message deleted');
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      adminApp.init();
+    });
+  </script>
+</body>
+</html>

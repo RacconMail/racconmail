@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Raccon Mail</title>
+  <meta name="description" content="Official Privacy Policy for Raccon Mail. Zero surveillance, zero ad tracking, client-side encryption, and strict GDPR compliance.">
+  <link rel="icon" type="image/png" href="/raccoon-logo.png" />
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/css/raccoon-mail.css" />
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; background-color: #EFEDE9; color: #1E293B; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- Header Navbar -->
+  <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-xs">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <a href="/" class="flex items-center gap-2.5 font-display text-xl font-bold text-[#1E293B] hover:opacity-95 transition">
+        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-9 w-9 object-contain shrink-0" />
+        <span class="tracking-tight text-lg sm:text-xl font-bold">Raccon Mail</span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a href="/" class="text-xs sm:text-sm font-semibold text-[#64748B] hover:text-[#208ED3] transition px-3 py-1.5 flex items-center gap-1.5">
+          <i class="fas fa-arrow-left text-xs"></i>
+          <span>Back to Home</span>
+        </a>
+        <a href="/auth?tab=login" class="rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2 text-xs sm:text-sm font-semibold transition shadow-sm">
+          Sign In
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Legal Content Container -->
+  <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-12 sm:py-16">
+    <div class="bg-white rounded-3xl border border-[#CBD5E1] p-6 sm:p-12 shadow-sm space-y-8">
+      
+      <!-- Document Header -->
+      <div class="border-b border-[#E2E8F0] pb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-3">
+          <i class="fas fa-shield-halved text-xs"></i>
+          <span>ZERO-KNOWLEDGE PRIVACY CHARTER &bull; LAST REVISED OCTOBER 2026</span>
+        </div>
+        <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-[#1E293B]">Privacy Policy</h1>
+        <p class="text-sm sm:text-base text-[#64748B] mt-2">
+          How we protect your identity, safeguard your data, and guarantee zero surveillance on racconmail.eu.
+        </p>
+      </div>
+
+      <!-- Section 1: Core Philosophy -->
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">1</span>
+          <span>Our Data Minimization Philosophy</span>
+        </h2>
+        <p class="text-sm text-[#475569] leading-relaxed">
+          The best way to protect your personal data is simply not to collect it. Raccon Mail requires only an email username and password to create an account. We do not require your legal name, physical address, telephone number, or government identification.
+        </p>
+      </section>
+
+      <!-- Section 2: What We Store -->
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">2</span>
+          <span>Information We Store</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <h3 class="font-bold text-sm text-[#1E293B] flex items-center gap-2 mb-1">
+              <i class="fas fa-key text-xs text-[#208ED3]"></i> Credentials
+            </h3>
+            <p class="text-xs text-[#64748B] leading-relaxed">
+              Your chosen username and securely salted one-way cryptographic hash of your password. We never see or store plaintext passwords.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
+            <h3 class="font-bold text-sm text-[#1E293B] flex items-center gap-2 mb-1">
+              <i class="fas fa-envelope text-xs text-emerald-600"></i> Encrypted Mailbox
+            </h3>
+            <p class="text-xs text-[#64748B] leading-relaxed">
+              Inbound and outbound messages, drafts, and attachments delivered to or sent from your account, secured in isolated member stores.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Zero Telemetry & Tracking -->
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">3</span>
+          <span>Zero Third-Party Telemetry &amp; No Ads Profiling</span>
+        </h2>
+        <p class="text-sm text-[#475569] leading-relaxed">
+          Unlike legacy advertising-driven email providers, Raccon Mail does NOT scan the text of your emails to build marketing profiles, serve behavioral target ads, or sell audience segments to data brokers. We run zero third-party behavioral trackers across our mailbox applications.
+        </p>
+      </section>
+
+      <!-- Section 4: Cookies & Storage -->
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">4</span>
+          <span>Cookies &amp; Local Storage</span>
+        </h2>
+        <p class="text-sm text-[#475569] leading-relaxed">
+          We use strictly necessary first-party session cookies and browser <code class="bg-[#F1F5F9] px-2 py-0.5 rounded text-xs text-[#208ED3] font-mono">localStorage</code> exclusively for:
+        </p>
+        <ul class="list-disc pl-6 space-y-1.5 text-sm text-[#475569]">
+          <li>Maintaining your secure logged-in authentication session.</li>
+          <li>Remembering your visual interface preference (Harmony Light, Harmony Dark, Midnight Green).</li>
+          <li>Offline caching of your postcard drafts to prevent work loss on flaky networks.</li>
+        </ul>
+      </section>
+
+      <!-- Section 5: GDPR Rights & Deletion -->
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">5</span>
+          <span>GDPR Rights &amp; Permanent Erasure</span>
+        </h2>
+        <p class="text-sm text-[#475569] leading-relaxed">
+          In full accordance with European General Data Protection Regulation (GDPR) and Swiss data privacy legislation, you have the absolute right to inspect, export, or permanently erase your account and all associated messages at any moment. No retention period, no hurdles.
+        </p>
+      </section>
+
+      <!-- Section 6: Security Disclosures -->
+      <section class="space-y-3 border-t border-[#E2E8F0] pt-6">
+        <h2 class="text-xl font-bold text-[#1E293B] flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">6</span>
+          <span>Privacy Officer &amp; Security Contact</span>
+        </h2>
+        <p class="text-sm text-[#475569] leading-relaxed">
+          For any privacy questions, data export inquiries, or responsible security disclosures:
+        </p>
+        <div class="mt-3 p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center font-bold">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-[#1E293B]">Raccon Mail Privacy Officer</p>
+              <a href="mailto:support@racconmail.eu" class="text-xs text-[#208ED3] font-mono hover:underline">support@racconmail.eu</a>
+            </div>
+          </div>
+          <a href="mailto:support@racconmail.eu" class="rounded-full bg-emerald-600 text-white px-4 py-2 text-xs font-semibold hover:bg-emerald-700 transition">
+            Contact Privacy Team
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Clean Footer -->
+  <footer class="w-full border-t border-[#E2E8F0] bg-white py-6 text-center text-xs text-[#64748B]">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <img src="/raccoon-logo.png" alt="Raccon" class="h-5 w-5 object-contain" />
+        <span>&copy; 2026 Raccon Mail. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/legal/terms" class="hover:text-[#208ED3] transition">Terms of Service</a>
+        <a href="/legal/privacy" class="text-emerald-600 font-bold">Privacy Policy</a>
+        <a href="https://github.com/racconmail/racconmail" target="_blank" class="hover:text-[#208ED3] transition">Open Source</a>
+        <a href="mailto:support@racconmail.eu" class="hover:text-[#208ED3] transition">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,3647 @@
+/**
+ * Raccon Mail — Fully Functional Mail Client
+ * Matches Raccoon Postcard aesthetic + Full Raccon Mail functional capabilities
+ */
+
+const app = {
+  // State
+  currentUser: null,
+  accounts: [],
+  folders: { standard: {}, custom: [] },
+  currentFolder: 'Inbox',
+  currentFilter: 'all',
+  currentSort: 'date_desc',
+  searchQuery: '',
+  messages: [],
+  selectedMessage: null,
+  checkedIds: new Set(),
+  contacts: [],
+  activeView: 'messages', // 'messages' | 'photos_files' | 'contacts'
+  composeFiles: [],
+  draftSaveTimer: null,
+  currentDraftId: null,
+
+  // Audio chime
+  playChime() {
+    try {
+      // Gentle web audio synthesized postal chime
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880.00, ctx.currentTime + 0.15); // A5
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.45);
+    } catch (_) {}
+  },
+
+  // Initialize
+  async init() {
+    // Check authentication: do not allow unauthenticated visitors into the mailbox
+    try {
+      const meRes = await fetch('/api/auth/me');
+      const meData = await meRes.json();
+      if (!meData.loggedIn || !meData.user) {
+        window.location.href = '/auth?mode=register';
+        return;
+      }
+    } catch (_) {
+      window.location.href = '/auth?mode=register';
+      return;
+    }
+
+    try { await this.fetchUser(); } catch (e) { console.error('fetchUser error:', e); }
+    try { await this.fetchAccounts(); } catch (e) { console.error('fetchAccounts error:', e); }
+    try { await this.fetchFolders(); } catch (e) { console.error('fetchFolders error:', e); }
+    try { await this.fetchContacts(); } catch (e) { console.error('fetchContacts error:', e); }
+    try { await this.loadMessages(); } catch (e) { console.error('loadMessages error:', e); }
+
+    // Handle URL parameters (e.g. ?compose=1 or ?reply_to=...)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('compose') === '1' || params.get('reply_to') || params.get('to')) {
+      this.openCompose({
+        to: params.get('reply_to') || params.get('to') || '',
+        subject: params.get('subject') || '',
+        body: params.get('body') || ''
+      });
+    }
+
+    try { this.setupSSE(); } catch (_) {}
+    try { this.setupKeyboardShortcuts(); } catch (_) {}
+    try { this.startMailPolling(); } catch (_) {}
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  startMailPolling() {
+    if (this.mailPollInterval) clearInterval(this.mailPollInterval);
+    this.mailPollInterval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/messages/sync');
+        const data = await res.json();
+        if (data && data.synced > 0) {
+          await this.fetchFolders();
+          const f = (this.currentFolder || '').toLowerCase();
+          if (f === 'inbox' || f === 'unread') {
+            await this.loadMessages();
+          }
+          this.playNotificationSound();
+          this.showToast(`🐾 Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
+        }
+      } catch (_) {}
+    }, 15000);
+  },
+
+  // Keyboard shortcuts
+  setupKeyboardShortcuts() {
+    document.addEventListener('click', (e) => {
+      const searchContainer = document.getElementById('global-search-container');
+      const dropdown = document.getElementById('search-suggestions-dropdown');
+      if (dropdown && !searchContainer?.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+        if (e.key === 'Escape') {
+          document.getElementById('contact-suggestions')?.classList.add('hidden');
+          document.getElementById('search-suggestions-dropdown')?.classList.add('hidden');
+        }
+        return;
+      }
+      if (e.key === '/') {
+        e.preventDefault();
+        const searchInput = document.getElementById('global-search');
+        if (searchInput) searchInput.focus();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        this.openCompose();
+      } else if (e.key === 'Escape') {
+        this.closeAllModals();
+      }
+    });
+  },
+
+  closeAllModals() {
+    document.getElementById('account-dropdown')?.classList.add('hidden');
+    document.getElementById('new-folder-modal')?.classList.add('hidden');
+    document.getElementById('contacts-modal')?.classList.add('hidden');
+    document.getElementById('contact-form-modal')?.classList.add('hidden');
+    document.getElementById('settings-modal')?.classList.add('hidden');
+    document.getElementById('postcard-print-modal')?.classList.add('hidden');
+    document.getElementById('privacy-modal')?.classList.add('hidden');
+    document.getElementById('news-modal')?.classList.add('hidden');
+    document.getElementById('stories-modal')?.classList.add('hidden');
+  },
+
+  openPrivacyModal() {
+    this.closeAllModals();
+    document.getElementById('privacy-modal')?.classList.remove('hidden');
+  },
+
+  closePrivacyModal() {
+    document.getElementById('privacy-modal')?.classList.add('hidden');
+  },
+
+  openNewsModal() {
+    this.closeAllModals();
+    this.renderInboxNews();
+    document.getElementById('news-modal')?.classList.remove('hidden');
+    lucide.createIcons();
+  },
+
+  closeNewsModal() {
+    document.getElementById('news-modal')?.classList.add('hidden');
+  },
+
+  renderInboxNews() {
+    const grid = document.getElementById('inbox-news-grid');
+    if (!grid) return;
+    const sections = [
+      {
+        name: 'Tech', icon: '💻', tag: 'AI & Cyber',
+        items: [
+          { title: "Next-Gen Stealth Chips Deliver 10x On-Device Encryption", time: "Just now", desc: "Hardware isolation prevents memory scraping & data harvesting." },
+          { title: "Open-Source AI Models Challenge Big Tech Monopolies", time: "14m ago", desc: "Decentralized models put full control back in developers' hands." },
+          { title: "Quantum-Resistant Email Protocols Adopted", time: "28m ago", desc: "Postcard networks transition to lattice-based post-quantum cryptography." }
+        ]
+      },
+      {
+        name: 'Sport', icon: '⚽', tag: 'Arena',
+        items: [
+          { title: "Champions League Night Clashes Deliver Dramatic Late Winners", time: "3m ago", desc: "Extra-time heroics seal quarterfinal spots under stadium lights." },
+          { title: "Global Marathon Records Shattered in Historic Night Race", time: "18m ago", desc: "Crisp cool 12°C nocturnal air fuels historic distance times." },
+          { title: "Midnight Street Basketball Tournaments Surge", time: "42m ago", desc: "Local city courts light up with intense 3-on-3 showdowns." }
+        ]
+      },
+      {
+        name: 'Games', icon: '🎮', tag: 'Esports',
+        items: [
+          { title: "Nocturnal RPG 'Shadow Bandit' Announced", time: "5m ago", desc: "Play as a masked woodland creature solving midnight bakery mysteries." },
+          { title: "Global Esports Grand Finals Break Milestones", time: "21m ago", desc: "Over 4.9 million concurrent viewers tune into intense nocturnal decider." },
+          { title: "Next-Gen Handheld Update Boosts OLED Contrast", time: "44m ago", desc: "Firmware optimization extends portable gameplay sessions." }
+        ]
+      },
+      {
+        name: 'Music', icon: '🎵', tag: 'Lo-Fi',
+        items: [
+          { title: "Midnight Lo-Fi Beats Stream Surpasses 1B Hours", time: "4m ago", desc: "Night owls and study groups make ambient chillhop the top stream." },
+          { title: "Underground Synthwave Album Climbs Charts", time: "24m ago", desc: "Retro 80s analog synthesizers captivate night drivers worldwide." },
+          { title: "Acoustic Forest Sessions Recorded Under Moonlight", time: "49m ago", desc: "Natural woodland acoustics bring intimate folk guitar tracks to life." }
+        ]
+      },
+      {
+        name: 'Weather', icon: '☀️', tag: 'Radar',
+        items: [
+          { title: "Night Sky Clarity: 98% (Exceptional Star Visibility)", time: "Live radar", desc: "Crisp atmospheric pressure; ideal for nocturnal stargazing." },
+          { title: "Moon Phase: Waxing Gibbous (84% Illuminated)", time: "Astronomical", desc: "Gentle natural silver moonlight over European burrows and cities." },
+          { title: "Barometric Pressure: 1018 hPa (Steady & Peaceful)", time: "Live sensor", desc: "Stable nocturnal high pressure system guaranteeing dry night skies." }
+        ]
+      }
+    ];
+
+    grid.innerHTML = sections.map(sec => `
+      <div class="rounded-2xl border border-border bg-card p-3 shadow-xs flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-border">
+            <span class="font-display font-bold text-xs flex items-center gap-1.5 text-foreground">
+              <span>${sec.icon}</span>
+              <span>${sec.name}</span>
+            </span>
+            <span class="text-[9px] font-mono text-muted-foreground bg-muted px-1.5 py-0.2 rounded-full">${sec.tag}</span>
+          </div>
+          <div class="space-y-2.5">
+            ${sec.items.map(it => `
+              <div class="p-2 rounded-xl bg-muted/40 hover:bg-muted transition">
+                <div class="flex justify-between text-[9px] text-muted-foreground mb-0.5">
+                  <span class="text-orange-600 font-bold">CBN Live</span>
+                  <span>${it.time}</span>
+                </div>
+                <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
+                  ${it.title}
+                </a>
+                <p class="text-[10px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
+                  ${it.desc}
+                </p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="pt-2 mt-2 border-t border-border-light text-[10px]">
+          <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-bold flex items-center justify-between">
+            <span>Read on CBN</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  // ==========================================
+  // WORLD STORIES LIBRARY (worldstories.org.uk)
+  // ==========================================
+  worldStoriesList: [
+    {
+      id: 'anansi-turtle',
+      title: 'Anansi and the Turtle',
+      country: 'Ghana',
+      flag: '🇬🇭',
+      category: 'animals',
+      readTime: '3 min',
+      moral: 'Treat guests with true generosity, for greed always returns to the greedy.',
+      synopsis: 'Anansi the spider tricks hungry Turtle out of dinner, but when Turtle invites him beneath the river, Anansi learns an unforgettable lesson.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `One evening, Anansi the Spider had prepared a delicious pot of hot, steaming yams. The aroma drifted through the forest. Just as he sat down with his spoon, Turtle knocked at the door, tired and hungry from a long journey.
+
+Hospitality was the law of the land, so Anansi had to invite Turtle to eat. But Anansi was greedy. Every time Turtle reached for a yam, Anansi scolded him: "Turtle! Your hands are covered in dust from the road! Go wash them at the river!"
+
+Turtle waddled down to the river, washed his paws, and crawled back. But by the time he returned, Anansi had eaten half the yams. Turtle reached again, but his paws were dusty once more from crawling. "Wash again!" demanded Anansi. When Turtle returned the second time, all the yams were gone. Turtle smiled politely: "Thank you for the hospitality, Anansi. Tomorrow, you must dine with me at my home beneath the river."
+
+The next day, Anansi hurried to the riverbank. Turtle was waiting at the bottom of the deep river, where a glorious table of fish and water berries was spread. Anansi leaped into the river, but he was too light and kept floating back to the surface!
+
+Determined to reach the feast, Anansi stuffed heavy stones into the pockets of his jacket. Down, down he sank, landing right at Turtle's table!
+
+"Welcome, Anansi!" Turtle smiled. "In my home, it is customary to take off your heavy coat before dining."
+
+Anansi had no choice. He slipped off his jacket. The moment the heavy stones left his shoulders, Anansi shot up like a cork to the water's surface, bobbing helplessly while Turtle enjoyed the feast below.`
+    },
+    {
+      id: 'sun-wind',
+      title: 'The Sun and the Wind',
+      country: 'Greece',
+      flag: '🇬🇷',
+      category: 'fables',
+      readTime: '2 min',
+      moral: 'Gentleness and warmth accomplish far more than fury and force.',
+      synopsis: 'The Wind and the Sun dispute who is stronger and test their powers on a cloaked traveller walking along a winding road.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `The North Wind and the Sun had a dispute about which was the most powerful. While they argued, a traveller came walking along the country road wrapped in a warm woollen cloak.
+
+"I will prove my strength," boasted the Wind. "Whoever can compel that traveller to take off his cloak shall be crowned the mightiest!"
+
+The Sun agreed and hid behind a soft cloud. The North Wind puffed out his cheeks and blew a freezing, howling tempest. Leaves tore from the branches and dust swirled. But the harder the Wind blew, the tighter the traveller wrapped his cloak around his shoulders, clasping it with both hands. Finally, breathless and exhausted, the Wind gave up.
+
+Then the Sun emerged with a warm, gentle smile. He beamed his golden rays through the sky. Slowly, the air grew pleasant, then warmly delightful. The traveller unfastened his buttons. As the golden sunlight bathed the meadows, the traveller wiped the perspiration from his brow, gladly took off his heavy cloak, and rested peacefully in the shade of a flowering tree.`
+    },
+    {
+      id: 'clever-monkey',
+      title: 'The Clever Monkey and the Crocodile',
+      country: 'India',
+      flag: '🇮🇳',
+      category: 'animals',
+      readTime: '4 min',
+      moral: 'Quick wits and presence of mind can save you from the greatest dangers.',
+      synopsis: 'When a crocodile tries to betray his monkey friend to satisfy his wife\'s greedy wish, the clever monkey uses quick thinking to escape.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `A clever monkey lived in a tall rose-apple tree on the bank of the Ganges river. Every day, he ate sweet, succulent apples and tossed juicy ones to a crocodile who rested by the water. Over time, the monkey and the crocodile became fast friends.
+
+One day, the crocodile took some rose-apples home to his wife. She tasted them and gasped: "If this monkey eats these sweet fruits every day, his heart must be the sweetest nectar in the world! Bring him to me so I may eat his heart!"
+
+The crocodile was torn, but finally agreed. He returned to the tree: "My dear friend, my wife has prepared a feast for you to thank you for the apples. Hop onto my back, and I will carry you across the river to our island."
+
+The monkey gladly hopped on. Halfway across the deep river, the crocodile began to sink. "Why are you sinking?" asked the monkey.
+
+"Forgive me, friend," sighed the crocodile. "My wife wishes to eat your heart."
+
+The monkey was terrified, but he did not panic. He laughed out loud: "Oh, foolish crocodile! Why didn't you tell me on the shore? We monkeys do not keep our hearts in our chests while jumping through trees—they would get bruised! I left my heart safely tucked in the high branches of my rose-apple tree. Take me back quickly, and I will fetch it for your wife!"
+
+The naive crocodile turned around and swam furiously back to the riverbank. The moment they touched the shore, the monkey vaulted high into the tree and shouted: "Did you ever hear of anyone living without their heart in their chest? Go back to your wife, crocodile, and tell her that friendship cannot be shared with those who betray trust!"`
+    },
+    {
+      id: 'raccoon-moon',
+      title: 'How the Raccoon Got His Mask & Clever Paws',
+      country: 'North America',
+      flag: '🇺🇸',
+      category: 'animals',
+      readTime: '3 min',
+      moral: 'Curiosity and careful care make the humblest creature wise and resourceful.',
+      synopsis: 'A traditional indigenous tale of why the nocturnal raccoon wears a masked fur coat and always washes his berries in fresh water.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `In the elder times when animals spoke the language of the rivers, Raccoon was known as the most inquisitive creature in the woods. While the bears slept and the eagles soared, Raccoon explored every hollow log, pebble bed, and creek.
+
+One moonlit night, Raccoon watched Grandmother Moon painting silver paths across the forest streams. Raccoon crept up to the reflection in the calm water, determined to catch a piece of the silvery glow with his nimble paws.
+
+"Little Raccoon," Grandmother Moon whispered through the pine needles. "You look at the world so closely, testing each shell and washing every seed. Because your eyes are keen in the dark, I grant you the Bandit's Mask of Shadow. It will protect your vision under starlight and let you move unseen by those who wish you harm."
+
+Grandmother Moon touched Raccoon's face with a dab of nocturnal soot, creating his iconic dark mask and rings on his tail. She blessed his paws with sensitive fingertips like human hands, saying: "Whenever you feast, wash your meal in clear running water as a sign of respect for the river that feeds you."
+
+To this day, Raccoon proudly wears his midnight mask, washing every berry and clam before dining beneath the smiling moon.`
+    },
+    {
+      id: 'magic-paintbrush',
+      title: 'Ma Liang and the Magic Paintbrush',
+      country: 'China',
+      flag: '🇨🇳',
+      category: 'myths',
+      readTime: '4 min',
+      moral: 'A generous heart and creative spirit will always defeat greed and tyranny.',
+      synopsis: 'A kind poor boy receives a paintbrush whose paintings come to life, using his art to bring water, grain, and freedom to his village.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `Long ago in ancient China lived a poor orphan named Ma Liang. He loved painting more than anything in the world, though he was too poor to afford even a single brush. He practiced by drawing birds in the sand with twigs and fish on river stones with wet pebbles.
+
+One night, an old immortal with a silver beard appeared in his dreams and handed him a gleaming golden brush: "Use this gift wisely, Ma Liang. Only create what helps those in need."
+
+When Ma Liang awoke, the golden brush was in his hand. He painted a swallow on the wall; instantly, the swallow fluttered its wings, chirped melodiously, and flew into the blue sky!
+
+Seeing how his villagers suffered from drought, Ma Liang painted an irrigation ditch that gushed fresh water, a sturdy water buffalo to plough the fields, and bushels of golden grain. The villagers rejoiced.
+
+Soon, a greedy, cruel magistrate heard of the miracle. He arrested Ma Liang and commanded: "Paint me a mountain of solid gold!"
+
+Ma Liang calmly painted a vast blue ocean, and in the far distance, a mountain shimmering with gold. "How shall I get there?" demanded the magistrate. Ma Liang painted a grand wooden ship.
+
+The magistrate and his greedy guards boarded the ship. As it sailed toward the gold mountain, Ma Liang painted great gusts of wind and stormy waves. The wind blew stronger and stronger until the ship capsized, washing the greedy ruler far across the sea. Ma Liang returned to his village, painting plows, food, and joy for all who asked.`
+    },
+    {
+      id: 'lion-mouse',
+      title: 'The Lion and the Tiny Mouse',
+      country: 'United Kingdom',
+      flag: '🇬🇧',
+      category: 'fables',
+      readTime: '2 min',
+      moral: 'No act of kindness, no matter how small, is ever wasted.',
+      synopsis: 'A mighty lion laughs when a tiny mouse promises to repay a favor, but soon discovers that small friends can prove to be great allies.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `A great lion lay asleep in the warm sunshine when a playful field mouse scampered across his nose. The lion awoke with a roar, slapped down his massive paw, and pinned the tiny mouse against the earth.
+
+"Pardon, King of Beasts!" squeaked the terrified mouse. "Spare my life! I did not mean to disturb your sleep. If you let me go, perhaps one day I can help you in return."
+
+The lion laughed so heartily at the thought of a tiny mouse helping the king of the jungle that his paw lifted. "Off with you, little one," he chuckled, amused by the mouse's courage.
+
+A few weeks later, the lion was stalking prey when he walked into a hunter's trap. A heavy net made of thick ropes dropped over him. The lion thrashed, roared, and tore at the mesh, but the ropes only tightened.
+
+Hearing the lion's roar of distress, the tiny mouse scurried to the spot. "Do not worry, friend," the mouse squeaked. With sharp little teeth, the mouse gnawed tirelessly at the thick cords until one by one, the knots severed. The net fell away, and the mighty lion sprang free.
+
+"You laughed at me then," the mouse smiled, "but now you see that even a little mouse can save a mighty lion."`
+    },
+    {
+      id: 'urashima-taro',
+      title: 'Urashima Taro and the Dragon Palace',
+      country: 'Japan',
+      flag: '🇯🇵',
+      category: 'myths',
+      readTime: '4 min',
+      moral: 'Time is the most precious treasure; live mindfully and cherish your days.',
+      synopsis: 'A compassionate fisherman saves a sea turtle and is rewarded with an enchanted voyage to the underwater palace of Ryugu-jo.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `Urashima Taro was a humble, kind-hearted fisherman who lived in a small coastal village with his elderly mother. One day on the beach, he saw several boys teasing a small sea turtle. Taro gave the boys a few coins, gently carried the turtle into the rolling waves, and watched it swim to safety.
+
+A few days later while fishing out at sea, a giant sea turtle surfaced beside Taro's boat: "Taro! I am the turtle you rescued. Otohime, the Princess of the Sea, wishes to thank you. Ride on my shell to the Dragon Palace of Ryugu-jo!"
+
+Taro climbed onto the turtle's shell, and together they dove into the crystal-clear ocean. Deep beneath the waves stood a palace made of coral, mother-of-pearl, and glowing pearls. Princess Otohime welcomed Taro with songs, banquets of seaweed cakes, and dances by rainbow-colored fish.
+
+Taro enjoyed several wonderful days in the palace, but soon thought of his aging mother and grew homesick. Princess Otohime was sad to see him go. She presented him with a beautiful lacquered box, the Tamatebako, wrapped with a red silk cord: "Keep this box as a token of my gratitude. But remember: whatever happens, you must never open it."
+
+The turtle carried Taro back to his home beach. But when Taro walked into his village, everything was changed! The houses were different, the harbor had grown, and all the faces were strangers. He asked about his mother, and an old villager told him: "Urashima Taro disappeared into the sea three hundred years ago!"
+
+Grief-stricken, Taro sat on the beach. Bewildered, he untied the red ribbon of the Tamatebako and lifted the lid. A plume of white smoke billowed forth. As the smoke enveloped him, Taro's hair turned silver, his skin grew wrinkled, and he aged three hundred years in a single breath—the smoke held the stolen years of his ocean dream.`
+    },
+    {
+      id: 'curupira-forest',
+      title: 'Curupira: Guardian of the Rainforest',
+      country: 'Brazil',
+      flag: '🇧🇷',
+      category: 'folktales',
+      readTime: '3 min',
+      moral: 'Take only what you need from nature, and respect the creatures who share our earth.',
+      synopsis: 'The flame-haired spirit of the Amazon with backward-facing feet protects the trees and animals from greedy poachers.',
+      url: 'https://worldstories.org.uk/lang/english',
+      content: `In the heart of the Amazon rainforest lives Curupira, the mythical boy with hair like bright campfire flames, green teeth, and feet that point backwards.
+
+Because his heels point forward and his toes point backward, anyone trying to track Curupira in the forest follows his footprints in the wrong direction and becomes delightfully confused!
+
+Curupira is the protector of all animals and trees. He rides on the back of wild peccaries and knocks on tree trunks with a hollow bamboo stick before a thunderstorm, testing whether the roots are strong enough to withstand the wind.
+
+If a hunter enters the forest to feed his hungry family, Curupira leaves him in peace. But if a greedy poacher enters to trap pregnant animals or chop down sacred mahogany trees for quick wealth, Curupira mimics bird calls and creates eerie phantom whistles. The poacher spins in circles following footprints that lead nowhere, until terrified and empty-handed, he flees the jungle, vowing never to harm the wild again.`
+    }
+  ],
+
+  currentStoryCategory: 'all',
+  currentStoryQuery: '',
+  selectedStory: null,
+  worldStoriesCatalogLoaded: false,
+
+  async openStoriesModal() {
+    this.closeAllModals();
+    this.currentStoryCategory = 'all';
+    this.currentStoryQuery = '';
+    const searchInput = document.getElementById('stories-search-input');
+    if (searchInput) searchInput.value = '';
+
+    this.backToStoriesCatalog();
+    this.renderStoriesGrid();
+    document.getElementById('stories-modal')?.classList.remove('hidden');
+    lucide.createIcons();
+
+    // Dynamically load the full 175-story library catalog from worldstories.org.uk
+    if (!this.worldStoriesCatalogLoaded) {
+      try {
+        const res = await fetch('/worldstories_catalog.json');
+        if (res.ok) {
+          const fullCatalog = await res.json();
+          if (Array.isArray(fullCatalog) && fullCatalog.length > 0) {
+            const existingMap = new Map();
+            this.worldStoriesList.forEach(s => existingMap.set(s.id, s));
+            
+            fullCatalog.forEach(c => {
+              if (!existingMap.has(c.id)) {
+                this.worldStoriesList.push({
+                  id: c.id,
+                  slug: c.slug || c.id,
+                  title: c.title,
+                  country: c.country || 'World',
+                  flag: c.flag || '🌍',
+                  category: c.category || 'fables',
+                  readTime: c.readTime || '3 min',
+                  moral: 'A classic tale of wisdom, imagination, and cultural discovery.',
+                  synopsis: c.desc || 'Illustrated story from WorldStories UK.',
+                  cover: c.cover || `https://worldstories.org.uk/content/book/${c.id}/__cover.jpg`,
+                  url: c.url || `https://worldstories.org.uk/reader/${c.slug || c.id}/english/${c.id}`,
+                  languages: c.languages || ['English'],
+                  content: null
+                });
+              } else {
+                const s = existingMap.get(c.id);
+                if (!s.cover && c.cover) s.cover = c.cover;
+                if (!s.slug && c.slug) s.slug = c.slug;
+                if (!s.languages && c.languages) s.languages = c.languages;
+              }
+            });
+            this.worldStoriesCatalogLoaded = true;
+            this.renderStoriesGrid();
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load full World Stories catalog:', err);
+      }
+    }
+  },
+
+  closeStoriesModal() {
+    document.getElementById('stories-modal')?.classList.add('hidden');
+  },
+
+  filterStories(category) {
+    this.currentStoryCategory = category;
+    const tabs = document.querySelectorAll('#story-filter-tabs .story-tab');
+    tabs.forEach(tab => {
+      tab.classList.remove('btn-orange-matte', 'font-bold', 'shadow-xs', 'active');
+      tab.classList.add('font-medium', 'text-muted-foreground');
+    });
+    const clicked = event?.currentTarget;
+    if (clicked) {
+      clicked.classList.remove('font-medium', 'text-muted-foreground');
+      clicked.classList.add('btn-orange-matte', 'font-bold', 'shadow-xs', 'active');
+    }
+    this.renderStoriesGrid();
+  },
+
+  searchStories(val) {
+    this.currentStoryQuery = (val || '').trim().toLowerCase();
+    this.renderStoriesGrid();
+  },
+
+  renderStoriesGrid() {
+    const container = document.getElementById('stories-grid-container');
+    if (!container) return;
+
+    let list = this.worldStoriesList;
+    if (this.currentStoryCategory !== 'all') {
+      list = list.filter(s => s.category === this.currentStoryCategory);
+    }
+    if (this.currentStoryQuery) {
+      const q = this.currentStoryQuery;
+      list = list.filter(s =>
+        s.title.toLowerCase().includes(q) ||
+        (s.country && s.country.toLowerCase().includes(q)) ||
+        (s.synopsis && s.synopsis.toLowerCase().includes(q)) ||
+        (s.moral && s.moral.toLowerCase().includes(q))
+      );
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
+          <span class="text-3xl mb-2">📖</span>
+          <p class="font-bold text-sm">No stories match your filter</p>
+          <button onclick="app.filterStories('all')" class="mt-2 text-primary font-bold text-xs hover:underline">
+            View all 175+ World Stories
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = list.map(story => `
+      <div class="rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-md p-3.5 transition flex flex-col justify-between group">
+        <div>
+          <!-- Story Cover Thumbnail or Origin Badge -->
+          <div class="relative w-full h-36 rounded-xl overflow-hidden bg-muted/60 mb-3 flex items-center justify-center border border-border/40">
+            ${story.cover ? `
+              <img src="${story.cover}" alt="${story.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.parentElement.innerHTML='<span class=\\'text-3xl\\'>📚</span>'" />
+            ` : `
+              <span class="text-3xl">📚</span>
+            `}
+            <div class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[11px] font-bold flex items-center gap-1 shadow-xs">
+              <span>${story.flag || '🌍'}</span>
+              <span>${story.country || 'World'}</span>
+            </div>
+            <div class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono shadow-xs">
+              ⏱️ ${story.readTime || '3 min'}
+            </div>
+          </div>
+
+          <!-- Title -->
+          <h4 class="font-display font-bold text-sm sm:text-base text-foreground group-hover:text-primary transition line-clamp-1 mb-1">
+            ${story.title}
+          </h4>
+
+          <!-- Synopsis -->
+          <p class="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-2.5">
+            ${story.synopsis || story.desc || 'A classic tale from WorldStories UK.'}
+          </p>
+
+          <!-- Languages info -->
+          ${story.languages && story.languages.length > 1 ? `
+            <div class="text-[10px] text-muted-foreground line-clamp-1 mb-2">
+              🌐 In ${story.languages.length} languages: ${story.languages.slice(0, 3).join(', ')}...
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-2.5 border-t border-border/60 flex items-center justify-between gap-2">
+          <button onclick="app.openStoryReader('${story.id}')" class="flex-1 py-1.5 px-3 rounded-full btn-orange-matte text-white text-xs font-bold flex items-center justify-center gap-1 shadow-2xs hover:opacity-95 transition cursor-pointer">
+            <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
+            <span>Read Tale</span>
+          </button>
+          <a href="${story.url}" target="_blank" rel="noopener noreferrer" title="Listen with audio on worldstories.org.uk" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition border border-border shrink-0">
+            <i data-lucide="headphones" class="h-3.5 w-3.5"></i>
+          </a>
+        </div>
+      </div>
+    `).join('');
+
+    lucide.createIcons();
+  },
+
+  async openStoryReader(storyId) {
+    const story = this.worldStoriesList.find(s => s.id === storyId);
+    if (!story) return;
+    this.selectedStory = story;
+
+    const catalogView = document.getElementById('stories-catalog-view');
+    const readerView = document.getElementById('stories-reader-view');
+    const contentEl = document.getElementById('stories-reader-content');
+    const badgeEl = document.getElementById('story-reader-origin-badge');
+    const linkEl = document.getElementById('story-reader-source-link');
+
+    if (badgeEl) badgeEl.innerHTML = `📍 Origin: <strong>${story.flag || '🌍'} ${story.country || 'World'}</strong> &bull; Read Time: <strong>${story.readTime || '3 min'}</strong>`;
+    if (linkEl) linkEl.href = story.url;
+
+    catalogView?.classList.add('hidden');
+    catalogView?.classList.remove('flex');
+    readerView?.classList.remove('hidden');
+    readerView?.classList.add('flex');
+
+    // Show initial loading state if content not cached yet
+    if (contentEl) {
+      contentEl.innerHTML = `
+        <div class="max-w-2xl mx-auto space-y-4">
+          <!-- Story Header Card -->
+          <div class="p-4 sm:p-5 rounded-3xl bg-muted/40 border border-border flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <span class="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wide">
+                <span>${story.flag || '🌍'}</span>
+                <span>Traditional Tale from ${story.country || 'World'}</span>
+              </span>
+              <h2 class="font-display font-extrabold text-xl sm:text-2xl text-foreground mt-1 truncate">${story.title}</h2>
+              <p class="text-xs text-muted-foreground mt-1">Source: <a href="${story.url}" target="_blank" class="underline font-bold text-foreground">WorldStories UK</a></p>
+            </div>
+            ${story.cover ? `<img src="${story.cover}" class="h-16 w-16 rounded-2xl object-cover shrink-0 border border-border" />` : `<span class="text-3xl sm:text-4xl">📜</span>`}
+          </div>
+
+          <!-- Story Text Loading or Rendered -->
+          <div id="story-reader-text-area" class="story-body-text space-y-3.5 pt-2 font-serif text-base sm:text-lg leading-loose">
+            ${story.content ? story.content.split('\n\n').map(p => `<p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${p.trim()}</p>`).join('') : `
+              <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground space-y-3">
+                <i data-lucide="loader-2" class="h-6 w-6 animate-spin text-primary"></i>
+                <p class="text-sm">Fetching complete illustrated tale from WorldStories UK...</p>
+              </div>
+            `}
+          </div>
+
+          <!-- Postcard Dispatch Callout -->
+          <div class="mt-6 p-4 rounded-3xl border border-dashed border-primary/30 bg-card flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div class="text-center sm:text-left">
+              <h5 class="font-display font-bold text-sm text-foreground">Share this tale as a clever postcard</h5>
+              <p class="text-xs text-muted-foreground">Deliver this folktale directly to any friend's inbox.</p>
+            </div>
+            <button onclick="app.sendStoryAsPostcard()" class="py-2 px-5 rounded-full btn-orange-matte text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition cursor-pointer shrink-0">
+              <i data-lucide="send" class="h-3.5 w-3.5"></i>
+              <span>Send Postcard</span>
+              <span class="paw-bounce text-xs">🐾</span>
+            </button>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // If story doesn't have content yet, fetch via /api/story
+    if (!story.content && story.id) {
+      try {
+        const res = await fetch(`/api/story?id=${encodeURIComponent(story.id)}&slug=${encodeURIComponent(story.slug || story.id)}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.paragraphs) && data.paragraphs.length > 0) {
+          story.content = data.paragraphs.join('\n\n');
+          const textArea = document.getElementById('story-reader-text-area');
+          if (textArea) {
+            textArea.innerHTML = data.paragraphs.map(p => `<p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${p}</p>`).join('');
+          }
+        } else {
+          const textArea = document.getElementById('story-reader-text-area');
+          if (textArea) {
+            textArea.innerHTML = `
+              <p class="text-base text-foreground/90 leading-relaxed">${story.synopsis || story.desc || 'A traditional tale of wonder and cultural heritage.'}</p>
+              <div class="p-4 rounded-2xl bg-muted/40 border border-border text-center space-y-2 mt-4">
+                <p class="text-xs text-muted-foreground">Read full interactive book with native audio on WorldStories UK:</p>
+                <a href="${story.url}" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full btn-orange-matte text-white text-xs font-bold">
+                  <span>Open on WorldStories UK</span>
+                  <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
+                </a>
+              </div>
+            `;
+            lucide.createIcons();
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch story paragraphs:', err);
+      }
+    }
+  },
+
+  backToStoriesCatalog() {
+    const catalogView = document.getElementById('stories-catalog-view');
+    const readerView = document.getElementById('stories-reader-view');
+    readerView?.classList.add('hidden');
+    readerView?.classList.remove('flex');
+    catalogView?.classList.remove('hidden');
+    catalogView?.classList.add('flex');
+    this.selectedStory = null;
+    lucide.createIcons();
+  },
+
+  sendStoryAsPostcard() {
+    if (!this.selectedStory) return;
+    const s = this.selectedStory;
+    this.closeStoriesModal();
+    this.openCompose();
+
+    const subjectInput = document.getElementById('compose-subject');
+    const editor = document.getElementById('compose-editor');
+    if (subjectInput) subjectInput.value = `Postcard Tale: ${s.title} (${s.country})`;
+    if (editor) {
+      editor.innerHTML = `
+        <p><strong>📖 ${s.title}</strong></p>
+        <p><em>A traditional tale from ${s.country} &bull; Sourced from WorldStories UK</em></p>
+        <blockquote style="border-left: 3px solid #208ED3; padding-left: 10px; margin: 10px 0; color: #555;">
+          💡 <strong>Moral:</strong> ${s.moral}
+        </blockquote>
+        <p>${(s.content || s.synopsis || '').replace(/\n\n/g, '</p><p>')}</p>
+        <p style="margin-top: 15px; font-size: 11px; color: #888;">Sent with love via <a href="https://racconmail.eu">Raccon Mail</a> &bull; Read more at <a href="https://worldstories.org.uk/lang/english">worldstories.org.uk</a></p>
+      `;
+    }
+    this.showToast(`Loaded "${s.title}" into Postcard Compose! 🐾`);
+  },
+
+  // SSE real-time connection
+  setupSSE() {
+    // Replaced by lightweight, reliable 15-second mail polling
+  },
+
+  showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 z-50 rounded-2xl bg-primary text-primary-foreground px-4 py-3 text-xs shadow-soft flex items-center gap-2 border border-border animate-bounce';
+    toast.innerHTML = `<span>${message}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => toast.remove(), 500);
+    }, 4500);
+  },
+
+  // API calls
+  async fetchUser() {
+    try {
+      const res = await fetch('/api/user');
+      const data = await res.json();
+      this.currentUser = data;
+
+      const avatar = data.avatar || '/raccoon-logo.png';
+      const cover = data.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
+
+      const nameEl = document.getElementById('active-user-name');
+      if (nameEl) nameEl.textContent = data.name;
+
+      const avEl = document.getElementById('active-user-avatar');
+      if (avEl) avEl.src = avatar;
+
+      const dropNameEl = document.getElementById('dropdown-user-name');
+      if (dropNameEl) dropNameEl.textContent = data.name;
+
+      const dropEmailEl = document.getElementById('dropdown-user-email');
+      if (dropEmailEl) dropEmailEl.textContent = data.email;
+
+      const dropAvEl = document.getElementById('dropdown-user-avatar');
+      if (dropAvEl) dropAvEl.src = avatar;
+
+      const dropCoverEl = document.getElementById('dropdown-user-cover');
+      if (dropCoverEl) {
+        if (cover.startsWith('http') || cover.startsWith('/')) {
+          dropCoverEl.style.backgroundImage = `url('${cover}')`;
+        } else {
+          dropCoverEl.style.background = cover;
+        }
+      }
+
+      // Profile modal preview elements
+      const profAv = document.getElementById('profile-avatar-preview');
+      if (profAv) profAv.src = avatar;
+
+      const profCover = document.getElementById('profile-cover-preview');
+      if (profCover) {
+        if (cover.startsWith('http') || cover.startsWith('/')) {
+          profCover.style.backgroundImage = `url('${cover}')`;
+        } else {
+          profCover.style.background = cover;
+        }
+      }
+
+      const profName = document.getElementById('profile-preview-name');
+      if (profName) profName.textContent = data.name;
+
+      const profEmail = document.getElementById('profile-preview-email');
+      if (profEmail) profEmail.textContent = data.email;
+
+      const inputName = document.getElementById('profile-name-input');
+      if (inputName) inputName.value = data.name || '';
+
+      const inputEmail = document.getElementById('profile-email-input');
+      if (inputEmail) inputEmail.value = data.email || '';
+
+      const inputSig = document.getElementById('profile-signature-input');
+      if (inputSig) inputSig.value = data.signature || '';
+
+      // Apply theme
+      const savedTheme = localStorage.getItem('raccon_theme') || data.theme || 'raccon';
+      this.setTheme(savedTheme, false);
+
+      // Settings modal elements
+      const setDisplayName = document.getElementById('settings-name');
+      if (setDisplayName) setDisplayName.value = data.name || '';
+      const setSignature = document.getElementById('settings-signature');
+      if (setSignature) setSignature.value = data.signature || '';
+    } catch (err) {
+      console.error('Failed to fetch user:', err);
+    }
+  },
+
+  async fetchAccounts() {
+    try {
+      const res = await fetch('/api/accounts');
+      const data = await res.json();
+      this.accounts = data.accounts || [];
+      const listEl = document.getElementById('accounts-list');
+      if (listEl) {
+        listEl.innerHTML = this.accounts.map(acc => `
+          <button
+            onclick="app.switchAccount('${acc.id}')"
+            class="w-full text-left flex items-center justify-between p-2 rounded-xl text-xs hover:bg-muted transition ${acc.id === data.activeId ? 'font-bold bg-accent/40' : ''}"
+          >
+            <div class="flex items-center gap-2 truncate">
+              <img src="${acc.avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-contain" />
+              <div class="truncate">
+                <p class="truncate leading-tight">${acc.name}</p>
+                <p class="text-[10px] text-muted-foreground truncate">${acc.email}</p>
+              </div>
+            </div>
+            ${acc.id === data.activeId ? '<span class="h-2 w-2 rounded-full bg-emerald-500"></span>' : ''}
+          </button>
+        `).join('');
+      }
+    } catch (err) {
+      console.error('Failed to fetch accounts:', err);
+    }
+  },
+
+  async switchAccount(userId) {
+    try {
+      await fetch('/api/accounts/switch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      document.getElementById('account-dropdown').classList.add('hidden');
+      this.selectedMessage = null;
+      await this.init();
+      this.showToast('Switched account successfully');
+    } catch (err) {
+      console.error('Error switching account:', err);
+    }
+  },
+
+  toggleAccountDropdown() {
+    const el = document.getElementById('account-dropdown');
+    if (!el) return;
+    el.classList.toggle('hidden');
+    if (!el.classList.contains('hidden')) {
+      this.startMenuAutoDismissTimer();
+    }
+  },
+
+  // Folders
+  async fetchFolders() {
+    try {
+      const res = await fetch('/api/folders');
+      const data = await res.json();
+      this.folders = data;
+      this.renderStandardFolders();
+      this.renderCustomFolders();
+    } catch (err) {
+      console.error('Failed to fetch folders:', err);
+    }
+  },
+
+  renderStandardFolders() {
+    const std = this.folders.standard || {};
+    const items = [
+      { key: 'Inbox', label: 'Inbox', icon: 'inbox', count: std.inbox?.total || 0, unread: std.inbox?.unread || 0 },
+      { key: 'Unread', label: 'Unread', icon: 'mail-open', count: std.unread?.total || 0, unread: std.unread?.total || 0 },
+      { key: 'Favorites', label: 'Favorites', icon: 'heart', count: std.favorites?.total || 0 },
+      { key: 'Drafts', label: 'Drafts', icon: 'file-text', count: std.drafts?.total || 0 },
+      { key: 'Sent', label: 'Sent', icon: 'send', count: std.sent?.total || 0 },
+      { key: 'Archive', label: 'Archive', icon: 'archive', count: std.archive?.total || 0 },
+      { key: 'Photos & Files', label: 'Photos & Files', icon: 'image', isSpecial: true },
+      { key: 'Spam', label: 'Spam', icon: 'shield-alert', count: std.spam?.total || 0, unread: std.spam?.unread || 0 },
+      { key: 'Trash', label: 'Trash', icon: 'trash-2', count: std.trash?.total || 0 }
+    ];
+
+    const container = document.getElementById('standard-folders-list');
+    if (!container) return;
+    container.innerHTML = items.map(item => {
+      const isActive = this.currentFolder === item.key && this.activeView !== 'contacts';
+      const hasUnread = (item.unread && item.unread > 0);
+
+      return `
+        <button
+          onclick="app.navTo('${item.key}')"
+          class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer ${
+            isActive
+              ? 'active font-bold shadow-sm'
+              : 'text-foreground'
+          }"
+        >
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="${item.icon}" class="h-4 w-4 shrink-0 transition-transform duration-200"></i>
+            <span class="truncate">${item.label}</span>
+          </div>
+          <div class="pointer-events-none">
+            ${hasUnread ? `<span class="badge-unread">${item.unread}</span>` : ''}
+            ${!hasUnread && item.count !== undefined && item.count > 0 ? `<span class="badge-count text-[10px] ${isActive ? 'bg-white/20 text-white' : ''}">${item.count}</span>` : ''}
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  renderCustomFolders() {
+    const list = this.folders?.custom || [];
+    const container = document.getElementById('custom-folders-list');
+    if (!container) return;
+    if (list.length === 0) {
+      container.innerHTML = '<p class="text-[11px] text-muted-foreground px-3 py-1 italic">No custom folders</p>';
+      return;
+    }
+
+    container.innerHTML = list.map(f => {
+      const isActive = this.currentFolder === f.id;
+      return `
+        <div class="nav-folder-btn group flex items-center justify-between px-3 py-1.5 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer ${
+          isActive ? 'active font-bold' : 'text-foreground'
+        }">
+          <button onclick="app.navTo('${f.id}')" class="flex-1 flex items-center gap-2.5 truncate text-left cursor-pointer">
+            <i data-lucide="${f.icon || 'folder'}" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">${f.name}</span>
+          </button>
+          <div class="flex items-center gap-1">
+            ${f.unread > 0 ? `<span class="badge-unread">${f.unread}</span>` : ''}
+            <button onclick="app.deleteFolder('${f.id}')" title="Delete folder" class="hidden group-hover:inline-block p-1 text-muted-foreground hover:text-red-600 rounded transition cursor-pointer">
+              <i data-lucide="trash" class="h-3 w-3"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    lucide.createIcons();
+  },
+
+  navTo(folderKey) {
+    this.closeMobileSidebar();
+    this.currentFolder = folderKey;
+    this.checkedIds.clear();
+    this.updateBatchToolbar();
+
+    if (window.innerWidth < 768) {
+      const msgPanel = document.getElementById('messages-panel');
+      const readerPanel = document.getElementById('reader-panel');
+      msgPanel?.classList.remove('hidden');
+      readerPanel?.classList.add('hidden');
+      readerPanel?.classList.remove('flex');
+    }
+
+    if (folderKey === 'Photos & Files') {
+      this.activeView = 'photos_files';
+      this.renderStandardFolders();
+      this.renderPhotosFilesView();
+      if (window.innerWidth < 768) {
+        document.getElementById('messages-panel')?.classList.add('hidden');
+        const reader = document.getElementById('reader-panel');
+        reader?.classList.remove('hidden');
+        reader?.classList.add('flex');
+      }
+      return;
+    }
+
+    this.activeView = 'messages';
+    this.renderStandardFolders();
+    this.renderCustomFolders();
+    this.loadMessages();
+  },
+
+  // Loading messages
+  async loadMessages() {
+    try {
+      const folderTitleEl = document.getElementById('current-folder-title');
+      const folderSubEl = document.getElementById('current-folder-subtitle');
+      const emptyBtn = document.getElementById('empty-folder-btn');
+
+      // Update folder title display
+      let title = this.currentFolder;
+      const customFolder = this.folders.custom?.find(f => f.id === this.currentFolder);
+      if (customFolder) title = customFolder.name;
+      folderTitleEl.textContent = title;
+
+      // Show/hide empty folder button for Trash & Spam
+      if (this.currentFolder.toLowerCase() === 'trash' || this.currentFolder.toLowerCase() === 'spam') {
+        emptyBtn.classList.remove('hidden');
+        emptyBtn.textContent = `Empty ${this.currentFolder}`;
+      } else {
+        emptyBtn.classList.add('hidden');
+      }
+
+      // Fetch
+      const params = new URLSearchParams({
+        folder: this.currentFolder,
+        filter: this.currentFilter,
+        sort: this.currentSort,
+        search: this.searchQuery
+      });
+
+      const res = await fetch(`/api/messages?${params.toString()}`);
+      const data = await res.json();
+      this.messages = data.messages || [];
+
+      folderSubEl.textContent = `${this.messages.length} message${this.messages.length === 1 ? '' : 's'}`;
+      this.renderMessagesList();
+    } catch (err) {
+      console.error('Failed to load messages:', err);
+    }
+  },
+
+  renderMessagesList() {
+    const container = document.getElementById('messages-list');
+    if (this.messages.length === 0) {
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64">
+          <img src="/raccoon-logo.png" class="h-16 w-16 opacity-40 mb-3 object-contain" />
+          <p class="text-sm font-semibold">No emails found</p>
+          <p class="text-xs text-muted-foreground mt-1">This mailbox is clean as a raccoon's washed berries.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = this.messages.map(msg => {
+      const isSelected = this.selectedMessage?.id === msg.id;
+      const isChecked = this.checkedIds.has(msg.id);
+      const isUnread = !msg.is_read;
+      const dateStr = this.formatDate(msg.created_at);
+
+      // Distinct Sender / Category Icon
+      const senderName = (msg.sender_name || msg.sender_email || 'Nocturnal Mail').trim();
+      const isTeam = /raccon|team|support|system|admin/i.test(senderName) || /raccon|system/i.test(msg.sender_email || '');
+      const initial = (senderName[0] || 'M').toUpperCase();
+      
+      const colors = [
+        'bg-[#208ED3]/15 text-[#208ED3] border-[#208ED3]/30',
+        'bg-emerald-500/15 text-emerald-600 border-emerald-500/30',
+        'bg-amber-500/15 text-amber-600 border-amber-500/30',
+        'bg-purple-500/15 text-purple-600 border-purple-500/30',
+        'bg-rose-500/15 text-rose-600 border-rose-500/30'
+      ];
+      const colorClass = colors[initial.charCodeAt(0) % colors.length];
+
+      return `
+        <div
+          class="msg-card-item flex items-center gap-2.5 relative select-none cursor-pointer ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}"
+          onclick="app.selectMessage('${msg.id}')"
+        >
+          <!-- 1. Checkbox & Star (Compact) -->
+          <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
+            <input
+              type="checkbox"
+              ${isChecked ? 'checked' : ''}
+              onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
+              class="rounded border-border cursor-pointer h-3.5 w-3.5 accent-[#208ED3]"
+            />
+            <button
+              onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})"
+              class="p-0.5 rounded transition ${msg.is_starred ? 'text-amber-500' : 'text-muted-foreground/30 hover:text-amber-500'} cursor-pointer"
+              title="${msg.is_starred ? 'Starred' : 'Not starred'}"
+            >
+              <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-amber-400 text-amber-500' : ''}"></i>
+            </button>
+          </div>
+
+          <!-- 2. Distinct Email Sender Icon / Avatar -->
+          <div class="relative shrink-0 flex items-center justify-center">
+            ${isTeam ? `
+              <div class="h-7 w-7 rounded-full bg-white dark:bg-card border border-border shadow-xs flex items-center justify-center overflow-hidden">
+                <img src="/raccoon-logo.png" alt="Raccon" class="h-5 w-5 object-contain" />
+              </div>
+            ` : `
+              <div class="h-7 w-7 rounded-full ${colorClass} border flex items-center justify-center font-bold text-xs shadow-xs">
+                ${initial}
+              </div>
+            `}
+            ${isUnread ? '<span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#208ED3] ring-2 ring-card animate-pulse"></span>' : ''}
+          </div>
+
+          <!-- 3. Message Info (Compact 2-Line Row) -->
+          <div class="flex-1 min-w-0 pr-1">
+            <!-- Row 1: Sender Name + Timestamp -->
+            <div class="flex items-center justify-between gap-1 leading-none mb-1">
+              <span class="text-xs truncate text-foreground flex items-center gap-1.5 msg-title ${isUnread ? 'font-bold' : 'font-medium'}">
+                <i data-lucide="${isUnread ? 'mail' : 'mail-open'}" class="h-3 w-3 ${isUnread ? 'text-[#208ED3]' : 'text-muted-foreground/60'} shrink-0"></i>
+                <span class="truncate">${this.escapeHtml(senderName)}</span>
+              </span>
+              <span class="text-[10px] font-mono text-muted-foreground shrink-0 font-normal bg-muted/60 px-1.5 py-0.5 rounded">${dateStr}</span>
+            </div>
+
+            <!-- Row 2: Subject & Snippet (Compact Inline Preview) -->
+            <div class="flex items-center gap-1.5 text-xs truncate leading-tight">
+              ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="h-3 w-3 text-[#208ED3] shrink-0"></i>' : ''}
+              <span class="${isUnread ? 'font-bold text-foreground' : 'font-medium text-foreground/90'} truncate text-[11.5px]">${this.escapeHtml(msg.subject || '(no subject)')}</span>
+              <span class="text-muted-foreground/40 shrink-0">&ndash;</span>
+              <span class="text-[11px] text-muted-foreground truncate font-normal">${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  formatDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffHours = (now - date) / (1000 * 60 * 60);
+
+    if (diffHours < 24 && date.getDate() === now.getDate()) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    if (diffHours < 48) {
+      return 'Yesterday';
+    }
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  },
+
+  // Select single message & view in reader
+  async selectMessage(id) {
+    try {
+      const res = await fetch(`/api/messages/${id}`);
+      const data = await res.json();
+      this.selectedMessage = data.message;
+      this.renderMessagesList();
+      this.renderMessageReader(this.selectedMessage);
+      this.fetchFolders(); // refresh unread count badge
+
+      // On mobile screens, show reader and hide messages list
+      if (window.innerWidth < 768) {
+        const msgPanel = document.getElementById('messages-panel');
+        const readerPanel = document.getElementById('reader-panel');
+        msgPanel?.classList.add('hidden');
+        readerPanel?.classList.remove('hidden');
+        readerPanel?.classList.add('flex');
+      }
+    } catch (err) {
+      console.error('Failed to select message:', err);
+    }
+  },
+
+  renderMessageReader(msg) {
+    const readerEl = document.getElementById('reader-content');
+    const attachments = msg.attachments || [];
+    const userAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
+    const isTeam = /raccon|team|support|system|admin/i.test(msg.sender_name || '') || /raccon|system/i.test(msg.sender_email || '');
+    const initial = ((msg.sender_name || msg.sender_email || 'M')[0] || 'M').toUpperCase();
+
+    readerEl.innerHTML = `
+      <!-- Action Toolbar (Compact) -->
+      <div class="h-11 sm:h-12 border-b border-border bg-card px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
+        <div class="flex items-center gap-1.5">
+          <!-- Mobile Back Button -->
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-full bg-muted hover:bg-accent text-foreground shrink-0 cursor-pointer">
+            <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
+            <span>Back</span>
+          </button>
+          <button onclick="app.replyToMessage()"
+            class="flex items-center gap-1.5 rounded-full btn-orange-matte px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95">
+            <i data-lucide="reply" class="h-3.5 w-3.5"></i>
+            <span>Reply</span>
+            <span class="paw-bounce text-xs">🐾</span>
+          </button>
+          <button onclick="app.replyAllMessage()"
+            class="hidden sm:flex items-center gap-1 rounded-full btn-orange-matte-subtle px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            <i data-lucide="reply-all" class="h-3 w-3"></i>
+            <span>Reply All</span>
+          </button>
+          <button onclick="app.forwardMessage()"
+            class="hidden sm:flex items-center gap-1 rounded-full btn-orange-matte-subtle px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            <i data-lucide="forward" class="h-3 w-3"></i>
+            <span>Forward</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="flex items-center gap-1 rounded-full bg-muted/80 hover:bg-muted text-foreground px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-border">
+            <i data-lucide="camera" class="h-3.5 w-3.5 text-orange-500"></i>
+            <span class="hidden sm:inline">Screenshot</span>
+          </button>
+          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="flex items-center gap-1 rounded-full btn-orange-matte-subtle px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            <i data-lucide="mail" class="h-3 w-3"></i>
+            <span class="hidden sm:inline">Postcard View</span>
+          </button>
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-amber-500 transition cursor-pointer">
+            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-500 fill-amber-400' : ''}"></i>
+          </button>
+          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+            <i data-lucide="mail" class="h-4 w-4"></i>
+          </button>
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+            <i data-lucide="archive" class="h-4 w-4"></i>
+          </button>
+          <button onclick="app.spamMessage('${msg.id}')" title="Report Spam" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+            <i data-lucide="shield-alert" class="h-4 w-4"></i>
+          </button>
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-muted text-red-600 transition cursor-pointer">
+            <i data-lucide="trash-2" class="h-4 w-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Message Body (Streamlined Compact Density) -->
+      <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 pb-24 md:pb-5">
+        
+        <!-- Authentic Raccon Postcard Stationery (Compact) -->
+        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs">
+          <!-- Top Airmail Ribbon -->
+          <div class="stripes-subtle h-1.5 w-full"></div>
+
+          <div class="p-4 sm:p-5 space-y-3">
+            <!-- Verified Courier Badge (Compact) -->
+            <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+              <div class="email-postmark-badge py-0.5 px-2 text-[11px]">
+                <span class="paw-step-1">🐾</span>
+                <span>Verified Nocturnal Postcard &bull; Masked 10/10</span>
+              </div>
+              <span class="text-[10px] font-mono text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
+            </div>
+
+            <!-- Header Row: Sender Icon/Avatar & Details (Compact) -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                ${isTeam ? `
+                  <div class="h-9 w-9 rounded-full bg-white dark:bg-card border border-[#208ED3]/40 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                    <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
+                  </div>
+                ` : `
+                  <div class="h-9 w-9 rounded-full bg-[#208ED3]/15 text-[#208ED3] border border-[#208ED3]/30 flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                    ${initial}
+                  </div>
+                `}
+                <div class="min-w-0">
+                  <h2 class="font-display text-base sm:text-lg font-bold text-foreground leading-tight truncate">
+                    ${this.escapeHtml(msg.subject || '(no subject)')}
+                  </h2>
+                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                    <span class="font-bold text-foreground">${this.escapeHtml(msg.sender_name)}</span>
+                    <span class="text-orange-600 font-mono text-[11px] bg-orange-500/10 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
+                    <span>&bull;</span>
+                    <span>to <span class="font-medium text-foreground">${this.escapeHtml(msg.recipient_email)}</span></span>
+                    <span>&bull;</span>
+                    <span class="font-mono text-[10.5px]">${new Date(msg.created_at).toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email Content / Letter Body (Compact Stationery) -->
+            <div class="pt-3 border-t border-border-light text-foreground text-xs sm:text-sm leading-relaxed font-sans selection:bg-[#208ED3]/20 bg-slate-50/80 dark:bg-slate-900/40 rounded-xl p-3.5 sm:p-4 border border-border">
+              ${msg.body_html ? `
+                <div class="email-html-wrapper overflow-x-auto rounded-lg">${msg.body_html}</div>
+              ` : `
+                <div class="whitespace-pre-wrap">${this.escapeHtml(msg.body)}</div>
+              `}
+            </div>
+
+            <!-- Attachments Section (Compact horizontal pills) -->
+            ${attachments.length > 0 ? `
+              <div class="pt-3 border-t border-border-light space-y-1.5">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
+                  <i data-lucide="paperclip" class="h-3 w-3 text-[#208ED3]"></i>
+                  <span>${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}</span>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-0.5">
+                  ${attachments.map(att => {
+                    const isImg = att.mime_type.startsWith('image/');
+                    const sizeKB = Math.round(att.size_bytes / 1024);
+                    return `
+                      <div class="inline-flex items-center gap-2 rounded-xl border border-border bg-card p-1.5 pr-2.5 hover:border-[#208ED3] transition text-xs shadow-xs">
+                        <div class="h-8 w-8 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
+                          ${isImg ? `
+                            <img src="/uploads/${att.filename}" class="h-full w-full object-cover" />
+                          ` : `
+                            <i data-lucide="file-text" class="h-4 w-4 text-muted-foreground"></i>
+                          `}
+                        </div>
+                        <div class="min-w-0 pr-1">
+                          <p class="font-bold truncate text-foreground text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
+                          <p class="text-[9.5px] text-muted-foreground font-mono">${sizeKB} KB</p>
+                        </div>
+                        <a
+                          href="/uploads/${att.filename}"
+                          download="${att.original_name}"
+                          class="p-1 rounded-full hover:bg-muted text-[#208ED3] transition"
+                          title="Download"
+                        >
+                          <i data-lucide="download" class="h-3.5 w-3.5"></i>
+                        </a>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Postcard Footer Watermark (Compact) -->
+            <div class="pt-2 border-t border-border-light flex items-center justify-between text-[10px] text-muted-foreground">
+              <span class="flex items-center gap-1">
+                <span class="text-xs">🦝</span>
+                <span>Clever &amp; Masked Nocturnal Envelope</span>
+              </span>
+              <span class="font-mono">End-to-End Encrypted</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAST REPLY SECTION -->
+        <div class="rounded-3xl border border-border bg-card p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-xs font-bold text-foreground">
+              <i data-lucide="zap" class="h-4 w-4 text-orange-500"></i>
+              <span>Fast Reply to ${this.escapeHtml(msg.sender_name)}</span>
+            </div>
+            <span class="text-[11px] text-muted-foreground hidden sm:inline">Press Ctrl+Enter to send fast</span>
+          </div>
+
+          <!-- 1-Tap Fast Reply Chips -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <span class="text-[11px] font-semibold text-muted-foreground mr-1">1-Tap:</span>
+            <button type="button" onclick="app.fillQuickReply('Got it! 🦝')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Got it! 🦝</button>
+            <button type="button" onclick="app.fillQuickReply('Sounds great! 🐾')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Sounds great! 🐾</button>
+            <button type="button" onclick="app.fillQuickReply('Midnight snack at 2am? 🥐')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Midnight snack at 2am? 🥐</button>
+            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard! 💌')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Thanks for the postcard! 💌</button>
+            <button type="button" onclick="app.fillQuickReply('On my way! 🌲')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">On my way! 🌲</button>
+          </div>
+
+          <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
+          <div class="flex items-start gap-3 pt-2">
+            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-border/80 shrink-0 mt-1 shadow-sm" />
+            <div class="flex-1">
+              <!-- Postcard Styled Inner Box -->
+              <div class="rounded-2xl border-2 border-border/90 bg-muted/20 hover:border-primary/40 focus-within:border-primary focus-within:bg-card focus-within:ring-2 focus-within:ring-orange-500/25 p-3.5 shadow-sm transition">
+                <textarea
+                  id="quick-reply-body"
+                  rows="3"
+                  placeholder="Type a fast reply or select a chip above... (Ctrl+Enter to send)"
+                  onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
+                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-foreground placeholder:text-muted-foreground pb-2"
+                ></textarea>
+
+                <!-- High-Visibility Bottom Action Bar INSIDE the Box -->
+                <div class="flex items-center justify-between pt-2.5 border-t border-border/70 mt-1 flex-wrap gap-2">
+                  <div class="flex items-center gap-2 text-[11px] text-muted-foreground">
+                    <span class="inline-flex items-center gap-1 font-semibold text-emerald-700">
+                      <i data-lucide="zap" class="h-3.5 w-3.5 text-orange-500 fill-orange-500"></i>
+                      <span>Instant Express Dispatch</span>
+                    </span>
+                    <span class="hidden sm:inline opacity-60">&bull; Press Ctrl+Enter</span>
+                  </div>
+
+                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX (Orange Matte 2026) -->
+                  <button
+                    id="btn-fast-reply-send"
+                    type="button"
+                    onclick="app.sendQuickReply('${msg.id}')"
+                    class="flex items-center gap-2 rounded-full btn-orange-matte font-display font-bold text-xs sm:text-sm py-2.5 px-6 transition shadow-md hover:shadow-xl active:scale-95 cursor-pointer group"
+                    title="Send Fast Reply immediately"
+                  >
+                    <i data-lucide="send" class="h-4 w-4 group-hover:translate-x-0.5 transition transform text-white"></i>
+                    <span>Send Fast Reply</span>
+                    <span class="paw-bounce text-sm">🐾</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    lucide.createIcons();
+  },
+
+  fillQuickReply(text) {
+    const el = document.getElementById('quick-reply-body');
+    if (el) {
+      el.value = text;
+      el.focus();
+      this.playChime();
+    }
+  },
+
+  async sendQuickReply(msgId) {
+    const textEl = document.getElementById('quick-reply-body');
+    const text = textEl?.value?.trim();
+    if (!text) {
+      alert('Please type or select a quick reply chip first.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-fast-reply-send');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Sending...</span>`;
+      lucide.createIcons();
+    }
+
+    try {
+      const msg = this.selectedMessage;
+      const formData = new FormData();
+      formData.append('to', msg.sender_email);
+      formData.append('subject', msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`);
+      formData.append('body', text);
+
+      const res = await fetch('/api/messages/send', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send quick reply');
+
+      this.playChime();
+      this.showToast('Fast reply delivered via nocturnal express! 💌🦝');
+      textEl.value = '';
+      await this.fetchFolders();
+      await this.loadMessages();
+    } catch (err) {
+      alert('Failed to send reply: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Send Fast Reply</span>`;
+        lucide.createIcons();
+      }
+    }
+  },
+
+  // Photos & Files view (Raccon Mail signature feature)
+  async renderPhotosFilesView() {
+    const readerEl = document.getElementById('reader-content');
+    readerEl.innerHTML = `
+      <div class="p-8 h-full flex flex-col overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-display text-2xl font-bold flex items-center gap-2">
+              <i data-lucide="image" class="h-6 w-6"></i>
+              <span>Photos & Files</span>
+            </h2>
+            <p class="text-xs text-muted-foreground mt-0.5">Every photo and file attached to your emails in one place.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="app.filterPhotosFiles('all')" id="pf-all" class="px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">All</button>
+            <button onclick="app.filterPhotosFiles('photos')" id="pf-photos" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted">Photos & Media</button>
+            <button onclick="app.filterPhotosFiles('documents')" id="pf-documents" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted">Documents</button>
+          </div>
+        </div>
+        <div id="photos-files-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <p class="text-xs text-muted-foreground">Loading attachments...</p>
+        </div>
+      </div>
+    `;
+    lucide.createIcons();
+    this.filterPhotosFiles('all');
+  },
+
+  async filterPhotosFiles(type = 'all') {
+    ['all', 'photos', 'documents'].forEach(t => {
+      const btn = document.getElementById(`pf-${t}`);
+      if (btn) {
+        if (t === type) {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted';
+        }
+      }
+    });
+
+    try {
+      const res = await fetch(`/api/attachments?type=${type}`);
+      const data = await res.json();
+      const grid = document.getElementById('photos-files-grid');
+      const items = data.attachments || [];
+
+      if (items.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-center text-xs text-muted-foreground py-12">No files or attachments found in this category.</p>';
+        return;
+      }
+
+      grid.innerHTML = items.map(att => {
+        const isImg = att.mime_type.startsWith('image/');
+        const sizeKB = Math.round(att.size_bytes / 1024);
+        return `
+          <div class="group rounded-3xl border border-border bg-card overflow-hidden p-3 shadow-card hover:border-primary transition flex flex-col justify-between">
+            ${isImg ? `
+              <div class="h-36 w-full rounded-2xl bg-muted overflow-hidden mb-3 flex items-center justify-center">
+                <img src="/uploads/${att.filename}" class="h-full w-full object-cover group-hover:scale-105 transition" />
+              </div>
+            ` : `
+              <div class="h-36 w-full rounded-2xl bg-muted/60 mb-3 flex flex-col items-center justify-center text-muted-foreground">
+                <i data-lucide="file-text" class="h-12 w-12 mb-1"></i>
+                <span class="text-[10px] font-mono uppercase">${att.mime_type.split('/')[1] || 'file'}</span>
+              </div>
+            `}
+            <div class="space-y-1">
+              <p class="text-xs font-bold text-foreground truncate" title="${this.escapeHtml(att.original_name)}">${this.escapeHtml(att.original_name)}</p>
+              <p class="text-[10px] text-muted-foreground truncate">from: ${this.escapeHtml(att.sender_name)}</p>
+              <div class="flex items-center justify-between pt-2 border-t border-border-light text-[11px]">
+                <span class="text-muted-foreground">${sizeKB} KB</span>
+                <a
+                  href="/uploads/${att.filename}"
+                  download="${att.original_name}"
+                  class="flex items-center gap-1 text-primary hover:underline font-semibold"
+                >
+                  <i data-lucide="download" class="h-3 w-3"></i> Download
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    } catch (err) {
+      console.error('Failed to filter photos/files:', err);
+    }
+  },
+
+  // Batch actions
+  toggleMessageCheck(id, checked) {
+    if (checked) {
+      this.checkedIds.add(id);
+    } else {
+      this.checkedIds.delete(id);
+    }
+    this.updateBatchToolbar();
+  },
+
+  toggleSelectAll(checked) {
+    if (checked) {
+      this.messages.forEach(m => this.checkedIds.add(m.id));
+    } else {
+      this.checkedIds.clear();
+    }
+    this.renderMessagesList();
+    this.updateBatchToolbar();
+  },
+
+  updateBatchToolbar() {
+    const toolbar = document.getElementById('batch-toolbar');
+    const label = document.getElementById('selected-count-label');
+    const count = this.checkedIds.size;
+
+    if (count > 0) {
+      toolbar.classList.remove('hidden');
+      label.textContent = `${count} selected`;
+    } else {
+      toolbar.classList.add('hidden');
+      const selectAll = document.getElementById('select-all-checkbox');
+      if (selectAll) selectAll.checked = false;
+    }
+  },
+
+  async batchAction(action) {
+    const ids = Array.from(this.checkedIds);
+    if (ids.length === 0) return;
+
+    try {
+      await fetch('/api/messages/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ids })
+      });
+
+      this.checkedIds.clear();
+      this.updateBatchToolbar();
+      await this.loadMessages();
+      await this.fetchFolders();
+      this.showToast(`Updated ${ids.length} messages`);
+    } catch (err) {
+      console.error('Batch action failed:', err);
+    }
+  },
+
+  // Single message operations
+  async toggleStar(id, is_starred) {
+    try {
+      await fetch(`/api/messages/${id}/star`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_starred })
+      });
+      if (this.selectedMessage?.id === id) {
+        this.selectedMessage.is_starred = is_starred ? 1 : 0;
+        this.renderMessageReader(this.selectedMessage);
+      }
+      this.loadMessages();
+      this.fetchFolders();
+    } catch (err) {
+      console.error('Failed to toggle star:', err);
+    }
+  },
+
+  async toggleRead(id, is_read) {
+    try {
+      await fetch(`/api/messages/${id}/read`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_read })
+      });
+      this.loadMessages();
+      this.fetchFolders();
+    } catch (err) {
+      console.error('Failed to toggle read:', err);
+    }
+  },
+
+  async archiveMessage(id) {
+    try {
+      await fetch(`/api/messages/${id}/archive`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_archived: true })
+      });
+      this.showToast('Archived message');
+      this.selectedMessage = null;
+      this.navTo(this.currentFolder);
+    } catch (err) {
+      console.error('Failed to archive:', err);
+    }
+  },
+
+  async spamMessage(id) {
+    try {
+      await fetch(`/api/messages/${id}/spam`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_spam: true })
+      });
+      this.showToast('Marked as spam');
+      this.selectedMessage = null;
+      this.navTo(this.currentFolder);
+    } catch (err) {
+      console.error('Failed to mark spam:', err);
+    }
+  },
+
+  async trashMessage(id) {
+    try {
+      await fetch(`/api/messages/${id}/trash`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_trashed: true })
+      });
+      this.showToast('Moved to trash');
+      this.selectedMessage = null;
+      this.navTo(this.currentFolder);
+    } catch (err) {
+      console.error('Failed to trash:', err);
+    }
+  },
+
+  async emptyCurrentFolder() {
+    const f = this.currentFolder.toLowerCase();
+    if (!confirm(`Are you sure you want to permanently empty all items in ${this.currentFolder}?`)) return;
+
+    try {
+      await fetch('/api/messages/empty-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder: f })
+      });
+      this.selectedMessage = null;
+      this.loadMessages();
+      this.fetchFolders();
+      this.showToast(`Emptied ${this.currentFolder}`);
+    } catch (err) {
+      console.error('Failed to empty folder:', err);
+    }
+  },
+
+  replyToMessage() {
+    const msg = this.selectedMessage;
+    if (!msg) return;
+    this.openCompose({
+      to: msg.sender_email,
+      subject: msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`,
+      body: `\n\n--- Original Message ---\nFrom: ${msg.sender_name} <${msg.sender_email}>\n\n${msg.body || ''}`
+    });
+  },
+
+  replyAllMessage() {
+    const msg = this.selectedMessage;
+    if (!msg) return;
+    const recipients = [msg.sender_email, msg.recipient_email].filter(Boolean).join(', ');
+    this.openCompose({
+      to: recipients,
+      subject: msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`,
+      body: `\n\n--- Reply All ---\nFrom: ${msg.sender_name}\n\n${msg.body || ''}`
+    });
+  },
+
+  forwardMessage() {
+    const msg = this.selectedMessage;
+    if (!msg) return;
+    this.openCompose({
+      subject: msg.subject.startsWith('Fwd:') ? msg.subject : `Fwd: ${msg.subject}`,
+      body: `\n\n---------- Forwarded message ---------\nFrom: ${msg.sender_name} <${msg.sender_email}>\nSubject: ${msg.subject}\n\n${msg.body || ''}`
+    });
+  },
+
+  // Compose Modal & Editor
+  openCompose(prefill = {}) {
+    this.composeFiles = [];
+    this.currentDraftId = prefill.draftId || null;
+
+    document.getElementById('compose-modal').classList.remove('hidden');
+    document.getElementById('compose-to').value = prefill.to || '';
+    document.getElementById('compose-cc').value = prefill.cc || '';
+    document.getElementById('compose-bcc').value = prefill.bcc || '';
+    document.getElementById('compose-subject').value = prefill.subject || '';
+
+    const editor = document.getElementById('compose-editor');
+    editor.innerHTML = prefill.body ? this.escapeHtml(prefill.body).replace(/\n/g, '<br>') : '';
+
+    this.renderComposeAttachments();
+    document.getElementById('draft-status-pill').textContent = '';
+    lucide.createIcons();
+
+    setTimeout(() => {
+      if (!prefill.to) {
+        document.getElementById('compose-to').focus();
+      } else {
+        editor.focus();
+      }
+    }, 100);
+  },
+
+  closeCompose() {
+    document.getElementById('compose-modal').classList.add('hidden');
+    this.composeFiles = [];
+    this.currentDraftId = null;
+  },
+
+  toggleCcBcc() {
+    const row = document.getElementById('cc-bcc-row');
+    row.classList.toggle('hidden');
+  },
+
+  execEditorCommand(command, value = null) {
+    document.execCommand(command, false, value);
+    document.getElementById('compose-editor').focus();
+  },
+
+  insertLinkPrompt() {
+    const url = prompt('Enter web URL:', 'https://');
+    if (url) {
+      this.execEditorCommand('createLink', url);
+    }
+  },
+
+  insertSignature() {
+    const sig = this.currentUser?.signature || '🦝 Sent with clever stealth via Raccon Postcard Mail.';
+    const editor = document.getElementById('compose-editor');
+    editor.innerHTML += `<br><br><span style="color:#6c7582;font-style:italic;">${this.escapeHtml(sig)}</span>`;
+    editor.focus();
+  },
+
+  handleFilesSelected(files) {
+    for (const f of files) {
+      this.composeFiles.push(f);
+    }
+    this.renderComposeAttachments();
+  },
+
+  renderComposeAttachments() {
+    const container = document.getElementById('compose-attachments-list');
+    if (this.composeFiles.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    container.innerHTML = this.composeFiles.map((file, idx) => `
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1 text-xs">
+        <i data-lucide="paperclip" class="h-3 w-3 text-muted-foreground"></i>
+        <span class="max-w-[150px] truncate font-medium">${this.escapeHtml(file.name)}</span>
+        <button type="button" onclick="app.removeComposeFile(${idx})" class="text-muted-foreground hover:text-red-600 ml-1">
+          <i data-lucide="x" class="h-3 w-3"></i>
+        </button>
+      </span>
+    `).join('');
+
+    lucide.createIcons();
+  },
+
+  removeComposeFile(idx) {
+    this.composeFiles.splice(idx, 1);
+    this.renderComposeAttachments();
+  },
+
+  async saveDraft() {
+    const to = document.getElementById('compose-to').value;
+    const cc = document.getElementById('compose-cc').value;
+    const bcc = document.getElementById('compose-bcc').value;
+    const subject = document.getElementById('compose-subject').value;
+    const body = document.getElementById('compose-editor').innerText;
+    const body_html = document.getElementById('compose-editor').innerHTML;
+
+    try {
+      const res = await fetch('/api/messages/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: this.currentDraftId,
+          recipient_email: to,
+          cc,
+          bcc,
+          subject,
+          body,
+          body_html
+        })
+      });
+      const data = await res.json();
+      this.currentDraftId = data.draftId;
+      document.getElementById('draft-status-pill').textContent = 'Draft saved';
+      this.fetchFolders();
+    } catch (err) {
+      console.error('Failed to save draft:', err);
+    }
+  },
+
+  async discardDraft() {
+    this.closeCompose();
+    this.showToast('Draft discarded');
+  },
+
+  async sendMessage() {
+    const to = document.getElementById('compose-to').value.trim();
+    const cc = document.getElementById('compose-cc').value.trim();
+    const bcc = document.getElementById('compose-bcc').value.trim();
+    const subject = document.getElementById('compose-subject').value.trim();
+    const body = document.getElementById('compose-editor').innerText;
+    const body_html = document.getElementById('compose-editor').innerHTML;
+
+    if (!to) {
+      alert('Please specify a recipient email address.');
+      document.getElementById('compose-to').focus();
+      return;
+    }
+
+    const sendBtn = document.getElementById('send-mail-btn');
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Sending...</span>';
+    lucide.createIcons();
+
+    try {
+      const formData = new FormData();
+      formData.append('to', to);
+      formData.append('cc', cc);
+      formData.append('bcc', bcc);
+      formData.append('subject', subject || '(no subject)');
+      formData.append('body', body);
+      formData.append('body_html', body_html);
+      if (this.currentDraftId) formData.append('draft_id', this.currentDraftId);
+
+      for (const file of this.composeFiles) {
+        formData.append('attachments', file);
+      }
+
+      const res = await fetch('/api/messages/send', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to send message');
+      }
+
+      this.playChime();
+      this.showToast('Dispatched clever email! 🦝');
+      this.closeCompose();
+      this.fetchFolders();
+      if (this.currentFolder === 'Sent') this.loadMessages();
+    } catch (err) {
+      alert('Send error: ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5 text-white"></i><span>Send Postcard</span><span class="paw-bounce text-xs">🐾</span>';
+      lucide.createIcons();
+    }
+  },
+
+  // Recipient Auto-complete
+  onRecipientInput(val) {
+    const suggestions = document.getElementById('contact-suggestions');
+    if (!val || val.length < 1) {
+      suggestions.classList.add('hidden');
+      return;
+    }
+
+    const matches = this.contacts.filter(c =>
+      c.name.toLowerCase().includes(val.toLowerCase()) ||
+      c.email.toLowerCase().includes(val.toLowerCase())
+    );
+
+    if (matches.length === 0) {
+      suggestions.classList.add('hidden');
+      return;
+    }
+
+    suggestions.innerHTML = matches.map(c => `
+      <button
+        type="button"
+        onclick="app.selectRecipientContact('${c.email}')"
+        class="w-full text-left flex items-center justify-between p-2 rounded-lg text-xs hover:bg-muted transition"
+      >
+        <span class="font-bold truncate">${c.name}</span>
+        <span class="text-[11px] text-muted-foreground truncate">&lt;${c.email}&gt;</span>
+      </button>
+    `).join('');
+
+    suggestions.classList.remove('hidden');
+  },
+
+  selectRecipientContact(email) {
+    const toInput = document.getElementById('compose-to');
+    toInput.value = email;
+    document.getElementById('contact-suggestions').classList.add('hidden');
+    document.getElementById('compose-subject').focus();
+  },
+
+  // Filters & Sorting
+  setFilter(filter) {
+    this.currentFilter = filter;
+    ['all', 'unread', 'starred', 'has_attachments'].forEach(f => {
+      const btn = document.getElementById(`filter-${f}`);
+      if (btn) {
+        if (f === filter) {
+          btn.className = 'px-3 py-1 rounded-full font-bold btn-orange-matte transition text-xs shadow-xs';
+        } else {
+          btn.className = 'px-3 py-1 rounded-full font-medium text-muted-foreground hover:bg-muted transition text-xs border border-transparent hover:border-border';
+        }
+      }
+    });
+    this.loadMessages();
+  },
+
+  onSortChange(val) {
+    this.currentSort = val;
+    this.loadMessages();
+  },
+
+  onSearchInput(val) {
+    this.searchQuery = val;
+    const clearBtn = document.getElementById('search-clear-btn');
+    const dropdown = document.getElementById('search-suggestions-dropdown');
+
+    if (val && val.trim().length > 0) {
+      clearBtn?.classList.remove('hidden');
+      clearTimeout(this._searchTimer);
+      this._searchTimer = setTimeout(() => {
+        this.fetchSearchSuggestions(val.trim());
+      }, 160);
+    } else {
+      clearBtn?.classList.add('hidden');
+      if (dropdown) {
+        dropdown.classList.add('hidden');
+        dropdown.innerHTML = '';
+      }
+      this.loadMessages();
+    }
+  },
+
+  onSearchFocus() {
+    const val = (document.getElementById('global-search')?.value || '').trim();
+    if (val.length > 0) {
+      this.fetchSearchSuggestions(val);
+    }
+  },
+
+  onSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+      const val = (document.getElementById('global-search')?.value || '').trim();
+      if (val.length > 0) {
+        this.searchAllFolders(val);
+      }
+    } else if (event.key === 'Escape') {
+      this.closeSearchSuggestions();
+    }
+  },
+
+  closeSearchSuggestions() {
+    const dropdown = document.getElementById('search-suggestions-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  },
+
+  async fetchSearchSuggestions(query) {
+    const dropdown = document.getElementById('search-suggestions-dropdown');
+    if (!dropdown) return;
+
+    try {
+      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      this.renderSearchSuggestions(data, query);
+    } catch (err) {
+      console.error('Failed to fetch search suggestions:', err);
+    }
+  },
+
+  renderSearchSuggestions(data, query) {
+    const dropdown = document.getElementById('search-suggestions-dropdown');
+    if (!dropdown) return;
+
+    const people = data.people || [];
+    const messages = data.messages || [];
+
+    if (people.length === 0 && messages.length === 0) {
+      dropdown.innerHTML = `
+        <div class="p-3 text-center text-muted-foreground">
+          <p class="font-medium">No direct matches for "${this.escapeHtml(query)}"</p>
+          <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="mt-2 text-primary font-bold hover:underline cursor-pointer">
+            Search in all mail & spam anyway ➔
+          </button>
+        </div>
+      `;
+      dropdown.classList.remove('hidden');
+      dropdown.classList.add('flex');
+      return;
+    }
+
+    let html = '';
+
+    // 1. People / Senders Section
+    if (people.length > 0) {
+      html += `
+        <div class="p-2 bg-muted/30">
+          <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+            <span>People & Contacts</span>
+            <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-bold">${people.length}</span>
+          </div>
+          <div class="space-y-0.5 mt-1">
+      `;
+      for (const p of people) {
+        const initial = (p.name || p.email || 'U')[0].toUpperCase();
+        html += `
+          <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-card cursor-pointer transition">
+            <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+              ${initial}
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-foreground truncate">${this.escapeHtml(p.name)}</p>
+              <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(p.email)}</p>
+            </div>
+            <span class="text-[10px] text-primary font-medium shrink-0">Filter sender ➔</span>
+          </div>
+        `;
+      }
+      html += `</div></div>`;
+    }
+
+    // 2. Emails Section (Across all folders: Inbox, Spam, Sent, Archive, Trash)
+    if (messages.length > 0) {
+      html += `
+        <div class="p-2">
+          <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+            <span>Matching Emails (Inbox, Spam, Sent)</span>
+            <span class="text-[9px] bg-muted text-foreground px-1.5 py-0.2 rounded-full font-bold">${messages.length}</span>
+          </div>
+          <div class="space-y-0.5 mt-1">
+      `;
+      for (const m of messages) {
+        const folder = m.folder_label || 'Inbox';
+        let folderBadgeColor = 'bg-primary/10 text-primary';
+        if (folder === 'Spam') folderBadgeColor = 'bg-rose-500/15 text-rose-600 dark:text-rose-400';
+        else if (folder === 'Trash') folderBadgeColor = 'bg-red-500/15 text-red-600';
+        else if (folder === 'Sent') folderBadgeColor = 'bg-emerald-500/15 text-emerald-600';
+        else if (folder === 'Archive') folderBadgeColor = 'bg-amber-500/15 text-amber-600';
+
+        html += `
+          <div onclick="app.selectSuggestionMessage('${m.id}')" class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-muted/60 cursor-pointer transition">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md ${folderBadgeColor}">${folder}</span>
+                <span class="font-bold text-foreground truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
+              </div>
+              <p class="text-xs text-foreground/90 font-medium truncate mt-0.5">${this.escapeHtml(m.subject || '(no subject)')}</p>
+            </div>
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-muted-foreground shrink-0"></i>
+          </div>
+        `;
+      }
+      html += `</div></div>`;
+    }
+
+    // 3. Search Loop Footer
+    html += `
+      <div class="p-2.5 bg-muted/50 flex items-center justify-between">
+        <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="font-bold text-primary hover:underline flex items-center gap-1.5 cursor-pointer text-left">
+          <i data-lucide="search" class="h-3.5 w-3.5 shrink-0"></i>
+          <span>Search in all mail (Inbox, Spam, Sent, Archive) for "${this.escapeHtml(query)}"</span>
+        </button>
+        <span class="text-[10px] text-muted-foreground font-mono hidden sm:inline">Press Enter ↵</span>
+      </div>
+    `;
+
+    dropdown.innerHTML = html;
+    dropdown.classList.remove('hidden');
+    dropdown.classList.add('flex');
+    lucide.createIcons();
+  },
+
+  selectSuggestionMessage(id) {
+    this.closeSearchSuggestions();
+    this.selectMessage(id);
+  },
+
+  filterBySender(email, name) {
+    const searchInput = document.getElementById('global-search');
+    if (searchInput) searchInput.value = email;
+    this.closeSearchSuggestions();
+    this.searchAllFolders(email);
+  },
+
+  searchAllFolders(query) {
+    this.closeSearchSuggestions();
+    this.searchQuery = query;
+    this.currentFolder = 'all';
+    const folderTitle = document.getElementById('current-folder-title');
+    const folderSub = document.getElementById('current-folder-subtitle');
+    if (folderTitle) folderTitle.textContent = 'Search Results';
+    if (folderSub) folderSub.textContent = `All folders matching: "${query}"`;
+    this.loadMessages();
+  },
+
+  focusMobileSearch() {
+    const searchInput = document.getElementById('global-search');
+    if (searchInput) {
+      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      searchInput.focus();
+    }
+  },
+
+  // Screenshot Capture tool for postcards & emails
+  async takeScreenshot() {
+    const cardEl = document.getElementById('message-reader-card') || document.getElementById('reader-content');
+    if (!cardEl) {
+      this.showToast('No email open to screenshot');
+      return;
+    }
+
+    if (typeof html2canvas === 'undefined') {
+      alert('Screenshot engine loading, please try again in a moment.');
+      return;
+    }
+
+    const btn = document.getElementById('reader-screenshot-btn');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Snapping...</span>';
+      lucide.createIcons();
+    }
+
+    try {
+      const canvas = await html2canvas(cardEl, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: null
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) throw new Error('Canvas snapshot failed');
+
+        const filename = `raccon-postcard-${Date.now()}.png`;
+        const file = new File([blob], filename, { type: 'image/png' });
+
+        // If Web Share API is available (Android / iOS native share)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: this.selectedMessage?.subject || 'Raccon Mail Postcard',
+              text: 'Check out this clever postcard from Raccon Mail!'
+            });
+            this.showToast('Shared screenshot! 📸');
+            return;
+          } catch (shareErr) {
+            // Cancelled share, continue to download
+          }
+        }
+
+        // Direct download
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.showToast('Screenshot saved! 📸');
+      }, 'image/png');
+    } catch (err) {
+      console.error('Screenshot error:', err);
+      alert('Could not take screenshot: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+      }
+    }
+  },
+
+  clearSearch() {
+    const searchInput = document.getElementById('global-search');
+    if (searchInput) searchInput.value = '';
+    this.closeSearchSuggestions();
+    this.onSearchInput('');
+    if (searchInput) searchInput.focus();
+  },
+
+  refreshCurrentFolder() {
+    this.loadMessages();
+    this.fetchFolders();
+  },
+
+  // Incoming Mail Simulator
+  async simulateIncomingMail() {
+    try {
+      const res = await fetch('/api/messages/simulate', { method: 'POST' });
+      const data = await res.json();
+      this.playChime();
+      this.showToast(`Received incoming postcard from ${data.message.name}! 📬`);
+      this.fetchFolders();
+      if (this.currentFolder === 'Inbox' || this.currentFolder === 'Unread') {
+        this.loadMessages();
+      }
+    } catch (err) {
+      console.error('Failed to simulate incoming mail:', err);
+    }
+  },
+
+  // Postcard Physical Print Modal
+  openPostcardModal() {
+    const msg = this.selectedMessage;
+    if (!msg) return;
+
+    document.getElementById('postcard-subject').textContent = msg.subject || '(no subject)';
+    document.getElementById('postcard-body').textContent = msg.body;
+    document.getElementById('postcard-from').textContent = `${msg.sender_name} <${msg.sender_email}>`;
+    document.getElementById('postcard-to').textContent = msg.recipient_email;
+    document.getElementById('postcard-postmark-date').textContent = new Date(msg.created_at).toLocaleDateString([], { month: 'short', year: 'numeric' }).toUpperCase();
+
+    document.getElementById('postcard-print-modal').classList.remove('hidden');
+    lucide.createIcons();
+  },
+
+  closePostcardModal() {
+    document.getElementById('postcard-print-modal').classList.add('hidden');
+  },
+
+  // Custom Folders
+  openNewFolderModal() {
+    document.getElementById('new-folder-modal').classList.remove('hidden');
+    document.getElementById('new-folder-name').value = '';
+    setTimeout(() => document.getElementById('new-folder-name').focus(), 100);
+  },
+
+  closeNewFolderModal() {
+    document.getElementById('new-folder-modal').classList.add('hidden');
+  },
+
+  async createFolder() {
+    const name = document.getElementById('new-folder-name').value.trim();
+    if (!name) return;
+
+    try {
+      await fetch('/api/folders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      this.closeNewFolderModal();
+      this.fetchFolders();
+      this.showToast(`Folder "${name}" created`);
+    } catch (err) {
+      console.error('Failed to create folder:', err);
+    }
+  },
+
+  async deleteFolder(id) {
+    if (!confirm('Delete this folder? Messages inside will be preserved.')) return;
+    try {
+      await fetch(`/api/folders/${id}`, { method: 'DELETE' });
+      if (this.currentFolder === id) this.currentFolder = 'Inbox';
+      this.fetchFolders();
+      this.loadMessages();
+    } catch (err) {
+      console.error('Failed to delete folder:', err);
+    }
+  },
+
+  // Address Book & Contacts
+  async fetchContacts() {
+    try {
+      const res = await fetch('/api/contacts');
+      const data = await res.json();
+      this.contacts = data.contacts || [];
+      const badge = document.getElementById('contacts-count-badge');
+      if (badge) badge.textContent = this.contacts.length;
+    } catch (err) {
+      console.error('Failed to fetch contacts:', err);
+    }
+  },
+
+  openContactsView() {
+    document.getElementById('contacts-modal').classList.remove('hidden');
+    this.renderContactsList(this.contacts);
+    lucide.createIcons();
+  },
+
+  closeContactsModal() {
+    document.getElementById('contacts-modal').classList.add('hidden');
+  },
+
+  renderContactsList(list) {
+    const container = document.getElementById('contacts-list');
+    if (list.length === 0) {
+      container.innerHTML = '<p class="col-span-full text-center text-xs text-muted-foreground py-8">No contacts found.</p>';
+      return;
+    }
+
+    container.innerHTML = list.map(c => `
+      <div class="rounded-2xl border border-border bg-card p-3 shadow-sm hover:border-primary transition flex items-center justify-between">
+        <div class="flex items-center gap-2.5 truncate">
+          <div class="h-9 w-9 rounded-full bg-accent/70 font-display font-bold flex items-center justify-center text-foreground text-xs shrink-0">
+            ${c.name.charAt(0).toUpperCase()}
+          </div>
+          <div class="truncate">
+            <p class="font-bold text-xs truncate">${this.escapeHtml(c.name)}</p>
+            <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(c.email)}</p>
+            ${c.notes ? `<p class="text-[10px] text-muted-foreground/80 truncate italic">${this.escapeHtml(c.notes)}</p>` : ''}
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button
+            onclick="app.closeContactsModal(); app.openCompose({ to: '${c.email}' })"
+            title="Compose email"
+            class="p-1.5 rounded-full bg-muted hover:bg-primary hover:text-white transition"
+          >
+            <i data-lucide="mail" class="h-3.5 w-3.5"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    lucide.createIcons();
+  },
+
+  filterContacts(query) {
+    const q = query.toLowerCase();
+    const filtered = this.contacts.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.email.toLowerCase().includes(q) ||
+      (c.notes && c.notes.toLowerCase().includes(q))
+    );
+    this.renderContactsList(filtered);
+  },
+
+  openNewContactForm() {
+    document.getElementById('contact-form-modal').classList.remove('hidden');
+    document.getElementById('contact-form-name').value = '';
+    document.getElementById('contact-form-email').value = '';
+    document.getElementById('contact-form-phone').value = '';
+    document.getElementById('contact-form-notes').value = '';
+  },
+
+  closeContactForm() {
+    document.getElementById('contact-form-modal').classList.add('hidden');
+  },
+
+  async saveContact() {
+    const name = document.getElementById('contact-form-name').value.trim();
+    const email = document.getElementById('contact-form-email').value.trim();
+    const phone = document.getElementById('contact-form-phone').value.trim();
+    const notes = document.getElementById('contact-form-notes').value.trim();
+
+    if (!name || !email) {
+      alert('Please specify name and email');
+      return;
+    }
+
+    try {
+      await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, notes })
+      });
+      this.closeContactForm();
+      await this.fetchContacts();
+      this.renderContactsList(this.contacts);
+      this.showToast(`Contact "${name}" saved`);
+    } catch (err) {
+      console.error('Failed to save contact:', err);
+    }
+  },
+
+  // Settings & Real SMTP / IMAP
+  async openSettingsModal() {
+    document.getElementById('account-dropdown').classList.add('hidden');
+    document.getElementById('settings-modal').classList.remove('hidden');
+
+    document.getElementById('settings-name').value = this.currentUser?.name || '';
+    document.getElementById('settings-signature').value = this.currentUser?.signature || '';
+
+    try {
+      const res = await fetch('/api/settings/mail');
+      const data = await res.json();
+      document.getElementById('settings-smtp-host').value = data.smtp_host || '';
+      document.getElementById('settings-smtp-port').value = data.smtp_port || 587;
+      document.getElementById('settings-smtp-user').value = data.smtp_user || '';
+      document.getElementById('settings-sound-enabled').checked = Boolean(data.sound_enabled);
+    } catch (err) {
+      console.error('Failed to load settings:', err);
+    }
+
+    lucide.createIcons();
+  },
+
+  closeSettingsModal() {
+    document.getElementById('settings-modal').classList.add('hidden');
+  },
+
+  async saveSettings() {
+    const name = document.getElementById('settings-name').value.trim();
+    const signature = document.getElementById('settings-signature').value.trim();
+    const sound_enabled = document.getElementById('settings-sound-enabled').checked ? 1 : 0;
+
+    const smtp_host = document.getElementById('settings-smtp-host').value.trim();
+    const smtp_port = document.getElementById('settings-smtp-port').value.trim();
+    const smtp_user = document.getElementById('settings-smtp-user').value.trim();
+    const smtp_pass = document.getElementById('settings-smtp-pass').value.trim();
+
+    try {
+      await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, signature, sound_enabled })
+      });
+
+      await fetch('/api/settings/mail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ smtp_host, smtp_port, smtp_user, smtp_pass, sound_enabled })
+      });
+
+      await this.fetchUser();
+      this.closeSettingsModal();
+      this.showToast('Settings saved successfully');
+    } catch (err) {
+      alert('Failed to save settings: ' + err.message);
+    }
+  },
+
+  async testSmtpConnection() {
+    const host = document.getElementById('settings-smtp-host').value.trim();
+    const port = document.getElementById('settings-smtp-port').value.trim();
+    const user = document.getElementById('settings-smtp-user').value.trim();
+    const pass = document.getElementById('settings-smtp-pass').value.trim();
+    const statusEl = document.getElementById('smtp-test-status');
+
+    if (!host || !user || !pass) {
+      statusEl.textContent = 'Enter host, user, and password';
+      statusEl.className = 'text-[11px] text-red-600 font-semibold';
+      return;
+    }
+
+    statusEl.textContent = 'Testing connection...';
+    statusEl.className = 'text-[11px] text-muted-foreground';
+
+    try {
+      const res = await fetch('/api/settings/mail/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ host, port, user, pass })
+      });
+      const data = await res.json();
+      if (data.success) {
+        statusEl.textContent = 'Connected successfully!';
+        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+      } else {
+        statusEl.textContent = 'Failed: ' + (data.error || 'Check credentials');
+        statusEl.className = 'text-[11px] text-red-600 font-semibold';
+      }
+    } catch (err) {
+      statusEl.textContent = 'Error: ' + err.message;
+      statusEl.className = 'text-[11px] text-red-600 font-semibold';
+    }
+  },
+
+  async logout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    } catch (_) {
+      window.location.href = '/';
+    }
+  },
+
+  // Profile Picture & Cover Photo Management
+  openProfileModal() {
+    this.closeAccountDropdown();
+    const modal = document.getElementById('profile-modal');
+    if (!modal) return;
+    if (this.currentUser) {
+      const avatar = this.currentUser.avatar || '/raccoon-logo.png';
+      const cover = this.currentUser.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
+      const profAv = document.getElementById('profile-avatar-preview');
+      if (profAv) profAv.src = avatar;
+      const covEl = document.getElementById('profile-cover-preview');
+      if (covEl) {
+        if (cover.startsWith('http') || cover.startsWith('/')) {
+          covEl.style.backgroundImage = `url('${cover}')`;
+        } else {
+          covEl.style.background = cover;
+        }
+      }
+      const pName = document.getElementById('profile-preview-name');
+      if (pName) pName.textContent = this.currentUser.name || '';
+      const pEmail = document.getElementById('profile-preview-email');
+      if (pEmail) pEmail.textContent = this.currentUser.email || '';
+      const inName = document.getElementById('profile-name-input');
+      if (inName) inName.value = this.currentUser.name || '';
+      const inEmail = document.getElementById('profile-email-input');
+      if (inEmail) inEmail.value = this.currentUser.email || '';
+      const inSig = document.getElementById('profile-signature-input');
+      if (inSig) inSig.value = this.currentUser.signature || '';
+
+      // Highlight currently selected theme
+      this.highlightActiveTheme(localStorage.getItem('raccon_theme') || this.currentUser?.theme || 'raccon');
+    }
+    modal.classList.remove('hidden');
+    lucide.createIcons();
+  },
+
+  closeProfileModal() {
+    document.getElementById('profile-modal')?.classList.add('hidden');
+  },
+
+  closeAccountDropdown() {
+    document.getElementById('account-dropdown')?.classList.add('hidden');
+  },
+
+  cropImageToSquare(file, targetSize = 400) {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith('image/')) {
+        return resolve(file);
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = targetSize;
+            canvas.height = targetSize;
+            const ctx = canvas.getContext('2d');
+            const minDim = Math.min(img.width, img.height);
+            const sx = (img.width - minDim) / 2;
+            const sy = (img.height - minDim) / 2;
+            ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, targetSize, targetSize);
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, 'image/jpeg', 0.92);
+          } catch (err) {
+            resolve(file);
+          }
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  },
+
+  async uploadAvatar(file) {
+    if (!file) return;
+    try {
+      this.showToast('Preparing profile photo...');
+      const croppedBlob = await this.cropImageToSquare(file, 400);
+      const formData = new FormData();
+      formData.append('avatar', croppedBlob, 'avatar.jpg');
+
+      this.showToast('Uploading profile picture...');
+      const res = await fetch('/api/user/avatar', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to upload avatar');
+
+      this.showToast('Profile picture updated! 📸');
+      await this.fetchUser();
+    } catch (err) {
+      alert('Avatar upload error: ' + err.message);
+    }
+  },
+
+  async uploadCoverPhoto(file) {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('cover', file);
+
+    try {
+      this.showToast('Uploading cover photo...');
+      const res = await fetch('/api/user/cover', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to upload cover');
+
+      this.showToast('Cover photo updated! 🌄');
+      await this.fetchUser();
+    } catch (err) {
+      alert('Cover photo upload error: ' + err.message);
+    }
+  },
+
+  selectPresetAvatar(url) {
+    const av = document.getElementById('profile-avatar-preview');
+    if (av) av.src = url;
+    if (this.currentUser) this.currentUser.avatar = url;
+  },
+
+  selectPresetCover(val) {
+    const cov = document.getElementById('profile-cover-preview');
+    if (cov) {
+      if (val.startsWith('http') || val.startsWith('/')) {
+        cov.style.backgroundImage = `url('${val}')`;
+      } else {
+        cov.style.background = val;
+      }
+    }
+    if (this.currentUser) this.currentUser.cover_photo = val;
+  },
+
+  async saveProfile() {
+    const name = document.getElementById('profile-name-input').value.trim();
+    const signature = document.getElementById('profile-signature-input').value.trim();
+    const avatar = document.getElementById('profile-avatar-preview').src;
+    const covEl = document.getElementById('profile-cover-preview');
+    let cover_photo = this.currentUser?.cover_photo || '';
+    if (covEl.style.backgroundImage && covEl.style.backgroundImage !== 'none') {
+      cover_photo = covEl.style.backgroundImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+    } else if (covEl.style.background) {
+      cover_photo = covEl.style.background;
+    }
+
+    const saveBtn = document.getElementById('profile-save-btn');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+    }
+
+    const theme = localStorage.getItem('raccon_theme') || 'raccon';
+
+    try {
+      const res = await fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, signature, avatar, cover_photo, theme })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save profile');
+
+      await this.fetchUser();
+      this.closeProfileModal();
+      this.showToast('Profile updated successfully! ✨');
+    } catch (err) {
+      alert('Save profile error: ' + err.message);
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile Changes';
+      }
+    }
+  },
+
+  // Mobile responsive sidebar and view management
+  toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar-panel');
+    const backdrop = document.getElementById('mobile-sidebar-backdrop');
+    if (!sidebar) return;
+    const isClosed = sidebar.classList.contains('-translate-x-full');
+    if (isClosed) {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop?.classList.remove('hidden');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      backdrop?.classList.add('hidden');
+    }
+  },
+
+  closeMobileSidebar() {
+    const sidebar = document.getElementById('sidebar-panel');
+    const backdrop = document.getElementById('mobile-sidebar-backdrop');
+    sidebar?.classList.add('-translate-x-full');
+    backdrop?.classList.add('hidden');
+  },
+
+  // Auto-Dismiss for Dropdown menus only
+  menuDismissTimer: null,
+
+  startMenuAutoDismissTimer() {
+    if (this.menuDismissTimer) clearTimeout(this.menuDismissTimer);
+    this.menuDismissTimer = setTimeout(() => {
+      const dropdown = document.getElementById('account-dropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+    }, 7000);
+  },
+
+  resetMenuAutoDismissTimer() {
+    if (this.menuDismissTimer) {
+      clearTimeout(this.menuDismissTimer);
+      this.startMenuAutoDismissTimer();
+    }
+  },
+
+  // Return to clean Inbox view on logo click
+  returnToInbox() {
+    this.closeChat();
+    this.closeAllModals();
+    this.closeMobileSidebar();
+    const dropdown = document.getElementById('account-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+    this.navTo('Inbox');
+  },
+
+  // ==========================================
+  // THEME SWITCHER (HARMONY, DARK, MIDNIGHT GREEN)
+  // ==========================================
+  themeDefinitions: {
+    harmony: {
+      name: '☀️ Harmony Light',
+      vars: {
+        '--background': '#EFEDE9',
+        '--foreground': '#1E293B',
+        '--card': '#FFFFFF',
+        '--card-alt': '#F5F5F5',
+        '--card-foreground': '#1E293B',
+        '--primary': '#208ED3',
+        '--primary-hover': '#1A7BB8',
+        '--primary-foreground': '#FFFFFF',
+        '--primary-glow': 'rgba(32, 142, 211, 0.35)',
+        '--secondary': '#F2F2F2',
+        '--secondary-foreground': '#212529',
+        '--muted': '#F6F6F6',
+        '--muted-foreground': '#64748B',
+        '--accent': '#EBF5FB',
+        '--accent-foreground': '#208ED3',
+        '--border': '#D5D5D5',
+        '--border-light': '#E2E8F0',
+        '--mask': '#1E293B',
+        '--fur': '#334155',
+        '--cream': '#EFEDE9'
+      },
+      cover: 'linear-gradient(135deg, #208ED3 0%, #1A7BB8 50%, #0F5E97 100%)',
+      colorScheme: 'light'
+    },
+    dark: {
+      name: '🌙 Harmony Dark',
+      vars: {
+        '--background': '#1D1D1F',
+        '--foreground': '#FFFFFF',
+        '--card': '#2B2C2E',
+        '--card-alt': '#222325',
+        '--card-foreground': '#FFFFFF',
+        '--primary': '#208ED3',
+        '--primary-hover': '#1A7BB8',
+        '--primary-foreground': '#FFFFFF',
+        '--primary-glow': 'rgba(32, 142, 211, 0.45)',
+        '--secondary': '#343536',
+        '--secondary-foreground': '#E4E6EB',
+        '--muted': '#242526',
+        '--muted-foreground': '#9CA3AF',
+        '--accent': '#203345',
+        '--accent-foreground': '#208ED3',
+        '--border': '#404245',
+        '--border-light': '#4F5155',
+        '--mask': '#1D1D1F',
+        '--fur': '#2B2C2E',
+        '--cream': '#1D1D1F'
+      },
+      cover: 'linear-gradient(135deg, #1D1D1F 0%, #2B2C2E 50%, #151D30 100%)',
+      colorScheme: 'dark'
+    },
+    'midnight-green': {
+      name: '🌲 Midnight Green',
+      vars: {
+        '--background': '#0A1414',
+        '--foreground': '#E6F2F2',
+        '--card': '#112222',
+        '--card-alt': '#162E2E',
+        '--card-foreground': '#E6F2F2',
+        '--primary': '#00B392',
+        '--primary-hover': '#00997C',
+        '--primary-foreground': '#0A1414',
+        '--primary-glow': 'rgba(0, 179, 146, 0.45)',
+        '--secondary': '#1C3838',
+        '--secondary-foreground': '#E6F2F2',
+        '--muted': '#162E2E',
+        '--muted-foreground': '#80A6A6',
+        '--accent': '#162E2E',
+        '--accent-foreground': '#00B392',
+        '--border': '#1C3838',
+        '--border-light': '#254A4A',
+        '--mask': '#0A1414',
+        '--fur': '#112222',
+        '--cream': '#1C3838'
+      },
+      cover: 'linear-gradient(135deg, #0A1414 0%, #112222 50%, #1C3838 100%)',
+      colorScheme: 'dark'
+    }
+  },
+
+  normalizeTheme(t) {
+    if (!t) return 'harmony';
+    t = t.toLowerCase().trim();
+    if (t === 'harmony' || t === 'raccon' || t === 'light') return 'harmony';
+    if (t === 'midnight' || t === 'dark') return 'dark';
+    if (t === 'forest' || t === 'cyber' || t === 'midnight-green' || t === 'midnight_green') return 'midnight-green';
+    return this.themeDefinitions[t] ? t : 'harmony';
+  },
+
+  setTheme(themeName, persist = true) {
+    const canonicalTheme = this.normalizeTheme(themeName);
+    const def = this.themeDefinitions[canonicalTheme] || this.themeDefinitions.light;
+
+    // 1. Update CSS classes
+    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'midnight', 'forest', 'cyber'];
+    allThemeClasses.forEach(t => {
+      document.documentElement.classList.remove('theme-' + t);
+      if (document.body) document.body.classList.remove('theme-' + t);
+    });
+    document.documentElement.classList.add('theme-' + canonicalTheme);
+    if (document.body) document.body.classList.add('theme-' + canonicalTheme);
+
+    // 2. Set colorScheme for OS native controls
+    document.documentElement.style.colorScheme = def.colorScheme;
+    if (document.body) document.body.style.colorScheme = def.colorScheme;
+
+    // 3. Directly update CSS custom properties on documentElement and body
+    for (const [prop, val] of Object.entries(def.vars)) {
+      document.documentElement.style.setProperty(prop, val);
+      if (document.body) document.body.style.setProperty(prop, val);
+    }
+
+    // 4. Update default cover gradient if user hasn't set an uploaded image
+    const userCover = this.currentUser?.cover_photo || '';
+    if (!userCover || (!userCover.startsWith('http') && !userCover.startsWith('/'))) {
+      const covEl = document.getElementById('profile-cover-preview');
+      const dropCov = document.getElementById('dropdown-user-cover');
+      if (covEl) covEl.style.background = def.cover;
+      if (dropCov) dropCov.style.background = def.cover;
+    }
+
+    // 5. Store in localStorage
+    localStorage.setItem('raccon_theme', canonicalTheme);
+
+    // 6. Highlight active theme button
+    this.highlightActiveTheme(canonicalTheme);
+
+    // 7. Persist to backend if requested
+    if (persist) {
+      if (this.currentUser) this.currentUser.theme = canonicalTheme;
+      fetch('/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: canonicalTheme })
+      }).then(r => r.json()).then(data => {
+        if (data && data.user) {
+          this.currentUser = { ...this.currentUser, ...data.user };
+        }
+      }).catch(() => {});
+
+      this.showToast(`Switched theme to ${def.name}`);
+    }
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  highlightActiveTheme(themeName) {
+    const canonical = this.normalizeTheme(themeName);
+    const themeButtons = [
+      { id: 'theme-btn-harmony', active: canonical === 'harmony' },
+      { id: 'theme-btn-light', active: canonical === 'harmony' },
+      { id: 'theme-btn-raccon', active: canonical === 'harmony' },
+      { id: 'theme-btn-dark', active: canonical === 'dark' },
+      { id: 'theme-btn-midnight', active: canonical === 'dark' },
+      { id: 'theme-btn-midnight-green', active: canonical === 'midnight-green' },
+      { id: 'theme-btn-forest', active: canonical === 'midnight-green' },
+      { id: 'theme-btn-cyber', active: canonical === 'midnight-green' }
+    ];
+
+    themeButtons.forEach(({ id, active }) => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        if (active) {
+          btn.classList.add('border-primary', 'ring-2', 'ring-primary', 'bg-accent/30');
+          btn.classList.remove('border-border');
+          let check = btn.querySelector('.theme-check-icon');
+          if (!check) {
+            check = document.createElement('span');
+            check.className = 'theme-check-icon absolute top-2 right-2 text-xs font-bold text-primary flex items-center justify-center h-4 w-4 rounded-full bg-primary/10';
+            check.innerHTML = '✓';
+            btn.appendChild(check);
+          }
+        } else {
+          btn.classList.remove('border-primary', 'ring-2', 'ring-primary', 'bg-accent/30');
+          btn.classList.add('border-border');
+          const check = btn.querySelector('.theme-check-icon');
+          if (check) check.remove();
+        }
+      }
+    });
+  },
+
+  // ==========================================
+  // REGISTERED MEMBERS LIVE CHAT ENGINE
+  // ==========================================
+  activeChatFriend: null,
+  chatConversations: [],
+  chatPollInterval: null,
+  currentStickerTab: 'raccoon',
+  currentPopupStickerTab: 'raccoon',
+
+  // Modern Cross-Platform Emoji & Sticker Packs
+  stickerPacks: {
+    raccoon: [
+      { glyph: '🦝', label: 'Raccoon' },
+      { glyph: '🐾', label: 'Paws' },
+      { glyph: '🍪', label: 'Cookie' },
+      { glyph: '🥐', label: 'Croissant' },
+      { glyph: '🍕', label: 'Pizza' },
+      { glyph: '🫐', label: 'Berries' },
+      { glyph: '🌲', label: 'Pine' },
+      { glyph: '🌙', label: 'Moon' },
+      { glyph: '🦉', label: 'Owl' },
+      { glyph: '👑', label: 'Crown' },
+      { glyph: '💤', label: 'Sleep' },
+      { glyph: '✨', label: 'Sparkles' },
+      { glyph: '🔥', label: 'Campfire' },
+      { glyph: '🎁', label: 'Gift' },
+      { glyph: '🚀', label: 'Rocket' },
+      { glyph: '💎', label: 'Treasure' }
+    ],
+    reactions: [
+      { glyph: '❤️', label: 'Heart' },
+      { glyph: '😍', label: 'Love' },
+      { glyph: '😂', label: 'Laugh' },
+      { glyph: '🥰', label: 'Adore' },
+      { glyph: '😎', label: 'Cool' },
+      { glyph: '🥳', label: 'Party' },
+      { glyph: '🤔', label: 'Think' },
+      { glyph: '👍', label: 'Like' },
+      { glyph: '🙌', label: 'Yay' },
+      { glyph: '🔥', label: 'Fire' },
+      { glyph: '👏', label: 'Clap' },
+      { glyph: '🎉', label: 'Celebration' },
+      { glyph: '💯', label: '100' },
+      { glyph: '🤝', label: 'Deal' },
+      { glyph: '💖', label: 'Sparkle' },
+      { glyph: '🌟', label: 'Star' }
+    ],
+    nocturnal: [
+      { glyph: '🍩', label: 'Donut' },
+      { glyph: '🥞', label: 'Pancake' },
+      { glyph: '🍔', label: 'Burger' },
+      { glyph: '🍟', label: 'Fries' },
+      { glyph: '🥪', label: 'Sandwich' },
+      { glyph: '🍎', label: 'Apple' },
+      { glyph: '🍓', label: 'Berry' },
+      { glyph: '🍇', label: 'Grapes' },
+      { glyph: '🧀', label: 'Cheese' },
+      { glyph: '🏕️', label: 'Camp' },
+      { glyph: '🌌', label: 'Galaxy' },
+      { glyph: '⭐', label: 'Star' },
+      { glyph: '🦊', label: 'Fox' },
+      { glyph: '🦔', label: 'Hedgehog' },
+      { glyph: '🌿', label: 'Fern' },
+      { glyph: '🍄', label: 'Mushroom' }
+    ],
+    phrases: [
+      { text: "On my way! 🦝💨", label: "On my way! 🦝💨" },
+      { text: "Midnight snack at 2am? 🥐", label: "Midnight snack? 🥐" },
+      { text: "Received your postcard loud and clear! 📬", label: "Got the postcard! 📬" },
+      { text: "Clever thinking! 🧠✨", label: "Clever! 🧠✨" },
+      { text: "Sounds like a great plan! 🤝", label: "Sounds great! 🤝" },
+      { text: "Good night from the nocturnal forest! 🌙💤", label: "Good night! 🌙💤" }
+    ]
+  },
+
+  async openChat() {
+    this.closeMobileSidebar();
+    this.closeAllModals();
+    this.closeChatBubblePopup();
+    
+    document.getElementById('messages-panel')?.classList.add('hidden');
+    document.getElementById('reader-panel')?.classList.add('hidden');
+    const chatPanel = document.getElementById('chat-panel');
+    if (chatPanel) chatPanel.classList.remove('hidden');
+
+    document.getElementById('nav-chat-btn')?.classList.add('bg-emerald-500/20', 'border-emerald-500/50');
+
+    this.renderStickerPanel('sticker-tray-content', this.currentStickerTab, false);
+    await this.loadChatConversations();
+    this.startChatPolling();
+  },
+
+  closeChat() {
+    const chatPanel = document.getElementById('chat-panel');
+    if (chatPanel) chatPanel.classList.add('hidden');
+    document.getElementById('messages-panel')?.classList.remove('hidden');
+    document.getElementById('reader-panel')?.classList.remove('hidden');
+    document.getElementById('nav-chat-btn')?.classList.remove('bg-emerald-500/20', 'border-emerald-500/50');
+    
+    if (this.chatPollInterval) {
+      clearInterval(this.chatPollInterval);
+      this.chatPollInterval = null;
+    }
+  },
+
+  // Floating Chat Bubble Popup Controls
+  toggleChatBubblePopup() {
+    const popup = document.getElementById('chat-bubble-popup');
+    if (!popup) return;
+    if (popup.classList.contains('hidden')) {
+      this.openChatBubblePopup();
+    } else {
+      this.closeChatBubblePopup();
+    }
+  },
+
+  openChatBubblePopup() {
+    const popup = document.getElementById('chat-bubble-popup');
+    if (!popup) return;
+    popup.classList.remove('hidden');
+    popup.classList.add('flex');
+
+    this.renderStickerPanel('chat-popup-sticker-content', this.currentPopupStickerTab, true);
+    this.loadChatConversations();
+    this.startChatPolling();
+
+    if (this.activeChatFriend) {
+      this.showChatPopupThread(this.activeChatFriend);
+    } else {
+      this.showChatPopupConversations();
+    }
+  },
+
+  closeChatBubblePopup() {
+    const popup = document.getElementById('chat-bubble-popup');
+    if (popup) {
+      popup.classList.add('hidden');
+      popup.classList.remove('flex');
+    }
+  },
+
+  showChatPopupConversations() {
+    const friendsView = document.getElementById('chat-popup-friends-view');
+    const threadView = document.getElementById('chat-popup-thread-view');
+    const backBtn = document.getElementById('chat-popup-back-btn');
+
+    if (window.innerWidth < 640) {
+      friendsView?.classList.remove('hidden');
+      threadView?.classList.add('hidden');
+      backBtn?.classList.add('hidden');
+    } else {
+      friendsView?.classList.remove('hidden');
+      threadView?.classList.remove('hidden');
+      backBtn?.classList.add('hidden');
+    }
+
+    const title = document.getElementById('chat-popup-title');
+    if (title) title.textContent = 'Raccon Member Chat';
+    const sub = document.getElementById('chat-popup-subtitle');
+    if (sub) sub.textContent = 'Clever nocturnal messaging for registered members';
+    const av = document.getElementById('chat-popup-avatar');
+    if (av) av.src = '/raccoon-logo.png';
+
+    this.renderPopupConversations();
+  },
+
+  showChatPopupThread(friendEmail) {
+    this.activeChatFriend = friendEmail;
+    const friendsView = document.getElementById('chat-popup-friends-view');
+    const threadView = document.getElementById('chat-popup-thread-view');
+    const backBtn = document.getElementById('chat-popup-back-btn');
+
+    if (window.innerWidth < 640) {
+      friendsView?.classList.add('hidden');
+      threadView?.classList.remove('hidden');
+      backBtn?.classList.remove('hidden');
+    } else {
+      friendsView?.classList.remove('hidden');
+      threadView?.classList.remove('hidden');
+      backBtn?.classList.add('hidden');
+    }
+
+    const friend = this.chatConversations.find(c => c.email.toLowerCase() === friendEmail.toLowerCase());
+    if (friend) {
+      const title = document.getElementById('chat-popup-title');
+      if (title) title.textContent = friend.name;
+      const sub = document.getElementById('chat-popup-subtitle');
+      if (sub) sub.textContent = friend.email;
+      const av = document.getElementById('chat-popup-avatar');
+      if (av) av.src = friend.avatar || '/raccoon-logo.png';
+      friend.unread = 0;
+      this.updateChatUnreadBadge();
+    }
+
+    this.renderPopupConversations();
+    this.loadChatMessages(friendEmail);
+  },
+
+  expandChatToFullPanel() {
+    this.closeChatBubblePopup();
+    this.openChat();
+    if (this.activeChatFriend) {
+      this.openConversation(this.activeChatFriend);
+    }
+  },
+
+  togglePopupStickerTray() {
+    const tray = document.getElementById('chat-popup-sticker-tray');
+    if (tray) {
+      tray.classList.toggle('hidden');
+      if (!tray.classList.contains('hidden')) {
+        this.renderStickerPanel('chat-popup-sticker-content', this.currentPopupStickerTab, true);
+      }
+    }
+  },
+
+  switchStickerTab(tabKey) {
+    this.currentStickerTab = tabKey;
+    ['raccoon', 'reactions', 'nocturnal', 'phrases'].forEach(t => {
+      const btn = document.getElementById('tab-btn-' + t);
+      if (btn) {
+        if (t === tabKey) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+    this.renderStickerPanel('sticker-tray-content', tabKey, false);
+  },
+
+  switchPopupStickerTab(tabKey) {
+    this.currentPopupStickerTab = tabKey;
+    ['raccoon', 'reactions', 'nocturnal', 'phrases'].forEach(t => {
+      const btn = document.getElementById('popup-tab-btn-' + t);
+      if (btn) {
+        if (t === tabKey) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+    this.renderStickerPanel('chat-popup-sticker-content', tabKey, true);
+  },
+
+  renderStickerPanel(containerId, tabKey, isPopup = false) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+
+    if (tabKey === 'phrases') {
+      const phrases = this.stickerPacks.phrases;
+      el.innerHTML = `
+        <div class="flex flex-wrap gap-1.5 p-1">
+          ${phrases.map(p => `
+            <button
+              type="button"
+              onclick="app.sendChatMessage(app.activeChatFriend, '${p.text.replace(/'/g, "\\'")}')"
+              class="px-2.5 py-1.5 rounded-full bg-muted/60 hover:bg-muted text-[11px] font-semibold text-foreground hover:scale-105 transition cursor-pointer border border-border"
+            >
+              ${p.label}
+            </button>
+          `).join('')}
+        </div>
+      `;
+      return;
+    }
+
+    const items = this.stickerPacks[tabKey] || this.stickerPacks.raccoon;
+    const gridCols = isPopup ? 'grid-cols-4 sm:grid-cols-6' : 'grid-cols-4 sm:grid-cols-8 md:grid-cols-8';
+
+    el.innerHTML = `
+      <div class="grid ${gridCols} gap-2 p-1">
+        ${items.map(item => `
+          <button
+            type="button"
+            onclick="app.${isPopup ? 'sendPopupSticker' : 'sendSticker'}('${item.glyph}')"
+            class="p-2 rounded-xl bg-muted/40 hover:bg-muted hover:scale-115 active:scale-95 transition flex flex-col items-center justify-center gap-1 text-center cursor-pointer border border-border/50 group"
+            title="${item.label}"
+          >
+            <span class="text-2xl chat-emoji leading-none">${item.glyph}</span>
+            <span class="text-[9px] text-muted-foreground group-hover:text-foreground font-medium truncate max-w-full">${item.label}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  },
+
+  async handlePopupChatSubmit(event) {
+    if (event) event.preventDefault();
+    const input = document.getElementById('chat-popup-input');
+    if (!input || !this.activeChatFriend) return;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+
+    await this.sendChatMessage(this.activeChatFriend, text);
+  },
+
+  async sendPopupSticker(stickerCode) {
+    document.getElementById('chat-popup-sticker-tray')?.classList.add('hidden');
+    await this.sendSticker(stickerCode);
+  },
+
+  async loadChatConversations() {
+    try {
+      const res = await fetch('/api/chat/conversations');
+      const data = await res.json();
+      this.chatConversations = data.conversations || [];
+      this.renderChatConversationsList();
+      this.renderPopupConversations();
+      this.updateChatUnreadBadge();
+
+      if (!this.activeChatFriend && this.chatConversations.length > 0 && window.innerWidth >= 640) {
+        this.openConversation(this.chatConversations[0].email);
+      }
+    } catch (e) {
+      console.error('Error loading chat conversations:', e);
+    }
+  },
+
+  updateChatUnreadBadge() {
+    let totalUnread = 0;
+    this.chatConversations.forEach(c => totalUnread += (c.unread || 0));
+
+    // 1. Sidebar badge
+    const badge = document.getElementById('chat-unread-badge');
+    if (badge) {
+      if (totalUnread > 0) {
+        badge.textContent = totalUnread;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    // 2. Floating chat bubble launcher badge
+    const launcherBadge = document.getElementById('chat-launcher-badge');
+    if (launcherBadge) {
+      if (totalUnread > 0) {
+        launcherBadge.textContent = totalUnread;
+        launcherBadge.classList.remove('hidden');
+      } else {
+        launcherBadge.classList.add('hidden');
+      }
+    }
+  },
+
+  renderChatConversationsList(filter = '') {
+    const listEl = document.getElementById('chat-conversations-list');
+    if (!listEl) return;
+
+    let items = this.chatConversations;
+    if (filter) {
+      const q = filter.toLowerCase();
+      items = items.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
+    }
+
+    if (items.length === 0) {
+      listEl.innerHTML = `
+        <div class="p-6 text-center text-muted-foreground text-xs">
+          <p class="text-3xl mb-1 chat-emoji">🦝</p>
+          <p class="font-bold text-foreground">No friends found</p>
+          <p class="text-[11px] text-muted-foreground mt-0.5">Invite email friends to register and chat!</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = items.map(c => {
+      const isActive = this.activeChatFriend && this.activeChatFriend.toLowerCase() === c.email.toLowerCase();
+      const timeStr = c.last_time ? new Date(c.last_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      return `
+        <div
+          onclick="app.openConversation('${c.email}')"
+          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-emerald-500' : ''}"
+        >
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="relative shrink-0">
+              <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
+              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border border-card"></span>
+            </div>
+            <div class="truncate">
+              <p class="text-xs font-bold text-foreground truncate">${c.name}</p>
+              <p class="text-[11px] text-muted-foreground truncate">${c.last_message}</p>
+            </div>
+          </div>
+
+          <div class="text-right shrink-0 ml-2">
+            <span class="text-[10px] text-muted-foreground block font-mono">${timeStr}</span>
+            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-emerald-600 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  renderPopupConversations(filter = '') {
+    const listEl = document.getElementById('chat-popup-conversations-container') || document.getElementById('chat-popup-friends-view');
+    if (!listEl) return;
+
+    let items = this.chatConversations || [];
+    if (filter) {
+      const q = filter.toLowerCase();
+      items = items.filter(c => (c.name && c.name.toLowerCase().includes(q)) || (c.email && c.email.toLowerCase().includes(q)));
+    }
+
+    if (items.length === 0) {
+      listEl.innerHTML = `
+        <div class="p-6 text-center text-muted-foreground text-xs my-auto">
+          <p class="text-3xl mb-2 chat-emoji">🦝</p>
+          <p class="font-bold text-foreground">No member friends found</p>
+          <p class="text-[11px] text-muted-foreground mt-1">Invite friends to register on Raccon Mail to chat live!</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = items.map(c => {
+      const isActive = this.activeChatFriend && this.activeChatFriend.toLowerCase() === c.email.toLowerCase();
+      const timeStr = c.last_time ? new Date(c.last_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      return `
+        <div
+          onclick="app.showChatPopupThread('${c.email}')"
+          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-emerald-500' : ''}"
+        >
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="relative shrink-0">
+              <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
+              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border border-card"></span>
+            </div>
+            <div class="truncate">
+              <p class="text-xs font-bold text-foreground truncate">${c.name}</p>
+              <p class="text-[11px] text-muted-foreground truncate">${c.last_message}</p>
+            </div>
+          </div>
+
+          <div class="text-right shrink-0 ml-2">
+            <span class="text-[10px] text-muted-foreground block font-mono">${timeStr}</span>
+            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-red-500 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  filterChatFriends(val) {
+    this.renderChatConversationsList(val);
+    this.renderPopupConversations(val);
+  },
+
+  async openConversation(friendEmail) {
+    this.activeChatFriend = friendEmail;
+    const threadContainer = document.getElementById('chat-thread-container');
+    if (threadContainer) threadContainer.classList.remove('hidden');
+
+    const friend = this.chatConversations.find(c => c.email.toLowerCase() === friendEmail.toLowerCase());
+    if (friend) {
+      const nameEl = document.getElementById('chat-partner-name');
+      if (nameEl) nameEl.textContent = friend.name;
+      const emailEl = document.getElementById('chat-partner-email');
+      if (emailEl) emailEl.textContent = friend.email;
+      const av = document.getElementById('chat-partner-avatar');
+      if (av) av.src = friend.avatar || '/raccoon-logo.png';
+      friend.unread = 0;
+      this.updateChatUnreadBadge();
+    }
+
+    this.renderChatConversationsList();
+    await this.loadChatMessages(friendEmail);
+  },
+
+  closeMobileChatThread() {
+    const threadContainer = document.getElementById('chat-thread-container');
+    if (threadContainer) threadContainer.classList.add('hidden');
+  },
+
+  async loadChatMessages(friendEmail) {
+    if (!friendEmail) return;
+    try {
+      const res = await fetch(`/api/chat/messages?with=${encodeURIComponent(friendEmail)}`);
+      const data = await res.json();
+      this.renderChatMessagesFeed(data.messages || []);
+    } catch (e) {
+      console.error('Error loading chat messages:', e);
+    }
+  },
+
+  renderChatMessagesFeed(messages) {
+    const feeds = [
+      document.getElementById('chat-messages-feed'),
+      document.getElementById('chat-popup-messages-feed')
+    ].filter(Boolean);
+
+    if (feeds.length === 0) return;
+
+    const myEmail = this.currentUser?.email?.toLowerCase() || '';
+    const activeFriendObj = this.chatConversations.find(c => (c.email || '').toLowerCase() === (this.activeChatFriend || '').toLowerCase());
+    const friendAvatar = activeFriendObj?.avatar || '/raccoon-logo.png';
+    const friendName = activeFriendObj?.name || 'Friend';
+
+    let html = '';
+    if (messages.length === 0) {
+      html = `
+        <div class="h-full flex flex-col items-center justify-center text-center p-6 text-muted-foreground my-auto">
+          <span class="text-4xl mb-2 chat-emoji animate-bounce">🦝</span>
+          <p class="font-bold text-foreground text-sm">No messages yet with ${this.escapeHtml(friendName)}</p>
+          <p class="text-xs text-muted-foreground mt-1 max-w-xs">Say hello or tap a raccoon sticker to break the ice!</p>
+        </div>
+      `;
+    } else {
+      html = messages.map(msg => {
+        const isMe = (msg.sender_email || '').toLowerCase() === myEmail;
+        const timeStr = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+        // Check if message is a standalone sticker/emoji
+        const isStickerOnly = Boolean(msg.sticker) && !msg.message && !msg.attachment_path;
+
+        let contentHtml = '';
+        if (msg.sticker) {
+          contentHtml += `<div class="chat-emoji ${isStickerOnly ? 'sticker-big' : 'text-3xl py-1 my-1'}">${msg.sticker}</div>`;
+        }
+        if (msg.message) {
+          contentHtml += `<p class="leading-relaxed whitespace-pre-wrap selection:bg-black/20 break-words font-sans">${this.escapeHtml(msg.message)}</p>`;
+        }
+        if (msg.attachment_path) {
+          const isImg = (msg.attachment_type || '').startsWith('image/');
+          if (isImg) {
+            contentHtml += `
+              <div class="mt-2 rounded-xl overflow-hidden border border-black/10 max-w-xs">
+                <a href="${msg.attachment_path}" target="_blank" rel="noopener noreferrer">
+                  <img src="${msg.attachment_path}" class="max-h-48 w-full rounded-lg object-cover" />
+                </a>
+              </div>
+            `;
+          } else {
+            contentHtml += `
+              <a href="${msg.attachment_path}" target="_blank" download class="mt-2 inline-flex items-center gap-1.5 p-2 rounded-xl bg-black/10 hover:bg-black/20 text-xs font-semibold transition">
+                <i data-lucide="paperclip" class="h-3.5 w-3.5"></i>
+                <span class="truncate max-w-[160px]">${msg.attachment_name || 'Attachment'}</span>
+              </a>
+            `;
+          }
+        }
+
+        if (isStickerOnly) {
+          return `
+            <div class="flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}">
+              ${!isMe ? `<img src="${friendAvatar}" class="h-6 w-6 rounded-full object-cover shrink-0 mb-1 border border-border" />` : ''}
+              <div class="chat-bubble-sticker flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                ${contentHtml}
+                <div class="text-[9px] text-muted-foreground font-mono mt-0.5 flex items-center gap-1">
+                  <span>${timeStr}</span>
+                  ${isMe ? '<span class="text-emerald-500 font-bold">✓✓</span>' : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'}">
+            ${!isMe ? `<img src="${friendAvatar}" class="h-6 w-6 rounded-full object-cover shrink-0 mb-1 border border-border" />` : ''}
+            <div class="max-w-[85%] sm:max-w-[72%] ${isMe ? 'chat-bubble-outgoing' : 'chat-bubble-incoming'} px-3.5 py-2.5 text-xs shadow-xs">
+              ${contentHtml}
+              <div class="mt-1 text-[9px] ${isMe ? 'text-white/80' : 'text-muted-foreground'} text-right font-mono flex items-center justify-end gap-1">
+                <span>${timeStr}</span>
+                ${isMe ? '<span class="text-white font-bold">✓✓</span>' : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    feeds.forEach(feed => {
+      feed.innerHTML = html;
+      feed.scrollTop = feed.scrollHeight;
+    });
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  async handleChatSubmit(event) {
+    if (event) event.preventDefault();
+    const input = document.getElementById('chat-message-input');
+    if (!input || !this.activeChatFriend) return;
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+
+    await this.sendChatMessage(this.activeChatFriend, text);
+  },
+
+  async sendChatMessage(friendEmail, text) {
+    try {
+      const res = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: friendEmail, message: text })
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.loadChatMessages(friendEmail);
+        this.loadChatConversations();
+        this.playChime();
+      } else if (data.error) {
+        alert(data.error);
+      }
+    } catch (e) {
+      console.error('Error sending chat message:', e);
+    }
+  },
+
+  toggleStickerTray() {
+    const tray = document.getElementById('raccoon-sticker-tray');
+    if (tray) {
+      tray.classList.toggle('hidden');
+      if (!tray.classList.contains('hidden')) {
+        this.renderStickerPanel('sticker-tray-content', this.currentStickerTab, false);
+      }
+    }
+  },
+
+  async sendSticker(stickerCode) {
+    if (!this.activeChatFriend) return;
+    document.getElementById('raccoon-sticker-tray')?.classList.add('hidden');
+    try {
+      const res = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: this.activeChatFriend, sticker: stickerCode })
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.loadChatMessages(this.activeChatFriend);
+        this.loadChatConversations();
+        this.playChime();
+      }
+    } catch (e) {
+      console.error('Error sending sticker:', e);
+    }
+  },
+
+  async handleChatFileUpload(file, isPopup = false) {
+    if (!file || !this.activeChatFriend) return;
+    const formData = new FormData();
+    formData.append('to', this.activeChatFriend);
+    formData.append('attachment', file);
+
+    try {
+      const res = await fetch('/api/chat/send', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.loadChatMessages(this.activeChatFriend);
+        this.loadChatConversations();
+        this.playChime();
+      }
+    } catch (e) {
+      console.error('Error uploading chat file:', e);
+    }
+  },
+
+  startChatPolling() {
+    if (this.chatPollInterval) {
+      clearInterval(this.chatPollInterval);
+      this.chatPollInterval = null;
+    }
+  },
+
+  backToMessages() {
+    const msgPanel = document.getElementById('messages-panel');
+    const readerPanel = document.getElementById('reader-panel');
+    this.selectedMessage = null;
+    msgPanel?.classList.remove('hidden');
+    readerPanel?.classList.add('hidden');
+    readerPanel?.classList.remove('flex');
+    this.renderMessagesList();
+  },
+
+  escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+};
+
+// Expose app globally to ensure all inline onclick handlers execute reliably
+window.app = app;
+
+// Start application when DOM is ready
+window.addEventListener('DOMContentLoaded', () => {
+  app.init();
+});

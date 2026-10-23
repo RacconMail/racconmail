@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Binaries & APK builds
+*.apk
+*.keystore
+*.jar
+*.zip
+apk_build/
+apk_extracted/
+apk_out/
+template_extracted/
+test_sign_out/
+uploads/
+
+# Databases & local state
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Tokens & temp files
+gh_*.html
+gh_*.txt
+*.tmp
+*.log
+.DS_Store
+Thumbs.db

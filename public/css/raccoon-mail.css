@@ -1,0 +1,1253 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@500;600;700&family=Caveat:wght@600;700&display=swap');
+
+/* ==========================================================================
+   THEME SPECIFICATIONS: Harmony (Default), Dark, Midnight Green
+   Inspired by Harmony SocialEngine: #208ED3, #EFEDE9, #FFFFFF, #1E293B, #F2F2F2
+   ========================================================================== */
+
+/* 1. ☀️ Harmony / Light Theme (Default) */
+:root, html, body, html.theme-harmony, body.theme-harmony, html.theme-light, body.theme-light, html.theme-raccon, body.theme-raccon {
+  --background: #EFEDE9; /* Harmony Warm Sand body canvas */
+  --foreground: #1E293B; /* Harmony Headline / Body Slate */
+  --card: #FFFFFF; /* Harmony Crisp White Box / Widget */
+  --card-alt: #F5F5F5;
+  --card-foreground: #1E293B;
+  --primary: #208ED3; /* Harmony Signature Sky Azure Blue */
+  --primary-hover: #1A7BB8;
+  --primary-foreground: #FFFFFF;
+  --primary-glow: rgba(32, 142, 211, 0.35);
+  --secondary: #F2F2F2; /* Harmony Secondary Button */
+  --secondary-foreground: #212529;
+  --secondary-hover: #E5E5E5;
+  --muted: #F6F6F6; /* Harmony Mini Menu Search / Pill Background */
+  --muted-foreground: #64748B;
+  --accent: #EBF5FB; /* Harmony Soft Blue Tint for Active / Badges */
+  --accent-foreground: #208ED3;
+  --border: #D5D5D5; /* Harmony Border Color */
+  --border-light: #E2E8F0;
+  --mask: #1E293B;
+  --fur: #334155;
+  --cream: #EFEDE9;
+  --themewidget-radius: 20px;
+  --btn-radius: 50px;
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --stamp-red: #E11D48;
+  --stamp-blue: #208ED3;
+}
+
+/* 2. 🌙 Harmony Dark Theme */
+html.theme-dark, body.theme-dark, html.theme-midnight, body.theme-midnight {
+  --background: #1D1D1F;
+  --foreground: #FFFFFF;
+  --card: #2B2C2E;
+  --card-alt: #222325;
+  --card-foreground: #FFFFFF;
+  --primary: #208ED3;
+  --primary-hover: #1A7BB8;
+  --primary-foreground: #FFFFFF;
+  --primary-glow: rgba(32, 142, 211, 0.45);
+  --secondary: #343536;
+  --secondary-foreground: #E4E6EB;
+  --secondary-hover: #4C4D4E;
+  --muted: #242526;
+  --muted-foreground: #9CA3AF;
+  --accent: #203345;
+  --accent-foreground: #208ED3;
+  --border: #404245;
+  --border-light: #4F5155;
+  --mask: #1D1D1F;
+  --fur: #2B2C2E;
+  --cream: #1D1D1F;
+  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --stamp-red: #F43F5E;
+  --stamp-blue: #208ED3;
+}
+
+/* 3. 🌲 Midnight Green Theme */
+html.theme-midnight-green, body.theme-midnight-green, html.theme-forest, body.theme-forest, html.theme-cyber, body.theme-cyber {
+  --background: #0A1414;
+  --foreground: #E6F2F2;
+  --card: #112222;
+  --card-alt: #162E2E;
+  --card-foreground: #E6F2F2;
+  --primary: #00B392;
+  --primary-hover: #00997C;
+  --primary-foreground: #0A1414;
+  --primary-glow: rgba(0, 179, 146, 0.45);
+  --secondary: #1C3838;
+  --secondary-foreground: #E6F2F2;
+  --secondary-hover: #254A4A;
+  --muted: #162E2E;
+  --muted-foreground: #80A6A6;
+  --accent: #162E2E;
+  --accent-foreground: #00B392;
+  --border: #1C3838;
+  --border-light: #254A4A;
+  --mask: #0A1414;
+  --fur: #112222;
+  --cream: #1C3838;
+  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --stamp-red: #F43F5E;
+  --stamp-blue: #00B392;
+}
+  --card: #112222; /* Matte Pine */
+  --card-foreground: #E6F2F2;
+  --primary: #00B392; /* Cyber Emerald */
+  --primary-hover: #00997C;
+  --primary-foreground: #0A1414;
+  --primary-glow: rgba(0, 179, 146, 0.45);
+  --secondary: #1C3838;
+  --secondary-foreground: #E6F2F2;
+  --muted: #162E2E;
+  --muted-foreground: #80A6A6;
+  --accent: #162E2E;
+  --accent-foreground: #00B392;
+  --border: #1C3838;
+  --border-light: #254A4A;
+  --mask: #0A1414;
+  --fur: #112222;
+  --cream: #1C3838;
+  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --stamp-red: #F43F5E;
+  --stamp-blue: #00B392;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  min-height: 100%;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prevent iOS auto-zoom on input focus */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+.font-display {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-handwriting {
+  font-family: 'Caveat', cursive;
+}
+
+/* Postcard airmail border stripes */
+.stripes {
+  background: repeating-linear-gradient(
+    135deg,
+    #e11d48,
+    #e11d48 14px,
+    transparent 14px,
+    transparent 24px,
+    #2563eb 24px,
+    #2563eb 38px,
+    transparent 38px,
+    transparent 48px
+  );
+}
+
+.stripes-subtle {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(225, 29, 72, 0.18),
+    rgba(225, 29, 72, 0.18) 12px,
+    transparent 12px,
+    transparent 20px,
+    rgba(37, 99, 235, 0.18) 20px,
+    rgba(37, 99, 235, 0.18) 32px,
+    transparent 32px,
+    transparent 40px
+  );
+}
+
+/* Raccoon Mascot Animation */
+@keyframes raccoon-bob {
+  0%, 100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+.raccoon-anim {
+  animation: raccoon-bob 4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth Touch Scrolling */
+.overflow-y-auto, .overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.45);
+}
+
+/* Postcard Stamp Styling */
+.postcard-stamp {
+  position: relative;
+  background: #fffdf9;
+  border: 2px dashed #bfa17d;
+  padding: 6px 10px;
+  border-radius: 4px;
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.06);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.postcard-stamp::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  border: 1px dotted #8b7355;
+  pointer-events: none;
+}
+
+/* Postmark cancellation stamp */
+.postmark-seal {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  border: 2px solid rgba(180, 83, 9, 0.6);
+  border-radius: 50%;
+  color: #b45309;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transform: rotate(-12deg);
+  opacity: 0.85;
+}
+
+/* Badges */
+.badge-unread {
+  background-color: var(--stamp-red);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.badge-count {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 9999px;
+}
+
+/* Selected active email item */
+.email-row {
+  transition: all 0.12s ease-in-out;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light);
+  min-height: 72px; /* Touch friendly height */
+}
+.email-row {
+  border-bottom: 1px solid var(--border-light, var(--border));
+  background-color: var(--card);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.email-row:hover {
+  background-color: var(--muted);
+}
+.email-row.selected {
+  background-color: var(--accent);
+  border-left: 4px solid var(--primary);
+}
+.email-row.unread {
+  font-weight: 600;
+  background-color: var(--card);
+}
+
+/* Modern Cross-Platform Emoji Stack */
+.emoji-render, .chat-emoji, .sticker-glyph {
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', 'Android Emoji', 'Twemoji Mozilla', emoji, sans-serif !important;
+  font-variant-emoji: emoji;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Modern Menu & Button Hover Interactions (Authentic Raccoon Colors) */
+button, .btn, a.btn, input[type="button"], input[type="submit"] {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Primary Button Tactile Raccoon Hover */
+button.bg-primary, .btn-primary {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+button.bg-primary:hover, .btn-primary:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -4px rgba(24, 28, 31, 0.25), 0 0 0 2px var(--accent);
+}
+button.bg-primary:active, .btn-primary:active {
+  transform: translateY(0.5px) scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Secondary & Muted Button Hovers */
+button.hover\:bg-muted:hover {
+  background-color: var(--muted) !important;
+  color: var(--foreground) !important;
+  transform: translateY(-0.5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+button.hover\:bg-muted:active {
+  transform: translateY(0.5px) scale(0.97);
+}
+
+/* Sidebar Menu Folders - Sleek Modern Pill with Subtle Orange Hover Indicator */
+.nav-folder-btn {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-radius: 16px !important;
+}
+.nav-folder-btn:hover {
+  background-color: var(--muted) !important;
+  transform: translateX(3px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+.nav-folder-btn:hover i {
+  color: #ea580c !important;
+  transform: scale(1.12);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.nav-folder-btn.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--mask, #181c1f) 100%) !important;
+  color: var(--primary-foreground) !important;
+  box-shadow: 0 6px 18px -4px rgba(24, 28, 31, 0.3) !important;
+  font-weight: 700;
+}
+.nav-folder-btn.active i {
+  color: #f59e0b !important;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
+}
+
+/* Modern Chat Modal Centered Overlay */
+.chat-bubble-popup {
+  transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+}
+.chat-bubble-popup.hidden {
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.animate-pop-in {
+  animation: modalCenterPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes modalCenterPop {
+  0% { opacity: 0; transform: scale(0.94) translateY(14px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.chat-bubble-launcher {
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+.chat-bubble-launcher:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 14px 30px -4px rgba(16, 185, 129, 0.55);
+}
+.chat-bubble-launcher:active {
+  transform: scale(0.95);
+}
+
+/* Chat Message Bubbles */
+.chat-bubble-outgoing {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border-radius: 20px 20px 4px 20px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+}
+.chat-bubble-incoming {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: 20px 20px 20px 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.chat-bubble-sticker {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 6px 10px !important;
+}
+.chat-bubble-sticker .sticker-big {
+  font-size: 48px;
+  line-height: 1.15;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.16));
+  animation: stickerBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+@keyframes stickerBounce {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.18); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Category Tab Pills in Sticker Tray */
+.sticker-tab-btn {
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.sticker-tab-btn.active {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-weight: 700;
+}
+.sticker-tab-btn:not(.active) {
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+}
+.sticker-tab-btn:hover:not(.active) {
+  background-color: var(--accent);
+  color: var(--foreground);
+}
+
+/* Tooltip & Popovers */
+.shadow-soft {
+  box-shadow: 0 20px 40px -15px rgba(24, 28, 31, 0.12), 0 0 1px 1px rgba(24, 28, 31, 0.05);
+}
+
+/* Avatar Images - Perfect Circular Fit & No Distortion */
+.avatar-img,
+img#active-user-avatar,
+img#dropdown-user-avatar,
+img#profile-avatar-preview,
+img.avatar,
+.avatar-circle {
+  object-fit: cover !important;
+  object-position: center !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 9999px !important;
+}
+
+/* ===================================================
+   UNIVERSAL TACTILE BUTTON PRESSED STATE
+   =================================================== */
+button,
+.btn,
+[role="button"],
+a.btn,
+input[type="button"],
+input[type="submit"] {
+  transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.14s ease,
+              background-color 0.15s ease,
+              border-color 0.15s ease,
+              filter 0.14s ease !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button:active,
+.btn:active,
+[role="button"]:active,
+a.btn:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+.btn-press:active {
+  transform: scale(0.96) translateY(1px) !important;
+  filter: brightness(0.92) contrast(1.05) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* iOS Safe Areas & Tap Highlight */
+html, body {
+  -webkit-tap-highlight-color: rgba(245, 158, 11, 0.2);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===================================================
+   RACCOON & RACCOON PAW ANIMATIONS
+   =================================================== */
+
+/* 1. Paw Walking Trail Animation */
+@keyframes pawWalkLeft {
+  0%, 100% { opacity: 0.25; transform: translateY(0) scale(0.9) rotate(-12deg); }
+  30%, 70% { opacity: 1; transform: translateY(-4px) scale(1.1) rotate(-6deg); }
+}
+@keyframes pawWalkRight {
+  0%, 100% { opacity: 0.25; transform: translateY(0) scale(0.9) rotate(12deg); }
+  50%, 90% { opacity: 1; transform: translateY(-4px) scale(1.1) rotate(6deg); }
+}
+
+.paw-step-1 { display: inline-block; animation: pawWalkLeft 2.4s ease-in-out infinite; }
+.paw-step-2 { display: inline-block; animation: pawWalkRight 2.4s ease-in-out infinite 0.6s; }
+.paw-step-3 { display: inline-block; animation: pawWalkLeft 2.4s ease-in-out infinite 1.2s; }
+.paw-step-4 { display: inline-block; animation: pawWalkRight 2.4s ease-in-out infinite 1.8s; }
+
+/* 2. Raccoon Paw Tap & Bounce */
+@keyframes pawBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(-8deg) scale(1.1); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-3px) rotate(8deg) scale(1.05); }
+}
+.paw-bounce {
+  display: inline-block;
+  animation: pawBounce 3s ease-in-out infinite;
+}
+
+/* 3. Raccoon Mascot Wiggle on Hover */
+@keyframes raccoonWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-8deg) scale(1.08); }
+  40% { transform: rotate(8deg) scale(1.08); }
+  60% { transform: rotate(-4deg) scale(1.04); }
+  80% { transform: rotate(4deg) scale(1.04); }
+}
+.raccoon-wiggle:hover {
+  animation: raccoonWiggle 0.6s ease-in-out;
+}
+
+/* 4. Playful Raccoon Peek */
+@keyframes raccoonPeek {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+.raccoon-peek {
+  animation: raccoonPeek 4s ease-in-out infinite;
+}
+
+/* 5. Paw Wave Animation */
+@keyframes pawWave {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-18deg); }
+  40% { transform: rotate(14deg); }
+  60% { transform: rotate(-12deg); }
+  80% { transform: rotate(8deg); }
+}
+.paw-wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: pawWave 2s ease-in-out infinite;
+}
+
+/* 6. Floating Paw Particles */
+@keyframes pawFloat {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  50% { transform: translateY(-12px) rotate(15deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+}
+.paw-float {
+  animation: pawFloat 4s ease-in-out infinite;
+}
+
+.floating-bottom-pill {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* 7. Paw Hover Trigger */
+.btn-paw-hover {
+  position: relative;
+  overflow: hidden;
+}
+.btn-paw-hover::after {
+  content: "🐾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 14px;
+}
+.btn-paw-hover:hover::after {
+  transform: translateY(-50%) scale(1);
+  opacity: 0.85;
+}
+
+/* Mobile Clean Segmented Auth Group */
+.auth-segmented-pill {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.auth-segmented-pill button {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .auth-segmented-pill button {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Print View */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-postcard, #printable-postcard * {
+    visibility: visible;
+  }
+  #printable-postcard {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+}
+
+/* ==========================================
+   2026 MODERN ORANGE MATTE DESIGN SYSTEM
+   ========================================== */
+
+.btn-orange-matte {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(194, 65, 12, 0.6) !important;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.btn-orange-matte:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #c2410c 100%) !important;
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1.5px) scale(1.02) !important;
+}
+
+.btn-orange-matte:active {
+  background: #c2410c !important;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(1px) scale(0.96) !important;
+  filter: brightness(0.92) !important;
+}
+
+/* Secondary Matte Orange Button (Subtle & Clean) */
+.btn-orange-matte-subtle {
+  background: rgba(249, 115, 22, 0.12) !important;
+  color: #c2410c !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.35) !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+}
+
+.btn-orange-matte-subtle:hover {
+  background: rgba(249, 115, 22, 0.22) !important;
+  border-color: rgba(234, 88, 12, 0.6) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+.btn-orange-matte-subtle:active {
+  transform: translateY(1px) scale(0.96) !important;
+  background: rgba(249, 115, 22, 0.3) !important;
+}
+
+/* 2026 Unique Email Reader Stationery Styling */
+.email-postmark-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px dashed rgba(217, 119, 6, 0.5);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.unique-email-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.03);
+  border-radius: 1.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Compact Modern Message Card Item (Harmony Density, Theme-aware) */
+.msg-card-item {
+  border-radius: 10px !important;
+  margin: 2px 6px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--border) !important;
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+.msg-card-item:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--primary) !important;
+  transform: translateX(1px);
+}
+.msg-card-item.selected {
+  background-color: var(--accent) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 1px var(--primary) !important;
+}
+.msg-card-item.unread {
+  font-weight: 600;
+  border-left: 3px solid var(--primary) !important;
+}
+.msg-card-item.unread .msg-title {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+/* ===================================================
+   ORIGINOS 7 FLUID SPRING MOTION ENGINE & WINDOW PHYSICS
+   =================================================== */
+
+:root {
+  --originos-spring: cubic-bezier(0.18, 1.25, 0.22, 1);
+  --originos-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+  --originos-exit: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal Backdrop Blur Fade */
+@keyframes originosBackdropIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+}
+
+/* Modal Window Opening with OriginOS 7 Elastic Spring */
+@keyframes originosWindowSpringIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(32px);
+    filter: blur(12px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-2px);
+    filter: blur(0px);
+  }
+  85% {
+    transform: scale(0.995) translateY(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* OriginOS Tab / View Switch Slide */
+@keyframes originosTabSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Apply OriginOS 7 Window Motion to All Modal Dialogs on Site */
+#auth-modal:not(.hidden),
+#news-modal:not(.hidden),
+#privacy-modal:not(.hidden),
+#app-download-modal:not(.hidden),
+#compose-modal:not(.hidden),
+#settings-modal:not(.hidden),
+#contacts-modal:not(.hidden),
+#alias-modal:not(.hidden),
+#postcard-modal:not(.hidden),
+#chat-popup:not(.hidden) {
+  animation: originosBackdropIn 0.32s var(--originos-fluid) forwards !important;
+}
+
+#auth-modal:not(.hidden) > div,
+#news-modal:not(.hidden) > div,
+#privacy-modal:not(.hidden) > div,
+#app-download-modal:not(.hidden) > div,
+#compose-modal:not(.hidden) > div,
+#settings-modal:not(.hidden) > div,
+#contacts-modal:not(.hidden) > div,
+#alias-modal:not(.hidden) > div,
+#postcard-modal:not(.hidden) > div,
+#chat-popup:not(.hidden) > div {
+  animation: originosWindowSpringIn 0.44s var(--originos-spring) forwards !important;
+  will-change: transform, opacity, filter;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+}
+
+#register-container:not(.hidden),
+#login-form:not(.hidden) {
+  animation: originosTabSlideIn 0.28s var(--originos-fluid) forwards;
+}
+
+/* OriginOS 7 Fluid Universal Tactile Spring Feedback */
+button, .touch-target, [role="button"] {
+  transition: transform 0.22s var(--originos-spring),
+              box-shadow 0.22s var(--originos-fluid),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease !important;
+  will-change: transform;
+}
+
+button:active, .touch-target:active, [role="button"]:active {
+  transform: scale(0.95) translateY(1px) !important;
+  transition: transform 0.08s cubic-bezier(0.3, 0, 0, 1) !important;
+}
+
+/* ==========================================================================
+   2026 POLISHED TYPOGRAPHY: AGGRESSIVE NEGATIVE LETTER-SPACING (-1.5px)
+   ========================================================================== */
+h1, .heading-hero, [data-heading="hero"] {
+  letter-spacing: -1.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.08 !important;
+}
+
+h2, .heading-section, [data-heading="section"] {
+  letter-spacing: -1.2px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+}
+
+h3, .heading-card, [data-heading="card"] {
+  letter-spacing: -0.8px !important;
+  font-weight: 700 !important;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* ==========================================================================
+   HARMONY BUTTON SYSTEM: Exact styling from https://harmony.socialengine.com/
+   Pill border-radius (50px), #208ED3 Azure Sky Blue, #F2F2F2 Secondary, icon pills
+   ========================================================================== */
+
+/* Primary Button: Harmony Sky Azure Blue (#208ED3) */
+.btn-primary,
+.btn-harmony,
+.btn-cyber-teal,
+.btn-action-cyber,
+.btn-action-primary,
+.btn-green-yahoo,
+.btn-turquoise-glow,
+.btn-hero-primary,
+#reg-submit-btn,
+#reg-confirm-btn,
+#login-submit-btn,
+#btn-login,
+#btn-reg {
+  background-color: #208ED3 !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  border: 1px solid #208ED3 !important;
+  border-radius: 50px !important; /* Harmony signature pill */
+  padding: 12px 24px !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  filter: drop-shadow(0px 4px 10px rgba(32, 142, 211, 0.35)) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease-in-out !important;
+}
+
+.btn-turquoise-glow i,
+.btn-turquoise-glow svg,
+.btn-harmony i,
+.btn-harmony svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none !important;
+}
+
+.btn-primary:hover,
+.btn-harmony:hover,
+.btn-cyber-teal:hover,
+.btn-action-cyber:hover,
+.btn-action-primary:hover,
+.btn-green-yahoo:hover,
+.btn-turquoise-glow:hover,
+.btn-hero-primary:hover,
+#reg-submit-btn:hover,
+#reg-confirm-btn:hover,
+#login-submit-btn:hover,
+#btn-login:hover,
+#btn-reg:hover {
+  background-color: #1A7BB8 !important;
+  border-color: #1A7BB8 !important;
+  color: #FFFFFF !important;
+  transform: translateY(-2px) !important;
+  filter: drop-shadow(0px 6px 16px rgba(32, 142, 211, 0.45)) !important;
+}
+
+.btn-primary:active,
+.btn-harmony:active,
+.btn-cyber-teal:active,
+.btn-action-cyber:active,
+.btn-action-primary:active,
+#btn-login:active,
+#btn-reg:active {
+  transform: translateY(0px) scale(0.98) !important;
+  filter: drop-shadow(0px 2px 6px rgba(32, 142, 211, 0.3)) !important;
+}
+
+/* ==========================================================================
+   THEME-ADAPTIVE COMPOSE POSTCARD BUTTON (#btn-compose)
+   Light/Harmony Theme: White card pill, #1E293B bold text, #208ED3 azure pencil
+   Dark Theme: Charcoal card pill, #FFFFFF bold text, #FFFFFF pencil
+   Midnight Green Theme: Deep pine card pill, #E6F2F2 bold text, #FFFFFF pencil
+   ========================================================================== */
+#btn-compose {
+  border-radius: 50px !important;
+  padding: 12px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.22s ease-in-out !important;
+  text-decoration: none !important;
+}
+
+/* 1. Light / Harmony Theme (White Button, Bold Dark Text, Blue Pencil) */
+html.theme-harmony #btn-compose,
+body.theme-harmony #btn-compose,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose {
+  background-color: #FFFFFF !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #1E293B !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+html.theme-harmony #btn-compose:hover,
+body.theme-harmony #btn-compose:hover,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose:hover {
+  background-color: #F8FAFC !important;
+  border-color: #208ED3 !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 6px 18px rgba(32, 142, 211, 0.2) !important;
+}
+html.theme-harmony #btn-compose .compose-pencil-badge,
+body.theme-harmony #btn-compose .compose-pencil-badge,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-pencil-badge {
+  background-color: #EBF5FB !important;
+  border: 1px solid #BAE6FD !important;
+}
+html.theme-harmony #btn-compose svg,
+html.theme-harmony #btn-compose i,
+body.theme-harmony #btn-compose svg,
+body.theme-harmony #btn-compose i,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose svg,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose i {
+  stroke: #208ED3 !important;
+  color: #208ED3 !important;
+}
+html.theme-harmony #btn-compose .compose-btn-text,
+body.theme-harmony #btn-compose .compose-btn-text,
+html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-btn-text {
+  color: #1E293B !important;
+}
+
+/* 2. Dark Theme (Charcoal Button, White Text, White Pencil) */
+html.theme-dark #btn-compose,
+body.theme-dark #btn-compose {
+  background-color: #2B2C2E !important;
+  border: 1.5px solid #404245 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+html.theme-dark #btn-compose:hover,
+body.theme-dark #btn-compose:hover {
+  background-color: #353638 !important;
+  border-color: #208ED3 !important;
+  transform: translateY(-1.5px) !important;
+}
+html.theme-dark #btn-compose .compose-pencil-badge,
+body.theme-dark #btn-compose .compose-pencil-badge {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+html.theme-dark #btn-compose svg,
+html.theme-dark #btn-compose i,
+body.theme-dark #btn-compose svg,
+body.theme-dark #btn-compose i {
+  stroke: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+html.theme-dark #btn-compose .compose-btn-text,
+body.theme-dark #btn-compose .compose-btn-text {
+  color: #FFFFFF !important;
+}
+
+/* 3. Midnight Green Theme (Deep Pine Button, Mint Text, White Pencil) */
+html.theme-midnight-green #btn-compose,
+body.theme-midnight-green #btn-compose {
+  background-color: #112222 !important;
+  border: 1.5px solid #1C3838 !important;
+  color: #E6F2F2 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+html.theme-midnight-green #btn-compose:hover,
+body.theme-midnight-green #btn-compose:hover {
+  background-color: #162E2E !important;
+  border-color: #00B392 !important;
+  transform: translateY(-1.5px) !important;
+}
+html.theme-midnight-green #btn-compose .compose-pencil-badge,
+body.theme-midnight-green #btn-compose .compose-pencil-badge {
+  background-color: rgba(0, 179, 146, 0.22) !important;
+  border: 1px solid rgba(0, 179, 146, 0.35) !important;
+}
+html.theme-midnight-green #btn-compose svg,
+html.theme-midnight-green #btn-compose i,
+body.theme-midnight-green #btn-compose svg,
+body.theme-midnight-green #btn-compose i {
+  stroke: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+html.theme-midnight-green #btn-compose .compose-btn-text,
+body.theme-midnight-green #btn-compose .compose-btn-text {
+  color: #E6F2F2 !important;
+}
+
+#btn-compose:active {
+  transform: translateY(0px) scale(0.97) !important;
+}
+
+/* Primary Button Icon Circle (Harmony signature chevron / arrow pill) */
+.btn-primary i,
+.btn-harmony i,
+.btn-action-cyber i,
+.btn-icon-circle {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.72em !important;
+  margin-left: 4px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #FFFFFF !important;
+  line-height: 1 !important;
+}
+
+/* Secondary Button: Harmony Clean Pill (#F2F2F2) */
+.btn-secondary,
+.btn-hero-signin,
+.btn-solid-dark,
+.btn-solid-slate {
+  background-color: #F2F2F2 !important;
+  color: #212529 !important;
+  border: 1px solid #E4E6EB !important;
+  border-radius: 50px !important;
+  padding: 12px 22px !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease-in-out !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-secondary:hover,
+.btn-hero-signin:hover,
+.btn-solid-dark:hover,
+.btn-solid-slate:hover {
+  background-color: #E5E5E5 !important;
+  border-color: #D8DADF !important;
+  color: #000000 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Tertiary Button: Harmony White Outline Pill */
+.btn-hero-apps,
+.btn-outline,
+.btn-solid-light {
+  background-color: #FFFFFF !important;
+  color: #1E293B !important;
+  border: 1px solid #D5D5D5 !important;
+  border-radius: 50px !important;
+  padding: 12px 22px !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease-in-out !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.btn-hero-apps:hover,
+.btn-outline:hover,
+.btn-solid-light:hover {
+  border-color: #208ED3 !important;
+  color: #208ED3 !important;
+  background-color: #F8FAFC !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(32, 142, 211, 0.15) !important;
+}
+
+/* ==========================================================================
+   HARMONY CARD & WIDGET RADII (--themewidget-radius: 20px)
+   ========================================================================== */
+.card,
+.inbox-card,
+.modal-card,
+.bg-card,
+#messages-panel,
+#message-view-panel,
+.harmony-card,
+.rounded-3xl,
+.rounded-2xl {
+  border-radius: 20px !important;
+}
+
+.rounded-xl {
+  border-radius: 14px !important;
+}
+
+.rounded-full {
+  border-radius: 50px !important;
+}
+
+/* Harmony Search Pill Input */
+.search-pill,
+.harmony-search-input {
+  background-color: #F6F6F6 !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 50px !important;
+  color: #1E293B !important;
+  padding: 8px 18px !important;
+}
+
+/* Harmony Feature Icon Badges */
+.harmony-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background-color: #EBF5FB;
+  color: #208ED3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.25s ease;
+}
+
+.harmony-icon-badge:hover {
+  background-color: #208ED3;
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+/* Clean Logo: No Background, No Circle/Border, No Halo */
+.logo-squircle,
+header img[src*="raccoon-logo"],
+img[src*="raccoon-logo"] {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transition: transform 0.25s ease !important;
+}
+
+header img[src*="raccoon-logo"]:hover {
+  transform: scale(1.05) rotate(-2deg) !important;
+}

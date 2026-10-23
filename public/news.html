@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raccon News Wire — Live 5-Minute Nocturnal News &bull; Tech, Sport, Games, Music, Weather</title>
+  
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#080c14" />
+  <meta name="description" content="Raccon Nocturnal News Wire — Auto-updating live headlines every 5 minutes syndicated from CBN News across Tech, Sports, Gaming, Music, and Weather." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            fun: ['"Fredoka"', 'sans-serif']
+          },
+          colors: {
+            obsidian: '#080c14',
+            surface: {
+              DEFAULT: '#0f172a',
+              card: '#111c33',
+              hover: '#172545',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderLight: 'rgba(255, 255, 255, 0.16)'
+            },
+            raccoon: {
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              sky: '#38bdf8',
+              violet: '#a855f7',
+              rose: '#f43f5e'
+            }
+          },
+          animation: {
+            'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'marquee': 'marquee 32s linear infinite',
+            'spin-slow': 'spin 12s linear infinite'
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/raccoon-mail.css">
+
+  <style>
+    /* Ultra-modern glassmorphic styling */
+    body {
+      background-color: #080c14;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(168, 85, 247, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: #f1f5f9;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .glass-nav {
+      background: rgba(8, 12, 20, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080c14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Marquee pause on hover */
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    /* Subtle gradient text */
+    .gradient-text-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-text-wire {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-raccoon-amber selection:text-black">
+
+  <!-- ==================================================== -->
+  <!-- 1. TOP BREAKING NEWS MARQUEE TICKER RIBBON           -->
+  <!-- ==================================================== -->
+  <div class="w-full bg-gradient-to-r from-emerald-950/80 via-slate-900 to-amber-950/80 border-b border-white/10 text-xs py-2 overflow-hidden flex items-center relative z-40 backdrop-blur-md">
+    <div class="px-3 sm:px-4 shrink-0 flex items-center gap-2 border-r border-white/10 z-10 bg-slate-900/90 py-0.5">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+      </span>
+      <span class="font-display font-bold tracking-wider text-[11px] text-red-400 uppercase flex items-center gap-1">
+        <span>⚡ BREAKING WIRE</span>
+      </span>
+    </div>
+
+    <!-- Ticker track -->
+    <div class="overflow-hidden whitespace-nowrap flex-1 relative flex items-center">
+      <div id="ticker-marquee" class="inline-flex items-center gap-8 marquee-track animate-marquee text-slate-300 font-medium text-xs cursor-pointer">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <div class="hidden md:flex items-center gap-2 px-3 border-l border-white/10 shrink-0 text-[11px] text-slate-400">
+      <i data-lucide="shield-check" class="h-3.5 w-3.5 text-emerald-400"></i>
+      <span>Syndicated &bull; CBN News</span>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- 2. STICKY TOP APP BAR / NAVIGATION                   -->
+  <!-- ==================================================== -->
+  <header class="w-full glass-nav sticky top-0 z-30">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      
+      <!-- Brand Logo & Live Badge -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="relative">
+            <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-9 w-9 sm:h-10 sm:w-10 object-contain drop-shadow-[0_0_12px_rgba(16,185,129,0.3)] transition transform group-hover:scale-105" />
+            <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-obsidian"></span>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-display text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition">Raccon News Wire</span>
+              <span class="text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">5M LIVE</span>
+            </div>
+            <p class="text-[11px] text-slate-400 hidden sm:block">Nocturnal Syndicated Wire &bull; tech, sport, games, music, weather</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center / Desktop Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-300">
+        <a href="/inbox" class="hover:text-emerald-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-white/5">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-emerald-400"></i>
+          <span>Webmail Inbox</span>
+        </a>
+        <a href="/" class="hover:text-emerald-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-white/5">
+          <i data-lucide="home" class="h-3.5 w-3.5 text-slate-400"></i>
+          <span>Home</span>
+        </a>
+        <a href="/downloads/RacconMail.apk" class="hover:text-emerald-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20">
+          <i data-lucide="smartphone" class="h-3.5 w-3.5"></i>
+          <span>Android App</span>
+        </a>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-2.5">
+        <!-- Live Countdown Pill -->
+        <div class="flex items-center gap-2 bg-slate-900/90 border border-white/10 rounded-full px-3 py-1.5 text-xs shadow-inner">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-slate-400 hidden xs:inline">Next sync:</span>
+          <span id="news-timer" class="font-mono font-bold text-emerald-400">04:59</span>
+        </div>
+
+        <!-- Manual Refresh Button -->
+        <button
+          onclick="refreshRacconNews(true)"
+          id="btn-refresh-news"
+          class="rounded-full bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 px-3.5 py-1.5 text-xs font-bold text-slate-200 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+          title="Refresh live news immediately"
+        >
+          <i data-lucide="rotate-cw" id="refresh-icon" class="h-3.5 w-3.5 text-emerald-400"></i>
+          <span class="hidden sm:inline">Sync Now</span>
+        </button>
+
+        <!-- Official CBN News Source Link -->
+        <a
+          href="https://cbn.com/lp/cbn-news"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-obsidian font-bold px-3.5 sm:px-4 py-1.5 text-xs transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer"
+          title="Visit source at cbn.com/lp/cbn-news"
+        >
+          <span>CBN News</span>
+          <i data-lucide="external-link" class="h-3 w-3"></i>
+        </a>
+
+        <!-- Mobile Quick Home Link -->
+        <a href="/inbox" class="lg:hidden p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10" title="Go to Inbox">
+          <i data-lucide="mail" class="h-4 w-4"></i>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================================================== -->
+  <!-- 3. HERO SHOWCASE & LIVE FILTER BAR                   -->
+  <!-- ==================================================== -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8 space-y-6">
+
+    <!-- Top Headline Intro Card -->
+    <div class="relative overflow-hidden rounded-3xl glass-card p-6 sm:p-8">
+      <!-- Glow ambient backdrop -->
+      <div class="absolute -right-16 -top-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 text-emerald-400 px-3 py-1 text-xs font-bold border border-emerald-500/20">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>NOCTURNAL 5-MINUTE WIRE &bull; SYNDICATED LIVE</span>
+          </div>
+
+          <h1 class="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            The Wire That Never Sleeps.
+          </h1>
+
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            Real-time nocturnal bulletins across <strong class="text-white">Tech</strong>, <strong class="text-white">Sport</strong>, <strong class="text-white">Games</strong>, <strong class="text-white">Music</strong>, and <strong class="text-white">Weather</strong>. Auto-refreshed every 5 minutes from official syndication at <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-emerald-400 hover:underline">https://cbn.com/lp/cbn-news</a>.
+          </p>
+        </div>
+
+        <!-- Right Quick Stats & Search -->
+        <div class="w-full lg:w-80 space-y-3 shrink-0">
+          <!-- Search Input -->
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"></i>
+            <input
+              type="text"
+              id="news-search-input"
+              placeholder="Search wire headlines..."
+              oninput="handleNewsSearch(this.value)"
+              class="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-slate-900/90 border border-white/10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition"
+            />
+            <button
+              id="clear-search-btn"
+              onclick="clearNewsSearch()"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+            >
+              <i data-lucide="x" class="h-3.5 w-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
+              <div class="text-[10px] text-slate-400 uppercase font-mono">Sync</div>
+              <div class="text-xs font-bold text-emerald-400 flex items-center justify-center gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> 5 Mins
+              </div>
+            </div>
+            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
+              <div class="text-[10px] text-slate-400 uppercase font-mono">Sections</div>
+              <div class="text-xs font-bold text-sky-400">5 Pillars</div>
+            </div>
+            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
+              <div class="text-[10px] text-slate-400 uppercase font-mono">Source</div>
+              <div class="text-xs font-bold text-amber-400">CBN News</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 4. CATEGORY SELECTOR TABS                            -->
+    <!-- ==================================================== -->
+    <div class="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-white/10">
+      
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none w-full sm:w-auto" id="category-pills">
+        <button
+          onclick="filterCategory('all')"
+          data-category="all"
+          class="cat-pill active px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-emerald-500 text-obsidian shadow-md shadow-emerald-500/20 cursor-pointer"
+        >
+          <span>✨ All Categories</span>
+          <span class="text-[10px] bg-black/20 text-obsidian px-1.5 py-0.5 rounded-full font-mono">15</span>
+        </button>
+
+        <button
+          onclick="filterCategory('tech')"
+          data-category="tech"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>💻 Tech &amp; AI</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+        </button>
+
+        <button
+          onclick="filterCategory('sport')"
+          data-category="sport"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>⚽ Sports Arena</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+        </button>
+
+        <button
+          onclick="filterCategory('games')"
+          data-category="games"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>🎮 Gaming</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+        </button>
+
+        <button
+          onclick="filterCategory('music')"
+          data-category="music"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>🎵 Music &amp; Audio</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+        </button>
+
+        <button
+          onclick="filterCategory('weather')"
+          data-category="weather"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>☀️ Night Radar</span>
+          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+        </button>
+      </div>
+
+      <!-- Bookmarked items toggle button -->
+      <div class="flex items-center gap-2">
+        <button
+          onclick="toggleBookmarksView()"
+          id="btn-bookmarks"
+          class="px-3.5 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-amber-400 bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          title="View your saved articles"
+        >
+          <i data-lucide="bookmark" class="h-3.5 w-3.5"></i>
+          <span>Saved (<span id="bookmark-count">0</span>)</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 5. FEATURED SPOTLIGHT STORY (Hero Editorial)         -->
+    <!-- ==================================================== -->
+    <div id="featured-hero" class="glass-card rounded-3xl p-6 sm:p-7 relative overflow-hidden group border border-emerald-500/30">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="space-y-3 flex-1">
+          <div class="flex items-center gap-2 flex-wrap text-xs">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>🔥 TOP WIRE SPOTLIGHT</span>
+            </span>
+            <span class="text-slate-400 font-mono text-[11px]" id="hero-category">Tech &amp; Cyber</span>
+            <span class="text-slate-500">&bull;</span>
+            <span class="text-slate-400 font-mono text-[11px]" id="hero-time">Just updated</span>
+            <span class="text-slate-500">&bull;</span>
+            <span class="text-amber-400 font-medium text-[11px] flex items-center gap-1">
+              <i data-lucide="clock" class="h-3 w-3"></i> 2 min read
+            </span>
+          </div>
+
+          <h2 id="hero-title" class="font-display text-2xl sm:text-3xl font-bold text-white group-hover:text-emerald-400 transition leading-snug">
+            Next-Gen Stealth Chips Deliver 10x On-Device Encryption for Postcards
+          </h2>
+
+          <p id="hero-desc" class="text-sm text-slate-300 line-clamp-2 leading-relaxed">
+            Hardware isolation prevents memory scraping & data harvesting. Full privacy safeguards ensure mail burrows stay masked from network surveillance.
+          </p>
+
+          <div class="flex items-center gap-3 pt-2">
+            <a
+              id="hero-link"
+              href="https://cbn.com/lp/cbn-news"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs px-5 py-2.5 transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer"
+            >
+              <span>Read on CBN News</span>
+              <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+            </a>
+
+            <button
+              onclick="openQuickReader('hero')"
+              class="rounded-full bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-bold text-xs px-4 py-2.5 transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="eye" class="h-3.5 w-3.5 text-slate-400"></i>
+              <span>Quick Preview</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Visual Badge -->
+        <div class="shrink-0 flex items-center justify-center p-4">
+          <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-sky-500/20 border border-white/10 flex items-center justify-center">
+            <img src="/raccoon-logo.png" class="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.3)] animate-pulse-fast" />
+            <div class="absolute -bottom-2 -right-2 bg-slate-900 border border-white/10 rounded-full px-2 py-0.5 text-[10px] font-mono text-emerald-400 font-bold">
+              CBN SYNC
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 6. THE 5-COLUMN / FILTERED NEWS GRID                 -->
+    <!-- ==================================================== -->
+    <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <!-- Populated dynamically via JS -->
+    </div>
+
+    <!-- Empty State for Search or Saved Bookmarks -->
+    <div id="empty-state" class="hidden text-center py-16 px-4 glass-card rounded-3xl space-y-3">
+      <div class="h-16 w-16 mx-auto rounded-full bg-white/5 flex items-center justify-center text-2xl">
+        🦝
+      </div>
+      <h3 class="font-display text-lg font-bold text-white">No bulletins match your filter</h3>
+      <p class="text-xs text-slate-400 max-w-sm mx-auto">Try a different search keyword or switch to "All Categories" to browse the full live wire.</p>
+      <button onclick="clearNewsSearch(); filterCategory('all');" class="rounded-full bg-emerald-500 text-obsidian text-xs font-bold px-4 py-2 mt-2">
+        Reset Filter
+      </button>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 7. SOURCE BANNER & RETURN SHORTCUTS                  -->
+    <!-- ==================================================== -->
+    <div class="glass-card rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/10">
+      <div class="flex items-center gap-3">
+        <img src="/raccoon-logo.png" class="h-8 w-8 object-contain shrink-0" />
+        <div class="text-xs">
+          <p class="font-bold text-white">Official Syndication &bull; Raccon Nocturnal Wire</p>
+          <p class="text-slate-400">Headlines and articles syndicated in real-time every 5 minutes from <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="text-emerald-400 underline font-semibold">https://cbn.com/lp/cbn-news</a>.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0">
+        <a
+          href="/inbox"
+          class="rounded-full bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-bold px-4 py-2 transition flex items-center gap-1.5"
+        >
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-emerald-400"></i>
+          <span>Open Webmail</span>
+        </a>
+
+        <a
+          href="https://cbn.com/lp/cbn-news"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian text-xs font-bold px-4 py-2 transition flex items-center gap-1.5"
+        >
+          <span>Open CBN News</span>
+          <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================================================== -->
+  <!-- 8. QUICK READER MODAL                                -->
+  <!-- ==================================================== -->
+  <div id="quick-reader-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
+    <div class="w-full max-w-2xl rounded-3xl glass-card p-6 sm:p-8 relative border border-white/15 max-h-[90vh] overflow-y-auto space-y-4">
+      <button onclick="closeQuickReader()" class="absolute top-5 right-5 p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition">
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+
+      <div class="flex items-center gap-2 text-xs">
+        <span id="modal-category-badge" class="px-2.5 py-1 rounded-full font-bold">Category</span>
+        <span id="modal-time" class="text-slate-400 font-mono">Time</span>
+      </div>
+
+      <h2 id="modal-title" class="font-display text-xl sm:text-2xl font-bold text-white leading-snug">
+        Title
+      </h2>
+
+      <p id="modal-desc" class="text-sm text-slate-300 leading-relaxed">
+        Description
+      </p>
+
+      <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs text-slate-300">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield" class="h-4 w-4 text-emerald-400"></i>
+          <span>Official Article Syndication: <strong>CBN News</strong></span>
+        </div>
+        <a
+          id="modal-external-link"
+          href="https://cbn.com/lp/cbn-news"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-emerald-400 font-bold hover:underline flex items-center gap-1"
+        >
+          <span>cbn.com</span>
+          <i data-lucide="external-link" class="h-3 w-3"></i>
+        </a>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+        <button onclick="closeQuickReader()" class="rounded-full bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs px-4 py-2 transition">
+          Close Preview
+        </button>
+        <a
+          id="modal-action-btn"
+          href="https://cbn.com/lp/cbn-news"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20"
+        >
+          <span>Read Full Article on CBN</span>
+          <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="rounded-full bg-slate-900 border border-emerald-500/40 px-4 py-2 text-xs font-bold text-emerald-300 shadow-2xl flex items-center gap-2">
+      <i data-lucide="check-circle" class="h-4 w-4 text-emerald-400"></i>
+      <span id="toast-message">Notification</span>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- 9. FOOTER (Compact & Sleek for Mobile, Android & iOS)-->
+  <!-- ==================================================== -->
+  <footer class="glass-nav py-3 sm:py-5 border-t border-white/10 text-xs text-slate-400 w-full mt-8 sm:mt-12">
+    <div class="mx-auto max-w-7xl px-3 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-2.5 sm:gap-4">
+      <div class="flex items-center gap-2 font-display font-bold text-white text-xs sm:text-sm">
+        <img src="/raccoon-logo.png" class="h-5 w-5 object-contain" />
+        <span>Raccon Mail &bull; Nocturnal News Wire</span>
+      </div>
+
+      <p class="text-center md:text-left text-[10px] sm:text-[11px] text-slate-500">
+        &copy; 2026 Raccon Mail. Real-time news syndicate. Live updates every 5 minutes from CBN News.
+      </p>
+
+      <div class="flex items-center gap-3 sm:gap-4 font-semibold text-[11px] flex-wrap justify-center">
+        <a href="/" class="hover:text-emerald-400 transition">Landing Page</a>
+        <a href="/inbox" class="hover:text-emerald-400 transition">Webmail Inbox</a>
+        <a href="/downloads/RacconMail.apk" class="hover:text-emerald-400 transition text-emerald-400">Android APK</a>
+        <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 text-emerald-400 transition">CBN News Live</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================================================== -->
+  <!-- 10. JAVASCRIPT LIVE ENGINE & INTERACTIVITY           -->
+  <!-- ==================================================== -->
+  <script>
+    // News Data Pool (Rotating every 5 minutes from CBN News)
+    const newsData = {
+      tech: [
+        {
+          id: 'tech-1',
+          category: 'tech',
+          catLabel: 'Tech & AI',
+          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+          catEmoji: '💻',
+          title: 'Next-Gen Stealth Chips Deliver 10x On-Device Encryption',
+          desc: 'Hardware isolation prevents memory scraping & data harvesting. Postcard networks transition to lattice-based post-quantum cryptography.',
+          time: '2m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'tech-2',
+          category: 'tech',
+          catLabel: 'Tech & AI',
+          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+          catEmoji: '💻',
+          title: 'Open-Source AI Models Challenge Big Tech Monopolies',
+          desc: 'Decentralized models put full control back in developers\' hands with private local inference and zero cloud telemetry.',
+          time: '14m ago',
+          readTime: '4 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'tech-3',
+          category: 'tech',
+          catLabel: 'Tech & AI',
+          catColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+          catEmoji: '💻',
+          title: 'Solar-Powered Nocturnal Microservers Deployed in Scandinavia',
+          desc: 'Green computing powered entirely by daylight solar reserves provides uninterrupted nocturnal relay processing.',
+          time: '31m ago',
+          readTime: '2 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        }
+      ],
+      sport: [
+        {
+          id: 'sport-1',
+          category: 'sport',
+          catLabel: 'Sports Arena',
+          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+          catEmoji: '⚽',
+          title: 'Champions League Night Clashes Deliver Dramatic Late Winners',
+          desc: 'Extra-time heroics seal quarterfinal spots under stadium lights as the underdog squad clinches a historic aggregate upset.',
+          time: '3m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'sport-2',
+          category: 'sport',
+          catLabel: 'Sports Arena',
+          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+          catEmoji: '⚽',
+          title: 'Global Marathon Records Shattered in Historic Night Race',
+          desc: 'Crisp cool 12°C nocturnal air fuels historic distance times through the illuminated city streets of Berlin.',
+          time: '18m ago',
+          readTime: '2 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'sport-3',
+          category: 'sport',
+          catLabel: 'Sports Arena',
+          catColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+          catEmoji: '⚽',
+          title: 'Midnight Street Basketball Tournaments Surge in Popularity',
+          desc: 'Local city courts light up with intense 3-on-3 showdowns featuring top streetball talents and live DJ soundtracks.',
+          time: '42m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        }
+      ],
+      games: [
+        {
+          id: 'games-1',
+          category: 'games',
+          catLabel: 'Gaming & Esports',
+          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+          catEmoji: '🎮',
+          title: 'Nocturnal RPG "Shadow Bandit" Announced for PC & Consoles',
+          desc: 'Play as a masked woodland creature solving midnight bakery mysteries with stealth foraging mechanics and coop burrows.',
+          time: '5m ago',
+          readTime: '4 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'games-2',
+          category: 'games',
+          catLabel: 'Gaming & Esports',
+          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+          catEmoji: '🎮',
+          title: 'Global Esports Grand Finals Break Viewership Milestones',
+          desc: 'Over 4.9 million concurrent viewers tune into intense nocturnal decider as reigning world champions defend their crown.',
+          time: '21m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'games-3',
+          category: 'games',
+          catLabel: 'Gaming & Esports',
+          catColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+          catEmoji: '🎮',
+          title: 'Next-Gen Handheld Update Boosts OLED Contrast & Battery',
+          desc: 'Firmware optimization extends portable gameplay sessions by 2 full hours while optimizing deep black nocturnal levels.',
+          time: '44m ago',
+          readTime: '2 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        }
+      ],
+      music: [
+        {
+          id: 'music-1',
+          category: 'music',
+          catLabel: 'Music & Audio',
+          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+          catEmoji: '🎵',
+          title: 'Midnight Lo-Fi Beats Stream Surpasses 1 Billion Hours',
+          desc: 'Night owls, coders and study groups make ambient chillhop the most streamed genre worldwide during nocturnal hours.',
+          time: '4m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'music-2',
+          category: 'music',
+          catLabel: 'Music & Audio',
+          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+          catEmoji: '🎵',
+          title: 'Underground Synthwave Album Climbs Global Indie Charts',
+          desc: 'Retro 80s analog synthesizers captivate night drivers and late workers with neon aesthetics and punchy basslines.',
+          time: '24m ago',
+          readTime: '2 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'music-3',
+          category: 'music',
+          catLabel: 'Music & Audio',
+          catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+          catEmoji: '🎵',
+          title: 'Acoustic Forest Sessions Recorded Under Full Moonlight',
+          desc: 'Natural woodland acoustics and whispering pines bring intimate folk guitar tracks to life in a viral new nocturnal release.',
+          time: '49m ago',
+          readTime: '3 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        }
+      ],
+      weather: [
+        {
+          id: 'weather-1',
+          category: 'weather',
+          catLabel: 'Night Radar',
+          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+          catEmoji: '☀️',
+          title: 'Night Sky Clarity: 98% (Exceptional Star Visibility)',
+          desc: 'Crisp atmospheric high pressure system; ideal conditions for nocturnal stargazing, late night walks and woodland tranquility.',
+          time: 'Live Radar',
+          readTime: '1 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'weather-2',
+          category: 'weather',
+          catLabel: 'Night Radar',
+          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+          catEmoji: '☀️',
+          title: 'Moon Phase: Waxing Gibbous (84% Illuminated)',
+          desc: 'Gentle natural silver moonlight over European cities and woodland burrows with low atmospheric scattering.',
+          time: 'Astronomical',
+          readTime: '1 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        },
+        {
+          id: 'weather-3',
+          category: 'weather',
+          catLabel: 'Night Radar',
+          catColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+          catEmoji: '☀️',
+          title: 'Northern Aurora Borealis Visible in Upper Latitudes Tonight',
+          desc: 'Solar wind geomagnetic index generates dancing emerald curtains in sky visible across Scandinavia and northern borders.',
+          time: 'Live Alert',
+          readTime: '2 min read',
+          link: 'https://cbn.com/lp/cbn-news'
+        }
+      ]
+    };
+
+    // State
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let bookmarks = JSON.parse(localStorage.getItem('raccon_news_bookmarks') || '[]');
+    let isBookmarksView = false;
+    let countdownSeconds = 300; // 5 minutes
+    let activeModalItem = null;
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-message');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // Bookmark toggling
+    function toggleBookmark(id, event) {
+      if (event) event.stopPropagation();
+      const idx = bookmarks.indexOf(id);
+      if (idx > -1) {
+        bookmarks.splice(idx, 1);
+        showToast('Article removed from saved.');
+      } else {
+        bookmarks.push(id);
+        showToast('Article saved to your bookmarks!');
+      }
+      localStorage.setItem('raccon_news_bookmarks', JSON.stringify(bookmarks));
+      updateBookmarkUI();
+      renderNewsGrid();
+    }
+
+    function updateBookmarkUI() {
+      const countEl = document.getElementById('bookmark-count');
+      if (countEl) countEl.textContent = bookmarks.length;
+    }
+
+    function toggleBookmarksView() {
+      isBookmarksView = !isBookmarksView;
+      const btn = document.getElementById('btn-bookmarks');
+      if (btn) {
+        if (isBookmarksView) {
+          btn.classList.add('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+        } else {
+          btn.classList.remove('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+        }
+      }
+      renderNewsGrid();
+    }
+
+    // Share article
+    function shareArticle(title, link, event) {
+      if (event) event.stopPropagation();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${title} - Read more on Raccon News Wire: ${window.location.origin}/news`);
+        showToast('Link copied to clipboard!');
+      } else {
+        showToast('Sharing ready: ' + link);
+      }
+    }
+
+    // Flatten all news items into a single array
+    function getAllItems() {
+      return [
+        ...newsData.tech,
+        ...newsData.sport,
+        ...newsData.games,
+        ...newsData.music,
+        ...newsData.weather
+      ];
+    }
+
+    // Render Marquee Ticker
+    function renderTicker() {
+      const marqueeEl = document.getElementById('ticker-marquee');
+      if (!marqueeEl) return;
+      const items = getAllItems();
+      const tickerHtml = items.map(item => `
+        <span onclick="openQuickReader('${item.id}')" class="inline-flex items-center gap-2 hover:text-emerald-400 transition cursor-pointer">
+          <span class="text-amber-400 font-bold">${item.catEmoji} ${item.catLabel.toUpperCase()}:</span>
+          <span>${item.title}</span>
+          <span class="text-slate-500 text-[10px]">(${item.time})</span>
+          <span class="text-emerald-500/60 ml-4">&bull;</span>
+        </span>
+      `).join('');
+      // Duplicate for seamless infinite loop
+      marqueeEl.innerHTML = tickerHtml + tickerHtml;
+    }
+
+    // Filter by Category
+    function filterCategory(category) {
+      currentCategory = category;
+      isBookmarksView = false;
+      document.getElementById('btn-bookmarks')?.classList.remove('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.dataset.category === category) {
+          btn.classList.add('bg-emerald-500', 'text-obsidian', 'shadow-md', 'shadow-emerald-500/20');
+          btn.classList.remove('text-slate-300', 'bg-white/5', 'hover:bg-white/10');
+        } else {
+          btn.classList.remove('bg-emerald-500', 'text-obsidian', 'shadow-md', 'shadow-emerald-500/20');
+          btn.classList.add('text-slate-300', 'bg-white/5', 'hover:bg-white/10');
+        }
+      });
+
+      renderNewsGrid();
+    }
+
+    // Search Handling
+    function handleNewsSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        if (searchQuery.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      renderNewsGrid();
+    }
+
+    function clearNewsSearch() {
+      const input = document.getElementById('news-search-input');
+      if (input) input.value = '';
+      searchQuery = '';
+      document.getElementById('clear-search-btn')?.classList.add('hidden');
+      renderNewsGrid();
+    }
+
+    // Render News Grid Cards
+    function renderNewsGrid() {
+      const container = document.getElementById('news-grid-container');
+      const emptyState = document.getElementById('empty-state');
+      if (!container) return;
+
+      let items = getAllItems();
+
+      // Category filter
+      if (currentCategory !== 'all') {
+        items = items.filter(i => i.category === currentCategory);
+      }
+
+      // Bookmarks filter
+      if (isBookmarksView) {
+        items = items.filter(i => bookmarks.includes(i.id));
+      }
+
+      // Search filter
+      if (searchQuery.length > 0) {
+        items = items.filter(i => 
+          i.title.toLowerCase().includes(searchQuery) ||
+          i.desc.toLowerCase().includes(searchQuery) ||
+          i.catLabel.toLowerCase().includes(searchQuery)
+        );
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = '';
+        emptyState?.classList.remove('hidden');
+        return;
+      }
+
+      emptyState?.classList.add('hidden');
+
+      container.innerHTML = items.map(item => {
+        const isBookmarked = bookmarks.includes(item.id);
+        return `
+          <article class="glass-card rounded-3xl p-5 flex flex-col justify-between hover:-translate-y-1 transition duration-300 group relative">
+            <div>
+              <!-- Header Meta: Category & Bookmark -->
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${item.catColor}">
+                  <span>${item.catEmoji}</span>
+                  <span>${item.catLabel}</span>
+                </span>
+                
+                <div class="flex items-center gap-1 text-slate-400">
+                  <button
+                    onclick="toggleBookmark('${item.id}', event)"
+                    class="p-1 rounded-full hover:bg-white/10 ${isBookmarked ? 'text-amber-400' : 'text-slate-400 hover:text-white'} transition"
+                    title="${isBookmarked ? 'Remove bookmark' : 'Save article'}"
+                  >
+                    <i data-lucide="${isBookmarked ? 'bookmark-check' : 'bookmark'}" class="h-3.5 w-3.5"></i>
+                  </button>
+                  <button
+                    onclick="shareArticle('${item.title.replace(/'/g, "\\'")}', '${item.link}', event)"
+                    class="p-1 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition"
+                    title="Share article"
+                  >
+                    <i data-lucide="share-2" class="h-3.5 w-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Time & Sync Source -->
+              <div class="flex items-center gap-2 text-[10px] text-slate-400 mb-2 font-mono">
+                <span class="flex items-center gap-1 text-emerald-400 font-bold">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>CBN Sync</span>
+                </span>
+                <span>&bull;</span>
+                <span>${item.time}</span>
+                <span>&bull;</span>
+                <span>${item.readTime}</span>
+              </div>
+
+              <!-- Headline -->
+              <h3
+                onclick="openQuickReader('${item.id}')"
+                class="font-display font-bold text-sm sm:text-base text-white group-hover:text-emerald-400 transition leading-snug cursor-pointer line-clamp-3 mb-2"
+              >
+                ${item.title}
+              </h3>
+
+              <!-- Excerpt -->
+              <p class="text-xs text-slate-300 leading-relaxed line-clamp-3 mb-4">
+                ${item.desc}
+              </p>
+            </div>
+
+            <!-- Card Bottom Action Row -->
+            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+              <a
+                href="${item.link}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-bold text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1 text-[11px]"
+              >
+                <span>Read on CBN</span>
+                <i data-lucide="arrow-right" class="h-3 w-3"></i>
+              </a>
+
+              <button
+                onclick="openQuickReader('${item.id}')"
+                class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-[11px] font-semibold transition"
+              >
+                Preview
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Open Quick Reader Modal
+    function openQuickReader(itemId) {
+      let item;
+      if (itemId === 'hero') {
+        item = newsData.tech[0];
+      } else {
+        item = getAllItems().find(i => i.id === itemId);
+      }
+      if (!item) return;
+
+      activeModalItem = item;
+
+      document.getElementById('modal-title').textContent = item.title;
+      document.getElementById('modal-desc').textContent = item.desc + " Full coverage, verified sources, and real-time updates are syndicated continuously from CBN News at cbn.com/lp/cbn-news.";
+      document.getElementById('modal-time').textContent = `${item.time} &bull; ${item.readTime}`;
+      
+      const badge = document.getElementById('modal-category-badge');
+      badge.textContent = `${item.catEmoji} ${item.catLabel}`;
+      badge.className = `px-2.5 py-1 rounded-full font-bold text-xs ${item.catColor}`;
+
+      const link = document.getElementById('modal-action-btn');
+      link.href = item.link;
+
+      const modal = document.getElementById('quick-reader-modal');
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeQuickReader() {
+      document.getElementById('quick-reader-modal')?.classList.add('hidden');
+    }
+
+    // Refresh News Engine (Simulated 5-minute sync with visual feedback)
+    function refreshRacconNews(userTriggered = false) {
+      countdownSeconds = 300; // Reset 5 minutes
+
+      const icon = document.getElementById('refresh-icon');
+      if (icon) {
+        icon.classList.add('animate-spin');
+        setTimeout(() => icon.classList.remove('animate-spin'), 800);
+      }
+
+      renderTicker();
+      renderNewsGrid();
+
+      if (userTriggered) {
+        showToast('Wire synchronized with CBN News!');
+      }
+    }
+
+    // 5-minute countdown ticker
+    setInterval(() => {
+      countdownSeconds--;
+      if (countdownSeconds <= 0) {
+        refreshRacconNews(false);
+      }
+
+      const timerEl = document.getElementById('news-timer');
+      if (timerEl) {
+        const mins = Math.floor(countdownSeconds / 60);
+        const secs = countdownSeconds % 60;
+        timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+    }, 1000);
+
+    // Initial Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTicker();
+      updateBookmarkUI();
+      renderNewsGrid();
+      lucide.createIcons();
+    });
+
+    // Close modal on escape
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeQuickReader();
+    });
+  </script>
+</body>
+</html>

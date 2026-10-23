@@ -1,0 +1,16 @@
+Options -Indexes +FollowSymLinks
+RewriteEngine On
+
+# 1. API requests -> api.php
+RewriteRule ^api/(.*)$ api.php?route=$1 [QSA,L]
+RewriteRule ^api/?$ api.php [QSA,L]
+
+# 2. Legal pages
+RewriteRule ^legal/terms/?$ legal_terms.html [L]
+RewriteRule ^legal/privacy/?$ legal_privacy.html [L]
+
+# 3. Main frontend pages
+RewriteRule ^inbox/?$ inbox.php [L]
+RewriteRule ^auth/?$ auth.html [L]
+RewriteRule ^admin/?$ admin.html [L]
+RewriteRule ^news/?$ news.html [L]
