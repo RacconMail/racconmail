@@ -5,6 +5,7 @@ User-agent: *
 Allow: /
 Allow: /forum
 Allow: /news
+Allow: /stories
 Allow: /auth
 Allow: /legal/terms
 Allow: /legal/privacy

@@ -463,18 +463,18 @@ if (empty($_SESSION['current_user_id'])) {
             <span class="truncate">Community Wall</span>
           </div>
         </a>
-        <button onclick="app.openNewsModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+        <a href="/news" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="newspaper" class="h-4 w-4 shrink-0"></i>
             <span class="truncate">Raccon News Wire</span>
           </div>
-        </button>
-        <button onclick="app.openStoriesModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+        </a>
+        <a href="/stories" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="book-open" class="h-4 w-4 shrink-0"></i>
             <span class="truncate">World Stories</span>
           </div>
-        </button>
+        </a>
         <button onclick="app.openContactsView()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="users" class="h-4 w-4 shrink-0"></i>
@@ -1330,9 +1330,15 @@ if (empty($_SESSION['current_user_id'])) {
               <p class="text-xs text-muted-foreground">Folktales, myths, and fables from cultures around the globe</p>
             </div>
           </div>
-          <button onclick="app.closeStoriesModal()" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
+          <div class="flex items-center gap-2 shrink-0">
+            <a href="/stories" class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page stories library">
+              <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
+              <span>Open Full Page Stories</span>
+            </a>
+            <button onclick="app.closeStoriesModal()" class="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+              <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Filter Pills & Search Bar -->

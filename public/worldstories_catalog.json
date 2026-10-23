@@ -7,9 +7,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/335/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/a-good-friend/english/335",
+    "url": "/stories?id=335",
     "languages": [
       "Akan",
       "Arabic",
@@ -53,9 +53,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/281/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/a-lesson-of-tit-for-tat/english/281",
+    "url": "/stories?id=281",
     "languages": [
       "English",
       "Gaelic",
@@ -71,9 +71,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/329/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/a-story-of-courage/english/329",
+    "url": "/stories?id=329",
     "languages": [
       "English",
       "French"
@@ -87,9 +87,9 @@
     "flag": "🇨🇳",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/239/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/adam-and-the-dragons-treasure/english/239",
+    "url": "/stories?id=239",
     "languages": [
       "English",
       "Gaelic",
@@ -104,9 +104,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/240/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/adems-baba-embarrassed-him/english/240",
+    "url": "/stories?id=240",
     "languages": [
       "English",
       "Finnish",
@@ -123,9 +123,9 @@
     "flag": "🇮🇳",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/322/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/aharsi-the-bengal-tiger/english/322",
+    "url": "/stories?id=322",
     "languages": [
       "Albanian",
       "Arabic",
@@ -159,9 +159,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/822/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/alfredo/english/822",
+    "url": "/stories?id=822",
     "languages": [
       "Arabic",
       "Bengali",
@@ -194,9 +194,9 @@
     "flag": "🕌",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/823/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/ali-baba-and-the-forty-thieves/english/823",
+    "url": "/stories?id=823",
     "languages": [
       "Arabic",
       "English"
@@ -210,9 +210,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/451/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/ali-thumb/english/451",
+    "url": "/stories?id=451",
     "languages": [
       "Arabic",
       "Bengali",
@@ -243,9 +243,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/375/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/be-truthful/english/375",
+    "url": "/stories?id=375",
     "languages": [
       "English",
       "Hindi"
@@ -259,9 +259,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/392/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/beauty/english/392",
+    "url": "/stories?id=392",
     "languages": [
       "English",
       "Gujarati"
@@ -275,9 +275,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/832/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/beauty-and-the-beast/english/832",
+    "url": "/stories?id=832",
     "languages": [
       "English",
       "French",
@@ -292,9 +292,9 @@
     "flag": "🇨🇳",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1144/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/beware-the-dragon/english/1144",
+    "url": "/stories?id=1144",
     "languages": [
       "Arabic",
       "Bengali",
@@ -326,9 +326,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/827/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/bubbling-with-happiness/english/827",
+    "url": "/stories?id=827",
     "languages": [
       "English",
       "French",
@@ -346,9 +346,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/826/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/carmen-the-farmer/english/826",
+    "url": "/stories?id=826",
     "languages": [
       "Bengali",
       "English",
@@ -376,9 +376,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/665/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/chako-chaki/english/665",
+    "url": "/stories?id=665",
     "languages": [
       "English"
     ]
@@ -391,9 +391,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/346/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/chips/english/346",
+    "url": "/stories?id=346",
     "languages": [
       "English",
       "Polish"
@@ -407,9 +407,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/877/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/cinderella/english/877",
+    "url": "/stories?id=877",
     "languages": [
       "English",
       "French"
@@ -423,9 +423,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/666/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/city-mouse-and-country-mouse/english/666",
+    "url": "/stories?id=666",
     "languages": [
       "Bengali",
       "English",
@@ -449,9 +449,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/667/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/cormoran-the-cornish-giant/english/667",
+    "url": "/stories?id=667",
     "languages": [
       "English",
       "Gaelic"
@@ -465,9 +465,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/278/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/crow-and-little-bird/english/278",
+    "url": "/stories?id=278",
     "languages": [
       "English",
       "Punjabi"
@@ -481,9 +481,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/242/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/deer-and-jaguar/english/242",
+    "url": "/stories?id=242",
     "languages": [
       "Akan",
       "Albanian",
@@ -530,9 +530,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/244/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/dick-whittington-and-his-cat/english/244",
+    "url": "/stories?id=244",
     "languages": [
       "Arabic",
       "Bengali",
@@ -570,9 +570,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/354/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/eight-royal-trees/english/354",
+    "url": "/stories?id=354",
     "languages": [
       "Bengali",
       "English"
@@ -586,9 +586,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/668/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/friends-find-a-way/english/668",
+    "url": "/stories?id=668",
     "languages": [
       "English",
       "French",
@@ -605,9 +605,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/414/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/friends-forever/english/414",
+    "url": "/stories?id=414",
     "languages": [
       "Akan",
       "English",
@@ -628,9 +628,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1037/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/gingerbread-cookies/english/1037",
+    "url": "/stories?id=1037",
     "languages": [
       "English",
       "Polish"
@@ -644,9 +644,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/245/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/goldilocks-and-the-three-bears/english/245",
+    "url": "/stories?id=245",
     "languages": [
       "English",
       "French"
@@ -660,9 +660,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/355/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/half-rooster/english/355",
+    "url": "/stories?id=355",
     "languages": [
       "Albanian",
       "English"
@@ -676,9 +676,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/345/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/half-a-year-in-gra-bretanha/english/345",
+    "url": "/stories?id=345",
     "languages": [
       "English",
       "Portuguese"
@@ -692,9 +692,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/999/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/hansel-and-gretel/english/999",
+    "url": "/stories?id=999",
     "languages": [
       "Albanian",
       "Arabic",
@@ -730,9 +730,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/428/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/hard-times-a-true-story/english/428",
+    "url": "/stories?id=428",
     "languages": [
       "Albanian",
       "English"
@@ -746,9 +746,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/895/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/harlequins-mask/english/895",
+    "url": "/stories?id=895",
     "languages": [
       "English",
       "Italian"
@@ -762,9 +762,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/669/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/his-fathers-kingdom/english/669",
+    "url": "/stories?id=669",
     "languages": [
       "English"
     ]
@@ -777,9 +777,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/415/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/home/english/415",
+    "url": "/stories?id=415",
     "languages": [
       "English"
     ]
@@ -792,9 +792,9 @@
     "flag": "🇬🇧",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/670/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/how-arthur-became-king/english/670",
+    "url": "/stories?id=670",
     "languages": [
       "English"
     ]
@@ -807,9 +807,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1467/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/how-life-is/english/1467",
+    "url": "/stories?id=1467",
     "languages": [
       "English"
     ]
@@ -822,9 +822,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/416/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/how-the-old-woman-got-her-wish/english/416",
+    "url": "/stories?id=416",
     "languages": [
       "Arabic",
       "English",
@@ -842,9 +842,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/246/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/how-the-tortoise-got-his-crooked-shell/english/246",
+    "url": "/stories?id=246",
     "languages": [
       "English",
       "Yoruba"
@@ -858,9 +858,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/671/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/iris-mary-and-grandads-weather-sayings/english/671",
+    "url": "/stories?id=671",
     "languages": [
       "English"
     ]
@@ -873,9 +873,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/264/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/jack-and-the-beanstalk/english/264",
+    "url": "/stories?id=264",
     "languages": [
       "English",
       "French"
@@ -889,9 +889,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/238/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/joha-and-his-donkey/english/238",
+    "url": "/stories?id=238",
     "languages": [
       "Arabic",
       "Bengali",
@@ -927,9 +927,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/655/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/juha-stories/english/655",
+    "url": "/stories?id=655",
     "languages": [
       "Arabic",
       "English"
@@ -943,9 +943,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/453/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/keloglan-and-the-magic-seal/english/453",
+    "url": "/stories?id=453",
     "languages": [
       "English",
       "Turkish"
@@ -959,9 +959,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/455/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/keloglan-and-the-squirrel/english/455",
+    "url": "/stories?id=455",
     "languages": [
       "English",
       "Turkish"
@@ -975,9 +975,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/343/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/kulumbu-yeye/english/343",
+    "url": "/stories?id=343",
     "languages": [
       "English",
       "Yoruba"
@@ -991,9 +991,9 @@
     "flag": "🇬🇭",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/417/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/kweku-anansi-and-his-new-wife/english/417",
+    "url": "/stories?id=417",
     "languages": [
       "Akan",
       "English"
@@ -1007,9 +1007,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1145/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/later!/english/1145",
+    "url": "/stories?id=1145",
     "languages": [
       "Arabic",
       "Bengali",
@@ -1037,9 +1037,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/353/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/li-and-gao/english/353",
+    "url": "/stories?id=353",
     "languages": [
       "Cantonese",
       "English",
@@ -1054,9 +1054,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/418/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/lily-and-the-queen-of-flowers/english/418",
+    "url": "/stories?id=418",
     "languages": [
       "English",
       "Filipino",
@@ -1071,9 +1071,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/896/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/long-hair/english/896",
+    "url": "/stories?id=896",
     "languages": [
       "English",
       "Mandarin"
@@ -1087,9 +1087,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1464/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/master-twardowski/english/1464",
+    "url": "/stories?id=1464",
     "languages": [
       "English"
     ]
@@ -1102,9 +1102,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/989/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/medusa/english/989",
+    "url": "/stories?id=989",
     "languages": [
       "English",
       "Greek",
@@ -1120,9 +1120,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/275/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/mistress-owl/english/275",
+    "url": "/stories?id=275",
     "languages": [
       "English",
       "French"
@@ -1136,9 +1136,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/420/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/not-alone/english/420",
+    "url": "/stories?id=420",
     "languages": [
       "Arabic",
       "Bengali",
@@ -1168,9 +1168,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/248/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/pandoras-box/english/248",
+    "url": "/stories?id=248",
     "languages": [
       "English",
       "Farsi",
@@ -1193,9 +1193,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1003/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/peter-of-the-pigs/english/1003",
+    "url": "/stories?id=1003",
     "languages": [
       "English",
       "Portuguese"
@@ -1209,9 +1209,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1465/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/puss-in-boots/english/1465",
+    "url": "/stories?id=1465",
     "languages": [
       "English"
     ]
@@ -1224,9 +1224,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/981/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/robin-hood/english/981",
+    "url": "/stories?id=981",
     "languages": [
       "Albanian",
       "Arabic",
@@ -1255,9 +1255,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/820/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/romulus-and-remus/english/820",
+    "url": "/stories?id=820",
     "languages": [
       "English",
       "Irish",
@@ -1273,9 +1273,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/163/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/sleeping-beauty/english/163",
+    "url": "/stories?id=163",
     "languages": [
       "English",
       "French"
@@ -1289,9 +1289,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/421/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/sow-what/english/421",
+    "url": "/stories?id=421",
     "languages": [
       "English",
       "French"
@@ -1305,9 +1305,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/627/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/stone-soup/english/627",
+    "url": "/stories?id=627",
     "languages": [
       "Arabic",
       "Bengali",
@@ -1338,9 +1338,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/277/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-ant-and-the-elephant/english/277",
+    "url": "/stories?id=277",
     "languages": [
       "Arabic",
       "Bengali",
@@ -1386,9 +1386,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1466/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-baltic-sea-princess/english/1466",
+    "url": "/stories?id=1466",
     "languages": [
       "English"
     ]
@@ -1401,9 +1401,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/249/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-beauty-of-difference/english/249",
+    "url": "/stories?id=249",
     "languages": [
       "Akan",
       "Arabic",
@@ -1429,9 +1429,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/422/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-boastful-turtle/english/422",
+    "url": "/stories?id=422",
     "languages": [
       "English",
       "Filipino",
@@ -1448,9 +1448,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/423/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-book-keeper/english/423",
+    "url": "/stories?id=423",
     "languages": [
       "Bengali",
       "English",
@@ -1465,9 +1465,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/341/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-boy-who-cried-wolf/english/341",
+    "url": "/stories?id=341",
     "languages": [
       "English",
       "Urdu"
@@ -1481,9 +1481,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/348/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-brothers-who-met-poverty/english/348",
+    "url": "/stories?id=348",
     "languages": [
       "English",
       "Polish"
@@ -1497,9 +1497,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/424/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-bullies/english/424",
+    "url": "/stories?id=424",
     "languages": [
       "English",
       "Pashto"
@@ -1513,9 +1513,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1122/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-bus-to-school/english/1122",
+    "url": "/stories?id=1122",
     "languages": [
       "Akan",
       "Arabic",
@@ -1550,9 +1550,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/425/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-clever-crow/english/425",
+    "url": "/stories?id=425",
     "languages": [
       "English",
       "Kannada"
@@ -1566,9 +1566,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/968/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-clever-old-woman/english/968",
+    "url": "/stories?id=968",
     "languages": [
       "English",
       "Hindi"
@@ -1582,9 +1582,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/279/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-clever-rabbit/english/279",
+    "url": "/stories?id=279",
     "languages": [
       "English",
       "Gaelic",
@@ -1603,9 +1603,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/365/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-curse/english/365",
+    "url": "/stories?id=365",
     "languages": [
       "Akan",
       "Albanian",
@@ -1652,9 +1652,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/323/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-curse-of-the-chameleon/english/323",
+    "url": "/stories?id=323",
     "languages": [
       "English",
       "Kannada"
@@ -1668,9 +1668,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/884/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-days-of-the-blackbird/english/884",
+    "url": "/stories?id=884",
     "languages": [
       "English",
       "Italian"
@@ -1684,9 +1684,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/430/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-donkey/english/430",
+    "url": "/stories?id=430",
     "languages": [
       "English",
       "Punjabi"
@@ -1700,9 +1700,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/426/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-donkey-and-the-qazi-of-jaunpur/english/426",
+    "url": "/stories?id=426",
     "languages": [
       "English",
       "Gujarati"
@@ -1716,9 +1716,9 @@
     "flag": "🇨🇳",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/358/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-dragon-of-kinabalu/english/358",
+    "url": "/stories?id=358",
     "languages": [
       "Cantonese",
       "English",
@@ -1733,9 +1733,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/456/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-dream/english/456",
+    "url": "/stories?id=456",
     "languages": [
       "Bengali",
       "English"
@@ -1749,9 +1749,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/427/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-drop-of-honey/english/427",
+    "url": "/stories?id=427",
     "languages": [
       "English",
       "Farsi",
@@ -1768,9 +1768,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/330/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-eagle-and-the-king/english/330",
+    "url": "/stories?id=330",
     "languages": [
       "Albanian",
       "Albanian",
@@ -1785,9 +1785,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/431/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-elephant-who-lost-his-patience/english/431",
+    "url": "/stories?id=431",
     "languages": [
       "English",
       "Gujarati",
@@ -1804,9 +1804,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/250/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-emperors-new-clothes/english/250",
+    "url": "/stories?id=250",
     "languages": [
       "Danish",
       "English",
@@ -1826,9 +1826,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/432/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-ever-so-long-wool-string/english/432",
+    "url": "/stories?id=432",
     "languages": [
       "English",
       "Gaelic",
@@ -1843,9 +1843,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/434/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-farmer-and-the-cow/english/434",
+    "url": "/stories?id=434",
     "languages": [
       "Cantonese",
       "English",
@@ -1860,9 +1860,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/269/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-fern-flower/english/269",
+    "url": "/stories?id=269",
     "languages": [
       "English",
       "Polish"
@@ -1876,9 +1876,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/265/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-first-sunrise/english/265",
+    "url": "/stories?id=265",
     "languages": [
       "Arabic",
       "English",
@@ -1897,9 +1897,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/897/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-fisherman-and-the-bottle/english/897",
+    "url": "/stories?id=897",
     "languages": [
       "Arabic",
       "English"
@@ -1913,9 +1913,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/435/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-fool-and-the-donkey/english/435",
+    "url": "/stories?id=435",
     "languages": [
       "English",
       "Farsi"
@@ -1929,9 +1929,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/376/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-fool-the-sheep-and-the-end-of-the-world/english/376",
+    "url": "/stories?id=376",
     "languages": [
       "Albanian",
       "English"
@@ -1945,9 +1945,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/359/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-foolish-crocodile/english/359",
+    "url": "/stories?id=359",
     "languages": [
       "English",
       "Gujarati"
@@ -1961,9 +1961,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/280/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-four-fox-cubs/english/280",
+    "url": "/stories?id=280",
     "languages": [
       "English",
       "Punjabi"
@@ -1977,9 +1977,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/657/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-fox-and-the-stork/english/657",
+    "url": "/stories?id=657",
     "languages": [
       "Akan",
       "Arabic",
@@ -2016,9 +2016,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/267/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-frog-princess/english/267",
+    "url": "/stories?id=267",
     "languages": [
       "English",
       "Gaelic"
@@ -2032,9 +2032,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/377/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-generous-and-brave-warrior/english/377",
+    "url": "/stories?id=377",
     "languages": [
       "English",
       "Spanish",
@@ -2049,9 +2049,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/380/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-gingerbread-man/english/380",
+    "url": "/stories?id=380",
     "languages": [
       "English",
       "German"
@@ -2065,9 +2065,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/628/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-ginseng-fairy/english/628",
+    "url": "/stories?id=628",
     "languages": [
       "Cantonese",
       "English",
@@ -2082,9 +2082,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/344/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-girl-who-loved-roses/english/344",
+    "url": "/stories?id=344",
     "languages": [
       "Arabic",
       "Arabic",
@@ -2100,9 +2100,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/625/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-girl-who-wanted-three-husbands/english/625",
+    "url": "/stories?id=625",
     "languages": [
       "English",
       "Gaelic",
@@ -2117,9 +2117,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/626/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-goddess-who-cast-the-bell/english/626",
+    "url": "/stories?id=626",
     "languages": [
       "Cantonese",
       "English",
@@ -2134,9 +2134,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/891/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-golden-duck/english/891",
+    "url": "/stories?id=891",
     "languages": [
       "English",
       "Polish"
@@ -2150,9 +2150,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/977/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-golden-lira/english/977",
+    "url": "/stories?id=977",
     "languages": [
       "Arabic",
       "English",
@@ -2167,9 +2167,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/271/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-heathfield-hare/english/271",
+    "url": "/stories?id=271",
     "languages": [
       "English"
     ]
@@ -2182,9 +2182,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/436/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-honest-girl/english/436",
+    "url": "/stories?id=436",
     "languages": [
       "English",
       "Punjabi",
@@ -2199,9 +2199,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/437/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-innocent-punishment/english/437",
+    "url": "/stories?id=437",
     "languages": [
       "English",
       "Hindi"
@@ -2215,9 +2215,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/382/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-island-of-the-sun/english/382",
+    "url": "/stories?id=382",
     "languages": [
       "Akan",
       "Cantonese",
@@ -2238,9 +2238,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/661/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-kind-goats/english/661",
+    "url": "/stories?id=661",
     "languages": [
       "English",
       "Hindi"
@@ -2254,9 +2254,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/383/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-king-with-donkey-ears/english/383",
+    "url": "/stories?id=383",
     "languages": [
       "English",
       "Somali"
@@ -2270,9 +2270,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/274/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lady-who-lives-on-the-moon/english/274",
+    "url": "/stories?id=274",
     "languages": [
       "Cantonese",
       "English",
@@ -2287,9 +2287,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/324/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-legend-of-mafumeira/english/324",
+    "url": "/stories?id=324",
     "languages": [
       "English",
       "Portuguese",
@@ -2305,9 +2305,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/384/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lion-and-the-beetle/english/384",
+    "url": "/stories?id=384",
     "languages": [
       "English",
       "Zulu"
@@ -2321,9 +2321,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/247/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lion-and-the-jackal/english/247",
+    "url": "/stories?id=247",
     "languages": [
       "English",
       "Zulu"
@@ -2337,9 +2337,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/439/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lion-and-the-sheep/english/439",
+    "url": "/stories?id=439",
     "languages": [
       "English",
       "Farsi",
@@ -2354,9 +2354,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/440/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lion-with-the-red-eyes/english/440",
+    "url": "/stories?id=440",
     "languages": [
       "English",
       "Gaelic",
@@ -2371,9 +2371,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/995/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-little-shepherd-boy/english/995",
+    "url": "/stories?id=995",
     "languages": [
       "English",
       "French",
@@ -2390,9 +2390,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/441/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lost-camel/english/441",
+    "url": "/stories?id=441",
     "languages": [
       "English",
       "Hindi"
@@ -2406,9 +2406,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/336/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-love-of-the-forest/english/336",
+    "url": "/stories?id=336",
     "languages": [
       "English",
       "Portuguese"
@@ -2422,9 +2422,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/386/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-lucky-man/english/386",
+    "url": "/stories?id=386",
     "languages": [
       "English",
       "Spanish"
@@ -2438,9 +2438,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/351/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-magic-mirror/english/351",
+    "url": "/stories?id=351",
     "languages": [
       "English",
       "Gaelic",
@@ -2455,9 +2455,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/251/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-magic-paintbrush/english/251",
+    "url": "/stories?id=251",
     "languages": [
       "Akan",
       "Albanian",
@@ -2511,9 +2511,9 @@
     "flag": "🌍",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/658/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-magic-porridge-pot/english/658",
+    "url": "/stories?id=658",
     "languages": [
       "Albanian",
       "Arabic",
@@ -2554,9 +2554,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/442/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-monkey/english/442",
+    "url": "/stories?id=442",
     "languages": [
       "English",
       "Punjabi"
@@ -2570,9 +2570,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/659/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-monkey-king-and-the-ghost/english/659",
+    "url": "/stories?id=659",
     "languages": [
       "Arabic",
       "Bengali",
@@ -2605,9 +2605,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/993/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-monkey-and-the-crocodile/english/993",
+    "url": "/stories?id=993",
     "languages": [
       "Arabic",
       "Bengali",
@@ -2637,9 +2637,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/361/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-mouse/english/361",
+    "url": "/stories?id=361",
     "languages": [
       "English",
       "Polish"
@@ -2653,9 +2653,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/444/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-mystery-of-the-buried-treasure/english/444",
+    "url": "/stories?id=444",
     "languages": [
       "English",
       "Urdu"
@@ -2669,9 +2669,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/660/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-phoenix-bird/english/660",
+    "url": "/stories?id=660",
     "languages": [
       "English",
       "German",
@@ -2688,9 +2688,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/975/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-pied-piper-of-hamelin/english/975",
+    "url": "/stories?id=975",
     "languages": [
       "English",
       "Gaelic",
@@ -2705,9 +2705,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/388/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-pompous-peacock/english/388",
+    "url": "/stories?id=388",
     "languages": [
       "English",
       "Hindi"
@@ -2721,9 +2721,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/892/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-poor-man-and-the-magical-cat/english/892",
+    "url": "/stories?id=892",
     "languages": [
       "English",
       "Portuguese"
@@ -2737,9 +2737,9 @@
     "flag": "🌍",
     "category": "fables",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/326/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-prince-and-the-honest-girl/english/326",
+    "url": "/stories?id=326",
     "languages": [
       "Arabic",
       "English"
@@ -2753,9 +2753,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/327/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-princess-and-the-golden-ball/english/327",
+    "url": "/stories?id=327",
     "languages": [
       "Arabic",
       "English"
@@ -2769,9 +2769,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/272/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-princess-and-the-pea/english/272",
+    "url": "/stories?id=272",
     "languages": [
       "Danish",
       "English",
@@ -2786,9 +2786,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/342/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-princess-of-riddles/english/342",
+    "url": "/stories?id=342",
     "languages": [
       "English",
       "Portuguese"
@@ -2802,9 +2802,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/445/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-princess-wedding/english/445",
+    "url": "/stories?id=445",
     "languages": [
       "Akan",
       "English",
@@ -2820,9 +2820,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/446/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-rabbit-and-the-jaguar/english/446",
+    "url": "/stories?id=446",
     "languages": [
       "English",
       "Spanish"
@@ -2836,9 +2836,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/253/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-rainbow-serpent/english/253",
+    "url": "/stories?id=253",
     "languages": [
       "Albanian",
       "Arabic",
@@ -2879,9 +2879,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/357/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-singing-drum/english/357",
+    "url": "/stories?id=357",
     "languages": [
       "English",
       "Yoruba"
@@ -2895,9 +2895,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/970/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-sleeping-king/english/970",
+    "url": "/stories?id=970",
     "languages": [
       "English"
     ]
@@ -2910,9 +2910,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/972/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-sly-fox-and-her-tricks/english/972",
+    "url": "/stories?id=972",
     "languages": [
       "Akan",
       "Cantonese",
@@ -2933,9 +2933,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/369/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-song-of-the-armadillo/english/369",
+    "url": "/stories?id=369",
     "languages": [
       "English",
       "Spanish"
@@ -2949,9 +2949,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/328/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-spider-and-his-two-friends/english/328",
+    "url": "/stories?id=328",
     "languages": [
       "English",
       "Yoruba",
@@ -2966,9 +2966,9 @@
     "flag": "🕌",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/389/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-story-of-layla-and-majnun/english/389",
+    "url": "/stories?id=389",
     "languages": [
       "Arabic",
       "Arabic",
@@ -3005,9 +3005,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/883/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-story-of-narcissus/english/883",
+    "url": "/stories?id=883",
     "languages": [
       "English",
       "Welsh"
@@ -3021,9 +3021,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/448/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-story-of-niu-lang-and-zhi-nu/english/448",
+    "url": "/stories?id=448",
     "languages": [
       "Cantonese",
       "English",
@@ -3038,9 +3038,9 @@
     "flag": "🇨🇳",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/449/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-story-of-the-dragon-boat-festival/english/449",
+    "url": "/stories?id=449",
     "languages": [
       "Cantonese",
       "English",
@@ -3055,9 +3055,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/450/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-tale-of-half-a-chick/english/450",
+    "url": "/stories?id=450",
     "languages": [
       "English",
       "Irish",
@@ -3073,9 +3073,9 @@
     "flag": "🇨🇳",
     "category": "myths",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/965/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-tale-of-the-wawel-dragon/english/965",
+    "url": "/stories?id=965",
     "languages": [
       "English"
     ]
@@ -3088,9 +3088,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/254/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-billy-goats-gruff/english/254",
+    "url": "/stories?id=254",
     "languages": [
       "Arabic",
       "Arabic",
@@ -3131,9 +3131,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/457/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-brothers/english/457",
+    "url": "/stories?id=457",
     "languages": [
       "Albanian",
       "English"
@@ -3147,9 +3147,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/894/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-butterflies/english/894",
+    "url": "/stories?id=894",
     "languages": [
       "Arabic",
       "English",
@@ -3167,9 +3167,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/390/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-diamonds/english/390",
+    "url": "/stories?id=390",
     "languages": [
       "English",
       "Tamil"
@@ -3183,9 +3183,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/459/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-dolls/english/459",
+    "url": "/stories?id=459",
     "languages": [
       "English",
       "Farsi"
@@ -3199,9 +3199,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/656/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-fish/english/656",
+    "url": "/stories?id=656",
     "languages": [
       "English",
       "Gaelic",
@@ -3216,9 +3216,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/262/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-little-pigs/english/262",
+    "url": "/stories?id=262",
     "languages": [
       "English",
       "Farsi",
@@ -3239,9 +3239,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/367/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-three-oranges/english/367",
+    "url": "/stories?id=367",
     "languages": [
       "English",
       "French"
@@ -3255,9 +3255,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/391/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-tortoise-and-the-hare/english/391",
+    "url": "/stories?id=391",
     "languages": [
       "Albanian",
       "Arabic",
@@ -3303,9 +3303,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/460/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-tortoise-and-the-three-brothers/english/460",
+    "url": "/stories?id=460",
     "languages": [
       "English",
       "Yoruba"
@@ -3319,9 +3319,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/461/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-two-old-women-tetan-buri-and-boka-buri/english/461",
+    "url": "/stories?id=461",
     "languages": [
       "Bengali",
       "English"
@@ -3335,9 +3335,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/464/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-washermans-donkey/english/464",
+    "url": "/stories?id=464",
     "languages": [
       "English",
       "Urdu"
@@ -3351,9 +3351,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/623/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-well/english/623",
+    "url": "/stories?id=623",
     "languages": [
       "English",
       "Somali"
@@ -3367,9 +3367,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/360/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-wind-and-the-sun/english/360",
+    "url": "/stories?id=360",
     "languages": [
       "Akan",
       "English",
@@ -3386,9 +3386,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/363/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/the-wounded-lion/english/363",
+    "url": "/stories?id=363",
     "languages": [
       "English",
       "Gaelic",
@@ -3403,9 +3403,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/466/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/to-give/english/466",
+    "url": "/stories?id=466",
     "languages": [
       "English",
       "Hindi"
@@ -3419,9 +3419,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/467/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/turtle-and-monkey/english/467",
+    "url": "/stories?id=467",
     "languages": [
       "English",
       "Filipino",
@@ -3436,9 +3436,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/1048/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/what-we-plant-we-will-eat/english/1048",
+    "url": "/stories?id=1048",
     "languages": [
       "English"
     ]
@@ -3451,9 +3451,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/468/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/who-is-the-cleverest-sheep-or-lion/english/468",
+    "url": "/stories?id=468",
     "languages": [
       "English",
       "Somali"
@@ -3467,9 +3467,9 @@
     "flag": "🇬🇭",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/255/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/why-anansi-has-eight-skinny-legs/english/255",
+    "url": "/stories?id=255",
     "languages": [
       "Akan",
       "Albanian",
@@ -3505,9 +3505,9 @@
     "flag": "🌍",
     "category": "animals",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/266/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/why-elephants-cant-fly/english/266",
+    "url": "/stories?id=266",
     "languages": [
       "Albanian",
       "Arabic",
@@ -3540,9 +3540,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/880/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/why-the-cheetahs-cheeks-are-stained/english/880",
+    "url": "/stories?id=880",
     "languages": [
       "English"
     ]
@@ -3555,9 +3555,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/469/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/why-the-sky-is-so-high/english/469",
+    "url": "/stories?id=469",
     "languages": [
       "Bengali",
       "English",
@@ -3573,9 +3573,9 @@
     "flag": "🌍",
     "category": "folktales",
     "readTime": "3 min",
-    "desc": "A classic tale of wisdom, imagination, and cultural discovery from WorldStories UK.",
+    "desc": "A classic tale of wisdom, imagination, and cultural discovery from traditional cultural heritage.",
     "cover": "https://worldstories.org.uk/content/book/470/__cover.jpg",
-    "url": "https://worldstories.org.uk/reader/why-the-sun-and-moon-live-in-the-sky/english/470",
+    "url": "/stories?id=470",
     "languages": [
       "Albanian",
       "Arabic",
