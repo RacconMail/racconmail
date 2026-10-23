@@ -21,23 +21,145 @@ const app = {
   draftSaveTimer: null,
   currentDraftId: null,
 
-  // Audio chime
-  playChime() {
+  // Web Audio Synthesizer: distinctive audio chimes for email reception, reply alerts, and send confirmation
+  playNotificationSound(type = 'receive') {
     try {
-      // Gentle web audio synthesized postal chime
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-      osc.frequency.exponentialRampToValueAtTime(880.00, ctx.currentTime + 0.15); // A5
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.45);
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+      const now = ctx.currentTime;
+
+      if (type === 'send') {
+        // Ascending send whoosh chime (440Hz -> 880Hz)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'reply') {
+        // Melodic reply greeting: G5 -> C6 postal chime
+        const notes = [
+          { f: 783.99, t: 0, d: 0.18 },
+          { f: 1046.50, t: 0.12, d: 0.32 }
+        ];
+        notes.forEach(note => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(note.f, now + note.t);
+          gain.gain.setValueAtTime(0.15, now + note.t);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + note.t);
+          osc.stop(now + note.t + note.d + 0.05);
+        });
+      } else {
+        // Incoming email chime: 3 harmonious postal bells (D5 -> G5 -> B5)
+        const notes = [
+          { f: 587.33, t: 0, d: 0.16 },
+          { f: 783.99, t: 0.09, d: 0.20 },
+          { f: 987.77, t: 0.18, d: 0.35 }
+        ];
+        notes.forEach(note => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(note.f, now + note.t);
+          gain.gain.setValueAtTime(0.14, now + note.t);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + note.t);
+          osc.stop(now + note.t + note.d + 0.05);
+        });
+      }
     } catch (_) {}
+  },
+
+  playChime() {
+    this.playNotificationSound('receive');
+  },
+
+  async requestNotificationPermission() {
+    if (!('Notification' in window)) return false;
+    if (Notification.permission === 'granted') return true;
+    if (Notification.permission !== 'denied') {
+      try {
+        const perm = await Notification.requestPermission();
+        return perm === 'granted';
+      } catch (_) {}
+    }
+    return false;
+  },
+
+  showNotification({ title, body, icon = '/bubble.png', tag = 'raccon-mail', onClick = null }) {
+    // 1. In-app toast banner
+    this.showToast(title + ': ' + body);
+
+    // 2. System desktop notification (triggers even when browser tab is inactive)
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notif = new Notification(title, {
+          body,
+          icon,
+          badge: '/bubble.png',
+          tag,
+          renotify: true
+        });
+        notif.onclick = () => {
+          window.focus();
+          if (typeof onClick === 'function') onClick();
+          notif.close();
+        };
+      } catch (_) {}
+    }
+  },
+
+  // Robust location-based timezone & date formatting
+  parseDate(dateVal) {
+    if (!dateVal) return new Date();
+    if (dateVal instanceof Date) return dateVal;
+    if (typeof dateVal === 'number') return new Date(dateVal);
+    let str = String(dateVal).trim();
+    if (!str) return new Date();
+    // Normalize SQLite UTC datetime without timezone: "YYYY-MM-DD HH:MM:SS" -> "YYYY-MM-DDTHH:MM:SSZ"
+    if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}$/.test(str)) {
+      str = str.replace(' ', 'T') + 'Z';
+    }
+    const d = new Date(str);
+    return isNaN(d.getTime()) ? new Date() : d;
+  },
+
+  getUserTimeZone() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch (_) {
+      return 'UTC';
+    }
+  },
+
+  formatFullDateTime(dateVal) {
+    const d = this.parseDate(dateVal);
+    const tz = this.getUserTimeZone();
+    return d.toLocaleString([], {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: tz
+    });
   },
 
   // Initialize
@@ -262,8 +384,26 @@ const app = {
           if (f === 'inbox' || f === 'unread') {
             await this.loadMessages();
           }
-          this.playNotificationSound();
-          this.showToast(`Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
+
+          const firstNew = (data.messages && data.messages.length > 0) ? data.messages[0] : null;
+          const isReply = firstNew ? (firstNew.is_reply || /^re:/i.test(firstNew.subject || '')) : false;
+
+          // Play sound: reply chime or incoming mail chime
+          this.playNotificationSound(isReply ? 'reply' : 'receive');
+
+          const sender = firstNew ? (firstNew.sender_name || firstNew.sender_email || 'Someone') : 'Someone';
+          const subj = firstNew ? (firstNew.subject || '(no subject)') : '';
+          const title = isReply ? ('💬 Reply from ' + sender) : ('📬 New Email from ' + sender);
+          const body = subj || ('Received ' + data.synced + ' new incoming email' + (data.synced > 1 ? 's' : '') + '!');
+
+          this.showNotification({
+            title,
+            body,
+            icon: '/bubble.png',
+            onClick: () => {
+              if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
+            }
+          });
         }
       } catch (_) {}
     }, 4000);
@@ -274,6 +414,16 @@ const app = {
       window.addEventListener('focus', () => {
         this.refreshCurrentFolder();
       });
+    }
+
+    // Auto-request desktop notification permission on first user click
+    if (!this._notifPermissionRequested) {
+      this._notifPermissionRequested = true;
+      const requestPermOnce = () => {
+        this.requestNotificationPermission();
+        window.removeEventListener('click', requestPermOnce);
+      };
+      window.addEventListener('click', requestPermOnce, { once: true });
     }
   },
 
@@ -2055,21 +2205,32 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   formatDate(isoString) {
     if (!isoString) return '';
-    const date = new Date(isoString);
+    const date = this.parseDate(isoString);
     const now = new Date();
-    const diffMs = now - date;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const tz = this.getUserTimeZone();
 
-    if (diffDays === 0) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    // Check if same calendar day in local timezone
+    if (date.toDateString() === now.toDateString()) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: tz });
     }
-    if (diffDays > 0 && diffDays <= 6) {
-      return `${diffDays}d`;
+
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
     }
-    const m = date.getMonth() + 1;
-    const d = date.getDate();
-    const y = String(date.getFullYear()).slice(-2);
-    return `${m}/${d}/${y}`;
+
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays >= 0 && diffDays < 7) {
+      return date.toLocaleDateString([], { weekday: 'short', timeZone: tz });
+    }
+
+    if (date.getFullYear() === now.getFullYear()) {
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric', timeZone: tz });
+    }
+
+    return date.toLocaleDateString([], { month: 'numeric', day: 'numeric', year: '2-digit', timeZone: tz });
   },
 
   async swipeActionDelete(msgId) {
@@ -2293,8 +2454,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   renderMessageReader(msg) {
     const readerEl = document.getElementById('reader-content');
     const attachments = msg.attachments || [];
-    const dateObj = new Date(msg.created_at || Date.now());
-    const dateStrLong = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const dateStrLong = this.formatFullDateTime(msg.created_at);
+    const userTz = this.getUserTimeZone();
     const senderName = (msg.sender_name || (msg.sender_email ? msg.sender_email.split('@')[0] : 'Sender')).trim();
     const senderEmail = msg.sender_email || `${senderName.toLowerCase().replace(/\s+/g, '')}@racconmail.eu`;
     const initials = this.getSenderInitials(senderName);
@@ -2315,7 +2476,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
         <!-- Action Icons: Reply, Star, More -->
         <div class="flex items-center gap-1 shrink-0 ml-3 text-slate-400 relative">
-          <button onclick="app.replyToMessage()" title="Reply" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
+          <button onclick="app.replyToMessage('${msg.id}')" title="Reply" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="reply" class="h-4 w-4"></i>
           </button>
           <button onclick="app.toggleStarred('${msg.id}')" title="Star" class="p-2 rounded-xl hover:text-amber-500 hover:bg-amber-50 transition cursor-pointer">
@@ -2375,7 +2536,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               </div>
             </div>
             <div class="flex items-center gap-2 text-slate-400 shrink-0">
-              <span class="text-xs font-mono">${dateStrLong}</span>
+              <div class="flex items-center gap-1.5"><span class="text-xs font-mono">${dateStrLong}</span><span class="text-[10px] text-slate-500 font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200" title="Detected Timezone: ${userTz}">${userTz}</span></div>
               <button onclick="app.toggleReaderMoreDropdown(event)" class="p-1 hover:text-slate-700">
                 <i data-lucide="more-vertical" class="h-3.5 w-3.5"></i>
               </button>
@@ -2410,11 +2571,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
           <!-- Bottom Action Buttons: Reply & Forward -->
           <div class="pt-6 pl-[52px] flex items-center gap-2.5 select-none">
-            <button onclick="app.replyToMessage()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-black transition cursor-pointer shadow-xs">
+            <button onclick="app.replyToMessage('${msg.id}')" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-black transition cursor-pointer shadow-xs">
               <i data-lucide="reply" class="h-3.5 w-3.5"></i>
               <span>Reply</span>
             </button>
-            <button onclick="app.forwardMessage()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+            <button onclick="app.forwardMessage('${msg.id}')" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 transition cursor-pointer">
               <i data-lucide="forward" class="h-3.5 w-3.5"></i>
               <span>Forward</span>
             </button>
@@ -2423,8 +2584,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           <!-- Thread Replies History Container -->
           <div id="thread-replies-container" class="space-y-4">
             ${(msg.thread || []).map(t => {
-              const tDate = new Date(t.created_at || Date.now());
-              const tDateStr = tDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+              const tDateStr = this.formatFullDateTime(t.created_at);
               const isMe = (t.sender_email || '').toLowerCase() === (this.currentUser?.email || '').toLowerCase();
               return `
                 <div class="pt-4 border-t border-slate-100 space-y-3">
@@ -2541,13 +2701,20 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         return;
       }
 
-      const subject = (msg.subject || '').startsWith('Re:') ? msg.subject : `Re: ${msg.subject || 'Message'}`;
+      let subject = (msg.subject || '').replace(/\u00a0/g, ' ').trim();
+      if (!subject) {
+        subject = 'Re: (no subject)';
+      } else if (!/^re:/i.test(subject)) {
+        subject = 'Re: ' + subject;
+      }
 
       const formData = new FormData();
       formData.append('to', toRecipient);
       formData.append('subject', subject);
       formData.append('body', text);
       formData.append('body_html', text.replace(/\n/g, '<br/>'));
+      formData.append('in_reply_to', msg.message_id || msg.id);
+      formData.append('parent_id', msg.id);
 
       const res = await fetch('/api/messages/send', {
         method: 'POST',
@@ -2556,16 +2723,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to send quick reply');
 
-      this.playChime();
-      this.showToast('Fast reply delivered via nocturnal express! 💌🦝');
+      this.playNotificationSound('send');
+      this.showToast('Reply delivered to ' + toRecipient + '! 💌🦝');
 
       // Append sent reply to the conversation thread view immediately!
       const threadContainer = document.getElementById('thread-replies-container');
       if (threadContainer) {
         const myName = this.currentUser?.name || 'Me';
         const myAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const dateStr = this.formatFullDateTime(new Date());
         
         const replyCard = document.createElement('div');
         replyCard.className = 'pt-4 border-t border-slate-100 space-y-3';
@@ -2890,33 +3056,120 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  replyToMessage() {
-    const msg = this.selectedMessage;
-    if (!msg) return;
+  replyToMessage(msgId) {
+    const msg = (msgId ? (this.messages || []).find(m => String(m.id) === String(msgId)) : null) || this.selectedMessage;
+    if (!msg) {
+      this.showToast('Select a message to reply');
+      return;
+    }
+
+    const myEmail = (this.currentUser?.email || '').trim().toLowerCase();
+    let toRecipient = '';
+
+    // Prioritize reply_to header if present
+    if (msg.reply_to && msg.reply_to.trim()) {
+      toRecipient = msg.reply_to.trim();
+    } else if (msg.sender_email && msg.sender_email.trim().toLowerCase() !== myEmail) {
+      toRecipient = msg.sender_email.trim();
+    } else if (msg.recipient_email && msg.recipient_email.trim().toLowerCase() !== myEmail) {
+      toRecipient = msg.recipient_email.trim();
+    } else {
+      toRecipient = (msg.sender_email || msg.recipient_email || '').trim();
+    }
+
+    // Extract pure email address if enclosed in brackets
+    const emailMatch = toRecipient.match(/<([^>]+)>/);
+    if (emailMatch) {
+      toRecipient = emailMatch[1].trim();
+    }
+    if (toRecipient.toLowerCase().endsWith('@raccoonmail.com')) {
+      toRecipient = toRecipient.replace(/@raccoonmail\.com$/i, '@racconmail.eu');
+    }
+
+    // Safely format subject: handle null, undefined, non-breaking spaces
+    let subj = (msg.subject || '').replace(/\u00a0/g, ' ').trim();
+    if (!subj) {
+      subj = 'Re: (no subject)';
+    } else if (!/^re:/i.test(subj)) {
+      subj = 'Re: ' + subj;
+    }
+
+    const senderLabel = msg.sender_name ? (msg.sender_name + ' <' + msg.sender_email + '>') : msg.sender_email;
+    const dateFormatted = this.formatFullDateTime(msg.created_at);
+    const quotedBody = '\n\nOn ' + dateFormatted + ', ' + senderLabel + ' wrote:\n> ' + (msg.body || '').replace(/\n/g, '\n> ');
+
     this.openCompose({
-      to: msg.sender_email,
-      subject: msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`,
-      body: `\n\n--- Original Message ---\nFrom: ${msg.sender_name} <${msg.sender_email}>\n\n${msg.body || ''}`
+      to: toRecipient,
+      subject: subj,
+      body: quotedBody,
+      inReplyTo: msg.message_id || msg.id,
+      parentId: msg.id
     });
   },
 
-  replyAllMessage() {
-    const msg = this.selectedMessage;
+  replyAllMessage(msgId) {
+    const msg = (msgId ? (this.messages || []).find(m => String(m.id) === String(msgId)) : null) || this.selectedMessage;
     if (!msg) return;
-    const recipients = [msg.sender_email, msg.recipient_email].filter(Boolean).join(', ');
+
+    const myEmail = (this.currentUser?.email || '').trim().toLowerCase();
+    const candidateList = [msg.reply_to, msg.sender_email, msg.recipient_email, ...(msg.cc ? msg.cc.split(/[,;]/) : [])];
+    const uniqueRecipients = [];
+
+    candidateList.forEach(raw => {
+      if (!raw) return;
+      let em = raw.trim();
+      const m = em.match(/<([^>]+)>/);
+      if (m) em = m[1].trim();
+      em = em.toLowerCase().replace(/@raccoonmail\.com$/i, '@racconmail.eu');
+      if (em && em !== myEmail && !uniqueRecipients.includes(em)) {
+        uniqueRecipients.push(em);
+      }
+    });
+
+    let to = uniqueRecipients.length > 0 ? uniqueRecipients.join(', ') : (msg.sender_email || msg.recipient_email);
+
+    let subj = (msg.subject || '').replace(/\u00a0/g, ' ').trim();
+    if (!subj) {
+      subj = 'Re: (no subject)';
+    } else if (!/^re:/i.test(subj)) {
+      subj = 'Re: ' + subj;
+    }
+
+    const senderLabel = msg.sender_name ? (msg.sender_name + ' <' + msg.sender_email + '>') : msg.sender_email;
+    const dateFormatted = this.formatFullDateTime(msg.created_at);
+    const quotedBody = '\n\nOn ' + dateFormatted + ', ' + senderLabel + ' wrote:\n> ' + (msg.body || '').replace(/\n/g, '\n> ');
+
     this.openCompose({
-      to: recipients,
-      subject: msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`,
-      body: `\n\n--- Reply All ---\nFrom: ${msg.sender_name}\n\n${msg.body || ''}`
+      to,
+      subject: subj,
+      body: quotedBody,
+      inReplyTo: msg.message_id || msg.id,
+      parentId: msg.id
     });
   },
 
-  forwardMessage() {
-    const msg = this.selectedMessage;
+  forwardMessage(msgId) {
+    const msg = (msgId ? (this.messages || []).find(m => String(m.id) === String(msgId)) : null) || this.selectedMessage;
     if (!msg) return;
+
+    let subj = (msg.subject || '').replace(/\u00a0/g, ' ').trim();
+    if (!subj) {
+      subj = 'Fwd: (no subject)';
+    } else if (!/^fwd:/i.test(subj)) {
+      subj = 'Fwd: ' + subj;
+    }
+
+    const senderLabel = msg.sender_name ? (msg.sender_name + ' <' + msg.sender_email + '>') : msg.sender_email;
+    const dateFormatted = this.formatFullDateTime(msg.created_at);
+
     this.openCompose({
-      subject: msg.subject.startsWith('Fwd:') ? msg.subject : `Fwd: ${msg.subject}`,
-      body: `\n\n---------- Forwarded message ---------\nFrom: ${msg.sender_name} <${msg.sender_email}>\nSubject: ${msg.subject}\n\n${msg.body || ''}`
+      subject: subj,
+      body: '\n\n---------- Forwarded message ---------' +
+            '\nFrom: ' + senderLabel +
+            '\nDate: ' + dateFormatted +
+            '\nSubject: ' + (msg.subject || '(no subject)') +
+            '\nTo: ' + (msg.recipient_email || '') +
+            '\n\n' + (msg.body || '')
     });
   },
 
@@ -2927,6 +3180,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   openCompose(prefill = {}) {
     this.composeFiles = [];
     this.currentDraftId = prefill.draftId || null;
+    this.currentInReplyTo = prefill.inReplyTo || null;
+    this.currentParentId = prefill.parentId || null;
 
     const modal = document.getElementById('compose-modal');
     if (modal) {
@@ -3131,6 +3386,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       formData.append('body', body);
       formData.append('body_html', body_html);
       if (this.currentDraftId) formData.append('draft_id', this.currentDraftId);
+      if (this.currentInReplyTo) formData.append('in_reply_to', this.currentInReplyTo);
+      if (this.currentParentId) formData.append('parent_id', this.currentParentId);
 
       for (const file of this.composeFiles) {
         formData.append('attachments', file);
@@ -3146,9 +3403,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         throw new Error(errorData.error || 'Failed to send message');
       }
 
-      this.playChime();
+      this.playNotificationSound('send');
       this.showToast('Dispatched clever email! 🦝');
       this.closeCompose();
+      this.currentInReplyTo = null;
+      this.currentParentId = null;
       this.fetchFolders();
       if (this.currentFolder === 'Sent') this.loadMessages();
     } catch (err) {
@@ -3931,8 +4190,19 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const res = await fetch('/api/messages/sync');
       const data = await res.json();
       if (data && data.synced > 0) {
-        this.playNotificationSound();
-        this.showToast(`Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
+        const firstNew = (data.messages && data.messages.length > 0) ? data.messages[0] : null;
+        const isReply = firstNew ? (firstNew.is_reply || /^re:/i.test(firstNew.subject || '')) : false;
+        this.playNotificationSound(isReply ? 'reply' : 'receive');
+        const sender = firstNew ? (firstNew.sender_name || firstNew.sender_email || 'Someone') : 'Someone';
+        const subj = firstNew ? (firstNew.subject || '(no subject)') : '';
+        this.showNotification({
+          title: isReply ? ('💬 Reply from ' + sender) : ('📬 New Email from ' + sender),
+          body: subj || ('Received ' + data.synced + ' new incoming email' + (data.synced > 1 ? 's' : '') + '!'),
+          icon: '/bubble.png',
+          onClick: () => {
+            if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
+          }
+        });
       }
     } catch (_) {}
     await this.loadMessages();

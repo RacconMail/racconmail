@@ -45,8 +45,11 @@ try {
         @$db->exec("UPDATE messages SET sender_email = REPLACE(sender_email, '@raccoonmail.com', '@racconmail.eu'), recipient_email = REPLACE(recipient_email, '@raccoonmail.com', '@racconmail.eu') WHERE sender_email LIKE '%@raccoonmail.com' OR recipient_email LIKE '%@raccoonmail.com'");
         @$db->exec("UPDATE contacts SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
         @$db->exec("UPDATE users SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
-        @$db->exec("ALTER TABLE messages ADD COLUMN message_id TEXT;");
-        @$db->exec("CREATE INDEX IF NOT EXISTS idx_messages_msgid ON messages(user_id, message_id);");
+        try { @$db->exec("ALTER TABLE messages ADD COLUMN message_id TEXT;"); } catch (Throwable $e) {}
+        try { @$db->exec("ALTER TABLE messages ADD COLUMN in_reply_to TEXT;"); } catch (Throwable $e) {}
+        try { @$db->exec("ALTER TABLE messages ADD COLUMN parent_id TEXT;"); } catch (Throwable $e) {}
+        try { @$db->exec("CREATE INDEX IF NOT EXISTS idx_messages_msgid ON messages(user_id, message_id);"); } catch (Throwable $e) {}
+        try { @$db->exec("CREATE INDEX IF NOT EXISTS idx_messages_inreply ON messages(user_id, in_reply_to);"); } catch (Throwable $e) {}
     } catch (Throwable $ignored) {}
 } catch (Throwable $e) {
     http_response_code(500);
@@ -1643,8 +1646,12 @@ try {
 
     // Inbound Mail Sync Endpoint (called periodically or manually by webmail)
     if ($route === 'messages/sync') {
-        $count = syncInboundEmails($db, true);
-        echo json_encode(['success' => true, 'synced' => $count]);
+        $syncRes = syncInboundEmails($db, true);
+        if (is_array($syncRes)) {
+            echo json_encode(['success' => true, 'synced' => $syncRes['count'] ?? count($syncRes['messages'] ?? []), 'messages' => $syncRes['messages'] ?? []]);
+        } else {
+            echo json_encode(['success' => true, 'synced' => (int)$syncRes, 'messages' => []]);
+        }
         exit;
     }
 
@@ -1891,19 +1898,27 @@ try {
         $stmtAtt->execute([$msgId]);
         $msg['attachments'] = $stmtAtt->fetchAll();
 
-        // Fetch conversation thread (all replies and related messages in same subject thread)
-        $cleanSubj = trim(preg_replace('/^(?:Re|Fwd):\s*/i', '', $msg['subject'] ?? ''));
+        // Fetch conversation thread (all replies and related messages in same subject thread or in_reply_to)
+        $cleanSubj = trim(preg_replace('/^(\s*(re|fwd|fw)\s*[:\-\x{00A0}]\s*)+/iu', '', $msg['subject'] ?? ''));
+        $parentRefId = $msg['message_id'] ?? $msgId;
         if ($cleanSubj !== '' && $cleanSubj !== '(no subject)') {
             $stmtThread = $db->prepare('
                 SELECT * FROM messages 
                 WHERE user_id = ? AND id != ? AND is_trashed = 0 AND is_draft = 0
-                  AND (subject LIKE ? OR subject LIKE ?)
+                  AND (subject LIKE ? OR subject LIKE ? OR (in_reply_to IS NOT NULL AND (in_reply_to = ? OR in_reply_to = ?)))
                 ORDER BY created_at ASC
             ');
-            $stmtThread->execute([$currentUserId, $msgId, '%' . $cleanSubj . '%', $cleanSubj]);
+            $stmtThread->execute([$currentUserId, $msgId, '%' . $cleanSubj . '%', $cleanSubj, $msgId, $parentRefId]);
             $msg['thread'] = $stmtThread->fetchAll();
         } else {
-            $msg['thread'] = [];
+            $stmtThread = $db->prepare('
+                SELECT * FROM messages 
+                WHERE user_id = ? AND id != ? AND is_trashed = 0 AND is_draft = 0
+                  AND (in_reply_to IS NOT NULL AND (in_reply_to = ? OR in_reply_to = ?))
+                ORDER BY created_at ASC
+            ');
+            $stmtThread->execute([$currentUserId, $msgId, $msgId, $parentRefId]);
+            $msg['thread'] = $stmtThread->fetchAll();
         }
 
         echo json_encode(['message' => $msg]);
@@ -2043,6 +2058,20 @@ try {
         $body = $_POST['body'] ?? ($input['body'] ?? '');
         $bodyHtml = $_POST['body_html'] ?? ($input['body_html'] ?? '');
         $draftId = $_POST['draft_id'] ?? ($input['draft_id'] ?? null);
+        $inReplyTo = trim($_POST['in_reply_to'] ?? ($input['in_reply_to'] ?? ''));
+        $parentId = trim($_POST['parent_id'] ?? ($input['parent_id'] ?? ''));
+
+        // If not explicitly provided, check if subject starts with Re: or Fwd: and auto-detect parent message
+        if (empty($inReplyTo) && preg_match('/^(?:Re|Fwd):\s*(.+)$/i', $subject, $subM)) {
+            $parentSubj = trim($subM[1]);
+            $stmtFindParent = $db->prepare('SELECT id, message_id FROM messages WHERE (subject = ? OR subject = ?) AND (user_id = ? OR recipient_email = ?) ORDER BY created_at DESC LIMIT 1');
+            $stmtFindParent->execute([$parentSubj, $subject, $currentUserId, $user['email']]);
+            $parentMsg = $stmtFindParent->fetch();
+            if ($parentMsg) {
+                $inReplyTo = $parentMsg['message_id'] ?: $parentMsg['id'];
+                if (empty($parentId)) $parentId = $parentMsg['id'];
+            }
+        }
 
         if (!$to) {
             http_response_code(400);
@@ -2065,8 +2094,8 @@ try {
 
         // 1. Save Sender's copy into Sent Folder
         $msgId = 'msg_' . uniqid();
-        $stmt = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, folder_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, "sent")');
-        $stmt->execute([$msgId, $currentUserId, $user['name'], $user['email'], $to, $cc, $bcc, $subject, $body, $bodyHtml]);
+        $stmt = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, "sent", ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
+        $stmt->execute([$msgId, $currentUserId, $user['name'], $user['email'], $to, $cc, $bcc, $subject, $body, $bodyHtml, $inReplyTo ?: null, $parentId ?: null]);
 
         // 2. Process file attachments
         $savedAttachments = [];
@@ -2150,8 +2179,8 @@ try {
             if ($localRecip) {
                 // Deliver to recipient's Inbox in SQLite (guaranteed is_spam = 0 for registered members)
                 $inId = 'in_' . uniqid();
-                $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL)')
-                   ->execute([$inId, $localRecip['id'], $user['name'], $user['email'], $localRecip['email'], $cc, $bcc, $subject, $body, $postcardHtml]);
+                $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))')
+                   ->execute([$inId, $localRecip['id'], $user['name'], $user['email'], $localRecip['email'], $cc, $bcc, $subject, $body, $postcardHtml, $inReplyTo ?: null, $parentId ?: null]);
 
                 // Copy attachments for recipient
                 foreach ($savedAttachments as $att) {
@@ -2169,14 +2198,15 @@ try {
                         'team@racconmail.eu' => "Thanks for reaching out to the Raccon Team! 💌 Your encrypted mailbox is 100% active and healthy. 🦝"
                     ];
                     $replyText = $botResponses[$targetEmail] ?? "Received your postcard loud and clear! 🐾";
-                    $replyHtml = buildRacconMailPostcardHtml($botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], (str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject), $replyText, '', []);
+                    $botReplySubj = str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject;
+                    $replyHtml = buildRacconMailPostcardHtml($botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], $botReplySubj, $replyText, '', []);
                     $botReplyId = 'in_' . uniqid();
-                    $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id) VALUES (?, ?, ?, ?, ?, "", "", ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL)')
-                       ->execute([$botReplyId, $user['id'], $botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], (str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject), $replyText, $replyHtml]);
+                    $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, "", "", ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))')
+                       ->execute([$botReplyId, $user['id'], $botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], $botReplySubj, $replyText, $replyHtml, $msgId, $msgId]);
                 }
             } else {
-                // External email address: send via PHP mail()
-                sendOutgoingEmail($user['name'], $user['email'], $targetEmail, $subject, $body, $postcardHtml, $savedAttachments);
+                // External email address: send via PHP mail() / SMTP socket
+                sendOutgoingEmail($user['name'], $user['email'], $targetEmail, $subject, $body, $postcardHtml, $savedAttachments, $inReplyTo ?: null);
                 $deliveredExternal++;
             }
         }
@@ -3231,40 +3261,42 @@ function extractEmails($str) {
 }
 
 function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, $bodyText, $bodyHtml = '', $attachments = []) {
-    $logoUrl = 'https://racconmail.eu/raccoon-logo.png';
+    $logoUrl = 'https://racconmail.eu/bubble.png';
     $siteUrl = 'https://racconmail.eu';
-    $inboxUrl = 'https://racconmail.eu/inbox';
+    $inboxUrl = 'https://racconmail.eu/inbox.php';
     $cleanSubject = $subject ?: '(No Subject)';
-    $replySubject = 'Re: ' . $cleanSubject;
-    $rawReplyUrl = 'mailto:' . rawurlencode($fromEmail) . '?subject=' . rawurlencode($replySubject);
-    $webmailReplyUrl = $inboxUrl . '?compose=1&reply_to=' . rawurlencode($fromEmail) . '&subject=' . rawurlencode($replySubject);
+    $replySubject = (stripos($cleanSubject, 'Re:') === 0) ? $cleanSubject : ('Re: ' . $cleanSubject);
+    $encodedReplySubj = rawurlencode($replySubject);
+    $webmailReplyUrl = $inboxUrl . '?compose=1&reply_to=' . rawurlencode($fromEmail) . '&subject=' . $encodedReplySubj;
+    $rawReplyUrl = 'mailto:' . rawurlencode($fromEmail) . '?subject=' . $encodedReplySubj;
 
-    // One-tap quick reply options
-    $quickReplies = [
-        ['label' => 'Got it! 🦝', 'body' => "Got it! Thanks! 🦝\n\nSent via Raccon Mail Express"],
-        ['label' => 'Sounds great! 🐾', 'body' => "Sounds great! Let's do it! 🐾\n\nSent via Raccon Mail Express"],
-        ['label' => 'Midnight snack at 2am? 🥐', 'body' => "Count me in for the 2am midnight bakery run! 🥐🦝\n\nSent via Raccon Mail Express"],
-        ['label' => 'Thanks for the postcard! 💌', 'body' => "Received your postcard loud and clear! 💌✨\n\nSent via Raccon Mail Express"],
-        ['label' => 'On my way! 🌲', 'body' => "On my way through the nocturnal woods! 🌲🐾\n\nSent via Raccon Mail Express"]
-    ];
+    $isReply = (stripos($cleanSubject, 'Re:') === 0) || (stripos($bodyText, '--- Original Message ---') !== false) || (stripos($bodyText, 'wrote:') !== false);
 
-    $quickChipsHtml = '';
-    foreach ($quickReplies as $qr) {
-        $chipHref = $inboxUrl . '?compose=1&reply_to=' . rawurlencode($fromEmail) . '&subject=' . rawurlencode($replySubject) . '&body=' . rawurlencode($qr['body']);
-        $quickChipsHtml .= '<a href="' . $chipHref . '" style="display:inline-block; background-color:#1e293b; color:#fbbf24; font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif; font-size:12px; font-weight:600; padding:7px 14px; border-radius:9999px; text-decoration:none; border:1px solid #334155; margin:3px 4px 3px 0;">' . htmlspecialchars($qr['label']) . '</a> ';
+    // Format content: cleanly separate top reply from quoted parent if present
+    $contentHtml = '';
+    if ($isReply && (str_contains($bodyText, '--- Original Message ---') || str_contains($bodyText, 'wrote:'))) {
+        $parts = preg_split('/(--- Original Message ---|On .+ wrote:)/i', $bodyText, 2);
+        $topReply = trim($parts[0] ?? '');
+        $quoted = trim($parts[1] ?? '');
+        if ($topReply !== '') {
+            $contentHtml .= '<div style="font-size:15px; line-height:1.7; color:#0f172a; margin-bottom:16px;">' . nl2br(htmlspecialchars($topReply)) . '</div>';
+        }
+        if ($quoted !== '') {
+            $contentHtml .= '<div style="border-left:3px solid #0284c7; background-color:#f8fafc; border-radius:0 10px 10px 0; padding:12px 16px; font-size:13px; line-height:1.6; color:#475569; word-break:break-word;">' . nl2br(htmlspecialchars($quoted)) . '</div>';
+        }
+    } else {
+        $contentHtml = $bodyHtml ? $bodyHtml : nl2br(htmlspecialchars($bodyText));
     }
-
-    $contentHtml = $bodyHtml ? $bodyHtml : nl2br(htmlspecialchars($bodyText));
 
     $attHtml = '';
     if (!empty($attachments)) {
-        $attHtml .= '<div style="margin-top:20px; padding-top:16px; border-top:1px dashed #334155;">';
-        $attHtml .= '<div style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">📎 Attachments (' . count($attachments) . ')</div>';
+        $attHtml .= '<div style="margin-top:20px; padding-top:16px; border-top:1px dashed #e2e8f0;">';
+        $attHtml .= '<div style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">📎 Attachments (' . count($attachments) . ')</div>';
         $attHtml .= '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
         foreach ($attachments as $att) {
             $name = htmlspecialchars($att['original_name'] ?: basename($att['file_path']));
             $sizeKB = round(($att['size_bytes'] ?? 0) / 1024);
-            $attHtml .= '<span style="display:inline-block; background:#1e293b; border:1px solid #334155; border-radius:8px; padding:6px 12px; font-size:12px; color:#e2e8f0; margin-right:6px; margin-bottom:6px;">📎 ' . $name . ' <span style="color:#64748b;">(' . $sizeKB . ' KB)</span></span>';
+            $attHtml .= '<span style="display:inline-block; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:8px; padding:6px 12px; font-size:12px; color:#0f172a; margin-right:6px; margin-bottom:6px;">📎 ' . $name . ' <span style="color:#64748b;">(' . $sizeKB . ' KB)</span></span>';
         }
         $attHtml .= '</div></div>';
     }
@@ -3285,7 +3317,7 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
   <style>
     @media only screen and (max-width: 600px) {
       .postcard-wrapper { padding: 12px 6px !important; }
-      .postcard-table { width: 100% !important; border-radius: 12px !important; }
+      .postcard-table { width: 100% !important; border-radius: 14px !important; }
       .mobile-stack { display: block !important; width: 100% !important; box-sizing: border-box !important; }
       .mobile-pad { padding: 14px 14px !important; }
       .mobile-date { display: block !important; text-align: left !important; margin-top: 6px !important; font-size: 11px !important; }
@@ -3293,57 +3325,48 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
     }
   </style>
 </head>
-<body style="margin:0; padding:0; background-color:#0b0f19; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; color:#e2e8f0;">
+<body style="margin:0; padding:0; background-color:#f8fafc; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; color:#0f172a;">
   
-  <!-- Outer Table -->
-  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-wrapper" style="background-color:#0b0f19; padding:24px 12px;">
+  <!-- Outer Postal Canvas -->
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-wrapper" style="background-color:#f8fafc; padding:28px 12px;">
     <tr>
       <td align="center">
         
-        <!-- Postcard Container (Max 620px) -->
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-table" style="max-width:620px; width:100%; background-color:#111827; border:1px solid #1f293d; border-radius:18px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+        <!-- Bubble White Postcard Card (Max 620px) -->
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-table" style="max-width:620px; width:100%; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.04);">
           
           <!-- Top Airmail Diagonal Striped Ribbon -->
           <tr>
-            <td style="height:7px; background:repeating-linear-gradient(135deg, #f59e0b 0px, #f59e0b 14px, #10b981 14px, #10b981 28px, #3b82f6 28px, #3b82f6 42px, #ef4444 42px, #ef4444 56px);"></td>
+            <td style="height:6px; background:repeating-linear-gradient(135deg, #0ea5e9 0px, #0ea5e9 14px, #10b981 14px, #10b981 28px, #f59e0b 28px, #f59e0b 42px, #6366f1 42px, #6366f1 56px);"></td>
           </tr>
 
           <!-- Postcard Header: Logo & Cancellation Postmark -->
           <tr>
-            <td class="mobile-pad" style="padding:22px 24px 16px 24px; border-bottom:1px solid #1f293d; background-color:#0f172a;">
+            <td class="mobile-pad" style="padding:20px 24px 16px 24px; border-bottom:1px solid #f1f5f9; background-color:#ffffff;">
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <!-- Left: Raccon Mail Brand & Logo -->
                   <td align="left" style="vertical-align:middle;">
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
-                        <td style="vertical-align:middle; padding-right:14px;">
+                        <td style="vertical-align:middle; padding-right:12px;">
                           <a href="{$siteUrl}" style="text-decoration:none;">
-                            <img src="{$logoUrl}" width="54" height="54" alt="Raccon Mail" style="display:block; border-radius:50%; border:3px solid #f59e0b; background-color:#1f293d; object-fit:cover; box-shadow:0 0 15px rgba(245, 158, 11, 0.45);" />
+                            <img src="{$logoUrl}" width="46" height="46" alt="Raccon Mail" style="display:block; border-radius:12px; border:1px solid #e2e8f0; background-color:#f8fafc; object-fit:cover;" />
                           </a>
                         </td>
                         <td style="vertical-align:middle;">
-                          <div style="font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:20px; font-weight:800; color:#ffffff; letter-spacing:0.8px; line-height:1.2;">RACCON MAIL</div>
-                          <div style="font-size:11px; color:#fbbf24; font-weight:700; letter-spacing:0.4px; margin-top:2px;">🦝 Nocturnal Postcard Service</div>
+                          <div style="font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:0.5px; line-height:1.2;">RACCON MAIL</div>
+                          <div style="font-size:11px; color:#0284c7; font-weight:700; letter-spacing:0.4px; margin-top:2px;">🦝 Bubble White Nocturnal Postcard</div>
                         </td>
                       </tr>
                     </table>
                   </td>
 
-                  <!-- Right: Vintage Cancellation Stamp with Raccoon -->
+                  <!-- Right: Postmark Stamp Badge -->
                   <td align="right" style="vertical-align:middle;">
-                    <div style="display:inline-block; border:2px dashed #f59e0b; border-radius:10px; padding:6px 10px; text-align:center; background-color:#1e293b; color:#fbbf24; font-family:'Courier New', monospace; font-size:10px; font-weight:bold; letter-spacing:0.8px; line-height:1.3;">
-                      <table role="presentation" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                          <td style="vertical-align:middle; padding-right:6px;">
-                            <img src="{$logoUrl}" width="28" height="28" alt="Raccon" style="display:block; border-radius:50%;" />
-                          </td>
-                          <td style="vertical-align:middle; text-align:left;">
-                            <div style="color:#f59e0b; font-size:9px;">RACCON POST</div>
-                            <div style="font-size:8px; color:#94a3b8;">AIRMAIL &bull; 2026</div>
-                          </td>
-                        </tr>
-                      </table>
+                    <div style="display:inline-block; border:2px dashed #0284c7; border-radius:10px; padding:6px 10px; text-align:center; background-color:#f0f9ff; color:#0284c7; font-family:'Courier New', monospace; font-size:10px; font-weight:bold; letter-spacing:0.8px; line-height:1.3;">
+                      <div style="font-size:9px; color:#0284c7;">RACCON POST</div>
+                      <div style="font-size:8px; color:#64748b;">AIRMAIL &bull; 2026</div>
                     </div>
                   </td>
                 </tr>
@@ -3353,14 +3376,14 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
 
           <!-- Postcard Routing Bar (From, To, Date) -->
           <tr>
-            <td class="mobile-pad" style="padding:14px 24px; background-color:#131c31; border-bottom:1px solid #1f293d; font-size:12px; color:#94a3b8;">
+            <td class="mobile-pad" style="padding:12px 24px; background-color:#f8fafc; border-bottom:1px solid #e2e8f0; font-size:12px; color:#64748b;">
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td class="mobile-stack" style="line-height:1.6;">
-                    <div><strong style="color:#cbd5e1;">From:</strong> <span style="color:#ffffff; font-weight:600;">{$safeFromName}</span> &lt;<a href="mailto:{$safeFromEmail}" style="color:#38bdf8; text-decoration:none;">{$safeFromEmail}</a>&gt;</div>
-                    <div><strong style="color:#cbd5e1;">To:</strong> <span style="color:#94a3b8;">{$safeToEmail}</span></div>
+                    <div><strong style="color:#0f172a;">From:</strong> <span style="color:#0f172a; font-weight:600;">{$safeFromName}</span> &lt;<a href="mailto:{$safeFromEmail}" style="color:#0284c7; text-decoration:none;">{$safeFromEmail}</a>&gt;</div>
+                    <div><strong style="color:#0f172a;">To:</strong> <span style="color:#475569;">{$safeToEmail}</span></div>
                   </td>
-                  <td align="right" class="mobile-stack mobile-date" style="vertical-align:top; font-size:11px; color:#64748b;">
+                  <td align="right" class="mobile-stack mobile-date" style="vertical-align:top; font-size:11px; color:#94a3b8;">
                     {$nowStr}
                   </td>
                 </tr>
@@ -3371,10 +3394,10 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
           <!-- Subject Line -->
           <tr>
             <td class="mobile-pad" style="padding:20px 24px 8px 24px;">
-              <div style="margin-bottom:8px; display:inline-block; background-color:#1e293b; border:1px solid #334155; border-radius:20px; padding:4px 12px; font-size:11px; color:#fbbf24; font-weight:700;">
-                <img src="{$logoUrl}" width="16" height="16" alt="Raccon" style="vertical-align:middle; border-radius:50%; margin-right:5px; display:inline-block;" /> Official Raccon Postcard
+              <div style="margin-bottom:8px; display:inline-block; background-color:#f1f5f9; border:1px solid #e2e8f0; border-radius:20px; padding:4px 12px; font-size:11px; color:#0f172a; font-weight:700;">
+                <img src="{$logoUrl}" width="14" height="14" alt="Raccon" style="vertical-align:middle; border-radius:50%; margin-right:5px; display:inline-block;" /> Raccon Postcard
               </div>
-              <h2 style="margin:0; font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:20px; font-weight:700; color:#f8fafc; line-height:1.35; word-break:break-word;">
+              <h2 style="margin:0; font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:20px; font-weight:700; color:#0f172a; line-height:1.35; word-break:break-word;">
                 {$safeSubject}
               </h2>
             </td>
@@ -3382,8 +3405,8 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
 
           <!-- Postcard Letter Content -->
           <tr>
-            <td class="mobile-pad" style="padding:12px 24px 24px 24px; font-size:15px; line-height:1.7; color:#e2e8f0;">
-              <div style="background-color:#141e33; border:1px solid #1f2c45; border-radius:12px; padding:18px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; word-break:break-word;">
+            <td class="mobile-pad" style="padding:12px 24px 24px 24px; font-size:15px; line-height:1.7; color:#0f172a;">
+              <div style="background-color:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; word-break:break-word;">
                 {$contentHtml}
               </div>
 
@@ -3391,57 +3414,39 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
             </td>
           </tr>
 
-          <!-- FAST REPLY SECTION -->
+          <!-- Postcard Action Bar -->
           <tr>
             <td class="mobile-pad" style="padding:0 24px 24px 24px;">
-              <div style="background-color:#0f172a; border:1px solid #1f293d; border-radius:14px; padding:16px 18px;">
-                <div style="font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:12px; font-weight:700; color:#f59e0b; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px;">
-                  💬 Fast Reply to this Postcard
-                </div>
-
-                <!-- Primary Big Fast Reply Button -->
-                <div style="margin-bottom:12px;">
-                  <a href="{$webmailReplyUrl}" class="mobile-btn" style="display:inline-block; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#0b0f19; font-weight:700; font-size:13px; padding:11px 22px; border-radius:9999px; text-decoration:none; box-shadow:0 4px 14px rgba(245, 158, 11, 0.35);">
-                    ✉️ Fast Reply to {$safeFromName}
-                  </a>
-                  <a href="{$rawReplyUrl}" class="mobile-btn" style="display:inline-block; margin-left:6px; background-color:#1e293b; color:#cbd5e1; font-weight:600; font-size:12px; padding:10px 16px; border-radius:9999px; text-decoration:none; border:1px solid #334155;">
-                    Reply in Mail App
-                  </a>
-                  <a href="{$inboxUrl}" class="mobile-btn" style="display:inline-block; margin-left:6px; background-color:#1e293b; color:#cbd5e1; font-weight:600; font-size:12px; padding:10px 16px; border-radius:9999px; text-decoration:none; border:1px solid #334155;">
-                    Open Webmail
+              <div style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px 20px;">
+                <div style="display:inline-block; margin-right:8px; margin-bottom:4px;">
+                  <a href="{$webmailReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#0f172a; color:#ffffff; font-weight:700; font-size:13px; padding:10px 22px; border-radius:9999px; text-decoration:none; box-shadow:0 4px 12px rgba(15, 23, 42, 0.12);">
+                    ✉️ Reply to {$safeFromName}
                   </a>
                 </div>
-
-                <!-- 1-Tap Quick Reply Chips -->
-                <div style="font-size:11px; color:#64748b; margin-bottom:6px;">1-Tap Express Quick Replies:</div>
-                <div style="line-height:2.2;">
-                  {$quickChipsHtml}
+                <div style="display:inline-block; margin-bottom:4px;">
+                  <a href="{$rawReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#ffffff; color:#334155; font-weight:600; font-size:12px; padding:9px 18px; border-radius:9999px; text-decoration:none; border:1px solid #cbd5e1;">
+                    Reply via Email App
+                  </a>
                 </div>
               </div>
             </td>
           </tr>
 
-          <!-- Support & Footer -->
+          <!-- Footer matching site style -->
           <tr>
-            <td style="padding:18px 24px; background-color:#0c111d; border-top:1px solid #1f293d; text-align:center;">
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td align="center">
-                    <p style="margin:0 0 6px 0; font-size:11px; color:#64748b; line-height:1.5;">
-                      Sent with nocturnal stealth from <strong>Raccon Mail</strong> &bull; <a href="{$siteUrl}" style="color:#94a3b8; text-decoration:none;">racconmail.eu</a><br>
-                      The independent, private &amp; encrypted nocturnal postcard network.
-                    </p>
-                    <p style="margin:0; font-size:10px; color:#475569;">
-                      &copy; 2026 Raccon Mail. All rights reserved.
-                    </p>
-                  </td>
-                </tr>
-              </table>
+            <td style="padding:18px 24px; background-color:#f8fafc; border-top:1px solid #e2e8f0; text-align:center;">
+              <p style="margin:0 0 6px 0; font-size:11px; color:#64748b; line-height:1.5;">
+                Sent with nocturnal stealth from <strong>Raccon Mail</strong> &bull; <a href="{$siteUrl}" style="color:#0284c7; text-decoration:none;">racconmail.eu</a><br>
+                The independent, private &amp; encrypted nocturnal postcard network &bull; Bubble White Edition
+              </p>
+              <p style="margin:0; font-size:10px; color:#94a3b8;">
+                &copy; 2026 Raccon Mail. All rights reserved.
+              </p>
             </td>
           </tr>
 
         </table>
-        <!-- /Postcard Container -->
+        <!-- /Bubble White Postcard Card -->
 
       </td>
     </tr>
@@ -3452,7 +3457,7 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
 HTML;
 }
 
-function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText, $bodyHtml = '', $attachments = []) {
+function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText, $bodyHtml = '', $attachments = [], $inReplyTo = null) {
     $serverDomain = 'racconmail.eu';
     $senderDomain = substr(strrchr($fromEmail, "@"), 1);
     if (empty($senderDomain) || strtolower($senderDomain) !== $serverDomain) {
@@ -3469,7 +3474,7 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
     // Unique RFC 5322 compliant Message-ID
     $msgIdHeader = '<msg_' . bin2hex(random_bytes(8)) . '_' . time() . '@' . $serverDomain . '>';
 
-    // Prepare clean plain-text fallback (vital for Gmail/Outlook anti-spam score)
+    // Prepare clean plain-text fallback (vital for anti-spam deliverability)
     $plainText = trim($bodyText);
     if (empty($plainText) && !empty($bodyHtml)) {
         $plainText = trim(html_entity_decode(strip_tags($bodyHtml), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
@@ -3484,11 +3489,16 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
     $headers = [];
     $headers[] = 'Date: ' . date('r');
     $headers[] = 'Message-ID: ' . $msgIdHeader;
+    if (!empty($inReplyTo)) {
+        $cleanInReplyTo = trim($inReplyTo, " <>\r\n");
+        $headers[] = 'In-Reply-To: <' . $cleanInReplyTo . '>';
+        $headers[] = 'References: <' . $cleanInReplyTo . '>';
+    }
     $headers[] = 'MIME-Version: 1.0';
     $headers[] = 'From: ' . $encodedFromName . ' <' . $fromEmail . '>';
     $headers[] = 'Reply-To: ' . $encodedFromName . ' <' . $fromEmail . '>';
     $headers[] = 'Return-Path: <' . $envelopeFrom . '>';
-    $headers[] = 'X-Mailer: RacconMail/2.0 (clever-nocturnal-engine)';
+    $headers[] = 'X-Mailer: RacconMail/2.0 (bubble-white-engine)';
     $headers[] = 'X-Priority: 3 (Normal)';
     $headers[] = 'Importance: Normal';
 
@@ -3552,8 +3562,8 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
     $headers[] = 'To: <' . $toEmail . '>';
     $headers[] = 'Subject: ' . $encodedSubject;
 
-    // 1. First attempt: Authenticated local SMTP to Exim on localhost:25 (High deliverability & DKIM signing)
-    $smtpSuccess = sendViaSmtpSocket($toEmail, $encodedSubject, $headers, $message, 'mail@' . $serverDomain, 'RacconMailSecure2026!#');
+    // 1. First attempt: Authenticated local SMTP to Exim on localhost:25 (with sender envelope for 100% SPF alignment)
+    $smtpSuccess = sendViaSmtpSocket($toEmail, $encodedSubject, $headers, $message, 'mail@' . $serverDomain, 'RacconMailSecure2026!#', $envelopeFrom);
     if ($smtpSuccess) {
         return true;
     }
@@ -3563,14 +3573,14 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
         return !preg_match('/^(?:To|Subject):/i', $h);
     });
     $mailHeaderStr = implode("\r\n", $mailHeaders);
-    $sent = @mail($toEmail, $encodedSubject, $message, $mailHeaderStr, "-fmail@" . $serverDomain);
+    $sent = @mail($toEmail, $encodedSubject, $message, $mailHeaderStr, "-f" . $envelopeFrom);
     if (!$sent) {
         $sent = @mail($toEmail, $encodedSubject, $message, $mailHeaderStr);
     }
     return $sent;
 }
 
-function sendViaSmtpSocket($toEmail, $subject, $headers, $body, $smtpUser, $smtpPass) {
+function sendViaSmtpSocket($toEmail, $subject, $headers, $body, $smtpUser, $smtpPass, $envelopeFrom = null) {
     $fp = @fsockopen('localhost', 25, $errno, $errstr, 1.5);
     if (!$fp) return false;
     stream_set_timeout($fp, 2);
@@ -3588,7 +3598,8 @@ function sendViaSmtpSocket($toEmail, $subject, $headers, $body, $smtpUser, $smtp
     fwrite($fp, "EHLO racconmail.eu\r\n");
     $read();
 
-    fwrite($fp, "AUTH LOGIN\r\n");
+    fwrite($fp, "AUTH LOGIN\r
+");
     $read();
     fwrite($fp, base64_encode($smtpUser) . "\r\n");
     $read();
@@ -3600,7 +3611,8 @@ function sendViaSmtpSocket($toEmail, $subject, $headers, $body, $smtpUser, $smtp
         return false;
     }
 
-    fwrite($fp, "MAIL FROM:<$smtpUser>\r\n");
+    $mailFrom = (!empty($envelopeFrom) && str_ends_with(strtolower($envelopeFrom), '@racconmail.eu')) ? $envelopeFrom : $smtpUser;
+    fwrite($fp, "MAIL FROM:<$mailFrom>\r\n");
     $mfRes = $read();
     if (!str_starts_with($mfRes, '250')) {
         fclose($fp);
@@ -3759,6 +3771,7 @@ function syncInboundEmails($db, $force = false) {
     }
 
     $processedCount = 0;
+    $newlySynced = [];
 
     // 1. Process IMAP inbox if PHP IMAP extension is available
     if (function_exists('imap_open')) {
@@ -3782,6 +3795,11 @@ function syncInboundEmails($db, $force = false) {
                         $messageIdHeader = trim($mid[1]);
                     } elseif (!empty($header->message_id)) {
                         $messageIdHeader = trim($header->message_id, " <>\r\n");
+                    }
+
+                    $inReplyToHeader = '';
+                    if (preg_match('/^In-Reply-To:\s*<?([^>\r\n]+)>?/mi', $rawHeader, $irp)) {
+                        $inReplyToHeader = trim($irp[1], " <>\r\n");
                     }
 
                     // Extract all recipient addresses from headers
@@ -3881,7 +3899,7 @@ function syncInboundEmails($db, $force = false) {
                         $inId = 'in_' . uniqid();
                         $targetEmail = $targetUser['email'];
 
-                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, datetime("now"))');
+                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
                         $stmtIns->execute([
                             $inId,
                             $targetUser['id'],
@@ -3891,8 +3909,16 @@ function syncInboundEmails($db, $force = false) {
                             $subject,
                             $bodyText ?: '(no plain text body)',
                             $bodyHtml,
-                            $messageIdHeader ?: null
+                            $messageIdHeader ?: null,
+                            $inReplyToHeader ?: null
                         ]);
+                        $newlySynced[] = [
+                            'id' => $inId,
+                            'sender_name' => $fromName,
+                            'sender_email' => $fromEmail,
+                            'subject' => $subject,
+                            'is_reply' => (bool)(preg_match('/^\\s*(re|fwd)\\s*:/i', $subject) || !empty($inReplyToHeader))
+                        ];
 
                         foreach ($attachments as $att) {
                             $attId = 'att_' . uniqid();
@@ -3932,21 +3958,24 @@ function syncInboundEmails($db, $force = false) {
     }
 
     foreach ($foldersToScan as $fDir) {
-        $processedCount += syncMaildirFolder($db, $fDir, $uploadsDir);
+        $res = syncMaildirFolder($db, $fDir, $uploadsDir);
+        $processedCount += $res['count'];
+        $newlySynced = array_merge($newlySynced, $res['messages']);
     }
 
-    return $processedCount;
+    return ['count' => $processedCount, 'messages' => $newlySynced];
 }
 
 function syncMaildirFolder($db, $newDir, $uploadsDir) {
-    if (!is_dir($newDir)) return 0;
+    if (!is_dir($newDir)) return ['count' => 0, 'messages' => []];
     $files = @scandir($newDir);
-    if (!$files) return 0;
+    if (!$files) return ['count' => 0, 'messages' => []];
 
     $curDir = dirname($newDir) . '/cur';
     if (!is_dir($curDir)) @mkdir($curDir, 0755, true);
 
     $count = 0;
+    $newlySynced = [];
     foreach ($files as $f) {
         if ($f === '.' || $f === '..') continue;
         $srcPath = $newDir . '/' . $f;
@@ -3967,6 +3996,11 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
         $messageId = '';
         if (preg_match('/^Message-ID:\s*<?([^>\r\n]+)>?/mi', $rawHeaders, $m)) {
             $messageId = trim($m[1]);
+        }
+
+        $inReplyTo = '';
+        if (preg_match('/^In-Reply-To:\s*<?([^>\r\n]+)>?/mi', $rawHeaders, $irp)) {
+            $inReplyTo = trim($irp[1], " <>\r\n");
         }
 
         // Extract Subject
@@ -4062,7 +4096,7 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
             $bodyText = strip_tags($rawBody);
             $bodyHtml = (stripos($rawHeaders, 'text/html') !== false) ? $rawBody : '';
 
-            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, datetime("now"))');
+            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
             $stmtIns->execute([
                 $inId,
                 $targetUser['id'],
@@ -4072,8 +4106,16 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
                 $subject,
                 $bodyText ?: '(no plain text body)',
                 $bodyHtml,
-                $messageId ?: null
+                $messageId ?: null,
+                $inReplyTo ?: null
             ]);
+            $newlySynced[] = [
+                'id' => $inId,
+                'sender_name' => $fromName,
+                'sender_email' => $fromEmail,
+                'subject' => $subject,
+                'is_reply' => (bool)(preg_match('/^\\s*(re|fwd)\\s*:/i', $subject) || !empty($inReplyTo))
+            ];
         }
 
         // Move processed mail to cur folder
@@ -4081,7 +4123,7 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
         @rename($srcPath, $destPath);
         $count++;
     }
-    return $count;
+    return ['count' => $count, 'messages' => $newlySynced];
 }
 
 function initDatabase($db) {
