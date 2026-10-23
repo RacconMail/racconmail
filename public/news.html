@@ -1166,7 +1166,12 @@
       const marqueeEl = document.getElementById('ticker-marquee');
       if (!marqueeEl) return;
       const items = getAllItems();
-      const tickerHtml = items.map(item => `
+      const canturoTicker = `
+        <a href="https://www.tiktok.com/@canturovibe" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-rose-500/25 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white transition cursor-pointer font-bold mr-4 shadow-sm">
+          <span>🎵 TIKTOK SPOTLIGHT: @canturovibe (Viral Beats) &bull; Listen Now &rarr;</span>
+        </a>
+      `;
+      const tickerHtml = canturoTicker + items.map(item => `
         <span onclick="openQuickReader('${item.id}')" class="inline-flex items-center gap-2 hover:text-emerald-400 transition cursor-pointer">
           <span class="text-amber-400 font-bold">${item.catEmoji} ${item.catLabel.toUpperCase()}:</span>
           <span>${item.title}</span>

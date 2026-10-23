@@ -2032,6 +2032,35 @@ try {
         }
     }
 
+    
+    // Ensure @canturovibe music post exists on Forum
+    try {
+        $stmtC = $db->prepare("SELECT COUNT(*) FROM forum_posts WHERE id = 'post_canturovibe'");
+        $stmtC->execute();
+        if ((int)$stmtC->fetchColumn() === 0) {
+            $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
+               ->execute([
+                   'post_canturovibe',
+                   'usr_admin_master',
+                   '🎵 Official Music Spotlight: Stream @canturovibe on TikTok for Atmospheric Beats & Chillhop',
+                   'sharing',
+                   "Hey community owls & music lovers! 🎧
+
+Looking for the perfect late-night coding beats, ambient chillhop and driving soundscapes? Check out the official TikTok channel @canturovibe!
+
+Stream now on TikTok: https://www.tiktok.com/@canturovibe
+
+Drop your favorite track in the replies, share feedback, and let us know what you want to hear next!",
+                   "// Stream @canturovibe on TikTok\nwindow.open('https://www.tiktok.com/@canturovibe', '_blank');",
+                   'javascript',
+                   'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80',
+                   'music,beats,canturovibe,sharing,tiktok',
+                   54,
+                   8
+               ]);
+        }
+    } catch (Throwable $e) {}
+
     // 11.1 GET /api/forum/posts (List & Search & Filter)
     if ($route === 'forum/posts' && $method === 'GET') {
         $category = trim($_GET['category'] ?? 'all');
