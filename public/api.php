@@ -39,6 +39,11 @@ try {
     $db->exec('PRAGMA synchronous = NORMAL;');
     $db->exec('PRAGMA temp_store = MEMORY;');
     $db->exec('PRAGMA foreign_keys = ON;');
+
+    // Auto-fix any legacy records with invalid domain @raccoonmail.com to real @racconmail.eu
+    @$db->exec("UPDATE messages SET sender_email = REPLACE(sender_email, '@raccoonmail.com', '@racconmail.eu'), recipient_email = REPLACE(recipient_email, '@raccoonmail.com', '@racconmail.eu') WHERE sender_email LIKE '%@raccoonmail.com' OR recipient_email LIKE '%@raccoonmail.com'");
+    @$db->exec("UPDATE contacts SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
+    @$db->exec("UPDATE users SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
@@ -517,13 +522,13 @@ if ($route === 'auth/register' && $method === 'POST') {
     $welcomeId = 'wel_' . uniqid();
     $db->prepare("
         INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft)
-        VALUES (?, ?, 'Raccon Team', 'team@raccoonmail.com', ?, 'Welcome to your clever new inbox! 💌', 'Welcome to Raccon Mail, ' || ? || '!\n\nYour new masked postcard email account is all set up with verified phone security (' || ? || ').\n\nEnjoy clever, secure email for web & mobile.\n\nThe Raccon Team 🐾', 0, 1, 0)
+        VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', ?, 'Welcome to your clever new inbox! 💌', 'Welcome to Raccon Mail, ' || ? || '!\n\nYour new masked postcard email account is all set up with verified phone security (' || ? || ').\n\nEnjoy clever, secure email for web & mobile.\n\nThe Raccon Team 🐾', 0, 1, 0)
     ")->execute([$welcomeId, $userId, $email, $name, $cleanPhone]);
 
     // Add default contacts
-    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Rocky Raccoon', 'rocky@raccoonmail.com', 'Midnight planner')")->execute(['c_' . uniqid(), $userId]);
-    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Luna', 'luna@raccoonmail.com', 'Night photographer')")->execute(['c_' . uniqid(), $userId]);
-    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Raccon Team', 'team@raccoonmail.com', 'Friendly support')")->execute(['c_' . uniqid(), $userId]);
+    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Rocky Raccoon', 'rocky@racconmail.eu', 'Midnight planner')")->execute(['c_' . uniqid(), $userId]);
+    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Luna', 'luna@racconmail.eu', 'Night photographer')")->execute(['c_' . uniqid(), $userId]);
+    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', 'Friendly support')")->execute(['c_' . uniqid(), $userId]);
 
     session_regenerate_id(true);
     $_SESSION['current_user_id'] = $userId;
@@ -1882,6 +1887,21 @@ try {
         $stmtAtt->execute([$msgId]);
         $msg['attachments'] = $stmtAtt->fetchAll();
 
+        // Fetch conversation thread (all replies and related messages in same subject thread)
+        $cleanSubj = trim(preg_replace('/^(?:Re|Fwd):\s*/i', '', $msg['subject'] ?? ''));
+        if ($cleanSubj !== '' && $cleanSubj !== '(no subject)') {
+            $stmtThread = $db->prepare('
+                SELECT * FROM messages 
+                WHERE user_id = ? AND id != ? AND is_trashed = 0 AND is_draft = 0
+                  AND (subject LIKE ? OR subject LIKE ?)
+                ORDER BY created_at ASC
+            ');
+            $stmtThread->execute([$currentUserId, $msgId, '%' . $cleanSubj . '%', $cleanSubj]);
+            $msg['thread'] = $stmtThread->fetchAll();
+        } else {
+            $msg['thread'] = [];
+        }
+
         echo json_encode(['message' => $msg]);
         exit;
     }
@@ -2085,12 +2105,38 @@ try {
         }
         $ccEmails = extractEmails($cc);
         $bccEmails = extractEmails($bcc);
-        $allTargets = array_values(array_unique(array_merge($toEmails, $ccEmails, $bccEmails)));
+        $rawTargets = array_values(array_unique(array_merge($toEmails, $ccEmails, $bccEmails)));
+
+        // Normalize legacy test domain @raccoonmail.com to real @racconmail.eu
+        $allTargets = [];
+        foreach ($rawTargets as $tgt) {
+            $tgtClean = str_ireplace('@raccoonmail.com', '@racconmail.eu', trim($tgt));
+            if ($tgtClean !== '') $allTargets[] = strtolower($tgtClean);
+        }
+        $allTargets = array_values(array_unique($allTargets));
 
         $deliveredLocal = 0;
         $deliveredExternal = 0;
 
+        $botProfiles = [
+            'rocky@racconmail.eu' => ['name' => 'Rocky Raccoon', 'avatar' => '/raccoon-logo.png'],
+            'luna@racconmail.eu' => ['name' => 'Luna', 'avatar' => '/raccoon-logo.png'],
+            'team@racconmail.eu' => ['name' => 'Raccon Team', 'avatar' => '/raccoon-logo.png']
+        ];
+
         foreach ($allTargets as $targetEmail) {
+            // If recipient is a built-in nocturnal bot/companion, guarantee local recipient user exists
+            if (isset($botProfiles[$targetEmail])) {
+                $stmtCheckBot = $db->prepare('SELECT id, email, name FROM users WHERE LOWER(email) = LOWER(?)');
+                $stmtCheckBot->execute([$targetEmail]);
+                $existingBot = $stmtCheckBot->fetch();
+                if (!$existingBot) {
+                    $bId = 'user_' . substr(md5($targetEmail), 0, 10);
+                    $db->prepare('INSERT OR IGNORE INTO users (id, email, name, avatar, signature) VALUES (?, ?, ?, ?, ?)')
+                       ->execute([$bId, $targetEmail, $botProfiles[$targetEmail]['name'], $botProfiles[$targetEmail]['avatar'], '🐾 Nocturnal Companion']);
+                }
+            }
+
             $stmtRecip = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?)');
             $stmtRecip->execute([$targetEmail]);
             $localRecip = $stmtRecip->fetch();
@@ -2110,6 +2156,20 @@ try {
                        ->execute([$attCopyId, $inId, $att['filename'], $att['original_name'], $att['mime_type'], $att['size_bytes'], $att['filename']]);
                 }
                 $deliveredLocal++;
+
+                // If user replied to Rocky Raccoon or Raccon Team, auto-acknowledge with a playful confirmation postcard
+                if (isset($botProfiles[$targetEmail]) && $user['id'] !== $localRecip['id']) {
+                    $botResponses = [
+                        'rocky@racconmail.eu' => "Got your postcard! 🦝 Thanks for the quick note. I'm keeping an eye out for midnight crumbs and sweet bakery deliveries! 🐾",
+                        'luna@racconmail.eu' => "Postcard received under the stars! 🏕️✨ Hope your nocturnal adventures are going great!",
+                        'team@racconmail.eu' => "Thanks for reaching out to the Raccon Team! 💌 Your encrypted mailbox is 100% active and healthy. 🦝"
+                    ];
+                    $replyText = $botResponses[$targetEmail] ?? "Received your postcard loud and clear! 🐾";
+                    $replyHtml = buildRacconMailPostcardHtml($botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], (str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject), $replyText, '', []);
+                    $botReplyId = 'in_' . uniqid();
+                    $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id) VALUES (?, ?, ?, ?, ?, "", "", ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL)')
+                       ->execute([$botReplyId, $user['id'], $botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], (str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject), $replyText, $replyHtml]);
+                }
             } else {
                 // External email address: send via PHP mail()
                 sendOutgoingEmail($user['name'], $user['email'], $targetEmail, $subject, $body, $postcardHtml, $savedAttachments);

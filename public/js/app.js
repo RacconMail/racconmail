@@ -2412,6 +2412,37 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             </button>
           </div>
 
+          <!-- Thread Replies History Container -->
+          <div id="thread-replies-container" class="space-y-4">
+            ${(msg.thread || []).map(t => {
+              const tDate = new Date(t.created_at || Date.now());
+              const tDateStr = tDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + tDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+              const isMe = (t.sender_email || '').toLowerCase() === (this.currentUser?.email || '').toLowerCase();
+              return `
+                <div class="pt-4 border-t border-slate-100 space-y-3">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="h-9 w-9 rounded-full ${isMe ? 'bg-slate-900 text-white' : this.getSenderColor(t.sender_name) + ' text-white'} font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                        ${this.escapeHtml(this.getSenderInitials(t.sender_name || 'User'))}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold text-slate-900 text-xs">${this.escapeHtml(t.sender_name || t.sender_email)}</span>
+                          ${isMe ? `<span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">✓ Delivered</span>` : ''}
+                        </div>
+                        <div class="text-[11px] text-slate-400">${isMe ? 'to ' + this.escapeHtml(t.recipient_email) : 'to me'}</div>
+                      </div>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">${tDateStr}</span>
+                  </div>
+                  <div class="text-sm leading-relaxed text-slate-700 font-sans pl-12 whitespace-pre-wrap">
+                    ${t.body_html ? `<div class="email-html-wrapper overflow-x-auto">${t.body_html}</div>` : this.escapeHtml(t.body || '')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
           <!-- Fast Inline Reply Section -->
           <div class="mt-6 ml-[52px] rounded-2xl border border-slate-200 bg-slate-50/60 p-4 space-y-2">
             <div class="flex items-center justify-between text-xs text-slate-500">
@@ -2426,8 +2457,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-800 placeholder:text-slate-400"
             ></textarea>
             <div class="flex justify-end pt-1">
-              <button onclick="app.sendQuickReply('${msg.id}')" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-black transition cursor-pointer shadow-xs">
-                Send Reply
+              <button id="btn-fast-reply-send" onclick="app.sendQuickReply('${msg.id}')" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-black transition cursor-pointer shadow-xs flex items-center gap-1.5">
+                <span>Send Reply</span>
               </button>
             </div>
           </div>
@@ -2451,7 +2482,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const textEl = document.getElementById('quick-reply-body');
     const text = textEl?.value?.trim();
     if (!text) {
-      alert('Please type or select a quick reply chip first.');
+      alert('Please type a quick reply first.');
+      textEl?.focus();
       return;
     }
 
@@ -2472,11 +2504,29 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }
       this.selectedMessage = msg;
 
-      // Smart recipient resolution:
-      // If we are looking at an email we sent, reply to recipient_email; otherwise sender_email
-      let toRecipient = (msg.sender_email && msg.sender_email !== this.currentUser?.email)
-        ? msg.sender_email
-        : (msg.recipient_email || msg.sender_email);
+      const myEmail = (this.currentUser?.email || '').trim().toLowerCase();
+      let toRecipient = '';
+
+      if (msg.reply_to && msg.reply_to.trim()) {
+        toRecipient = msg.reply_to.trim();
+      } else if (msg.sender_email && msg.sender_email.trim().toLowerCase() !== myEmail) {
+        toRecipient = msg.sender_email.trim();
+      } else if (msg.recipient_email && msg.recipient_email.trim().toLowerCase() !== myEmail) {
+        toRecipient = msg.recipient_email.trim();
+      } else {
+        toRecipient = (msg.sender_email || msg.recipient_email || '').trim();
+      }
+
+      // Extract pure email address if enclosed in brackets
+      const emailMatch = toRecipient.match(/<([^>]+)>/);
+      if (emailMatch) {
+        toRecipient = emailMatch[1].trim();
+      }
+
+      // Normalize legacy test domain @raccoonmail.com to real domain @racconmail.eu
+      if (toRecipient.toLowerCase().endsWith('@raccoonmail.com')) {
+        toRecipient = toRecipient.replace(/@raccoonmail\.com$/i, '@racconmail.eu');
+      }
 
       if (!toRecipient) {
         alert('Could not resolve recipient for reply.');
@@ -2489,6 +2539,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       formData.append('to', toRecipient);
       formData.append('subject', subject);
       formData.append('body', text);
+      formData.append('body_html', text.replace(/\n/g, '<br/>'));
 
       const res = await fetch('/api/messages/send', {
         method: 'POST',
@@ -2499,19 +2550,50 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       this.playChime();
       this.showToast('Fast reply delivered via nocturnal express! 💌🦝');
-      if (textEl) {
-        textEl.value = '';
-        textEl.focus();
+
+      // Append sent reply to the conversation thread view immediately!
+      const threadContainer = document.getElementById('thread-replies-container');
+      if (threadContainer) {
+        const myName = this.currentUser?.name || 'Me';
+        const myAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        const replyCard = document.createElement('div');
+        replyCard.className = 'pt-4 border-t border-slate-100 space-y-3';
+        replyCard.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="h-9 w-9 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                ${myAvatar ? `<img src="${myAvatar}" class="h-full w-full object-cover" />` : myName.charAt(0)}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-900 text-xs">${this.escapeHtml(myName)}</span>
+                  <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">✓ Delivered</span>
+                </div>
+                <div class="text-[11px] text-slate-400">to ${this.escapeHtml(toRecipient)}</div>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-slate-400">${dateStr}</span>
+          </div>
+          <div class="text-sm leading-relaxed text-slate-700 font-sans pl-12 whitespace-pre-wrap">${this.escapeHtml(text)}</div>
+        `;
+        threadContainer.appendChild(replyCard);
       }
 
-      await this.fetchFolders();
-      await this.loadMessages();
+      if (textEl) {
+        textEl.value = '';
+      }
+
+      this.fetchFolders().catch(() => {});
+      this.loadMessages().catch(() => {});
     } catch (err) {
       alert('Failed to send reply: ' + err.message);
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send" class="h-4 w-4 text-white"></i><span>Send Fast Reply</span>`;
+        btn.innerHTML = `<span>Send Reply</span>`;
         if (window.lucide) {
           try { lucide.createIcons(); } catch (_) {}
         }

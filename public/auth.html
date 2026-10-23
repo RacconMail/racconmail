@@ -46,24 +46,25 @@
   <!-- AdSense script removed from auth screen to comply with Google Anti-Phishing policy -->
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Early Theme Initializer (Neon Flower Minimalist Palette) -->
+  <!-- Early Theme Initializer (Bubble White Minimalist Palette) -->
   <script>
     (function() {
-      localStorage.setItem('raccon_theme', 'neon_flower');
-      document.documentElement.className = 'dark theme-neon-flower';
+      localStorage.setItem('raccon_theme', 'light');
+      document.documentElement.className = 'theme-light';
+      document.documentElement.classList.remove('dark', 'theme-dark', 'theme-neon-flower');
       const themeVars = {
-        '--background': '#070A14',
-        '--foreground': '#F8FAFC',
-        '--card': '#0B1120',
-        '--card-foreground': '#F8FAFC',
-        '--primary': '#0EA5E9',
-        '--primary-hover': '#38BDF8',
+        '--background': '#FFFFFF',
+        '--foreground': '#0F172A',
+        '--card': '#FFFFFF',
+        '--card-foreground': '#0F172A',
+        '--primary': '#0F172A',
+        '--primary-hover': '#1E293B',
         '--primary-foreground': '#FFFFFF',
-        '--secondary': '#0F172A',
-        '--muted': '#0E162B',
-        '--muted-foreground': '#94A3B8',
-        '--border': 'rgba(56, 189, 248, 0.16)',
-        '--border-light': 'rgba(56, 189, 248, 0.08)'
+        '--secondary': '#F8FAFC',
+        '--muted': '#F1F5F9',
+        '--muted-foreground': '#64748B',
+        '--border': '#E2E8F0',
+        '--border-light': '#F1F5F9'
       };
       for (const [k, v] of Object.entries(themeVars)) {
         document.documentElement.style.setProperty(k, v);
@@ -154,33 +155,31 @@
 
   <!-- Top bar -->
   <header class="p-4 sm:p-6 flex items-center justify-between max-w-5xl mx-auto w-full">
-    <a href="/" class="flex items-center gap-2.5 font-display text-lg font-bold group text-[#1E293B]">
+    <a href="/" class="flex items-center gap-2.5 font-display text-lg font-bold group text-slate-500 hover:text-slate-800 transition">
       <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-8 w-8 raccoon-anim object-contain shrink-0 group-hover:scale-105 transition transform" />
-      <span class="tracking-tight">Raccon Mail</span>
+      <span class="tracking-tight text-slate-500 font-bold">Raccon Mail</span>
     </a>
-    <a href="/" class="btn-secondary text-xs font-semibold text-[#212529] hover:bg-[#E5E5E5] bg-[#F2F2F2] border border-[#E4E6EB] flex items-center gap-1.5 py-1.5 px-4 rounded-full transition shadow-xs">
-      <i class="fas fa-arrow-left text-[10px]"></i>
+    <a href="/" class="text-xs font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-50 bg-white border border-slate-200/80 flex items-center gap-2 py-2 px-4 rounded-full transition shadow-xs">
+      <i class="fas fa-arrow-left text-[11px] text-slate-400"></i>
       <span>Back to Home</span>
     </a>
   </header>
 
   <!-- Auth Card Main View -->
   <main class="flex-1 flex items-center justify-center p-4 py-8">
-    <div class="w-full max-w-md rounded-[20px] bg-white p-6 sm:p-8 border border-slate-200 shadow-sm relative overflow-hidden">
-      <!-- Airmail stripe ribbon -->
-      <div class="stripes h-2.5 -mx-8 -mt-8 mb-6"></div>
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-900/5 relative overflow-hidden">
 
       <!-- ANIMATED RACCOON COOKIE CHASE ARENA -->
-      <div id="cookie-chase-arena" class="relative w-full h-24 mb-4 rounded-2xl bg-slate-50 border border-slate-200 overflow-hidden select-none cursor-pointer group shadow-inner" title="Click anywhere to toss a cookie for the raccoon!">
+      <div id="cookie-chase-arena" class="relative w-full h-24 mb-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 overflow-hidden select-none cursor-pointer group shadow-inner" title="Click anywhere to toss a cookie for the raccoon!">
         <!-- Subtle Track Floor Accent -->
-        <div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-slate-200/80 to-transparent"></div>
-        <div class="absolute bottom-2 left-0 right-0 h-0.5 border-b border-dashed border-slate-300"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-slate-200/60 to-transparent"></div>
+        <div class="absolute bottom-2 left-0 right-0 h-0.5 border-b border-dashed border-slate-300/80"></div>
 
         <!-- Mini Stats & Hint Badge -->
-        <div class="absolute top-1.5 right-2 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200 text-[10px] font-bold text-slate-600 shadow-xs group-hover:text-slate-900 group-hover:border-slate-400 transition z-20">
+        <div class="absolute top-1.5 right-2 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/80 text-[10px] font-bold text-slate-500 shadow-xs group-hover:text-slate-800 group-hover:border-slate-300 transition z-20">
           <span>🍪 Click to feed</span>
           <span class="text-slate-300">&bull;</span>
-          <span id="cookie-nab-counter" class="text-slate-900 font-mono font-extrabold">0 nabbed</span>
+          <span id="cookie-nab-counter" class="text-slate-800 font-mono font-extrabold">0 nabbed</span>
         </div>
 
         <!-- Floating Comic Speech Bubble -->
@@ -205,24 +204,24 @@
 
       <!-- Header Title -->
       <div class="text-center mb-6">
-        <h2 id="auth-heading" class="font-display text-2xl font-bold tracking-tight text-slate-900">Welcome to Raccon Mail</h2>
-        <p id="auth-sub" class="text-xs text-slate-500 mt-1">Clever, encrypted nocturnal mailbox.</p>
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-[11px] font-bold mt-2">
-          <i class="fas fa-shield-alt text-[10px] text-slate-600"></i>
+        <h2 id="auth-heading" class="font-display text-2xl font-bold tracking-tight text-slate-900">Create your Raccon account</h2>
+        <p id="auth-sub" class="text-xs text-slate-500 mt-1">Instant, private and cleverly masked mailbox.</p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/80 border border-slate-200/80 text-slate-600 text-[11px] font-semibold mt-2.5">
+          <i class="fas fa-shield-alt text-[10px] text-slate-400"></i>
           <span>Zero-Knowledge Encryption Guaranteed</span>
         </div>
-        <div class="mt-3 p-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 text-[11px] leading-relaxed flex items-center justify-center gap-2">
-          <i class="fas fa-shield-halved text-slate-600 shrink-0"></i>
-          <span><strong>Official Anti-Phishing Guarantee:</strong> Raccon Mail is an independent open-source service. We never ask for third-party passwords.</span>
+        <div class="mt-3 p-2.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 text-slate-500 text-[11px] leading-relaxed flex items-center justify-center gap-2">
+          <i class="fas fa-shield-halved text-slate-400 shrink-0"></i>
+          <span><strong>Official Anti-Phishing Guarantee:</strong> Raccon Mail is an independent service. We never ask for third-party passwords.</span>
         </div>
       </div>
 
       <!-- Segmented Tab Switcher with Icons -->
-      <div class="flex rounded-full bg-slate-100 p-1 mb-5 text-xs font-semibold border border-slate-200">
+      <div class="flex rounded-full bg-slate-100/90 p-1 mb-5 text-xs font-semibold border border-slate-200/80">
         <button
           id="tab-login"
           onclick="setTab('login')"
-          class="flex-1 py-2.5 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target shadow-2xs"
+          class="flex-1 py-2.5 rounded-full transition text-slate-400 hover:text-slate-700 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target"
         >
           <i class="fas fa-key text-xs"></i>
           <span>Sign In</span>
@@ -230,7 +229,7 @@
         <button
           id="tab-register"
           onclick="setTab('register')"
-          class="flex-1 py-2.5 rounded-full transition text-slate-600 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target"
+          class="flex-1 py-2.5 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target shadow-xs"
         >
           <i class="fas fa-sparkles text-xs"></i>
           <span>Create Mailbox</span>
@@ -238,17 +237,17 @@
       </div>
 
       <!-- Error Alert Box -->
-      <div id="error-box" class="hidden mb-4 p-3 rounded-2xl bg-slate-100 border border-slate-300 text-slate-900 text-xs font-semibold flex items-center gap-2">
-        <i class="fas fa-exclamation-circle text-sm shrink-0"></i>
+      <div id="error-box" class="hidden mb-4 p-3 rounded-2xl bg-red-50/80 border border-red-200/80 text-red-700 text-xs font-semibold flex items-center gap-2">
+        <i class="fas fa-exclamation-circle text-sm text-red-500 shrink-0"></i>
         <span id="error-text"></span>
       </div>
 
       <!-- Login Form -->
-      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4 hidden">
         <div>
-          <label class="block text-xs font-bold text-slate-800 mb-1">Email or Username</label>
-          <div class="flex items-center rounded-full border border-slate-300 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
-            <div class="pl-4 pr-2 text-slate-500 shrink-0"><i class="fas fa-user text-xs"></i></div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Email or Username</label>
+          <div class="flex items-center rounded-full border border-slate-200 bg-white focus-within:border-slate-800 focus-within:ring-2 focus-within:ring-slate-900/10 overflow-hidden transition shadow-2xs">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-user text-xs"></i></div>
             <input
               id="l-email"
               type="text"
@@ -261,9 +260,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-800 mb-1">Password</label>
-          <div class="flex items-center rounded-full border border-slate-300 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
-            <div class="pl-4 pr-2 text-slate-500 shrink-0"><i class="fas fa-lock text-xs"></i></div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Password</label>
+          <div class="flex items-center rounded-full border border-slate-200 bg-white focus-within:border-slate-800 focus-within:ring-2 focus-within:ring-slate-900/10 overflow-hidden transition shadow-2xs">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-lock text-xs"></i></div>
             <input
               id="l-pass"
               type="password"
@@ -275,7 +274,7 @@
             <button
               type="button"
               onclick="togglePass('l-pass', 'l-eye-icon')"
-              class="px-4 text-slate-500 hover:text-slate-900 cursor-pointer focus:outline-none"
+              class="px-4 text-slate-400 hover:text-slate-700 cursor-pointer focus:outline-none"
               title="Toggle password visibility"
             >
               <i id="l-eye-icon" class="fas fa-eye text-xs"></i>
@@ -286,7 +285,7 @@
         <button
           type="submit"
           id="btn-login"
-          class="w-full rounded-full bg-slate-900 hover:bg-slate-800 font-bold text-sm py-3.5 transition shadow-sm touch-target flex items-center justify-center gap-2 cursor-pointer mt-2 text-white border border-slate-900"
+          class="w-full rounded-full bg-slate-900 hover:bg-black font-bold text-sm py-3.5 transition shadow-sm active:scale-[0.99] touch-target flex items-center justify-center gap-2 cursor-pointer mt-2 text-white border border-slate-900"
         >
           <span>Sign In to Raccon Mail</span>
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center text-white"></i>
@@ -301,12 +300,12 @@
       </form>
 
       <!-- Register Container (1-Step Privacy Registration - No Phone Required) -->
-      <div id="container-register" class="hidden space-y-4">
+      <div id="container-register" class="space-y-4">
         <form id="form-register" onsubmit="handleRegisterDirect(event)" class="space-y-3.5">
           <div>
-            <label class="block text-xs font-bold text-slate-800 mb-1">Your Name</label>
-            <div class="flex items-center rounded-full border border-slate-300 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
-              <div class="pl-4 pr-2 text-slate-500 shrink-0"><i class="fas fa-user text-xs"></i></div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Your Name</label>
+            <div class="flex items-center rounded-full border border-slate-200 bg-white focus-within:border-slate-800 focus-within:ring-2 focus-within:ring-slate-900/10 overflow-hidden transition shadow-2xs">
+              <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-user text-xs"></i></div>
               <input
                 id="r-name"
                 type="text"
@@ -319,9 +318,9 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-800 mb-1">Choose Email Username</label>
-            <div class="flex items-center rounded-full border border-slate-300 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
-              <div class="pl-4 pr-2 text-slate-500 shrink-0"><i class="fas fa-at text-xs"></i></div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Choose Email Username</label>
+            <div class="flex items-center rounded-full border border-slate-200 bg-white focus-within:border-slate-800 focus-within:ring-2 focus-within:ring-slate-900/10 overflow-hidden transition shadow-2xs">
+              <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-at text-xs"></i></div>
               <input
                 id="r-email"
                 type="text"
@@ -330,16 +329,16 @@
                 autocomplete="username"
                 class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-slate-900 placeholder-slate-400"
               />
-              <span class="px-3.5 py-2.5 text-xs font-semibold text-slate-600 bg-slate-100 select-none border-l border-slate-300 shrink-0">
+              <span class="px-3.5 py-2.5 text-xs font-semibold text-slate-500 bg-slate-50 select-none border-l border-slate-200 shrink-0">
                 @racconmail.eu
               </span>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-800 mb-1">Password</label>
-            <div class="flex items-center rounded-full border border-slate-300 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
-              <div class="pl-4 pr-2 text-slate-500 shrink-0"><i class="fas fa-lock text-xs"></i></div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Password</label>
+            <div class="flex items-center rounded-full border border-slate-200 bg-white focus-within:border-slate-800 focus-within:ring-2 focus-within:ring-slate-900/10 overflow-hidden transition shadow-2xs">
+              <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-lock text-xs"></i></div>
               <input
                 id="r-pass"
                 type="password"
@@ -352,7 +351,7 @@
               <button
                 type="button"
                 onclick="togglePass('r-pass', 'r-eye-icon')"
-                class="px-4 text-slate-500 hover:text-slate-900 cursor-pointer focus:outline-none"
+                class="px-4 text-slate-400 hover:text-slate-700 cursor-pointer focus:outline-none"
                 title="Toggle password visibility"
               >
                 <i id="r-eye-icon" class="fas fa-eye text-xs"></i>
@@ -361,12 +360,12 @@
           </div>
 
           <!-- Privacy Anti-Bot Proof -->
-          <div class="p-3 bg-slate-100 rounded-2xl border border-slate-200 flex items-center justify-between">
-            <span class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
-              <i class="fas fa-shield-alt text-slate-600"></i>
+          <div class="p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 flex items-center justify-between">
+            <span class="font-bold text-xs text-slate-700 flex items-center gap-1.5">
+              <i class="fas fa-shield-alt text-slate-400"></i>
               <span>Anti-Bot Verification</span>
             </span>
-            <span class="text-[10px] font-bold text-slate-800 bg-white px-2 py-0.5 rounded-full border border-slate-200">
+            <span class="text-[10px] font-bold text-slate-700 bg-white px-2.5 py-0.5 rounded-full border border-slate-200 shadow-2xs">
               ✓ 100% PRIVATE
             </span>
           </div>
@@ -374,7 +373,7 @@
           <button
             type="submit"
             id="btn-reg"
-            class="w-full rounded-full bg-slate-900 hover:bg-slate-800 font-bold text-sm py-3.5 transition shadow-sm mt-3 touch-target flex items-center justify-center gap-2 cursor-pointer text-white border border-slate-900"
+            class="w-full rounded-full bg-slate-900 hover:bg-black font-bold text-sm py-3.5 transition shadow-sm mt-3 touch-target flex items-center justify-center gap-2 cursor-pointer text-white border border-slate-900 active:scale-[0.99]"
           >
             <span>Create Free Account &amp; Enter Mailbox</span>
             <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center text-white"></i>
@@ -434,22 +433,30 @@
       const tabLogin = document.getElementById('tab-login');
       const tabReg = document.getElementById('tab-register');
       
-      tabLogin.className = isLogin
-        ? 'flex-1 py-2.5 rounded-full transition bg-slate-900 shadow-2xs text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target'
-        : 'flex-1 py-2.5 rounded-full transition text-slate-600 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target';
+      if (tabLogin) {
+        tabLogin.className = isLogin
+          ? 'flex-1 py-2.5 rounded-full transition bg-slate-900 shadow-xs text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target'
+          : 'flex-1 py-2.5 rounded-full transition text-slate-400 hover:text-slate-700 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target';
+      }
       
-      tabReg.className = !isLogin
-        ? 'flex-1 py-2.5 rounded-full transition bg-slate-900 shadow-2xs text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target'
-        : 'flex-1 py-2.5 rounded-full transition text-slate-600 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target';
+      if (tabReg) {
+        tabReg.className = !isLogin
+          ? 'flex-1 py-2.5 rounded-full transition bg-slate-900 shadow-xs text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer touch-target'
+          : 'flex-1 py-2.5 rounded-full transition text-slate-400 hover:text-slate-700 font-semibold flex items-center justify-center gap-1.5 cursor-pointer touch-target';
+      }
 
-      document.getElementById('form-login').classList.toggle('hidden', !isLogin);
-      document.getElementById('container-register').classList.toggle('hidden', isLogin);
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('container-register');
+      if (formLogin) formLogin.classList.toggle('hidden', !isLogin);
+      if (formReg) formReg.classList.toggle('hidden', isLogin);
       if (!isLogin) backToStep1();
 
-      document.getElementById('auth-heading').textContent = isLogin ? 'Welcome back!' : 'Create your Raccon account';
-      document.getElementById('auth-sub').textContent = isLogin ? 'Sign in to access your clever mailbox.' : 'Instant, private and cleverly masked mailbox.';
+      const heading = document.getElementById('auth-heading');
+      const sub = document.getElementById('auth-sub');
+      if (heading) heading.textContent = isLogin ? 'Welcome to Raccon Mail' : 'Create your Raccon account';
+      if (sub) sub.textContent = isLogin ? 'Sign in to access your clever mailbox.' : 'Instant, private and cleverly masked mailbox.';
       hideError();
-      if (window.lucide) lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
     }
 
     function backToStep1() {
