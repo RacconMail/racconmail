@@ -5,64 +5,68 @@
    Inspired by Harmony SocialEngine: #208ED3, #EFEDE9, #FFFFFF, #1E293B, #F2F2F2
    ========================================================================== */
 
-/* 1. ☀️ Harmony / Light Theme (Default) */
-:root, html, body, html.theme-harmony, body.theme-harmony, html.theme-light, body.theme-light, html.theme-raccon, body.theme-raccon {
-  --background: #EFEDE9; /* Harmony Warm Sand body canvas */
-  --foreground: #1E293B; /* Harmony Headline / Body Slate */
-  --card: #FFFFFF; /* Harmony Crisp White Box / Widget */
-  --card-alt: #F5F5F5;
-  --card-foreground: #1E293B;
-  --primary: #208ED3; /* Harmony Signature Sky Azure Blue */
+/* ==========================================================================
+   THEME SPECIFICATIONS: Clean Modern Light & Obsidian Dark (STRICTLY 2 THEMES)
+   ========================================================================== */
+
+/* 1. ☀️ Clean Modern Light Theme */
+:root, html, body, html.theme-light, body.theme-light, html.theme-harmony, body.theme-harmony, html.theme-raccon, body.theme-raccon {
+  --background: #F8FAFC; /* Crisp Clean Slate-50 body canvas */
+  --foreground: #0F172A; /* Deep Slate-900 High Readability Headline */
+  --card: #FFFFFF; /* Pure White Elevated Card */
+  --card-alt: #F1F5F9;
+  --card-foreground: #0F172A;
+  --primary: #208ED3; /* Signature Modern Azure */
   --primary-hover: #1A7BB8;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(32, 142, 211, 0.35);
-  --secondary: #F2F2F2; /* Harmony Secondary Button */
-  --secondary-foreground: #212529;
-  --secondary-hover: #E5E5E5;
-  --muted: #F6F6F6; /* Harmony Mini Menu Search / Pill Background */
+  --primary-glow: rgba(32, 142, 211, 0.3);
+  --secondary: #F1F5F9;
+  --secondary-foreground: #0F172A;
+  --secondary-hover: #E2E8F0;
+  --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --accent: #EBF5FB; /* Harmony Soft Blue Tint for Active / Badges */
-  --accent-foreground: #208ED3;
-  --border: #D5D5D5; /* Harmony Border Color */
-  --border-light: #E2E8F0;
-  --mask: #1E293B;
+  --accent: #E0F2FE;
+  --accent-foreground: #0284C7;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
+  --mask: #0F172A;
   --fur: #334155;
-  --cream: #EFEDE9;
-  --themewidget-radius: 20px;
+  --cream: #F8FAFC;
+  --themewidget-radius: 16px;
   --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
   --stamp-red: #E11D48;
   --stamp-blue: #208ED3;
 }
 
-/* 2. 🌙 Harmony Dark Theme */
-html.theme-dark, body.theme-dark, html.theme-midnight, body.theme-midnight {
-  --background: #1D1D1F;
-  --foreground: #FFFFFF;
-  --card: #2B2C2E;
-  --card-alt: #222325;
-  --card-foreground: #FFFFFF;
-  --primary: #208ED3;
-  --primary-hover: #1A7BB8;
-  --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(32, 142, 211, 0.45);
-  --secondary: #343536;
-  --secondary-foreground: #E4E6EB;
-  --secondary-hover: #4C4D4E;
-  --muted: #242526;
-  --muted-foreground: #9CA3AF;
-  --accent: #203345;
-  --accent-foreground: #208ED3;
-  --border: #404245;
-  --border-light: #4F5155;
-  --mask: #1D1D1F;
-  --fur: #2B2C2E;
-  --cream: #1D1D1F;
-  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.4);
+/* 2. 🌙 Obsidian Modern Dark Theme */
+html.dark, body.dark, html.theme-dark, body.theme-dark, html.theme-midnight, body.theme-midnight {
+  --background: #0B0F17; /* Deep Velvet Obsidian */
+  --foreground: #F8FAFC; /* Crisp Slate-50 Text */
+  --card: #131B2E; /* Sleek Dark Glass Card */
+  --card-alt: #1E293B;
+  --card-foreground: #F8FAFC;
+  --primary: #38BDF8; /* Electric Sky Blue */
+  --primary-hover: #0EA5E9;
+  --primary-foreground: #0B0F17;
+  --primary-glow: rgba(56, 189, 248, 0.4);
+  --secondary: #1E293B;
+  --secondary-foreground: #F8FAFC;
+  --secondary-hover: #334155;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #1E293B;
+  --accent-foreground: #38BDF8;
+  --border: #1E293B;
+  --border-light: #334155;
+  --mask: #0B0F17;
+  --fur: #1E293B;
+  --cream: #131B2E;
+  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
   --stamp-red: #F43F5E;
-  --stamp-blue: #208ED3;
+  --stamp-blue: #38BDF8;
 }
 
 /* 3. 🌲 Midnight Green Theme */
@@ -975,124 +979,87 @@ h3, .heading-card, [data-heading="card"] {
 }
 
 /* ==========================================================================
-   THEME-ADAPTIVE COMPOSE POSTCARD BUTTON (#btn-compose)
-   Light/Harmony Theme: White card pill, #1E293B bold text, #208ED3 azure pencil
-   Dark Theme: Charcoal card pill, #FFFFFF bold text, #FFFFFF pencil
-   Midnight Green Theme: Deep pine card pill, #E6F2F2 bold text, #FFFFFF pencil
+   THEME-ADAPTIVE COMPOSE BUTTON (#btn-compose) - 2 CLEAN THEMES
    ========================================================================== */
 #btn-compose {
-  border-radius: 50px !important;
-  padding: 12px 20px !important;
-  display: flex !important;
+  position: relative !important;
+  display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   gap: 10px !important;
+  padding: 8px 18px 8px 10px !important;
+  border-radius: 9999px !important;
   font-family: inherit !important;
-  font-size: 0.95rem !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
   cursor: pointer !important;
-  transition: all 0.22s ease-in-out !important;
-  text-decoration: none !important;
+  user-select: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 1. Light / Harmony Theme (White Button, Bold Dark Text, Blue Pencil) */
-html.theme-harmony #btn-compose,
-body.theme-harmony #btn-compose,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose {
+/* 1. Light Theme Compose Button */
+html:not(.dark):not(.theme-dark) #btn-compose,
+html.theme-light #btn-compose,
+body.theme-light #btn-compose {
   background-color: #FFFFFF !important;
   border: 1.5px solid #CBD5E1 !important;
-  color: #1E293B !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
-html.theme-harmony #btn-compose:hover,
-body.theme-harmony #btn-compose:hover,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose:hover {
+html:not(.dark):not(.theme-dark) #btn-compose:hover,
+html.theme-light #btn-compose:hover,
+body.theme-light #btn-compose:hover {
   background-color: #F8FAFC !important;
   border-color: #208ED3 !important;
   transform: translateY(-1.5px) !important;
-  box-shadow: 0 6px 18px rgba(32, 142, 211, 0.2) !important;
+  box-shadow: 0 6px 18px rgba(32, 142, 211, 0.18) !important;
 }
-html.theme-harmony #btn-compose .compose-pencil-badge,
-body.theme-harmony #btn-compose .compose-pencil-badge,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-pencil-badge {
+html:not(.dark):not(.theme-dark) #btn-compose .compose-pencil-badge,
+html.theme-light #btn-compose .compose-pencil-badge {
   background-color: #EBF5FB !important;
   border: 1px solid #BAE6FD !important;
 }
-html.theme-harmony #btn-compose svg,
-html.theme-harmony #btn-compose i,
-body.theme-harmony #btn-compose svg,
-body.theme-harmony #btn-compose i,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose svg,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose i {
+html:not(.dark):not(.theme-dark) #btn-compose svg,
+html.theme-light #btn-compose svg {
   stroke: #208ED3 !important;
   color: #208ED3 !important;
 }
-html.theme-harmony #btn-compose .compose-btn-text,
-body.theme-harmony #btn-compose .compose-btn-text,
-html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-btn-text {
-  color: #1E293B !important;
+html:not(.dark):not(.theme-dark) #btn-compose .compose-btn-text,
+html.theme-light #btn-compose .compose-btn-text {
+  color: #0F172A !important;
 }
 
-/* 2. Dark Theme (Charcoal Button, White Text, White Pencil) */
+/* 2. Dark Theme Compose Button */
+html.dark #btn-compose,
 html.theme-dark #btn-compose,
 body.theme-dark #btn-compose {
-  background-color: #2B2C2E !important;
-  border: 1.5px solid #404245 !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+  background-color: #131B2E !important;
+  border: 1.5px solid #1E293B !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
 }
+html.dark #btn-compose:hover,
 html.theme-dark #btn-compose:hover,
 body.theme-dark #btn-compose:hover {
-  background-color: #353638 !important;
-  border-color: #208ED3 !important;
+  background-color: #1A2438 !important;
+  border-color: #38BDF8 !important;
   transform: translateY(-1.5px) !important;
+  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.25) !important;
 }
-html.theme-dark #btn-compose .compose-pencil-badge,
-body.theme-dark #btn-compose .compose-pencil-badge {
-  background-color: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+html.dark #btn-compose .compose-pencil-badge,
+html.theme-dark #btn-compose .compose-pencil-badge {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
 }
-html.theme-dark #btn-compose svg,
-html.theme-dark #btn-compose i,
-body.theme-dark #btn-compose svg,
-body.theme-dark #btn-compose i {
-  stroke: #FFFFFF !important;
-  color: #FFFFFF !important;
+html.dark #btn-compose svg,
+html.theme-dark #btn-compose svg {
+  stroke: #38BDF8 !important;
+  color: #38BDF8 !important;
 }
-html.theme-dark #btn-compose .compose-btn-text,
-body.theme-dark #btn-compose .compose-btn-text {
-  color: #FFFFFF !important;
-}
-
-/* 3. Midnight Green Theme (Deep Pine Button, Mint Text, White Pencil) */
-html.theme-midnight-green #btn-compose,
-body.theme-midnight-green #btn-compose {
-  background-color: #112222 !important;
-  border: 1.5px solid #1C3838 !important;
-  color: #E6F2F2 !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
-}
-html.theme-midnight-green #btn-compose:hover,
-body.theme-midnight-green #btn-compose:hover {
-  background-color: #162E2E !important;
-  border-color: #00B392 !important;
-  transform: translateY(-1.5px) !important;
-}
-html.theme-midnight-green #btn-compose .compose-pencil-badge,
-body.theme-midnight-green #btn-compose .compose-pencil-badge {
-  background-color: rgba(0, 179, 146, 0.22) !important;
-  border: 1px solid rgba(0, 179, 146, 0.35) !important;
-}
-html.theme-midnight-green #btn-compose svg,
-html.theme-midnight-green #btn-compose i,
-body.theme-midnight-green #btn-compose svg,
-body.theme-midnight-green #btn-compose i {
-  stroke: #FFFFFF !important;
-  color: #FFFFFF !important;
-}
-html.theme-midnight-green #btn-compose .compose-btn-text,
-body.theme-midnight-green #btn-compose .compose-btn-text {
-  color: #E6F2F2 !important;
+html.dark #btn-compose .compose-btn-text,
+html.theme-dark #btn-compose .compose-btn-text {
+  color: #F8FAFC !important;
 }
 
 #btn-compose:active {

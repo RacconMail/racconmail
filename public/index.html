@@ -277,8 +277,54 @@
       min-width: 44px;
     }
   </style>
+
+  <!-- Early Theme Initializer (Strictly Light vs Dark) -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('raccon_theme');
+      const isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (isDark) {
+        document.documentElement.classList.add('dark', 'theme-dark');
+        document.documentElement.classList.remove('theme-light', 'theme-harmony');
+      } else {
+        document.documentElement.classList.remove('dark', 'theme-dark');
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const newTheme = isDark ? 'light' : 'dark';
+      localStorage.setItem('raccon_theme', newTheme);
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark', 'theme-dark');
+        document.documentElement.classList.remove('theme-light', 'theme-harmony');
+      } else {
+        document.documentElement.classList.remove('dark', 'theme-dark');
+        document.documentElement.classList.add('theme-light');
+      }
+      updateThemeToggleUI();
+    }
+
+    function updateThemeToggleUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const sun = document.getElementById('theme-icon-sun');
+      const moon = document.getElementById('theme-icon-moon');
+      if (sun && moon) {
+        if (isDark) {
+          sun.classList.remove('hidden');
+          moon.classList.add('hidden');
+        } else {
+          sun.classList.add('hidden');
+          moon.classList.remove('hidden');
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', updateThemeToggleUI);
+  </script>
+
 </head>
-<body class="bg-[#EFEDE9] text-[#1E293B] antialiased selection:bg-[#EBF5FB] flex flex-col justify-between">
+<body class="bg-[#F8FAFC] dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 antialiased selection:bg-[#208ED3]/20 flex flex-col justify-between transition-colors duration-200">
 
   <div class="w-full flex flex-col justify-between">
     <!-- ANDROID APP RUNTIME STATUS (Visible inside Android APK) -->
@@ -290,10 +336,10 @@
     </div>
 
     <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
-    <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-xs">
+    <header class="bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10 sticky top-0 z-40 shadow-xs transition-colors duration-200">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-6 py-2 sm:py-4">
         <!-- Brand Logo -->
-        <a href="/" class="flex items-center gap-1.5 sm:gap-2 font-display text-sm sm:text-xl font-bold text-[#1E293B] hover:opacity-95 transition shrink-0">
+        <a href="/" class="flex items-center gap-1.5 sm:gap-2 font-display text-sm sm:text-xl font-bold text-slate-900 dark:text-white hover:opacity-95 transition shrink-0">
           <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-7 w-7 sm:h-10 sm:w-10 raccoon-anim object-contain shrink-0"/>
           <span class="tracking-tight">Raccon Mail</span>
         </a>

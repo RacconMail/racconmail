@@ -2727,9 +2727,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       { id: 'nav_trash', group: 'Navigation', title: 'Go to Trash', icon: 'trash-2', shortcut: 'G T' },
       { id: 'nav_contacts', group: 'Navigation', title: 'Open Address Book & Contacts', icon: 'users', shortcut: 'G C' },
 
-      { id: 'theme_harmony', group: 'Appearance', title: 'Theme: Harmony Light', icon: 'sun', shortcut: 'T 1' },
-      { id: 'theme_dark', group: 'Appearance', title: 'Theme: Charcoal Dark', icon: 'moon', shortcut: 'T 2' },
-      { id: 'theme_midnight', group: 'Appearance', title: 'Theme: Midnight Green', icon: 'trees', shortcut: 'T 3' }
+      { id: 'theme_light', group: 'Appearance', title: 'Theme: Clean Modern Light', icon: 'sun', shortcut: 'T 1' },
+      { id: 'theme_dark', group: 'Appearance', title: 'Theme: Obsidian Modern Dark', icon: 'moon', shortcut: 'T 2' }
     ];
   },
 
@@ -2815,9 +2814,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     else if (actionId === 'nav_spam') this.navTo('Spam');
     else if (actionId === 'nav_trash') this.navTo('Trash');
     else if (actionId === 'nav_contacts') this.openContactsView();
-    else if (actionId === 'theme_harmony') this.switchTheme('harmony');
-    else if (actionId === 'theme_dark') this.switchTheme('dark');
-    else if (actionId === 'theme_midnight') this.switchTheme('midnight-green');
+    else if (actionId === 'theme_light' || actionId === 'theme_harmony') this.setTheme('light');
+    else if (actionId === 'theme_dark') this.setTheme('dark');
   },
 
   // Screenshot Capture tool for postcards & emails
@@ -3418,132 +3416,118 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.navTo('Inbox');
   },
 
-  // ==========================================
-  // THEME SWITCHER (HARMONY, DARK, MIDNIGHT GREEN)
+    // ==========================================
+  // THEME SYSTEM: STRICTLY 2 MODERN THEMES (LIGHT & DARK)
   // ==========================================
   themeDefinitions: {
-    harmony: {
-      name: '☀️ Harmony Light',
+    light: {
+      name: '☀️ Clean Modern Light',
       vars: {
-        '--background': '#EFEDE9',
-        '--foreground': '#1E293B',
+        '--background': '#F8FAFC',
+        '--foreground': '#0F172A',
         '--card': '#FFFFFF',
-        '--card-alt': '#F5F5F5',
-        '--card-foreground': '#1E293B',
+        '--card-alt': '#F1F5F9',
+        '--card-foreground': '#0F172A',
         '--primary': '#208ED3',
         '--primary-hover': '#1A7BB8',
         '--primary-foreground': '#FFFFFF',
         '--primary-glow': 'rgba(32, 142, 211, 0.35)',
-        '--secondary': '#F2F2F2',
-        '--secondary-foreground': '#212529',
-        '--muted': '#F6F6F6',
+        '--secondary': '#F1F5F9',
+        '--secondary-foreground': '#0F172A',
+        '--muted': '#F1F5F9',
         '--muted-foreground': '#64748B',
-        '--accent': '#EBF5FB',
-        '--accent-foreground': '#208ED3',
-        '--border': '#D5D5D5',
-        '--border-light': '#E2E8F0',
-        '--mask': '#1E293B',
+        '--accent': '#E0F2FE',
+        '--accent-foreground': '#0284C7',
+        '--border': '#E2E8F0',
+        '--border-light': '#F1F5F9',
+        '--mask': '#0F172A',
         '--fur': '#334155',
-        '--cream': '#EFEDE9'
+        '--cream': '#F8FAFC'
       },
       cover: 'linear-gradient(135deg, #208ED3 0%, #1A7BB8 50%, #0F5E97 100%)',
       colorScheme: 'light'
     },
     dark: {
-      name: '🌙 Harmony Dark',
+      name: '🌙 Obsidian Modern Dark',
       vars: {
-        '--background': '#1D1D1F',
-        '--foreground': '#FFFFFF',
-        '--card': '#2B2C2E',
-        '--card-alt': '#222325',
-        '--card-foreground': '#FFFFFF',
-        '--primary': '#208ED3',
-        '--primary-hover': '#1A7BB8',
-        '--primary-foreground': '#FFFFFF',
-        '--primary-glow': 'rgba(32, 142, 211, 0.45)',
-        '--secondary': '#343536',
-        '--secondary-foreground': '#E4E6EB',
-        '--muted': '#242526',
-        '--muted-foreground': '#9CA3AF',
-        '--accent': '#203345',
-        '--accent-foreground': '#208ED3',
-        '--border': '#404245',
-        '--border-light': '#4F5155',
-        '--mask': '#1D1D1F',
-        '--fur': '#2B2C2E',
-        '--cream': '#1D1D1F'
+        '--background': '#0B0F17',
+        '--foreground': '#F8FAFC',
+        '--card': '#131B2E',
+        '--card-alt': '#1E293B',
+        '--card-foreground': '#F8FAFC',
+        '--primary': '#38BDF8',
+        '--primary-hover': '#0EA5E9',
+        '--primary-foreground': '#0B0F17',
+        '--primary-glow': 'rgba(56, 189, 248, 0.45)',
+        '--secondary': '#1E293B',
+        '--secondary-foreground': '#F8FAFC',
+        '--muted': '#1E293B',
+        '--muted-foreground': '#94A3B8',
+        '--accent': '#1E293B',
+        '--accent-foreground': '#38BDF8',
+        '--border': '#1E293B',
+        '--border-light': '#334155',
+        '--mask': '#0B0F17',
+        '--fur': '#1E293B',
+        '--cream': '#131B2E'
       },
-      cover: 'linear-gradient(135deg, #1D1D1F 0%, #2B2C2E 50%, #151D30 100%)',
-      colorScheme: 'dark'
-    },
-    'midnight-green': {
-      name: '🌲 Midnight Green',
-      vars: {
-        '--background': '#0A1414',
-        '--foreground': '#E6F2F2',
-        '--card': '#112222',
-        '--card-alt': '#162E2E',
-        '--card-foreground': '#E6F2F2',
-        '--primary': '#00B392',
-        '--primary-hover': '#00997C',
-        '--primary-foreground': '#0A1414',
-        '--primary-glow': 'rgba(0, 179, 146, 0.45)',
-        '--secondary': '#1C3838',
-        '--secondary-foreground': '#E6F2F2',
-        '--muted': '#162E2E',
-        '--muted-foreground': '#80A6A6',
-        '--accent': '#162E2E',
-        '--accent-foreground': '#00B392',
-        '--border': '#1C3838',
-        '--border-light': '#254A4A',
-        '--mask': '#0A1414',
-        '--fur': '#112222',
-        '--cream': '#1C3838'
-      },
-      cover: 'linear-gradient(135deg, #0A1414 0%, #112222 50%, #1C3838 100%)',
+      cover: 'linear-gradient(135deg, #0B0F17 0%, #131B2E 50%, #1E293B 100%)',
       colorScheme: 'dark'
     }
   },
 
   normalizeTheme(t) {
-    if (!t) return 'harmony';
+    if (!t) return 'light';
     t = t.toLowerCase().trim();
-    if (t === 'harmony' || t === 'raccon' || t === 'light') return 'harmony';
-    if (t === 'midnight' || t === 'dark') return 'dark';
-    if (t === 'forest' || t === 'cyber' || t === 'midnight-green' || t === 'midnight_green') return 'midnight-green';
-    return this.themeDefinitions[t] ? t : 'harmony';
+    if (t === 'dark' || t === 'midnight' || t === 'midnight-green' || t === 'forest' || t === 'cyber') return 'dark';
+    return 'light';
+  },
+
+  toggleTheme() {
+    const current = this.normalizeTheme(localStorage.getItem('raccon_theme') || this.currentUser?.theme || 'light');
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    this.setTheme(newTheme, true);
   },
 
   setTheme(themeName, persist = true) {
     const canonicalTheme = this.normalizeTheme(themeName);
     const def = this.themeDefinitions[canonicalTheme] || this.themeDefinitions.light;
 
-    // 1. Update CSS classes
-    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'midnight', 'forest', 'cyber'];
+    // 1. Update document classes
+    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber'];
     allThemeClasses.forEach(t => {
       document.documentElement.classList.remove('theme-' + t);
       if (document.body) document.body.classList.remove('theme-' + t);
     });
-    document.documentElement.classList.add('theme-' + canonicalTheme);
-    if (document.body) document.body.classList.add('theme-' + canonicalTheme);
+    document.documentElement.classList.remove('dark');
+
+    if (canonicalTheme === 'dark') {
+      document.documentElement.classList.add('dark', 'theme-dark');
+      if (document.body) document.body.classList.add('dark', 'theme-dark');
+    } else {
+      document.documentElement.classList.add('theme-light');
+      if (document.body) document.body.classList.add('theme-light');
+    }
 
     // 2. Set colorScheme for OS native controls
     document.documentElement.style.colorScheme = def.colorScheme;
-    if (document.body) document.body.style.colorScheme = def.colorScheme;
 
-    // 3. Directly update CSS custom properties on documentElement and body
-    for (const [prop, val] of Object.entries(def.vars)) {
-      document.documentElement.style.setProperty(prop, val);
-      if (document.body) document.body.style.setProperty(prop, val);
+    // 3. Set custom variables
+    for (const [k, v] of Object.entries(def.vars)) {
+      document.documentElement.style.setProperty(k, v);
     }
 
-    // 4. Update default cover gradient if user hasn't set an uploaded image
-    const userCover = this.currentUser?.cover_photo || '';
-    if (!userCover || (!userCover.startsWith('http') && !userCover.startsWith('/'))) {
-      const covEl = document.getElementById('profile-cover-preview');
-      const dropCov = document.getElementById('dropdown-user-cover');
-      if (covEl) covEl.style.background = def.cover;
-      if (dropCov) dropCov.style.background = def.cover;
+    // 4. Update Sun/Moon icon on toggle button
+    const sunIcon = document.getElementById('app-theme-sun');
+    const moonIcon = document.getElementById('app-theme-moon');
+    if (sunIcon && moonIcon) {
+      if (canonicalTheme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
     }
 
     // 5. Store in localStorage
@@ -3559,38 +3543,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ theme: canonicalTheme })
-      }).then(r => r.json()).then(data => {
-        if (data && data.user) {
-          this.currentUser = { ...this.currentUser, ...data.user };
-        }
       }).catch(() => {});
-
-      this.showToast(`Switched theme to ${def.name}`);
+      this.showToast(`Theme: ${def.name}`);
     }
 
     if (window.lucide) {
-      try { lucide.createIcons(); } catch (_) {}
+      lucide.createIcons();
     }
   },
 
   highlightActiveTheme(themeName) {
     const canonical = this.normalizeTheme(themeName);
     const themeButtons = [
-      { id: 'theme-btn-harmony', active: canonical === 'harmony' },
-      { id: 'theme-btn-light', active: canonical === 'harmony' },
-      { id: 'theme-btn-raccon', active: canonical === 'harmony' },
-      { id: 'theme-btn-dark', active: canonical === 'dark' },
-      { id: 'theme-btn-midnight', active: canonical === 'dark' },
-      { id: 'theme-btn-midnight-green', active: canonical === 'midnight-green' },
-      { id: 'theme-btn-forest', active: canonical === 'midnight-green' },
-      { id: 'theme-btn-cyber', active: canonical === 'midnight-green' }
+      { id: 'theme-btn-light', active: canonical === 'light' },
+      { id: 'theme-btn-harmony', active: canonical === 'light' },
+      { id: 'theme-btn-dark', active: canonical === 'dark' }
     ];
 
     themeButtons.forEach(({ id, active }) => {
       const btn = document.getElementById(id);
       if (btn) {
         if (active) {
-          btn.classList.add('border-primary', 'ring-2', 'ring-primary', 'bg-accent/30');
+          btn.classList.add('border-primary', 'ring-2', 'ring-primary/20');
           btn.classList.remove('border-border');
           let check = btn.querySelector('.theme-check-icon');
           if (!check) {
@@ -3600,118 +3574,13 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             btn.appendChild(check);
           }
         } else {
-          btn.classList.remove('border-primary', 'ring-2', 'ring-primary', 'bg-accent/30');
+          btn.classList.remove('border-primary', 'ring-2', 'ring-primary/20');
           btn.classList.add('border-border');
           const check = btn.querySelector('.theme-check-icon');
           if (check) check.remove();
         }
       }
     });
-  },
-
-  // ==========================================
-  // REGISTERED MEMBERS LIVE CHAT ENGINE
-  // ==========================================
-  activeChatFriend: null,
-  chatConversations: [],
-  chatPollInterval: null,
-  currentStickerTab: 'raccoon',
-  currentPopupStickerTab: 'raccoon',
-
-  // Modern Cross-Platform Emoji & Sticker Packs
-  stickerPacks: {
-    raccoon: [
-      { glyph: '🦝', label: 'Raccoon' },
-      { glyph: '🐾', label: 'Paws' },
-      { glyph: '🍪', label: 'Cookie' },
-      { glyph: '🥐', label: 'Croissant' },
-      { glyph: '🍕', label: 'Pizza' },
-      { glyph: '🫐', label: 'Berries' },
-      { glyph: '🌲', label: 'Pine' },
-      { glyph: '🌙', label: 'Moon' },
-      { glyph: '🦉', label: 'Owl' },
-      { glyph: '👑', label: 'Crown' },
-      { glyph: '💤', label: 'Sleep' },
-      { glyph: '✨', label: 'Sparkles' },
-      { glyph: '🔥', label: 'Campfire' },
-      { glyph: '🎁', label: 'Gift' },
-      { glyph: '🚀', label: 'Rocket' },
-      { glyph: '💎', label: 'Treasure' }
-    ],
-    reactions: [
-      { glyph: '❤️', label: 'Heart' },
-      { glyph: '😍', label: 'Love' },
-      { glyph: '😂', label: 'Laugh' },
-      { glyph: '🥰', label: 'Adore' },
-      { glyph: '😎', label: 'Cool' },
-      { glyph: '🥳', label: 'Party' },
-      { glyph: '🤔', label: 'Think' },
-      { glyph: '👍', label: 'Like' },
-      { glyph: '🙌', label: 'Yay' },
-      { glyph: '🔥', label: 'Fire' },
-      { glyph: '👏', label: 'Clap' },
-      { glyph: '🎉', label: 'Celebration' },
-      { glyph: '💯', label: '100' },
-      { glyph: '🤝', label: 'Deal' },
-      { glyph: '💖', label: 'Sparkle' },
-      { glyph: '🌟', label: 'Star' }
-    ],
-    nocturnal: [
-      { glyph: '🍩', label: 'Donut' },
-      { glyph: '🥞', label: 'Pancake' },
-      { glyph: '🍔', label: 'Burger' },
-      { glyph: '🍟', label: 'Fries' },
-      { glyph: '🥪', label: 'Sandwich' },
-      { glyph: '🍎', label: 'Apple' },
-      { glyph: '🍓', label: 'Berry' },
-      { glyph: '🍇', label: 'Grapes' },
-      { glyph: '🧀', label: 'Cheese' },
-      { glyph: '🏕️', label: 'Camp' },
-      { glyph: '🌌', label: 'Galaxy' },
-      { glyph: '⭐', label: 'Star' },
-      { glyph: '🦊', label: 'Fox' },
-      { glyph: '🦔', label: 'Hedgehog' },
-      { glyph: '🌿', label: 'Fern' },
-      { glyph: '🍄', label: 'Mushroom' }
-    ],
-    phrases: [
-      { text: "On my way! 🦝💨", label: "On my way! 🦝💨" },
-      { text: "Midnight snack at 2am? 🥐", label: "Midnight snack? 🥐" },
-      { text: "Received your postcard loud and clear! 📬", label: "Got the postcard! 📬" },
-      { text: "Clever thinking! 🧠✨", label: "Clever! 🧠✨" },
-      { text: "Sounds like a great plan! 🤝", label: "Sounds great! 🤝" },
-      { text: "Good night from the nocturnal forest! 🌙💤", label: "Good night! 🌙💤" }
-    ]
-  },
-
-  async openChat() {
-    this.closeMobileSidebar();
-    this.closeAllModals();
-    this.closeChatBubblePopup();
-    
-    document.getElementById('messages-panel')?.classList.add('hidden');
-    document.getElementById('reader-panel')?.classList.add('hidden');
-    const chatPanel = document.getElementById('chat-panel');
-    if (chatPanel) chatPanel.classList.remove('hidden');
-
-    document.getElementById('nav-chat-btn')?.classList.add('bg-emerald-500/20', 'border-emerald-500/50');
-
-    this.renderStickerPanel('sticker-tray-content', this.currentStickerTab, false);
-    await this.loadChatConversations();
-    this.startChatPolling();
-  },
-
-  closeChat() {
-    const chatPanel = document.getElementById('chat-panel');
-    if (chatPanel) chatPanel.classList.add('hidden');
-    document.getElementById('messages-panel')?.classList.remove('hidden');
-    document.getElementById('reader-panel')?.classList.remove('hidden');
-    document.getElementById('nav-chat-btn')?.classList.remove('bg-emerald-500/20', 'border-emerald-500/50');
-    
-    if (this.chatPollInterval) {
-      clearInterval(this.chatPollInterval);
-      this.chatPollInterval = null;
-    }
   },
 
   // Floating Chat Bubble Popup Controls

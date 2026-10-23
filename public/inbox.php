@@ -178,36 +178,7 @@ if (empty($_SESSION['current_user_id'])) {
       color: #FFFFFF !important;
     }
 
-    /* 3. Midnight Green Theme: Deep Pine Card Pill, Mint Text, White Pencil */
-    html.theme-midnight-green #btn-compose,
-    body.theme-midnight-green #btn-compose {
-      background-color: #112222 !important;
-      border: 1.5px solid #1C3838 !important;
-      color: #E6F2F2 !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
-    }
-    html.theme-midnight-green #btn-compose:hover,
-    body.theme-midnight-green #btn-compose:hover {
-      background-color: #162E2E !important;
-      border-color: #00B392 !important;
-      transform: translateY(-1.5px) !important;
-    }
-    html.theme-midnight-green #btn-compose .compose-pencil-badge,
-    body.theme-midnight-green #btn-compose .compose-pencil-badge {
-      background-color: rgba(0, 179, 146, 0.22) !important;
-      border: 1px solid rgba(0, 179, 146, 0.35) !important;
-    }
-    html.theme-midnight-green #btn-compose svg,
-    html.theme-midnight-green #btn-compose i,
-    body.theme-midnight-green #btn-compose svg,
-    body.theme-midnight-green #btn-compose i {
-      stroke: #FFFFFF !important;
-      color: #FFFFFF !important;
-    }
-    html.theme-midnight-green #btn-compose .compose-btn-text,
-    body.theme-midnight-green #btn-compose .compose-btn-text {
-      color: #E6F2F2 !important;
-    }
+    
   </style>
 </head>
 <body class="bg-background text-foreground flex flex-col h-screen select-none">
@@ -270,6 +241,19 @@ if (empty($_SESSION['current_user_id'])) {
 
     <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      
+      <!-- 1-Click Sun/Moon Theme Toggle Button -->
+      <button
+        onclick="app.toggleTheme()"
+        id="app-theme-toggle-btn"
+        type="button"
+        title="Toggle Light / Dark mode"
+        class="flex items-center justify-center w-8 h-8 rounded-full border border-border bg-card hover:bg-muted text-foreground transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
+      >
+        <i data-lucide="sun" id="app-theme-sun" class="h-4 w-4 text-amber-500 hidden"></i>
+        <i data-lucide="moon" id="app-theme-moon" class="h-4 w-4 text-foreground"></i>
+      </button>
+
       <!-- World Stories Button -->
       <button
         onclick="app.openStoriesModal()"
@@ -981,65 +965,45 @@ if (empty($_SESSION['current_user_id'])) {
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
-            <!-- Theme 1: Harmony / Light -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            <!-- Theme 1: Clean Light -->
             <button
               type="button"
-              onclick="app.setTheme('harmony')"
-              id="theme-btn-harmony"
-              class="theme-choice-btn rounded-2xl border-2 p-3 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary"
+              onclick="app.setTheme('light')"
+              id="theme-btn-light"
+              class="theme-choice-btn rounded-2xl border-2 p-3.5 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary shadow-xs"
             >
-              <div class="flex items-center gap-1.5 mb-1.5">
-                <span class="text-base">☀️</span>
-                <span class="font-bold text-xs truncate text-foreground">Harmony Light</span>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-lg">☀️</span>
+                <span class="font-bold text-xs truncate text-foreground">Clean Modern Light</span>
               </div>
               <div class="flex items-center gap-1.5 my-1.5">
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #EFEDE9; border: 1px solid #D5D5D5;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #FFFFFF; border: 1px solid #D5D5D5;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #208ED3;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #1E293B;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #F8FAFC; border: 1.5px solid #CBD5E1;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #FFFFFF; border: 1.5px solid #CBD5E1;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #208ED3;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #0F172A;"></span>
               </div>
-              <span class="text-[10px] text-muted-foreground mt-1">Azure Sky &amp; Sand</span>
+              <span class="text-[11px] text-muted-foreground mt-1">Crisp white canvas, high-clarity typography</span>
             </button>
 
-            <!-- Theme 2: Harmony Dark -->
+            <!-- Theme 2: Obsidian Dark -->
             <button
               type="button"
               onclick="app.setTheme('dark')"
               id="theme-btn-dark"
-              class="theme-choice-btn rounded-2xl border-2 p-3 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary"
+              class="theme-choice-btn rounded-2xl border-2 p-3.5 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary shadow-xs"
             >
-              <div class="flex items-center gap-1.5 mb-1.5">
-                <span class="text-base">🌙</span>
-                <span class="font-bold text-xs truncate text-foreground">Harmony Dark</span>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-lg">🌙</span>
+                <span class="font-bold text-xs truncate text-foreground">Obsidian Modern Dark</span>
               </div>
               <div class="flex items-center gap-1.5 my-1.5">
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #1D1D1F; border: 1px solid #404245;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #2B2C2E; border: 1px solid #404245;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #208ED3;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #FFFFFF;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #0B0F17; border: 1.5px solid #334155;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #131B2E; border: 1.5px solid #334155;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #38BDF8;"></span>
+                <span class="h-4 w-4 rounded-full" style="background: #F8FAFC;"></span>
               </div>
-              <span class="text-[10px] text-muted-foreground mt-1">OLED Charcoal</span>
-            </button>
-
-            <!-- Theme 3: Midnight Green -->
-            <button
-              type="button"
-              onclick="app.setTheme('midnight-green')"
-              id="theme-btn-midnight-green"
-              class="theme-choice-btn rounded-2xl border-2 p-3 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary"
-            >
-              <div class="flex items-center gap-1.5 mb-1.5">
-                <span class="text-base">🌲</span>
-                <span class="font-bold text-xs truncate text-foreground">Midnight Green</span>
-              </div>
-              <div class="flex items-center gap-1.5 my-1.5">
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #0A1414; border: 1px solid #1C3838;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #112222; border: 1px solid #1C3838;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #00B392;"></span>
-                <span class="h-3.5 w-3.5 rounded-full" style="background: #E6F2F2;"></span>
-              </div>
-              <span class="text-[10px] text-muted-foreground mt-1">Cyber Teal</span>
+              <span class="text-[11px] text-muted-foreground mt-1">Velvet obsidian night &amp; vibrant sky blue</span>
             </button>
           </div>
         </div>
