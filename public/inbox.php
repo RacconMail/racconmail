@@ -534,7 +534,7 @@ if (empty($_SESSION['current_user_id'])) {
       </div>
 
       <!-- Messages Scrollable List -->
-      <div id="messages-list" class="flex-1 overflow-y-auto divide-y divide-border-light">
+      <div id="messages-list" class="flex-1 overflow-y-auto divide-y divide-border-light pb-20 md:pb-0">
         <!-- Rendered by JS -->
       </div>
     </section>
@@ -542,7 +542,7 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- 3. EMAIL READER & DETAILS PANEL (Right Panel, Full width on mobile when open) -->
     <main class="hidden md:flex flex-1 flex-col bg-background overflow-hidden relative" id="reader-panel">
       <!-- Rendered dynamically: Empty State OR Message Reader OR Photos & Files Gallery OR Contacts View -->
-      <div id="reader-content" class="h-full flex flex-col overflow-y-auto">
+      <div id="reader-content" class="h-full flex flex-col overflow-y-auto pb-20 md:pb-0">
         <!-- Default Empty State -->
         <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
           <div class="relative mb-6">
@@ -700,37 +700,39 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
 
     <!-- Compose Bottom Actions (Pure White Canvas, Slate Gray & Solid Black Button) -->
-    <div class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-2">
+    <div class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <label class="flex items-center gap-1.5 cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs" title="Attach Files">
-          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600"></i>
-          <span>Attach</span>
+        <label class="flex items-center gap-1 sm:gap-1.5 cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs" title="Attach Files">
+          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+          <span class="hidden sm:inline">Attach</span>
           <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
         </label>
-        <button onclick="app.saveDraft()" class="rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs cursor-pointer" title="Save Draft">
-          Save Draft
+        <button onclick="app.saveDraft()" class="rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs cursor-pointer shrink-0" title="Save Draft">
+          <span class="hidden sm:inline">Save Draft</span>
+          <span class="sm:hidden">Save</span>
         </button>
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button onclick="app.discardDraft()" class="px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer" title="Discard Draft">
+        <button onclick="app.discardDraft()" class="px-2 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0" title="Discard Draft">
           Discard
         </button>
         <button
           onclick="app.sendMessage()"
           id="send-mail-btn"
-          class="flex items-center gap-2 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-2 px-5 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+          class="flex items-center gap-1.5 sm:gap-2 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-2 px-3.5 sm:px-5 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
           title="Send Postcard"
         >
-          <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
-          <span>Send Postcard</span>
+          <i data-lucide="send" class="h-3.5 w-3.5 text-white shrink-0"></i>
+          <span class="hidden sm:inline">Send Postcard</span>
+          <span class="sm:hidden">Send</span>
         </button>
       </div>
     </div>
   </div>
 
   <!-- NEW CUSTOM FOLDER MODAL -->
-  <div id="new-folder-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  <div id="new-folder-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeNewFolderModal()">
     <div class="w-full max-w-sm rounded-3xl bg-card p-6 shadow-soft border border-border">
       <h3 class="font-display text-lg font-bold">Create Custom Folder</h3>
       <p class="text-xs text-muted-foreground mt-1">Organize your clever postcards & letters.</p>
@@ -748,7 +750,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- ADDRESS BOOK / CONTACTS MODAL -->
-  <div id="contacts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  <div id="contacts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeContactsModal()">
     <div class="w-full max-w-2xl rounded-3xl bg-card shadow-soft border border-border flex flex-col max-h-[85vh] overflow-hidden">
       <div class="p-5 border-b border-border flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -776,7 +778,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- NEW/EDIT CONTACT MODAL -->
-  <div id="contact-form-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  <div id="contact-form-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeContactForm()">
     <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-soft border border-border">
       <h3 id="contact-form-title" class="font-display text-lg font-bold">New Contact</h3>
       <div class="mt-4 space-y-3 text-sm">
@@ -793,7 +795,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- SETTINGS & REAL IMAP / SMTP MODAL -->
-  <div id="settings-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  <div id="settings-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeSettingsModal()">
     <div class="w-full max-w-lg rounded-3xl bg-card shadow-soft border border-border flex flex-col max-h-[90vh] overflow-hidden">
       <div class="p-5 border-b border-border flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -875,7 +877,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- PRINTABLE VINTAGE POSTCARD MODAL -->
-  <div id="postcard-print-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  <div id="postcard-print-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onclick="if (event.target === this) app.closePostcardModal()">
     <div class="w-full max-w-3xl bg-white rounded-3xl p-8 border-2 border-slate-300 shadow-2xl relative overflow-hidden text-slate-900">
       <button onclick="app.closePostcardModal()" class="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition">
         <i data-lucide="x" class="h-5 w-5"></i>
@@ -943,7 +945,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- KEYBOARD SHORTCUTS MODAL -->
-  <div id="keyboard-shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+  <div id="keyboard-shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closeKeyboardShortcuts()">
     <div class="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col">
       <div class="flex items-center justify-between pb-4 border-b border-slate-200">
         <div class="flex items-center gap-2">
@@ -1028,7 +1030,7 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- PRIVACY POLICY MODAL -->
-  <div id="privacy-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+  <div id="privacy-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closePrivacyModal()">
     <div class="w-full max-w-2xl rounded-3xl bg-card p-6 sm:p-8 shadow-2xl border border-border relative overflow-hidden max-h-[90vh] flex flex-col">
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
@@ -1125,8 +1127,8 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- RACCON NEWS MODAL (In-Mailbox Live Wire) -->
-  <div id="news-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto">
-    <div class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
+  <div id="news-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto" onclick="if (event.target === this) app.closeNewsModal()">
+    <div onclick="event.stopPropagation()" class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
       <!-- Header -->
@@ -1179,8 +1181,8 @@ if (empty($_SESSION['current_user_id'])) {
   </div>
 
   <!-- WORLD STORIES MODAL (Modern Reader Module) -->
-  <div id="stories-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto">
-    <div class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
+  <div id="stories-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto" onclick="if (event.target === this) app.closeStoriesModal()">
+    <div onclick="event.stopPropagation()" class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
       <!-- 1. LIBRARY CATALOG VIEW (Scroll Fixed) -->

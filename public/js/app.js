@@ -76,6 +76,28 @@ const app = {
     try { this.setupHistoryAndBackNavigation(); } catch (e) { console.error('history setup error:', e); }
     try { this.setupClickOutsideDismiss(); } catch (_) {}
     try { this.startMailPolling(); } catch (_) {}
+
+    // Responsive view synchronization on window resize / orientation change
+    window.addEventListener('resize', () => {
+      const msgPanel = document.getElementById('messages-panel');
+      const readerPanel = document.getElementById('reader-panel');
+      if (window.innerWidth >= 768) {
+        msgPanel?.classList.remove('hidden');
+        readerPanel?.classList.remove('hidden');
+        readerPanel?.classList.add('flex');
+      } else {
+        if (this.selectedMessage || this.activeView === 'photos_files') {
+          msgPanel?.classList.add('hidden');
+          readerPanel?.classList.remove('hidden');
+          readerPanel?.classList.add('flex');
+        } else {
+          msgPanel?.classList.remove('hidden');
+          readerPanel?.classList.add('hidden');
+          readerPanel?.classList.remove('flex');
+        }
+      }
+    });
+
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
     }
@@ -100,6 +122,15 @@ const app = {
           readerDropdown.classList.add('hidden');
         }
       }
+
+      // 3. Search suggestions dropdown auto dismiss on click outside
+      const searchDropdown = document.getElementById('search-suggestions-dropdown');
+      if (searchDropdown && !searchDropdown.classList.contains('hidden')) {
+        const searchContainer = document.getElementById('global-search-container');
+        if (searchContainer && !searchContainer.contains(e.target)) {
+          searchDropdown.classList.add('hidden');
+        }
+      }
     });
 
     // Escape key closes open dropdowns & profile modal
@@ -107,6 +138,7 @@ const app = {
       if (e.key === 'Escape') {
         document.getElementById('account-dropdown')?.classList.add('hidden');
         document.getElementById('reader-more-dropdown')?.classList.add('hidden');
+        document.getElementById('search-suggestions-dropdown')?.classList.add('hidden');
         document.getElementById('profile-modal')?.classList.add('hidden');
       }
     });
@@ -393,14 +425,18 @@ const app = {
     if (!this.messages || this.messages.length === 0) return;
     const currentIndex = this.selectedMessage ? this.messages.findIndex(m => String(m.id) === String(this.selectedMessage.id)) : -1;
     const nextIndex = (currentIndex + 1) < this.messages.length ? currentIndex + 1 : 0;
-    this.openMessage(this.messages[nextIndex].id);
+    this.selectMessage(this.messages[nextIndex].id);
   },
 
   selectPreviousMessage() {
     if (!this.messages || this.messages.length === 0) return;
     const currentIndex = this.selectedMessage ? this.messages.findIndex(m => String(m.id) === String(this.selectedMessage.id)) : 0;
     const prevIndex = (currentIndex - 1) >= 0 ? currentIndex - 1 : this.messages.length - 1;
-    this.openMessage(this.messages[prevIndex].id);
+    this.selectMessage(this.messages[prevIndex].id);
+  },
+
+  openMessage(id) {
+    return this.selectMessage(id);
   },
 
   closeAllModals() {
@@ -2064,22 +2100,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   async renderPhotosFilesView() {
     const readerEl = document.getElementById('reader-content');
     readerEl.innerHTML = `
-      <div class="p-8 h-full flex flex-col overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
+      <div class="p-4 sm:p-8 h-full flex flex-col overflow-y-auto">
+        <!-- Mobile Back Button -->
+        <button onclick="app.navTo('Inbox')" class="md:hidden flex items-center gap-1.5 text-xs font-bold py-1.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 shrink-0 cursor-pointer mb-3 self-start">
+          <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
+          <span>Back to Mail</span>
+        </button>
+
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-              <i data-lucide="image" class="h-6 w-6"></i>
+            <h2 class="font-display text-xl sm:text-2xl font-bold flex items-center gap-2">
+              <i data-lucide="image" class="h-5 w-5 sm:h-6 sm:w-6"></i>
               <span>Photos & Files</span>
             </h2>
             <p class="text-xs text-muted-foreground mt-0.5">Every photo and file attached to your emails in one place.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="app.filterPhotosFiles('all')" id="pf-all" class="px-3 py-1.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">All</button>
-            <button onclick="app.filterPhotosFiles('photos')" id="pf-photos" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted">Photos & Media</button>
-            <button onclick="app.filterPhotosFiles('documents')" id="pf-documents" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted">Documents</button>
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <button onclick="app.filterPhotosFiles('all')" id="pf-all" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-primary text-primary-foreground cursor-pointer">All</button>
+            <button onclick="app.filterPhotosFiles('photos')" id="pf-photos" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted cursor-pointer">Photos & Media</button>
+            <button onclick="app.filterPhotosFiles('documents')" id="pf-documents" class="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:bg-muted cursor-pointer">Documents</button>
           </div>
         </div>
-        <div id="photos-files-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div id="photos-files-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           <p class="text-xs text-muted-foreground">Loading attachments...</p>
         </div>
       </div>

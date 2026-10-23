@@ -6,8 +6,6 @@ Allow: /
 Allow: /forum
 Allow: /news
 Allow: /stories
-Allow: /marketplace
-Allow: /articles
 Allow: /auth
 Allow: /legal/terms
 Allow: /legal/privacy
