@@ -447,6 +447,13 @@ if (empty($_SESSION['current_user_id'])) {
 
       <!-- Bottom Sidebar Utilities (Styled identical to standard folders) -->
       <div class="border-t border-border p-2 space-y-0.5 text-xs font-medium">
+        <button onclick="app.navToWall()" id="nav-btn-wall" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="layout" class="h-4 w-4 shrink-0 text-slate-800"></i>
+            <span class="truncate font-semibold">Wall &amp; Timeline</span>
+          </div>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-white">Live</span>
+        </button>
         <a href="/forum" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="messages-square" class="h-4 w-4 shrink-0"></i>
@@ -602,6 +609,378 @@ if (empty($_SESSION['current_user_id'])) {
       </div>
     </main>
 
+    <!-- 4. MEMBER WALL & TIMELINE FULL IN-PAGE VIEW (Integrated into Page, NOT a popup window!) -->
+    <section id="wall-view-panel" class="hidden flex-1 flex flex-col bg-slate-50/50 overflow-y-auto relative w-full h-full text-slate-900 pb-20 md:pb-8">
+      
+      <!-- Top Sticky Action Bar -->
+      <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shrink-0 shadow-2xs">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <button
+            type="button"
+            onclick="app.backToInboxFromWall()"
+            class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
+            title="Return to Mailbox"
+          >
+            <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
+            <span>Inbox</span>
+          </button>
+          <div class="h-4 w-[1px] bg-slate-200 shrink-0"></div>
+          <div class="min-w-0 truncate">
+            <h1 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-1.5 truncate">
+              <i data-lucide="layout" class="h-4 w-4 text-slate-700 shrink-0"></i>
+              <span>Member Wall &amp; Timeline</span>
+            </h1>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onclick="app.loadWallPosts()"
+            class="p-2 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition flex items-center justify-center cursor-pointer"
+            title="Refresh Timeline Updates"
+          >
+            <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+          </button>
+          <button
+            type="button"
+            onclick="app.switchProfileTab('info')"
+            class="hidden sm:inline-flex px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition items-center gap-1.5 cursor-pointer"
+          >
+            <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+            <span>Edit Profile</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main In-Page Container -->
+      <div class="max-w-4xl mx-auto w-full p-3 sm:p-6 space-y-5">
+        
+        <!-- Profile Card Header (Cover Photo & Avatar & Bio) -->
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+          <!-- Cover Photo -->
+          <div id="profile-cover-preview" class="h-36 sm:h-52 w-full bg-cover bg-center bg-slate-900 relative">
+            <!-- Quick Cover Button -->
+            <label class="absolute bottom-3 right-3 cursor-pointer rounded-full bg-black/70 hover:bg-black text-white px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm backdrop-blur-xs">
+              <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+              <span>Change Cover</span>
+              <input type="file" id="cover-file-input" accept="image/*" class="hidden" onchange="app.uploadCoverPhoto(this.files[0])" />
+            </label>
+          </div>
+
+          <!-- Profile Info Bar -->
+          <div class="px-4 sm:px-6 pb-5 pt-0 relative bg-white">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between -mt-12 sm:-mt-16 mb-4 gap-4">
+              <div class="flex items-end gap-4">
+                <div class="relative group shrink-0">
+                  <img id="profile-avatar-preview" src="/raccoon-logo.png" class="h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-white object-cover aspect-square border-4 border-white shadow-md shrink-0" />
+                  <label class="absolute inset-0 rounded-full bg-black/55 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-[10px] font-bold">
+                    <i data-lucide="camera" class="h-4 w-4 mb-0.5"></i>
+                    <span>Change</span>
+                    <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="app.uploadAvatar(this.files[0])" />
+                  </label>
+                </div>
+
+                <div class="min-w-0 pb-1">
+                  <h2 id="profile-preview-name" class="font-display font-bold text-xl sm:text-2xl text-slate-900 leading-tight truncate">Clever Raccoon</h2>
+                  <p id="profile-preview-email" class="text-xs text-slate-500 font-mono truncate">user@racconmail.eu</p>
+                </div>
+              </div>
+
+              <!-- Profile Badges -->
+              <div class="flex flex-wrap items-center gap-1.5 text-xs pb-1">
+                <span id="profile-joined-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px]">
+                  <i data-lucide="calendar" class="h-3.5 w-3.5 text-slate-500"></i>
+                  <span id="profile-joined-text">Member since Oct 2026</span>
+                </span>
+                <span id="profile-location-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px]">
+                  <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-500"></i>
+                  <span id="profile-location-text">Detecting...</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- User Bio -->
+            <p id="profile-bio-text" class="text-xs sm:text-sm text-slate-600 leading-relaxed italic border-l-2 border-slate-300 pl-3 py-1 mb-4">
+              Verified nocturnal mail user &amp; postcard collector.
+            </p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex items-center gap-2 pt-3 border-t border-slate-100 text-xs font-bold overflow-x-auto no-scrollbar">
+              <button type="button" onclick="app.switchProfileTab('wall')" id="profile-tab-btn-wall" class="px-4 py-1.5 rounded-full bg-slate-900 text-white transition flex items-center gap-1.5 shrink-0 shadow-2xs font-bold">
+                <i data-lucide="layout" class="h-3.5 w-3.5"></i>
+                <span>Activity Feed</span>
+              </button>
+              <button type="button" onclick="app.switchProfileTab('timeline')" id="profile-tab-btn-timeline" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200 font-semibold">
+                <i data-lucide="git-commit" class="h-3.5 w-3.5"></i>
+                <span>Member Timeline</span>
+              </button>
+              <button type="button" onclick="app.switchProfileTab('photos')" id="profile-tab-btn-photos" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200 font-semibold">
+                <i data-lucide="image" class="h-3.5 w-3.5"></i>
+                <span>Photos &amp; Covers</span>
+              </button>
+              <button type="button" onclick="app.switchProfileTab('info')" id="profile-tab-btn-info" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200 font-semibold">
+                <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+                <span>Edit Bio &amp; Info</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 1: Activity Feed & Composer -->
+        <div id="profile-tab-wall" class="space-y-4">
+          <!-- Wall Composer Card -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex items-start gap-3">
+              <img id="wall-composer-avatar" src="/raccoon-logo.png" class="h-10 w-10 rounded-full object-cover border border-slate-200 shrink-0" />
+              <div class="flex-1">
+                <textarea
+                  id="wall-post-content"
+                  rows="2"
+                  placeholder="What's on your mind? Share a thought, photo, question, or poll..."
+                  class="w-full bg-transparent border-0 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none resize-none leading-relaxed"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Optional Poll Builder Box -->
+            <div id="wall-poll-box" class="hidden rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                  <i data-lucide="bar-chart-2" class="h-4 w-4 text-slate-700"></i>
+                  <span>Poll Questions &amp; Choices</span>
+                </span>
+                <span class="text-[11px] text-slate-500 font-mono">Members vote once</span>
+              </div>
+              <input
+                id="wall-poll-question"
+                type="text"
+                placeholder="Ask your question (e.g. Which email theme do you prefer?)"
+                class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-slate-400"
+              />
+              <div id="wall-poll-options-list" class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="font-mono text-xs text-slate-400 w-4">1.</span>
+                  <input type="text" class="wall-poll-opt-input flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none" placeholder="Choice 1" value="Dark Nocturnal" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-mono text-xs text-slate-400 w-4">2.</span>
+                  <input type="text" class="wall-poll-opt-input flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none" placeholder="Choice 2" value="Pure White Minimal" />
+                </div>
+              </div>
+              <button type="button" onclick="app.addWallPollChoice()" class="text-xs font-bold text-slate-700 hover:text-black flex items-center gap-1.5 cursor-pointer pt-1">
+                <i data-lucide="plus-circle" class="h-3.5 w-3.5"></i>
+                <span>Add Choice</span>
+              </button>
+            </div>
+
+            <!-- Optional Image Upload Preview -->
+            <div id="wall-photo-preview-box" class="hidden relative rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 max-h-72">
+              <img id="wall-photo-preview-img" src="" class="w-full h-full max-h-64 object-cover" />
+              <button type="button" onclick="app.removeWallPhoto()" class="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-black text-white transition text-xs shadow-md cursor-pointer" title="Remove Photo">
+                <i data-lucide="x" class="h-4 w-4"></i>
+              </button>
+            </div>
+
+            <!-- Auto-Location Tag Display -->
+            <div id="wall-location-tag-box" class="hidden items-center gap-1.5 pt-1 text-xs font-semibold text-slate-700">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200">
+                <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span id="wall-location-tag-text"></span>
+                <button type="button" onclick="app.clearWallLocation()" class="ml-1 text-slate-400 hover:text-black text-sm font-bold leading-none cursor-pointer">&times;</button>
+              </span>
+            </div>
+
+            <!-- Composer Actions Row -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <!-- Status Tab -->
+                <button type="button" onclick="app.setWallPostType('status')" id="btn-post-type-status" class="px-3 py-1.5 rounded-full bg-slate-900 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                  <i data-lucide="file-text" class="h-3.5 w-3.5"></i> <span>Status</span>
+                </button>
+
+                <!-- Photo Tab -->
+                <label class="cursor-pointer px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5 border border-slate-200 shadow-2xs">
+                  <i data-lucide="image" class="h-3.5 w-3.5 text-slate-600"></i> <span>Photo</span>
+                  <input type="file" id="wall-photo-input" accept="image/*" class="hidden" onchange="app.handleWallPhotoSelect(this.files[0])" />
+                </label>
+
+                <!-- Question Tab -->
+                <button type="button" onclick="app.setWallPostType('question')" id="btn-post-type-question" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200 shadow-2xs">
+                  <i data-lucide="help-circle" class="h-3.5 w-3.5 text-slate-600"></i> <span>Question</span>
+                </button>
+
+                <!-- Poll Tab -->
+                <button type="button" onclick="app.setWallPostType('poll')" id="btn-post-type-poll" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200 shadow-2xs">
+                  <i data-lucide="bar-chart-2" class="h-3.5 w-3.5 text-slate-600"></i> <span>Poll</span>
+                </button>
+
+                <!-- Auto-Location Button -->
+                <button type="button" onclick="app.autoDetectWallLocation()" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200 shadow-2xs" title="Auto-Detect & Tag Current Location">
+                  <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-600"></i>
+                  <span>Location</span>
+                </button>
+              </div>
+
+              <!-- Publish Post Button -->
+              <button
+                type="button"
+                id="btn-publish-wall"
+                onclick="app.publishWallPost()"
+                class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer ml-auto"
+              >
+                <i data-lucide="send" class="h-3.5 w-3.5"></i>
+                <span>Post to Wall</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Feed Posts List -->
+          <div id="profile-wall-feed" class="space-y-4">
+            <!-- Dynamically populated via app.renderWallPosts -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Member Timeline View -->
+        <div id="profile-tab-timeline" class="hidden space-y-4">
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                <i data-lucide="git-commit" class="h-4 w-4 text-slate-700"></i>
+                <span>Chronological Member Journey</span>
+              </h3>
+              <span id="wall-posts-counter" class="text-xs font-mono text-slate-500">0 updates</span>
+            </div>
+            <div id="profile-wall-timeline">
+              <!-- Dynamically populated via app.renderTimeline -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Photos & Cover Presets -->
+        <div id="profile-tab-photos" class="hidden space-y-6">
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-sm">Cover Photo</span>
+              <label class="cursor-pointer rounded-full bg-slate-900 hover:bg-black text-white px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+                <i data-lucide="upload" class="h-3.5 w-3.5"></i>
+                <span>Upload Custom Cover</span>
+                <input type="file" accept="image/*" class="hidden" onchange="app.uploadCoverPhoto(this.files[0])" />
+              </label>
+            </div>
+            <p class="text-xs text-slate-500">Or select from scenic nocturnal woodland gradients:</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)')" class="h-16 rounded-2xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-xs" style="background: linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%);">Midnight Noir</button>
+              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #1e3a2f 0%, #0f1f18 100%)')" class="h-16 rounded-2xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-xs" style="background: linear-gradient(135deg, #1e3a2f 0%, #0f1f18 100%);">Pine Forest</button>
+              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #3b281c 0%, #1a120c 100%)')" class="h-16 rounded-2xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-xs" style="background: linear-gradient(135deg, #3b281c 0%, #1a120c 100%);">Campfire Glow</button>
+              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #1a2a44 0%, #2a1b3d 100%)')" class="h-16 rounded-2xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-xs" style="background: linear-gradient(135deg, #1a2a44 0%, #2a1b3d 100%);">Northern Aurora</button>
+            </div>
+
+            <div class="border-t border-slate-200 pt-5 mt-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-slate-900 text-sm">Avatar Mascot</span>
+                <label class="cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition text-slate-800">
+                  <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+                  <span>Upload Custom Photo</span>
+                  <input type="file" accept="image/*" class="hidden" onchange="app.uploadAvatar(this.files[0])" />
+                </label>
+              </div>
+              <p class="text-xs text-slate-500 mb-3">Or choose a nocturnal woodland mascot:</p>
+              <div class="flex flex-wrap items-center gap-3">
+                <button type="button" onclick="app.selectPresetAvatar('/raccoon-logo.png')" class="p-1 rounded-2xl border-2 border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
+                  <img src="/raccoon-logo.png" class="h-14 w-14 object-cover aspect-square rounded-xl" />
+                </button>
+                <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=ShadowRaccoon')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
+                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=ShadowRaccoon" class="h-14 w-14 object-cover aspect-square rounded-xl" />
+                </button>
+                <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=NocturnalBandit')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
+                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=NocturnalBandit" class="h-14 w-14 object-cover aspect-square rounded-xl" />
+                </button>
+                <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=ForestScout')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
+                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=ForestScout" class="h-14 w-14 object-cover aspect-square rounded-xl" />
+                </button>
+                <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=MidnightOwl')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
+                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MidnightOwl" class="h-14 w-14 object-cover aspect-square rounded-xl" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Edit Info & Bio -->
+        <div id="profile-tab-info" class="hidden space-y-4">
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i data-lucide="user" class="h-4 w-4 text-slate-700"></i>
+              <span>Profile Information</span>
+            </h3>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Display Name</label>
+              <input
+                id="profile-name-input"
+                type="text"
+                class="w-full rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none focus:border-slate-900"
+                placeholder="Your Name (e.g. Clever Raccoon)"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+              <input
+                id="profile-email-input"
+                type="text"
+                readonly
+                class="w-full rounded-2xl border border-slate-200 bg-slate-100 p-3 text-xs text-slate-500 font-mono cursor-not-allowed"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Location (City, Country)</label>
+              <div class="flex items-center gap-2">
+                <input
+                  id="profile-location-input"
+                  type="text"
+                  class="flex-1 rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none focus:border-slate-900"
+                  placeholder="e.g. Bucharest, Romania"
+                />
+                <button type="button" onclick="app.autoDetectProfileLocation()" class="rounded-2xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-3 text-xs font-semibold transition shrink-0 cursor-pointer">
+                  Auto-Detect
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Personal Bio</label>
+              <textarea
+                id="profile-bio-input"
+                rows="3"
+                class="w-full rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none focus:border-slate-900 leading-relaxed"
+                placeholder="Tell other nocturnal members a little about yourself..."
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Default Postcard Signature</label>
+              <input
+                id="profile-signature-input"
+                type="text"
+                class="w-full rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none focus:border-slate-900"
+                placeholder="🦝 Sent with clever stealth via Raccon Postcard Mail."
+              />
+            </div>
+            <div class="pt-2">
+              <button
+                type="button"
+                onclick="app.saveProfile()"
+                id="profile-save-btn"
+                class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition shadow-sm cursor-pointer flex items-center gap-2"
+              >
+                <i data-lucide="check" class="h-4 w-4"></i>
+                <span>Save Profile Changes</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </div>
 
   <!-- NATIVE MOBILE BOTTOM NAVIGATION BAR (Polished Android & iOS App Navigation) -->
@@ -618,9 +997,9 @@ if (empty($_SESSION['current_user_id'])) {
     <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full bg-slate-900 hover:bg-black text-white shadow-md transform active:scale-90 transition border-2 border-white cursor-pointer shrink-0" title="Compose Postcard">
       <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
     </button>
-    <button onclick="app.openStoriesModal()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="World Stories">
-      <i data-lucide="book-open" class="h-5 w-5"></i>
-      <span class="text-[10px] font-medium">Stories</span>
+    <button onclick="app.navToWall()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="Wall & Timeline">
+      <i data-lucide="layout" class="h-5 w-5"></i>
+      <span class="text-[10px] font-medium">Wall</span>
     </button>
     <button onclick="app.toggleMobileSidebar()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="All Folders">
       <i data-lucide="menu" class="h-5 w-5"></i>
@@ -829,349 +1208,6 @@ if (empty($_SESSION['current_user_id'])) {
       <div class="mt-5 flex justify-end gap-2">
         <button onclick="app.closeContactForm()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted">Cancel</button>
         <button onclick="app.saveContact()" class="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground hover:bg-black">Save Contact</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODERN PROFILE & TIMELINE WALL MODAL -->
-  <div id="profile-modal" onclick="if(event.target === this) app.closeProfileModal()" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200">
-    <div class="w-full max-w-3xl rounded-3xl bg-white text-slate-900 shadow-2xl border border-slate-200 flex flex-col max-h-[92vh] overflow-hidden">
-      <div class="stripes-subtle h-1.5 w-full shrink-0"></div>
-
-      <!-- Hero Header: Cover Photo & Avatar -->
-      <div class="relative shrink-0 border-b border-slate-200">
-        <!-- Cover Photo with Upload Button -->
-        <div id="profile-cover-preview" class="h-32 sm:h-44 w-full bg-cover bg-center bg-slate-900 relative">
-          <!-- Close button -->
-          <button onclick="app.closeProfileModal()" class="absolute top-3 right-3 p-1.5 rounded-full bg-black/60 hover:bg-black text-white transition text-xs flex items-center justify-center backdrop-blur-xs cursor-pointer shadow-md z-10" title="Close Profile">
-            <i data-lucide="x" class="h-4 w-4"></i>
-          </button>
-
-          <!-- Change Cover Quick Button -->
-          <label class="absolute bottom-2.5 right-3 cursor-pointer rounded-full bg-black/70 hover:bg-black text-white px-3 py-1 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm backdrop-blur-xs">
-            <i data-lucide="camera" class="h-3.5 w-3.5"></i>
-            <span class="hidden sm:inline">Change Cover</span>
-            <input type="file" id="cover-file-input" accept="image/*" class="hidden" onchange="app.uploadCoverPhoto(this.files[0])" />
-          </label>
-        </div>
-
-        <!-- Overlapping Profile Info Bar -->
-        <div class="px-4 sm:px-6 pb-4 pt-0 relative bg-white">
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between -mt-12 sm:-mt-14 mb-3 gap-3">
-            <div class="flex items-end gap-3.5">
-              <div class="relative group shrink-0">
-                <img id="profile-avatar-preview" src="/raccoon-logo.png" class="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-white object-cover aspect-square border-4 border-white shadow-lg shrink-0" />
-                <label class="absolute inset-0 rounded-full bg-black/50 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer text-[10px] font-bold">
-                  <i data-lucide="camera" class="h-4 w-4 mb-0.5"></i>
-                  <span>Change</span>
-                  <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="app.uploadAvatar(this.files[0])" />
-                </label>
-              </div>
-
-              <div class="min-w-0 pb-1">
-                <h2 id="profile-preview-name" class="font-display font-bold text-lg sm:text-xl text-slate-900 leading-tight truncate">Clever Raccoon</h2>
-                <p id="profile-preview-email" class="text-xs text-slate-500 font-mono truncate">user@racconmail.eu</p>
-              </div>
-            </div>
-
-            <!-- Profile Badges & Actions -->
-            <div class="flex flex-wrap items-center gap-1.5 text-xs pb-1">
-              <span id="profile-joined-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px]">
-                <i data-lucide="calendar" class="h-3.5 w-3.5 text-slate-500"></i>
-                <span id="profile-joined-text">Member since Oct 2026</span>
-              </span>
-              <span id="profile-location-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px]">
-                <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-500"></i>
-                <span id="profile-location-text">Detecting...</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- User Bio -->
-          <p id="profile-bio-text" class="text-xs text-slate-600 leading-relaxed italic border-l-2 border-slate-300 pl-2.5 py-0.5">
-            Verified nocturnal mail user &amp; postcard collector.
-          </p>
-
-          <!-- Modern Navigation Tabs -->
-          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 text-xs font-bold overflow-x-auto no-scrollbar">
-            <button type="button" onclick="app.switchProfileTab('wall')" id="profile-tab-btn-wall" class="px-4 py-1.5 rounded-full bg-slate-900 text-white transition flex items-center gap-1.5 shrink-0 shadow-2xs">
-              <i data-lucide="newspaper" class="h-3.5 w-3.5"></i>
-              <span>Wall &amp; Timeline</span>
-            </button>
-            <button type="button" onclick="app.switchProfileTab('photos')" id="profile-tab-btn-photos" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200">
-              <i data-lucide="image" class="h-3.5 w-3.5"></i>
-              <span>Photos &amp; Cover Presets</span>
-            </button>
-            <button type="button" onclick="app.switchProfileTab('info')" id="profile-tab-btn-info" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200">
-              <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
-              <span>Edit Info &amp; Bio</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab Content Area -->
-      <div class="p-4 sm:p-6 flex-1 overflow-y-auto space-y-5 text-xs bg-slate-50/50">
-
-        <!-- 1. TAB: MEMBER WALL & TIMELINE -->
-        <div id="profile-tab-wall" class="space-y-4">
-          <!-- Wall Composer Card -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3">
-            <div class="flex items-center gap-3">
-              <img id="wall-composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" />
-              <div class="flex-1">
-                <textarea
-                  id="wall-post-content"
-                  rows="2"
-                  placeholder="What's on your mind? Share a thought, photo, question, or poll..."
-                  class="w-full bg-transparent border-0 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none resize-none leading-relaxed"
-                ></textarea>
-              </div>
-            </div>
-
-            <!-- Optional Poll Builder Box (Hidden unless Poll mode is selected) -->
-            <div id="wall-poll-box" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2.5">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-[11px] text-slate-700 flex items-center gap-1">
-                  <i data-lucide="bar-chart-2" class="h-3.5 w-3.5 text-slate-600"></i>
-                  <span>Poll Questions &amp; Choices</span>
-                </span>
-                <span class="text-[10px] text-slate-500">Members can vote once</span>
-              </div>
-              <input
-                id="wall-poll-question"
-                type="text"
-                placeholder="Ask your question (e.g. Which email theme do you prefer?)"
-                class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-slate-400"
-              />
-              <div id="wall-poll-options-list" class="space-y-1.5">
-                <div class="flex items-center gap-2">
-                  <span class="font-mono text-[10px] text-slate-400 w-4">1.</span>
-                  <input type="text" class="wall-poll-opt-input flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none" placeholder="Choice 1" value="Dark Nocturnal" />
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="font-mono text-[10px] text-slate-400 w-4">2.</span>
-                  <input type="text" class="wall-poll-opt-input flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none" placeholder="Choice 2" value="Pure White Minimal" />
-                </div>
-              </div>
-              <button type="button" onclick="app.addWallPollChoice()" class="text-[11px] font-bold text-slate-700 hover:text-black flex items-center gap-1 cursor-pointer">
-                <i data-lucide="plus-circle" class="h-3.5 w-3.5"></i>
-                <span>Add Choice</span>
-              </button>
-            </div>
-
-            <!-- Optional Image Upload Preview (Hidden unless photo attached) -->
-            <div id="wall-photo-preview-box" class="hidden relative rounded-xl border border-slate-200 overflow-hidden bg-slate-100 max-h-60">
-              <img id="wall-photo-preview-img" src="" class="w-full h-full max-h-56 object-cover" />
-              <button type="button" onclick="app.removeWallPhoto()" class="absolute top-2 right-2 p-1 rounded-full bg-black/70 hover:bg-black text-white transition text-xs shadow-md cursor-pointer" title="Remove Photo">
-                <i data-lucide="x" class="h-3.5 w-3.5"></i>
-              </button>
-            </div>
-
-            <!-- Auto-Location Tag Display -->
-            <div id="wall-location-tag-box" class="hidden items-center gap-1.5 pt-1 text-[11px] font-semibold text-slate-700">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200">
-                <i data-lucide="map-pin" class="h-3 w-3 text-slate-600"></i>
-                <span id="wall-location-tag-text"></span>
-                <button type="button" onclick="app.clearWallLocation()" class="ml-1 text-slate-400 hover:text-black text-xs font-bold leading-none cursor-pointer">&times;</button>
-              </span>
-            </div>
-
-            <!-- Composer Actions Row -->
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <!-- Status Tab -->
-                <button type="button" onclick="app.setWallPostType('status')" id="btn-post-type-status" class="px-2.5 py-1 rounded-full bg-slate-900 text-white font-bold text-[11px] transition flex items-center gap-1 cursor-pointer shadow-2xs">
-                  <i data-lucide="file-text" class="h-3.5 w-3.5"></i> <span>Status</span>
-                </button>
-
-                <!-- Photo Tab -->
-                <label class="cursor-pointer px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 border border-slate-200 shadow-2xs">
-                  <i data-lucide="image" class="h-3.5 w-3.5 text-slate-600"></i> <span>Photo</span>
-                  <input type="file" id="wall-photo-input" accept="image/*" class="hidden" onchange="app.handleWallPhotoSelect(this.files[0])" />
-                </label>
-
-                <!-- Question Tab -->
-                <button type="button" onclick="app.setWallPostType('question')" id="btn-post-type-question" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs">
-                  <i data-lucide="help-circle" class="h-3.5 w-3.5 text-slate-600"></i> <span>Question</span>
-                </button>
-
-                <!-- Poll Tab -->
-                <button type="button" onclick="app.setWallPostType('poll')" id="btn-post-type-poll" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs">
-                  <i data-lucide="bar-chart-2" class="h-3.5 w-3.5 text-slate-600"></i> <span>Poll</span>
-                </button>
-
-                <!-- Auto-Location Button -->
-                <button type="button" onclick="app.autoDetectWallLocation()" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs" title="Auto-Detect & Tag Current Location">
-                  <i data-lucide="map-pin" class="h-3 w-3 text-slate-600"></i>
-                  <span>Location</span>
-                </button>
-              </div>
-
-              <!-- Publish Post Button -->
-              <button
-                type="button"
-                id="btn-publish-wall"
-                onclick="app.publishWallPost()"
-                class="px-5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer ml-auto"
-              >
-                <i data-lucide="send" class="h-3.5 w-3.5"></i>
-                <span>Post to Wall</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Wall Sub-Navigation: Feed vs Timeline Switcher -->
-          <div class="flex items-center justify-between border-b border-slate-200 pb-2 pt-1">
-            <div class="flex items-center gap-1.5 p-1 rounded-full bg-slate-100 border border-slate-200">
-              <button
-                type="button"
-                id="btn-wall-view-feed"
-                onclick="app.switchWallView('feed')"
-                class="px-3.5 py-1 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
-              >
-                <i data-lucide="layout-list" class="h-3.5 w-3.5"></i>
-                <span>Activity Feed</span>
-              </button>
-              <button
-                type="button"
-                id="btn-wall-view-timeline"
-                onclick="app.switchWallView('timeline')"
-                class="px-3.5 py-1 rounded-full text-slate-700 hover:text-slate-900 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <i data-lucide="git-commit" class="h-3.5 w-3.5"></i>
-                <span>Member Timeline</span>
-              </button>
-            </div>
-            <span id="wall-posts-counter" class="text-[11px] font-mono text-slate-500">0 updates</span>
-          </div>
-
-          <!-- Wall Feed Posts List -->
-          <div id="profile-wall-feed" class="space-y-3.5">
-            <!-- Dynamically populated via app.renderWallPosts -->
-          </div>
-
-          <!-- Wall Timeline View (Chronological Milestones) -->
-          <div id="profile-wall-timeline" class="hidden space-y-4">
-            <!-- Dynamically populated via app.renderTimeline -->
-          </div>
-        </div>
-
-        <!-- 2. TAB: PHOTOS & COVER PRESETS -->
-        <div id="profile-tab-photos" class="hidden space-y-6">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-bold text-slate-900 text-sm">Cover Photo</span>
-              <label class="cursor-pointer rounded-full bg-slate-900 hover:bg-black text-white px-3 py-1 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
-                <i data-lucide="upload" class="h-3.5 w-3.5"></i>
-                <span>Upload Custom Cover</span>
-                <input type="file" accept="image/*" class="hidden" onchange="app.uploadCoverPhoto(this.files[0])" />
-              </label>
-            </div>
-            <p class="text-[11px] text-slate-500 mb-2">Or select from scenic nocturnal woodland gradients:</p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)')" class="h-14 rounded-xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-[10px]" style="background: linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%);">Midnight Noir</button>
-              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #1e3a2f 0%, #0f1f18 100%)')" class="h-14 rounded-xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-[10px]" style="background: linear-gradient(135deg, #1e3a2f 0%, #0f1f18 100%);">Pine Forest</button>
-              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #3b281c 0%, #1a120c 100%)')" class="h-14 rounded-xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-[10px]" style="background: linear-gradient(135deg, #3b281c 0%, #1a120c 100%);">Campfire Glow</button>
-              <button type="button" onclick="app.selectPresetCover('linear-gradient(135deg, #1a2a44 0%, #2a1b3d 100%)')" class="h-14 rounded-xl border border-slate-300 overflow-hidden hover:ring-2 hover:ring-slate-900 transition flex items-center justify-center text-white font-bold text-[10px]" style="background: linear-gradient(135deg, #1a2a44 0%, #2a1b3d 100%);">Northern Aurora</button>
-            </div>
-          </div>
-
-          <div class="border-t border-slate-200 pt-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-bold text-slate-900 text-sm">Avatar Picture</span>
-              <label class="cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3 py-1 text-xs font-semibold flex items-center gap-1.5 transition text-slate-800">
-                <i data-lucide="camera" class="h-3.5 w-3.5"></i>
-                <span>Upload Custom Photo</span>
-                <input type="file" accept="image/*" class="hidden" onchange="app.uploadAvatar(this.files[0])" />
-              </label>
-            </div>
-            <p class="text-[11px] text-slate-500 mb-2">Or choose a nocturnal woodland mascot:</p>
-            <div class="flex flex-wrap items-center gap-3">
-              <button type="button" onclick="app.selectPresetAvatar('/raccoon-logo.png')" class="p-1 rounded-2xl border-2 border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
-                <img src="/raccoon-logo.png" class="h-12 w-12 object-cover aspect-square rounded-xl" />
-              </button>
-              <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=ShadowRaccoon')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=ShadowRaccoon" class="h-12 w-12 object-cover aspect-square rounded-xl" />
-              </button>
-              <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=NocturnalBandit')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=NocturnalBandit" class="h-12 w-12 object-cover aspect-square rounded-xl" />
-              </button>
-              <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=ForestScout')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=ForestScout" class="h-12 w-12 object-cover aspect-square rounded-xl" />
-              </button>
-              <button type="button" onclick="app.selectPresetAvatar('https://api.dicebear.com/7.x/bottts/svg?seed=MidnightOwl')" class="p-1 rounded-2xl border border-slate-300 hover:border-slate-900 bg-white hover:scale-105 transition overflow-hidden">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=MidnightOwl" class="h-12 w-12 object-cover aspect-square rounded-xl" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. TAB: EDIT INFO & BIO -->
-        <div id="profile-tab-info" class="hidden space-y-3.5">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Display Name</label>
-            <input
-              id="profile-name-input"
-              type="text"
-              class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-900 outline-none focus:border-slate-400"
-              placeholder="Your Name (e.g. Clever Raccoon)"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
-            <input
-              id="profile-email-input"
-              type="text"
-              readonly
-              class="w-full rounded-xl border border-slate-200 bg-slate-100 p-2.5 text-xs text-slate-500 font-mono cursor-not-allowed"
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Location (City, Country)</label>
-            <div class="flex items-center gap-2">
-              <input
-                id="profile-location-input"
-                type="text"
-                class="flex-1 rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-900 outline-none focus:border-slate-400"
-                placeholder="e.g. Bucharest, Romania"
-              />
-              <button type="button" onclick="app.autoDetectProfileLocation()" class="rounded-xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2 text-xs font-semibold transition shrink-0 cursor-pointer">
-                Auto-Detect
-              </button>
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Personal Bio</label>
-            <textarea
-              id="profile-bio-input"
-              rows="3"
-              class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-900 outline-none focus:border-slate-400"
-              placeholder="Tell other nocturnal members a little about yourself..."
-            ></textarea>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Postcard Signature</label>
-            <textarea
-              id="profile-signature-input"
-              rows="2"
-              class="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-900 outline-none focus:border-slate-400 font-mono"
-              placeholder="e.g. Sent with stealth by Clever Raccoon 🦝"
-            ></textarea>
-          </div>
-
-          <div class="pt-2 flex justify-end">
-            <button
-              type="button"
-              onclick="app.saveProfile()"
-              id="profile-save-btn"
-              class="rounded-full bg-slate-900 hover:bg-black text-white px-6 py-2 text-xs font-bold transition shadow-sm cursor-pointer"
-            >
-              Save Profile Changes
-            </button>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

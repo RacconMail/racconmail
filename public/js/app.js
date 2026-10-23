@@ -1466,9 +1466,26 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.checkedIds.clear();
     this.updateBatchToolbar();
 
+    // Ensure in-page wall view is hidden
+    const wallPanel = document.getElementById('wall-view-panel');
+    if (wallPanel && !wallPanel.classList.contains('hidden')) {
+      wallPanel.classList.add('hidden');
+      wallPanel.style.display = 'none';
+      document.getElementById('nav-btn-wall')?.classList.remove('bg-muted', 'font-bold');
+    }
+
+    const msgPanel = document.getElementById('messages-panel');
+    const readerPanel = document.getElementById('reader-panel');
+
+    if (msgPanel) {
+      msgPanel.style.display = '';
+      msgPanel.classList.remove('hidden');
+    }
+    if (readerPanel) {
+      readerPanel.style.display = '';
+    }
+
     if (window.innerWidth < 768) {
-      const msgPanel = document.getElementById('messages-panel');
-      const readerPanel = document.getElementById('reader-panel');
       msgPanel?.classList.remove('hidden');
       readerPanel?.classList.add('hidden');
       readerPanel?.classList.remove('flex');
@@ -3452,10 +3469,31 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     input.value = 'Bucharest, Romania';
   },
 
-  openProfileModal(tab = 'wall') {
+  navToWall(tab = 'wall') {
     this.closeAccountDropdown();
-    const modal = document.getElementById('profile-modal');
-    if (!modal) return;
+    this.closeMobileSidebar();
+
+    const wallPanel = document.getElementById('wall-view-panel');
+    const msgPanel = document.getElementById('messages-panel');
+    const readerPanel = document.getElementById('reader-panel');
+
+    if (msgPanel) msgPanel.style.display = 'none';
+    if (readerPanel) {
+      readerPanel.style.display = 'none';
+      readerPanel.classList.remove('flex');
+    }
+    if (wallPanel) {
+      wallPanel.classList.remove('hidden');
+      wallPanel.style.display = 'flex';
+      wallPanel.scrollTo(0, 0);
+    }
+
+    // Highlight sidebar Wall button
+    document.querySelectorAll('.nav-folder-btn').forEach(b => b.classList.remove('bg-muted', 'font-bold'));
+    const navBtn = document.getElementById('nav-btn-wall');
+    if (navBtn) navBtn.classList.add('bg-muted', 'font-bold');
+
+    // Populate user profile info in wall header
     if (this.currentUser) {
       const avatar = this.currentUser.avatar || '/raccoon-logo.png';
       const cover = this.currentUser.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
@@ -3499,13 +3537,52 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       if (wallCompAv) wallCompAv.src = avatar;
     }
 
-    modal.classList.remove('hidden');
     this.switchProfileTab(tab);
-    if (window.lucide) lucide.createIcons();
+    this.loadWallPosts();
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  backToInboxFromWall() {
+    const wallPanel = document.getElementById('wall-view-panel');
+    const msgPanel = document.getElementById('messages-panel');
+    const readerPanel = document.getElementById('reader-panel');
+
+    if (wallPanel) {
+      wallPanel.classList.add('hidden');
+      wallPanel.style.display = 'none';
+    }
+    if (msgPanel) {
+      msgPanel.style.display = '';
+      msgPanel.classList.remove('hidden');
+    }
+    if (readerPanel) {
+      readerPanel.style.display = '';
+      if (window.innerWidth >= 768) {
+        readerPanel.classList.add('flex');
+      }
+    }
+
+    // Unhighlight sidebar Wall button
+    const navBtn = document.getElementById('nav-btn-wall');
+    if (navBtn) navBtn.classList.remove('bg-muted', 'font-bold');
+
+    // Highlight current folder
+    const curFolder = this.currentFolder || 'Inbox';
+    this.highlightCurrentFolder(curFolder);
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  openProfileModal(tab = 'wall') {
+    return this.navToWall(tab);
   },
 
   closeProfileModal() {
-    document.getElementById('profile-modal')?.classList.add('hidden');
+    return this.backToInboxFromWall();
   },
 
   closeAccountDropdown() {
@@ -3513,7 +3590,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   switchProfileTab(tab = 'wall') {
-    const tabs = ['wall', 'photos', 'info'];
+    const tabs = ['wall', 'timeline', 'photos', 'info'];
     tabs.forEach(t => {
       const el = document.getElementById(`profile-tab-${t}`);
       const btn = document.getElementById(`profile-tab-btn-${t}`);
@@ -3527,10 +3604,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }
     });
 
-    if (tab === 'wall') {
-      this.loadWallPosts();
+    if (tab === 'timeline') {
+      this.renderTimeline(this.currentWallPosts);
+    } else if (tab === 'wall') {
+      this.renderWallPosts(this.currentWallPosts);
     }
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
   },
 
   // Wall State & Methods
