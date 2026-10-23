@@ -202,18 +202,17 @@ if (empty($_SESSION['current_user_id'])) {
       </span>
     </div>
 
-    <!-- Global Search Bar with Integrated Search Loop Button (Neon Flower Minimalist) -->
-    <div class="hidden md:block flex-1 min-w-0 max-w-2xl mx-3 lg:mx-6 relative" id="global-search-container">
-      <div class="relative flex items-center rounded-full border border-sky-500/25 bg-[#090F1F] shadow-2xs hover:border-sky-500/40 focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/20 transition overflow-hidden">
-        <!-- Advanced Search Filter Dropdown Toggle Button on Left -->
+    <!-- Minimalist Compact Search Bar (Desktop Only, Small & Well-Fitted) -->
+    <div class="hidden md:block flex-1 min-w-0 max-w-sm lg:max-w-md mx-3 lg:mx-5 relative" id="global-search-container">
+      <div class="relative flex items-center rounded-full border border-sky-500/20 bg-[#090F1F]/90 shadow-2xs hover:border-sky-500/40 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-500/30 transition h-9 px-3">
+        <!-- Integrated Left Search Loop Icon -->
         <button
           type="button"
-          onclick="app.toggleAdvancedSearchDropdown()"
-          class="pl-3.5 pr-2 py-2 text-sky-400 hover:text-white transition cursor-pointer flex items-center gap-1 shrink-0"
-          title="Search options & filters"
+          onclick="app.triggerSearchSubmit()"
+          class="text-sky-400 hover:text-sky-300 transition cursor-pointer flex items-center shrink-0 pr-2"
+          title="Search"
         >
-          <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
-          <i data-lucide="chevron-down" class="h-3 w-3"></i>
+          <i data-lucide="search" class="h-3.5 w-3.5 stroke-[2.2]"></i>
         </button>
 
         <!-- Search Input Field -->
@@ -221,8 +220,8 @@ if (empty($_SESSION['current_user_id'])) {
           id="global-search"
           type="text"
           autocomplete="off"
-          placeholder="Find messages, documents, photos or people..."
-          class="flex-1 min-w-0 bg-transparent py-2 px-1 text-xs sm:text-sm outline-none text-white placeholder:text-slate-400"
+          placeholder="Search mail..."
+          class="flex-1 min-w-0 bg-transparent py-1 text-xs outline-none text-white placeholder:text-slate-400 font-normal"
           onclick="app.onSearchClick()"
           oninput="app.onSearchInput(this.value)"
           onfocus="app.onSearchClick()"
@@ -233,27 +232,27 @@ if (empty($_SESSION['current_user_id'])) {
         <button
           id="search-clear-btn"
           type="button"
-          class="hidden px-2 text-slate-400 hover:text-white text-xs cursor-pointer shrink-0"
+          class="hidden px-1.5 text-slate-400 hover:text-white text-xs cursor-pointer shrink-0"
           onclick="app.clearSearch()"
           title="Clear search"
         >
-          <i data-lucide="x" class="h-4 w-4"></i>
+          <i data-lucide="x" class="h-3.5 w-3.5"></i>
+        </button>
+
+        <!-- Advanced Search Filter Dropdown Toggle Button -->
+        <button
+          type="button"
+          onclick="app.toggleAdvancedSearchDropdown()"
+          class="p-1 text-slate-400 hover:text-sky-300 transition cursor-pointer flex items-center shrink-0"
+          title="Search filters"
+        >
+          <i data-lucide="sliders-horizontal" class="h-3.5 w-3.5"></i>
         </button>
 
         <!-- Keyboard Shortcut Badge (Ctrl+K) -->
-        <span class="hidden lg:inline-flex items-center text-[10px] font-mono font-bold text-sky-300/80 bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.5 rounded mr-2 pointer-events-none shrink-0">
+        <span class="hidden lg:inline-flex items-center text-[9px] font-mono text-sky-300/80 bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.5 rounded ml-1 pointer-events-none shrink-0">
           ⌘K
         </span>
-
-        <!-- Dedicated Search Loop Action Button -->
-        <button
-          type="button"
-          onclick="app.triggerSearchSubmit()"
-          class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-[0_0_12px_rgba(14,165,233,0.35)] border-l border-sky-600/40"
-          title="Search"
-        >
-          <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.5]"></i>
-        </button>
       </div>
 
       <!-- Advanced Search Filters Dropdown -->
@@ -294,8 +293,8 @@ if (empty($_SESSION['current_user_id'])) {
             <span>Has attachment</span>
           </label>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1.5 rounded-full bg-[#0D152A] hover:bg-[#14203D] text-slate-300 border border-sky-500/20 font-semibold cursor-pointer transition">Reset</button>
-            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)] transition">Search</button>
+            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1 rounded-full bg-[#0D152A] hover:bg-[#14203D] text-slate-300 border border-sky-500/20 font-semibold cursor-pointer transition">Reset</button>
+            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)] transition">Search</button>
           </div>
         </div>
       </div>
@@ -308,15 +307,6 @@ if (empty($_SESSION['current_user_id'])) {
 
     <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- Mobile Quick Search Loop Button -->
-      <button
-        onclick="app.focusMobileSearch()"
-        class="md:hidden p-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white transition cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)]"
-        title="Search Mail"
-      >
-        <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.2]"></i>
-      </button>
-
       <!-- World Stories Button (Desktop/Tablet) -->
       <button
         onclick="app.openStoriesModal()"
@@ -656,11 +646,11 @@ if (empty($_SESSION['current_user_id'])) {
             Fast, private and beautifully simple — cleverly masked from spam, on web and smartphone.
           </p>
           <div class="mt-6 flex items-center gap-3">
-            <button onclick="app.openCompose()" class="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground shadow-sm hover:bg-black transition">
+            <button onclick="app.openCompose()" class="rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 px-5 py-2 text-xs font-semibold text-white shadow-[0_0_12px_rgba(14,165,233,0.35)] transition cursor-pointer">
               Write something clever
             </button>
-            <button onclick="app.openStoriesModal()" class="rounded-full border border-border bg-card px-4 py-2 text-xs font-medium hover:bg-muted transition flex items-center gap-1.5 cursor-pointer">
-              <span>📚</span>
+            <button onclick="app.openStoriesModal()" class="rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] text-sky-200 px-4 py-2 text-xs font-medium transition flex items-center gap-1.5 cursor-pointer">
+              <i data-lucide="book-open" class="h-3.5 w-3.5 text-sky-400"></i>
               <span>Explore World Stories</span>
             </button>
           </div>
@@ -669,16 +659,13 @@ if (empty($_SESSION['current_user_id'])) {
     </main>
   </div>
 
-  <!-- FLOATING CAPSULE BOTTOM BAR (Search Loop, List Menu, Compose Pencil) -->
-  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 backdrop-blur-md text-white px-7 py-3 rounded-full shadow-2xl flex items-center gap-8 border border-slate-800 safe-area-bottom select-none">
-    <button onclick="app.focusMobileSearch()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="Search mail (Loop)">
-      <i data-lucide="search" class="h-5.5 w-5.5 text-white"></i>
+  <!-- FLOATING CAPSULE BOTTOM BAR (List Menu & Compose Pencil Only - No Search on Mobile) -->
+  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#080D1C]/95 backdrop-blur-md text-white px-8 py-3 rounded-full shadow-2xl flex items-center gap-10 border border-sky-500/30 safe-area-bottom select-none">
+    <button onclick="app.toggleMobileSidebar()" class="text-sky-300 hover:text-white transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="All Folders (List)">
+      <i data-lucide="list" class="h-6 w-6 text-sky-400"></i>
     </button>
-    <button onclick="app.toggleMobileSidebar()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="All Folders (List)">
-      <i data-lucide="list" class="h-6 w-6 text-white"></i>
-    </button>
-    <button onclick="app.openCompose()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="Compose New Message (Pencil)">
-      <i data-lucide="pencil" class="h-5.5 w-5.5 text-white"></i>
+    <button onclick="app.openCompose()" class="text-sky-300 hover:text-white transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="Compose New Message (Pencil)">
+      <i data-lucide="pencil" class="h-5.5 w-5.5 text-sky-400"></i>
     </button>
   </nav>
 
