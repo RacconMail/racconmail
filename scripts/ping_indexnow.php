@@ -1,7 +1,7 @@
 <?php
 /**
  * 🦝 Raccon Mail - Search Engine Instant Submission (IndexNow)
- * Submits all active public pages and hubs to Bing, Yandex, Yahoo, Seznam & DuckDuckGo
+ * Submits all active public pages and hubs to Bing, Yandex, Seznam & DuckDuckGo
  */
 declare(strict_types=1);
 

@@ -886,7 +886,7 @@ h3, .heading-card, [data-heading="card"] {
 .btn-cyber-teal,
 .btn-action-cyber,
 .btn-action-primary,
-.btn-green-yahoo,
+.btn-green-action,
 .btn-turquoise-glow,
 .btn-hero-primary,
 #reg-submit-btn,
@@ -928,7 +928,7 @@ h3, .heading-card, [data-heading="card"] {
 .btn-cyber-teal:hover,
 .btn-action-cyber:hover,
 .btn-action-primary:hover,
-.btn-green-yahoo:hover,
+.btn-green-action:hover,
 .btn-turquoise-glow:hover,
 .btn-hero-primary:hover,
 #reg-submit-btn:hover,
@@ -1262,7 +1262,7 @@ header img[src*="raccoon-logo"]:hover {
 }
 
 /* =======================================================
-   YAHOO MAIL MOBILE INBOX, SWIPE GESTURES & FLOATING CAPSULE
+   MOBILE INBOX, SWIPE GESTURES & FLOATING CAPSULE
    ======================================================= */
 .msg-swipe-wrapper {
   position: relative;

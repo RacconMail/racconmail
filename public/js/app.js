@@ -1270,8 +1270,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       const badgeInitialEl = document.getElementById('active-user-badge-initial');
       if (badgeInitialEl) {
-        const initial = (data.name ? data.name[0] : (data.email ? data.email[0] : 'Y')).toUpperCase();
-        badgeInitialEl.textContent = initial + '+';
+        const initial = (data.name ? data.name[0] : (data.email ? data.email[0] : 'R')).toUpperCase();
+        badgeInitialEl.textContent = initial;
       }
 
       const dropAvEl = document.getElementById('dropdown-user-avatar');
@@ -1629,19 +1629,66 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   batchSelectionMode: false,
   isAdDismissed: false,
 
+  isOfferEmail(msg) {
+    if (!msg) return false;
+    const text = `${msg.subject || ''} ${msg.sender_name || ''} ${msg.sender_email || ''}`;
+    const offerRegex = /offer|deal|discount|sale|promo|order|shipping|delivery|coupon|voucher|lei|aeroterma|market|price|save|\$|€|£|store|shop|buy|cart|bill|invoice|catalog|black friday|superdeal/i;
+    return offerRegex.test(text);
+  },
+
+  isOtherEmail(msg) {
+    if (!msg) return false;
+    if (this.isOfferEmail(msg)) return false;
+    const text = `${msg.subject || ''} ${msg.sender_name || ''} ${msg.sender_email || ''}`;
+    const otherRegex = /update|digest|notification|terms|policy|security|notice|linkedin|experian|alert|system|confirm|verify|no-reply|noreply|newsletter|weekly|monthly|statement/i;
+    return otherRegex.test(text);
+  },
+
+  getFilteredMessagesList() {
+    const list = this.messages || [];
+    if (this.currentCategoryTab === 'offers') {
+      return list.filter(m => this.isOfferEmail(m));
+    }
+    if (this.currentCategoryTab === 'other') {
+      return list.filter(m => this.isOtherEmail(m));
+    }
+    if (this.currentCategoryTab === 'primary') {
+      return list.filter(m => !this.isOfferEmail(m) && !this.isOtherEmail(m));
+    }
+    // 'all'
+    return list;
+  },
+
+  updateCategoryBadges() {
+    const list = this.messages || [];
+    const offersCount = list.filter(m => this.isOfferEmail(m)).length;
+    const badge = document.getElementById('offers-count-badge');
+    if (badge) {
+      badge.textContent = offersCount;
+      if (offersCount > 0) {
+        badge.classList.remove('hidden');
+        badge.style.display = 'inline-block';
+      } else {
+        badge.classList.add('hidden');
+        badge.style.display = 'none';
+      }
+    }
+  },
+
   setCategoryTab(tab) {
     this.currentCategoryTab = tab;
     ['all', 'primary', 'offers', 'other'].forEach(t => {
       const btn = document.getElementById(`tab-cat-${t}`);
       if (btn) {
         if (t === tab) {
-          btn.className = 'cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer';
+          btn.className = 'cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1';
         } else {
-          btn.className = 'cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer';
+          btn.className = 'cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1';
         }
       }
     });
     this.renderMessagesList();
+    this.updateBatchToolbar();
   },
 
   toggleBatchSelectMode() {
@@ -1654,16 +1701,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         : 'text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0';
     }
 
-    const batchToolbar = document.getElementById('batch-toolbar');
-    if (batchToolbar) {
-      if (this.batchSelectionMode) {
-        batchToolbar.classList.remove('hidden');
-      } else {
-        this.checkedIds.clear();
-        this.updateBatchToolbar();
-      }
+    if (!this.batchSelectionMode) {
+      this.checkedIds.clear();
     }
-
+    this.updateBatchToolbar();
     this.renderMessagesList();
   },
 
@@ -1722,35 +1763,33 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const container = document.getElementById('messages-list');
     if (!container) return;
 
-    let list = this.messages || [];
-
-    // Filter by Yahoo Mail Category Tabs
-    if (this.currentCategoryTab === 'offers') {
-      const offerRegex = /offer|deal|discount|sale|promo|order|shipping|delivery|coupon|voucher|lei|aeroterma|market|price|save|\$|€|£/i;
-      const offersList = list.filter(m => offerRegex.test(m.subject || '') || offerRegex.test(m.sender_name || ''));
-      if (offersList.length > 0) list = offersList;
-    } else if (this.currentCategoryTab === 'other') {
-      const otherRegex = /update|digest|notification|terms|policy|security|notice|linkedin|experian|alert/i;
-      const otherList = list.filter(m => otherRegex.test(m.subject || '') || otherRegex.test(m.sender_name || ''));
-      if (otherList.length > 0) list = otherList;
-    } else if (this.currentCategoryTab === 'primary') {
-      const promoRegex = /offer|deal|discount|sale|coupon|voucher|aeroterma/i;
-      const primaryList = list.filter(m => !promoRegex.test(m.subject || ''));
-      if (primaryList.length > 0) list = primaryList;
-    }
+    this.updateCategoryBadges();
+    const list = this.getFilteredMessagesList();
 
     if (list.length === 0) {
+      let emptyTitle = 'No emails found';
+      let emptySubtitle = "This mailbox is clean as a raccoon's washed berries.";
+      if (this.currentCategoryTab === 'offers') {
+        emptyTitle = 'No offers right now';
+        emptySubtitle = 'Promotional emails and special deals will appear here.';
+      } else if (this.currentCategoryTab === 'other') {
+        emptyTitle = 'No updates or notices';
+        emptySubtitle = 'Social updates, newsletters and notifications will appear here.';
+      } else if (this.currentCategoryTab === 'primary') {
+        emptyTitle = 'No primary emails';
+        emptySubtitle = 'Important and personal messages will appear here.';
+      }
       container.innerHTML = `
         <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64">
           <img src="/raccoon-logo.png" class="h-16 w-16 opacity-40 mb-3 object-contain" />
-          <p class="text-sm font-semibold">No emails found</p>
-          <p class="text-xs text-muted-foreground mt-1">This mailbox is clean as a raccoon's washed berries.</p>
+          <p class="text-sm font-semibold">${emptyTitle}</p>
+          <p class="text-xs text-muted-foreground mt-1">${emptySubtitle}</p>
         </div>
       `;
       return;
     }
 
-    // Top Sponsored Ad Row (identical to Yahoo Mail)
+    // Top Sponsored Ad Row (High-converting native sponsor card)
     const adHtml = (!this.isAdDismissed && (this.currentFolder === 'Inbox' || !this.currentFolder)) ? `
       <div id="inbox-sponsored-ad" class="border-b border-slate-100 bg-white hover:bg-slate-50 px-3.5 py-3 flex items-center justify-between gap-3 cursor-pointer transition select-none">
         <div class="flex items-center gap-3 min-w-0 flex-1" onclick="app.openSponsoredAd()">
@@ -1919,8 +1958,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     let isHorizontal = null;
 
     const onStart = (clientX, clientY, target) => {
-      // Don't swipe if clicking buttons, checkboxes or inputs
-      if (target.closest('button, input, a')) return;
+      // Don't swipe if in batch selection mode or clicking buttons, checkboxes or inputs
+      if (app.batchSelectionMode || target.closest('button, input, a, .batch-checkbox-wrap')) return;
 
       const card = target.closest('.swipe-content');
       if (!card) return;
@@ -2052,6 +2091,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   onEmailItemClick(event, msgId) {
+    if (this.batchSelectionMode) {
+      const isChecked = this.checkedIds.has(msgId);
+      this.toggleMessageCheck(msgId, !isChecked);
+      const wrapper = document.querySelector(`.msg-swipe-wrapper[data-msg-id="${msgId}"]`);
+      if (wrapper) {
+        const input = wrapper.querySelector('.batch-checkbox-wrap input[type="checkbox"]');
+        if (input) input.checked = !isChecked;
+      }
+      return;
+    }
     const card = event.currentTarget;
     if (card && card._isSwipedOpen) {
       card.style.transition = 'transform 0.2s ease-out';
@@ -2545,10 +2594,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   toggleSelectAll(checked) {
+    const visibleList = this.getFilteredMessagesList ? this.getFilteredMessagesList() : (this.messages || []);
     if (checked) {
-      this.messages.forEach(m => this.checkedIds.add(m.id));
+      visibleList.forEach(m => this.checkedIds.add(m.id));
     } else {
-      this.checkedIds.clear();
+      visibleList.forEach(m => this.checkedIds.delete(m.id));
     }
     this.renderMessagesList();
     this.updateBatchToolbar();
@@ -2557,14 +2607,18 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   updateBatchToolbar() {
     const toolbar = document.getElementById('batch-toolbar');
     const label = document.getElementById('selected-count-label');
+    const selectAll = document.getElementById('select-all-checkbox');
     const count = this.checkedIds.size;
 
-    if (count > 0) {
-      toolbar.classList.remove('hidden');
-      label.textContent = `${count} selected`;
+    if (this.batchSelectionMode || count > 0) {
+      if (toolbar) toolbar.classList.remove('hidden');
+      if (label) label.textContent = `${count} selected`;
+      if (selectAll) {
+        const visibleList = this.getFilteredMessagesList ? this.getFilteredMessagesList() : (this.messages || []);
+        selectAll.checked = visibleList.length > 0 && visibleList.every(m => this.checkedIds.has(m.id));
+      }
     } else {
-      toolbar.classList.add('hidden');
-      const selectAll = document.getElementById('select-all-checkbox');
+      if (toolbar) toolbar.classList.add('hidden');
       if (selectAll) selectAll.checked = false;
     }
   },
@@ -2581,10 +2635,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       });
 
       this.checkedIds.clear();
+      this.batchSelectionMode = false;
+      const btn = document.getElementById('btn-toggle-select');
+      if (btn) {
+        btn.textContent = 'Select';
+        btn.className = 'text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0';
+      }
       this.updateBatchToolbar();
       await this.loadMessages();
       await this.fetchFolders();
-      this.showToast(`Updated ${ids.length} messages`);
+      this.showToast(`Updated ${ids.length} message${ids.length > 1 ? 's' : ''}`);
     } catch (err) {
       console.error('Batch action failed:', err);
     }

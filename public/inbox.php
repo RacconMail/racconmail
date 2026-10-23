@@ -175,7 +175,7 @@ if (empty($_SESSION['current_user_id'])) {
   <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-xs z-20">
     <!-- Brand / Mascot / Hamburger (Fixed stationary logo so it NEVER overlaps menus or buttons) -->
     <div class="flex items-center gap-2 md:gap-3 shrink-0">
-      <!-- Mobile Sidebar Toggle (Yahoo Mail Hamburger) -->
+      <!-- Mobile Sidebar Toggle -->
       <button
         onclick="app.toggleMobileSidebar()"
         class="md:hidden p-1.5 rounded-xl hover:bg-muted text-foreground transition cursor-pointer"
@@ -195,7 +195,7 @@ if (empty($_SESSION['current_user_id'])) {
       </span>
     </div>
 
-    <!-- Mobile Center: Yahoo Mail "Inbox" + Email Address -->
+    <!-- Mobile Center: Folder Title + Email Address -->
     <div class="md:hidden flex flex-col items-center justify-center flex-1 min-w-0 px-1 text-center">
       <h1 class="font-display font-extrabold text-base text-slate-900 tracking-tight leading-none">Inbox</h1>
       <span id="mobile-header-user-email" class="text-[11px] text-slate-500 font-medium truncate max-w-[200px] mt-0.5">me@racconmail.eu</span>
@@ -232,7 +232,7 @@ if (empty($_SESSION['current_user_id'])) {
 
     <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- Mobile Lightning Quick Search (Yahoo Mail Style) -->
+      <!-- Mobile Lightning Quick Search (Modern Instant Filter) -->
       <button
         onclick="app.openCommandPalette()"
         class="md:hidden p-1.5 text-purple-600 hover:bg-purple-50 rounded-full transition cursor-pointer"
@@ -252,7 +252,7 @@ if (empty($_SESSION['current_user_id'])) {
         <span class="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
       </button>
 
-      <!-- Account Switcher Dropdown (Purple Yahoo-style circle badge on mobile) -->
+      <!-- Account Switcher Dropdown (Purple monogram circle badge on mobile) -->
       <div class="relative">
         <button
           onclick="app.toggleAccountDropdown()"
@@ -260,7 +260,7 @@ if (empty($_SESSION['current_user_id'])) {
         >
           <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline">Clever Raccoon</span>
           <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-purple-700">
-            <span id="active-user-badge-initial">Y+</span>
+            <span id="active-user-badge-initial">R</span>
           </div>
           <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1 hidden md:inline"></i>
         </button>
@@ -523,20 +523,20 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- Yahoo Mail Style Category Tabs & Select Button (Mobile & Desktop) -->
+      <!-- Category Tabs & Select Button (Mobile & Desktop) -->
       <div class="px-3.5 border-b border-border bg-card shrink-0 flex items-center justify-between overflow-x-auto no-scrollbar">
         <div class="flex items-center gap-5 text-xs font-semibold py-1">
-          <button onclick="app.setCategoryTab('all')" id="tab-cat-all" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer">
+          <button onclick="app.setCategoryTab('all')" id="tab-cat-all" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
             All
           </button>
-          <button onclick="app.setCategoryTab('primary')" id="tab-cat-primary" class="cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer">
+          <button onclick="app.setCategoryTab('primary')" id="tab-cat-primary" class="cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
             Primary
           </button>
           <button onclick="app.setCategoryTab('offers')" id="tab-cat-offers" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
             <span>Offers</span>
-            <span class="text-[10px] text-slate-500 font-bold bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded-full">7</span>
+            <span id="offers-count-badge" class="hidden text-[10px] text-slate-500 font-bold bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded-full">0</span>
           </button>
-          <button onclick="app.setCategoryTab('other')" id="tab-cat-other" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer">
+          <button onclick="app.setCategoryTab('other')" id="tab-cat-other" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
             Other
           </button>
         </div>
@@ -605,7 +605,7 @@ if (empty($_SESSION['current_user_id'])) {
     </main>
   </div>
 
-  <!-- FLOATING YAHOO-STYLE CAPSULE BOTTOM BAR (Search Loop, List Menu, Compose Pencil) -->
+  <!-- FLOATING CAPSULE BOTTOM BAR (Search Loop, List Menu, Compose Pencil) -->
   <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 backdrop-blur-md text-white px-7 py-3 rounded-full shadow-2xl flex items-center gap-8 border border-slate-800 safe-area-bottom select-none">
     <button onclick="app.focusMobileSearch()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="Search mail (Loop)">
       <i data-lucide="search" class="h-5.5 w-5.5 text-white"></i>
