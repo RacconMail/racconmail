@@ -93,6 +93,58 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                 $db->exec('UPDATE messages SET is_spam = 0 WHERE is_spam = 1 AND LOWER(sender_email) IN (SELECT LOWER(email) FROM users)');
             } catch (Throwable $e) {}
 
+            // Profile extra columns & Wall Tables
+            try { $db->exec("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''"); } catch (Throwable $e) {}
+            try { $db->exec("ALTER TABLE users ADD COLUMN location TEXT DEFAULT ''"); } catch (Throwable $e) {}
+
+            try {
+                $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_posts (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    author_id TEXT NOT NULL,
+                    author_name TEXT NOT NULL,
+                    author_avatar TEXT,
+                    post_type TEXT DEFAULT 'status',
+                    content TEXT NOT NULL,
+                    image_url TEXT DEFAULT '',
+                    location TEXT DEFAULT '',
+                    poll_question TEXT DEFAULT '',
+                    poll_options TEXT DEFAULT '[]',
+                    likes_count INTEGER DEFAULT 0,
+                    comments_count INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_user_created ON profile_wall_posts(user_id, created_at)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_votes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    post_id TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    option_id INTEGER NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(post_id, user_id)
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_votes ON profile_wall_votes(post_id, option_id)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_likes (
+                    post_id TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (post_id, user_id)
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_comments (
+                    id TEXT PRIMARY KEY,
+                    post_id TEXT NOT NULL,
+                    author_id TEXT NOT NULL,
+                    author_name TEXT NOT NULL,
+                    author_avatar TEXT,
+                    content TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_comments_post ON profile_wall_comments(post_id, created_at)");
+            } catch (Throwable $e) {}
+
             // Forum Tables
             try {
                 $db->exec("CREATE TABLE IF NOT EXISTS forum_posts (
@@ -749,7 +801,7 @@ if ($route === 'auth/me' && $method === 'GET') {
         echo json_encode(['loggedIn' => false]);
         exit;
     }
-    $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, theme, is_admin, is_banned, ban_reason FROM users WHERE id = ?');
+    $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, bio, location, theme, is_admin, is_banned, ban_reason, created_at FROM users WHERE id = ?');
     $stmt->execute([$_SESSION['current_user_id']]);
     $user = $stmt->fetch();
     if ($user) {
@@ -1257,7 +1309,7 @@ try {
     // 1. GET/POST /api/user
     if ($route === 'user') {
         if ($method === 'GET') {
-            $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, signature, theme, created_at, is_admin FROM users WHERE id = ?');
+            $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, bio, location, signature, theme, created_at, is_admin FROM users WHERE id = ?');
             $stmt->execute([$currentUserId]);
             $user = $stmt->fetch();
             $stmtSettings = $db->prepare('SELECT * FROM mail_settings WHERE user_id = ?');
@@ -1271,16 +1323,18 @@ try {
             $avatar = $input['avatar'] ?? null;
             $cover = $input['cover_photo'] ?? null;
             $theme = $input['theme'] ?? null;
+            $bio = $input['bio'] ?? null;
+            $location = $input['location'] ?? null;
             $sound = $input['sound_enabled'] ?? 1;
 
-            if ($name !== null || $sig !== null || $avatar !== null || $cover !== null || $theme !== null) {
-                $stmt = $db->prepare('UPDATE users SET name = COALESCE(?, name), signature = COALESCE(?, signature), avatar = COALESCE(?, avatar), cover_photo = COALESCE(?, cover_photo), theme = COALESCE(?, theme) WHERE id = ?');
-                $stmt->execute([$name, $sig, $avatar, $cover, $theme, $currentUserId]);
+            if ($name !== null || $sig !== null || $avatar !== null || $cover !== null || $theme !== null || $bio !== null || $location !== null) {
+                $stmt = $db->prepare('UPDATE users SET name = COALESCE(?, name), signature = COALESCE(?, signature), avatar = COALESCE(?, avatar), cover_photo = COALESCE(?, cover_photo), theme = COALESCE(?, theme), bio = COALESCE(?, bio), location = COALESCE(?, location) WHERE id = ?');
+                $stmt->execute([$name, $sig, $avatar, $cover, $theme, $bio, $location, $currentUserId]);
             }
             $stmt = $db->prepare('INSERT INTO mail_settings (user_id, sound_enabled) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET sound_enabled = excluded.sound_enabled');
             $stmt->execute([$currentUserId, $sound]);
 
-            $stmtUser = $db->prepare('SELECT id, email, name, avatar, cover_photo, signature, theme, created_at, is_admin FROM users WHERE id = ?');
+            $stmtUser = $db->prepare('SELECT id, email, name, avatar, cover_photo, bio, location, signature, theme, created_at, is_admin FROM users WHERE id = ?');
             $stmtUser->execute([$currentUserId]);
             $updatedUser = $stmtUser->fetch();
             echo json_encode(['success' => true, 'user' => $updatedUser]);
@@ -3115,6 +3169,362 @@ try {
             'location' => $item['location'],
             'message' => 'In-person purchase intent confirmed! The seller\'s contact is now available.'
         ]);
+        exit;
+    }
+
+    // ==========================================
+    // PROFILE & FACEBOOK-LIKE WALL API ENDPOINTS
+    // ==========================================
+
+    // GET /api/wall/posts?user_id=...
+    if ($route === 'wall/posts' && $method === 'GET') {
+        $targetUserId = trim($_GET['user_id'] ?? $currentUserId ?? '');
+        if (!$targetUserId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'User ID is required.']);
+            exit;
+        }
+
+        $stmt = $db->prepare('
+            SELECT p.*, 
+                   (SELECT COUNT(*) FROM profile_wall_likes l WHERE l.post_id = p.id AND l.user_id = ?) as has_liked,
+                   (SELECT option_id FROM profile_wall_votes v WHERE v.post_id = p.id AND v.user_id = ?) as user_voted_option
+            FROM profile_wall_posts p
+            WHERE p.user_id = ?
+            ORDER BY p.created_at DESC
+            LIMIT 50
+        ');
+        $stmt->execute([$currentUserId ?: '', $currentUserId ?: '', $targetUserId]);
+        $posts = $stmt->fetchAll();
+
+        // For each post with poll_options, calculate vote tallies
+        foreach ($posts as &$post) {
+            $post['has_liked'] = (bool)$post['has_liked'];
+            if ($post['post_type'] === 'poll' && !empty($post['poll_options'])) {
+                $options = json_decode($post['poll_options'], true) ?: [];
+                $stmtVotes = $db->prepare('SELECT option_id, COUNT(*) as cnt FROM profile_wall_votes WHERE post_id = ? GROUP BY option_id');
+                $stmtVotes->execute([$post['id']]);
+                $voteRows = $stmtVotes->fetchAll();
+                $voteMap = [];
+                $totalVotes = 0;
+                foreach ($voteRows as $vr) {
+                    $voteMap[$vr['option_id']] = (int)$vr['cnt'];
+                    $totalVotes += (int)$vr['cnt'];
+                }
+                foreach ($options as &$opt) {
+                    $cnt = $voteMap[$opt['id']] ?? 0;
+                    $opt['votes'] = $cnt;
+                    $opt['percentage'] = $totalVotes > 0 ? round(($cnt / $totalVotes) * 100) : 0;
+                }
+                $post['poll_options_data'] = $options;
+                $post['total_votes'] = $totalVotes;
+            }
+        }
+        unset($post);
+
+        echo json_encode(['posts' => $posts]);
+        exit;
+    }
+
+    // POST /api/wall/posts (Create wall post: status, photo, question, poll)
+    if ($route === 'wall/posts' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'You must be signed in to post on the wall.']);
+            exit;
+        }
+
+        $targetUserId = trim($input['user_id'] ?? $currentUserId);
+        $postType = in_array($input['post_type'] ?? '', ['status', 'photo', 'question', 'poll']) ? $input['post_type'] : 'status';
+        $content = trim($input['content'] ?? '');
+        $imageUrl = trim($input['image_url'] ?? '');
+        $location = trim($input['location'] ?? '');
+        $pollQuestion = trim($input['poll_question'] ?? '');
+        $rawOptions = $input['poll_options'] ?? [];
+
+        if ($postType === 'poll') {
+            if (!$pollQuestion && $content) {
+                $pollQuestion = $content;
+            }
+            if (!$pollQuestion) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Please provide a question for your poll.']);
+                exit;
+            }
+        } elseif (!$content && !$imageUrl) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Post content or photo cannot be empty.']);
+            exit;
+        }
+
+        $optionsList = [];
+        if ($postType === 'poll' && is_array($rawOptions)) {
+            $optId = 1;
+            foreach ($rawOptions as $optText) {
+                $trimmed = trim(is_string($optText) ? $optText : ($optText['text'] ?? ''));
+                if ($trimmed !== '') {
+                    $optionsList[] = ['id' => $optId++, 'text' => $trimmed, 'votes' => 0];
+                }
+            }
+            if (count($optionsList) < 2) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Please provide at least 2 choices for your poll.']);
+                exit;
+            }
+        }
+
+        // Fetch current user details
+        $stmtMe = $db->prepare('SELECT name, avatar FROM users WHERE id = ?');
+        $stmtMe->execute([$currentUserId]);
+        $me = $stmtMe->fetch();
+        $authorName = $me['name'] ?? 'Nocturnal Owl';
+        $authorAvatar = $me['avatar'] ?? '/raccoon-logo.png';
+
+        $postId = 'wp_' . bin2hex(random_bytes(8));
+        $pollOptionsJson = !empty($optionsList) ? json_encode($optionsList) : '[]';
+
+        $stmtIns = $db->prepare('
+            INSERT INTO profile_wall_posts (id, user_id, author_id, author_name, author_avatar, post_type, content, image_url, location, poll_question, poll_options, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime("now"))
+        ');
+        $stmtIns->execute([
+            $postId,
+            $targetUserId,
+            $currentUserId,
+            $authorName,
+            $authorAvatar,
+            $postType,
+            $content,
+            $imageUrl,
+            $location,
+            $pollQuestion,
+            $pollOptionsJson
+        ]);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Post published to wall successfully!',
+            'post' => [
+                'id' => $postId,
+                'user_id' => $targetUserId,
+                'author_id' => $currentUserId,
+                'author_name' => $authorName,
+                'author_avatar' => $authorAvatar,
+                'post_type' => $postType,
+                'content' => $content,
+                'image_url' => $imageUrl,
+                'location' => $location,
+                'poll_question' => $pollQuestion,
+                'poll_options_data' => $optionsList,
+                'total_votes' => 0,
+                'likes_count' => 0,
+                'comments_count' => 0,
+                'has_liked' => false,
+                'user_voted_option' => null,
+                'created_at' => date('Y-m-d H:i:s')
+            ]
+        ]);
+        exit;
+    }
+
+    // POST /api/wall/posts/:id/vote
+    if (preg_match('#^wall/posts/([^/]+)/vote$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'You must be signed in to vote.']);
+            exit;
+        }
+        $postId = $m[1];
+        $optionId = (int)($input['option_id'] ?? 0);
+        if (!$optionId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Option ID required.']);
+            exit;
+        }
+
+        // Verify post exists and is a poll
+        $stmtP = $db->prepare('SELECT id, poll_options FROM profile_wall_posts WHERE id = ? AND post_type = "poll"');
+        $stmtP->execute([$postId]);
+        $post = $stmtP->fetch();
+        if (!$post) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Poll not found.']);
+            exit;
+        }
+
+        // Upsert vote
+        $stmtVote = $db->prepare('
+            INSERT INTO profile_wall_votes (post_id, user_id, option_id, created_at)
+            VALUES (?, ?, ?, datetime("now"))
+            ON CONFLICT(post_id, user_id) DO UPDATE SET option_id = excluded.option_id, created_at = datetime("now")
+        ');
+        $stmtVote->execute([$postId, $currentUserId, $optionId]);
+
+        // Calculate new breakdown
+        $options = json_decode($post['poll_options'], true) ?: [];
+        $stmtVotes = $db->prepare('SELECT option_id, COUNT(*) as cnt FROM profile_wall_votes WHERE post_id = ? GROUP BY option_id');
+        $stmtVotes->execute([$postId]);
+        $voteRows = $stmtVotes->fetchAll();
+        $voteMap = [];
+        $totalVotes = 0;
+        foreach ($voteRows as $vr) {
+            $voteMap[$vr['option_id']] = (int)$vr['cnt'];
+            $totalVotes += (int)$vr['cnt'];
+        }
+        foreach ($options as &$opt) {
+            $cnt = $voteMap[$opt['id']] ?? 0;
+            $opt['votes'] = $cnt;
+            $opt['percentage'] = $totalVotes > 0 ? round(($cnt / $totalVotes) * 100) : 0;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'user_voted_option' => $optionId,
+            'total_votes' => $totalVotes,
+            'poll_options_data' => $options
+        ]);
+        exit;
+    }
+
+    // POST /api/wall/posts/:id/like
+    if (preg_match('#^wall/posts/([^/]+)/like$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'You must be signed in to like a post.']);
+            exit;
+        }
+        $postId = $m[1];
+
+        $stmtCheck = $db->prepare('SELECT 1 FROM profile_wall_likes WHERE post_id = ? AND user_id = ?');
+        $stmtCheck->execute([$postId, $currentUserId]);
+        $hasLiked = (bool)$stmtCheck->fetchColumn();
+
+        if ($hasLiked) {
+            $db->prepare('DELETE FROM profile_wall_likes WHERE post_id = ? AND user_id = ?')->execute([$postId, $currentUserId]);
+            $db->prepare('UPDATE profile_wall_posts SET likes_count = MAX(0, likes_count - 1) WHERE id = ?')->execute([$postId]);
+            $newLiked = false;
+        } else {
+            $db->prepare('INSERT OR IGNORE INTO profile_wall_likes (post_id, user_id, created_at) VALUES (?, ?, datetime("now"))')->execute([$postId, $currentUserId]);
+            $db->prepare('UPDATE profile_wall_posts SET likes_count = likes_count + 1 WHERE id = ?')->execute([$postId]);
+            $newLiked = true;
+        }
+
+        $stmtCnt = $db->prepare('SELECT likes_count FROM profile_wall_posts WHERE id = ?');
+        $stmtCnt->execute([$postId]);
+        $cnt = (int)$stmtCnt->fetchColumn();
+
+        echo json_encode(['success' => true, 'has_liked' => $newLiked, 'likes_count' => $cnt]);
+        exit;
+    }
+
+    // GET /api/wall/posts/:id/comments
+    if (preg_match('#^wall/posts/([^/]+)/comments$#', $route, $m) && $method === 'GET') {
+        $postId = $m[1];
+        $stmt = $db->prepare('SELECT * FROM profile_wall_comments WHERE post_id = ? ORDER BY created_at ASC');
+        $stmt->execute([$postId]);
+        echo json_encode(['comments' => $stmt->fetchAll()]);
+        exit;
+    }
+
+    // POST /api/wall/posts/:id/comments
+    if (preg_match('#^wall/posts/([^/]+)/comments$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'You must be signed in to comment.']);
+            exit;
+        }
+        $postId = $m[1];
+        $content = trim($input['content'] ?? '');
+        if (!$content) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Comment cannot be empty.']);
+            exit;
+        }
+
+        $stmtMe = $db->prepare('SELECT name, avatar FROM users WHERE id = ?');
+        $stmtMe->execute([$currentUserId]);
+        $me = $stmtMe->fetch();
+        $authorName = $me['name'] ?? 'Nocturnal Owl';
+        $authorAvatar = $me['avatar'] ?? '/raccoon-logo.png';
+
+        $commentId = 'wc_' . bin2hex(random_bytes(6));
+        $stmtIns = $db->prepare('
+            INSERT INTO profile_wall_comments (id, post_id, author_id, author_name, author_avatar, content, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, datetime("now"))
+        ');
+        $stmtIns->execute([$commentId, $postId, $currentUserId, $authorName, $authorAvatar, $content]);
+        $db->prepare('UPDATE profile_wall_posts SET comments_count = comments_count + 1 WHERE id = ?')->execute([$postId]);
+
+        echo json_encode([
+            'success' => true,
+            'comment' => [
+                'id' => $commentId,
+                'post_id' => $postId,
+                'author_id' => $currentUserId,
+                'author_name' => $authorName,
+                'author_avatar' => $authorAvatar,
+                'content' => $content,
+                'created_at' => date('Y-m-d H:i:s')
+            ]
+        ]);
+        exit;
+    }
+
+    // DELETE /api/wall/posts/:id
+    if (preg_match('#^wall/posts/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in required.']);
+            exit;
+        }
+        $postId = $m[1];
+        $stmtP = $db->prepare('SELECT user_id, author_id FROM profile_wall_posts WHERE id = ?');
+        $stmtP->execute([$postId]);
+        $post = $stmtP->fetch();
+        if (!$post) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Post not found.']);
+            exit;
+        }
+
+        $isAdmin = !empty($_SESSION['is_admin']);
+        if ($post['author_id'] !== $currentUserId && $post['user_id'] !== $currentUserId && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Permission denied.']);
+            exit;
+        }
+
+        $db->prepare('DELETE FROM profile_wall_posts WHERE id = ?')->execute([$postId]);
+        $db->prepare('DELETE FROM profile_wall_votes WHERE post_id = ?')->execute([$postId]);
+        $db->prepare('DELETE FROM profile_wall_likes WHERE post_id = ?')->execute([$postId]);
+        $db->prepare('DELETE FROM profile_wall_comments WHERE post_id = ?')->execute([$postId]);
+
+        echo json_encode(['success' => true, 'message' => 'Post deleted successfully.']);
+        exit;
+    }
+
+    // POST /api/wall/upload-photo (Direct photo upload for wall posts)
+    if ($route === 'wall/upload-photo' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in required.']);
+            exit;
+        }
+        if (!empty($_FILES['photo']['name'])) {
+            $origName = $_FILES['photo']['name'];
+            $tmpName = $_FILES['photo']['tmp_name'];
+            if ($tmpName && is_uploaded_file($tmpName)) {
+                $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION)) ?: 'jpg';
+                if (!in_array($ext, ['png', 'jpg', 'jpeg', 'webp', 'gif'])) $ext = 'jpg';
+                $destFilename = 'wall_' . bin2hex(random_bytes(8)) . '.' . $ext;
+                if (move_uploaded_file($tmpName, $uploadsDir . '/' . $destFilename)) {
+                    echo json_encode(['success' => true, 'url' => '/uploads/' . $destFilename]);
+                    exit;
+                }
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['error' => 'No valid photo uploaded.']);
         exit;
     }
 

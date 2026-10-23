@@ -1213,4 +1213,73 @@ header img[src*="raccoon-logo"]:hover {
   }
 }
 
+/* =======================================================
+   WEB APP EXCLUSIVE / MOBILE APP RESTRICTION DIRECTIVES
+   Marketplace is shown strictly in Web App, hidden in Mobile App
+   ======================================================= */
+.web-app-only {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  body:not(.is-mobile-app) .web-app-only {
+    display: flex !important;
+  }
+  body:not(.is-mobile-app) a.web-app-only.inline-flex {
+    display: inline-flex !important;
+  }
+}
+
+/* Inside Mobile App (Android APK / Standalone / Mobile View) - strictly hide Marketplace */
+.is-mobile-app .marketplace-nav-link,
+.is-mobile-app .web-app-only,
+.is-mobile-app [href*="marketplace"],
+.is-mobile-app [href*="articles"],
+.is-mobile-app #mobile-market-btn {
+  display: none !important;
+}
+
+/* =======================================================
+   MOBILE VIEW & MOBILE APP NO-OVERLAP POLICIES
+   All buttons, headers, toolbars, and cards fit cleanly
+   ======================================================= */
+@media (max-width: 767px) {
+  /* Prevent any button text or toolbars from overlapping */
+  .toolbar-mobile-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .toolbar-mobile-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Messages list bottom clearance for mobile nav bar */
+  #messages-list {
+    padding-bottom: 5rem !important;
+  }
+
+  /* Reader content bottom clearance */
+  #reader-content {
+    padding-bottom: 5.5rem !important;
+  }
+
+  /* Modal responsive sizing */
+  #compose-modal {
+    max-height: 100vh !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    bottom: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+  }
+}
+
+/* Modern Profile Wall Post & Poll Styling */
+.wall-poll-bar {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
 

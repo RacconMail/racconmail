@@ -391,7 +391,7 @@
             <i class="fas fa-comments text-xs text-slate-600"></i>
             <span>Raccon Forum</span>
           </a>
-          <a href="/marketplace" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
+          <a href="/marketplace" class="web-app-only hidden md:inline-flex text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 items-center gap-1">
             <i class="fas fa-shopping-bag text-xs text-slate-600"></i>
             <span>Marketplace</span>
           </a>
@@ -1519,7 +1519,7 @@
           const container = document.getElementById('auth-nav-container');
           if (container) {
             container.innerHTML = `
-              <a href="/marketplace" class="hidden sm:inline-flex text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 items-center gap-1">
+              <a href="/marketplace" class="web-app-only hidden md:inline-flex text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 items-center gap-1">
                 <i class="fas fa-shopping-bag text-xs text-slate-600"></i>
                 <span>Marketplace</span>
               </a>

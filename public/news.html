@@ -134,7 +134,7 @@
         </div>
       </div>
 
-      <!-- Action Navigation Links (Compact icon buttons on mobile: NEVER overlaps logo) -->
+      <!-- Action Navigation Links (Compact, No-Overlap Mobile Sizing) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="news-auth-bar">
         <!-- Live Countdown Pill -->
         <div class="hidden lg:flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1 text-[11px] text-slate-600">
@@ -147,9 +147,9 @@
           <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Webmail</span>
         </a>
-        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
+        <a href="/news" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
           <i data-lucide="newspaper" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span class="hidden sm:inline">News</span>
+          <span>News</span>
         </a>
         <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
           <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
@@ -159,9 +159,9 @@
           <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Forum</span>
         </a>
-        <a href="/marketplace" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Marketplace">
+        <a href="/marketplace" class="web-app-only hidden md:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Marketplace">
           <i data-lucide="shopping-bag" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
-          <span class="hidden sm:inline">Marketplace</span>
+          <span>Marketplace</span>
         </a>
         <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
           <!-- Populated by JS -->

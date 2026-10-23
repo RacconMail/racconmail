@@ -74,10 +74,41 @@ const app = {
     try { this.setupSSE(); } catch (_) {}
     try { this.setupKeyboardShortcuts(); } catch (_) {}
     try { this.setupHistoryAndBackNavigation(); } catch (e) { console.error('history setup error:', e); }
+    try { this.setupClickOutsideDismiss(); } catch (_) {}
     try { this.startMailPolling(); } catch (_) {}
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
     }
+  },
+
+  setupClickOutsideDismiss() {
+    document.addEventListener('click', (e) => {
+      // 1. Account dropdown auto dismiss on click outside
+      const accountDropdown = document.getElementById('account-dropdown');
+      if (accountDropdown && !accountDropdown.classList.contains('hidden')) {
+        const toggleBtn = e.target.closest('[onclick*="toggleAccountDropdown"]');
+        if (!accountDropdown.contains(e.target) && !toggleBtn) {
+          accountDropdown.classList.add('hidden');
+        }
+      }
+
+      // 2. Reader more dropdown auto dismiss on click outside
+      const readerDropdown = document.getElementById('reader-more-dropdown');
+      if (readerDropdown && !readerDropdown.classList.contains('hidden')) {
+        const toggleBtn = e.target.closest('[onclick*="toggleReaderMoreDropdown"]');
+        if (!readerDropdown.contains(e.target) && !toggleBtn) {
+          readerDropdown.classList.add('hidden');
+        }
+      }
+    });
+
+    // Escape key closes open dropdowns
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('account-dropdown')?.classList.add('hidden');
+        document.getElementById('reader-more-dropdown')?.classList.add('hidden');
+      }
+    });
   },
 
   setupHistoryAndBackNavigation() {
@@ -1227,14 +1258,48 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const profEmail = document.getElementById('profile-preview-email');
       if (profEmail) profEmail.textContent = data.email;
 
+      // Registration Joined Date Formatting
+      const joinedDateStr = this.formatJoinedDate(data.created_at);
+      const dropJoined = document.getElementById('dropdown-user-joined');
+      if (dropJoined) dropJoined.innerHTML = `<i data-lucide="calendar" class="h-3 w-3 text-slate-500"></i><span>${joinedDateStr}</span>`;
+      const profJoined = document.getElementById('profile-joined-text');
+      if (profJoined) profJoined.textContent = joinedDateStr;
+
+      // Bio & Location
+      const userLoc = data.location || '';
+      const dropLoc = document.getElementById('dropdown-user-location');
+      const dropLocBadge = document.getElementById('dropdown-user-location-badge');
+      if (dropLoc) {
+        if (userLoc) {
+          dropLoc.textContent = userLoc;
+          if (dropLocBadge) dropLocBadge.classList.remove('hidden');
+        } else {
+          dropLoc.textContent = 'Auto-detecting...';
+          this.autoDetectLocationBackground();
+        }
+      }
+      const profLoc = document.getElementById('profile-location-text');
+      if (profLoc) profLoc.textContent = userLoc || 'Detecting...';
+      const profBio = document.getElementById('profile-bio-text');
+      if (profBio) profBio.textContent = data.bio || 'Verified nocturnal mail user & postcard collector.';
+
       const inputName = document.getElementById('profile-name-input');
       if (inputName) inputName.value = data.name || '';
 
       const inputEmail = document.getElementById('profile-email-input');
       if (inputEmail) inputEmail.value = data.email || '';
 
+      const inputLoc = document.getElementById('profile-location-input');
+      if (inputLoc) inputLoc.value = userLoc;
+
+      const inputBio = document.getElementById('profile-bio-input');
+      if (inputBio) inputBio.value = data.bio || '';
+
       const inputSig = document.getElementById('profile-signature-input');
       if (inputSig) inputSig.value = data.signature || '';
+
+      const wallCompAv = document.getElementById('wall-composer-avatar');
+      if (wallCompAv) wallCompAv.src = avatar;
 
       // Apply theme
       const savedTheme = localStorage.getItem('raccon_theme') || data.theme || 'raccon';
@@ -1646,61 +1711,95 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const initial = ((msg.sender_name || msg.sender_email || 'M')[0] || 'M').toUpperCase();
 
     readerEl.innerHTML = `
-      <!-- Action Toolbar (Compact & Pure Monochrome) -->
+      <!-- Action Toolbar (Smart Responsive, Zero Overlap on Mobile) -->
       <div class="h-11 sm:h-12 border-b border-slate-200 bg-white px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-1.5 shrink-0">
           <!-- Mobile Back Button -->
           <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 shrink-0 cursor-pointer">
             <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
             <span>Back</span>
           </button>
           <button onclick="app.replyToMessage()"
-            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95">
+            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95 shrink-0">
             <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
             <span>Reply</span>
           </button>
           <button onclick="app.replyAllMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0">
             <i data-lucide="reply-all" class="h-3 w-3 text-slate-600"></i>
             <span>Reply All</span>
           </button>
           <button onclick="app.forwardMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0">
             <i data-lucide="forward" class="h-3 w-3 text-slate-600"></i>
             <span>Forward</span>
           </button>
         </div>
 
-        <div class="flex items-center gap-1">
-          <button onclick="app.printMessage()" title="Print Email or Save as PDF (P)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+        <div class="flex items-center gap-1 shrink-0">
+          <!-- Desktop Only Direct Actions -->
+          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="printer" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="download" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="hidden sm:flex items-center gap-1 rounded-full bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-slate-200">
-            <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-600"></i>
-            <span>Screenshot</span>
-          </button>
-          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
             <i data-lucide="mail" class="h-3 w-3 text-slate-600"></i>
-            <span class="hidden sm:inline">Postcard View</span>
+            <span>Postcard View</span>
           </button>
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite (S)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          
+          <!-- Star Action (Both Mobile & Desktop) -->
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0">
             <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-slate-900 fill-slate-900' : ''}"></i>
           </button>
-          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread (U)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
-            <i data-lucide="mail" class="h-4 w-4 text-slate-600"></i>
-          </button>
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive (E)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+
+          <!-- Archive Action (Both Mobile & Desktop) -->
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0">
             <i data-lucide="archive" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.spamMessage('${msg.id}')" title="Report Spam" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
-            <i data-lucide="shield-alert" class="h-4 w-4 text-slate-600"></i>
-          </button>
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete (#)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+
+          <!-- Trash Action (Both Mobile & Desktop) -->
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0">
             <i data-lucide="trash-2" class="h-4 w-4 text-slate-600"></i>
           </button>
+
+          <!-- Mobile Overflow 'More' Menu Button -->
+          <div class="relative sm:hidden">
+            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0">
+              <i data-lucide="more-vertical" class="h-4 w-4 text-slate-600"></i>
+            </button>
+            <div id="reader-more-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-2xl z-50 text-xs text-slate-800">
+              <button onclick="app.closeReaderMoreDropdown(); app.openPostcardModal();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Postcard View</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.printMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="printer" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Print or PDF</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.downloadMessageEml('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="download" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Export .EML</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.replyAllMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="reply-all" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Reply All</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.forwardMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="forward" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Forward</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.toggleRead('${msg.id}', false);" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
+                <i data-lucide="mail-open" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Mark Unread</span>
+              </button>
+              <button onclick="app.closeReaderMoreDropdown(); app.spamMessage('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 text-red-600 cursor-pointer">
+                <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-red-600"></i>
+                <span>Report Spam</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3305,8 +3404,54 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  // Profile Picture & Cover Photo Management
-  openProfileModal() {
+  // Profile Picture, Cover Photo & Facebook-Style Wall Management
+  formatJoinedDate(dateStr) {
+    if (!dateStr) return 'Member since Oct 2026';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return 'Member since Oct 2026';
+    const month = d.toLocaleString('en-US', { month: 'short' });
+    const year = d.getFullYear();
+    return `Member since ${month} ${year}`;
+  },
+
+  async autoDetectLocationBackground() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const d = await res.json();
+        if (d.city && d.country_name) {
+          const loc = `${d.city}, ${d.country_name}`;
+          const dropLoc = document.getElementById('dropdown-user-location');
+          const dropBadge = document.getElementById('dropdown-user-location-badge');
+          if (dropLoc) {
+            dropLoc.textContent = loc;
+            if (dropBadge) dropBadge.classList.remove('hidden');
+          }
+          const profLoc = document.getElementById('profile-location-text');
+          if (profLoc) profLoc.textContent = loc;
+        }
+      }
+    } catch (_) {}
+  },
+
+  async autoDetectProfileLocation() {
+    const input = document.getElementById('profile-location-input');
+    if (!input) return;
+    input.value = 'Detecting...';
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const d = await res.json();
+        if (d.city && d.country_name) {
+          input.value = `${d.city}, ${d.country_name}`;
+          return;
+        }
+      }
+    } catch (_) {}
+    input.value = 'Bucharest, Romania';
+  },
+
+  openProfileModal(tab = 'wall') {
     this.closeAccountDropdown();
     const modal = document.getElementById('profile-modal');
     if (!modal) return;
@@ -3327,18 +3472,35 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       if (pName) pName.textContent = this.currentUser.name || '';
       const pEmail = document.getElementById('profile-preview-email');
       if (pEmail) pEmail.textContent = this.currentUser.email || '';
+
+      const joinedStr = this.formatJoinedDate(this.currentUser.created_at);
+      const profJoined = document.getElementById('profile-joined-text');
+      if (profJoined) profJoined.textContent = joinedStr;
+
+      const profLoc = document.getElementById('profile-location-text');
+      if (profLoc) profLoc.textContent = this.currentUser.location || 'Online';
+
+      const profBio = document.getElementById('profile-bio-text');
+      if (profBio) profBio.textContent = this.currentUser.bio || 'Verified nocturnal mail user & postcard collector.';
+
       const inName = document.getElementById('profile-name-input');
       if (inName) inName.value = this.currentUser.name || '';
       const inEmail = document.getElementById('profile-email-input');
       if (inEmail) inEmail.value = this.currentUser.email || '';
+      const inLoc = document.getElementById('profile-location-input');
+      if (inLoc) inLoc.value = this.currentUser.location || '';
+      const inBio = document.getElementById('profile-bio-input');
+      if (inBio) inBio.value = this.currentUser.bio || '';
       const inSig = document.getElementById('profile-signature-input');
       if (inSig) inSig.value = this.currentUser.signature || '';
 
-      // Highlight currently selected theme
-      this.highlightActiveTheme(localStorage.getItem('raccon_theme') || this.currentUser?.theme || 'raccon');
+      const wallCompAv = document.getElementById('wall-composer-avatar');
+      if (wallCompAv) wallCompAv.src = avatar;
     }
+
     modal.classList.remove('hidden');
-    lucide.createIcons();
+    this.switchProfileTab(tab);
+    if (window.lucide) lucide.createIcons();
   },
 
   closeProfileModal() {
@@ -3347,6 +3509,532 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   closeAccountDropdown() {
     document.getElementById('account-dropdown')?.classList.add('hidden');
+  },
+
+  switchProfileTab(tab = 'wall') {
+    const tabs = ['wall', 'photos', 'info'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`profile-tab-${t}`);
+      const btn = document.getElementById(`profile-tab-btn-${t}`);
+      if (el) el.classList.toggle('hidden', t !== tab);
+      if (btn) {
+        if (t === tab) {
+          btn.className = 'px-4 py-1.5 rounded-full bg-slate-900 text-white transition flex items-center gap-1.5 shrink-0 shadow-2xs font-bold';
+        } else {
+          btn.className = 'px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200 font-semibold';
+        }
+      }
+    });
+
+    if (tab === 'wall') {
+      this.loadWallPosts();
+    }
+    if (window.lucide) lucide.createIcons();
+  },
+
+  // Wall State & Methods
+  currentWallPostType: 'status',
+  wallPhotoFile: null,
+  wallPhotoUrl: '',
+  wallLocation: '',
+
+  setWallPostType(type) {
+    this.currentWallPostType = type;
+    const types = ['status', 'question', 'poll'];
+    types.forEach(t => {
+      const btn = document.getElementById(`btn-post-type-${t}`);
+      if (btn) {
+        if (t === type) {
+          btn.className = 'px-2.5 py-1 rounded-full bg-slate-900 text-white font-bold text-[11px] transition flex items-center gap-1 cursor-pointer shadow-2xs';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs';
+        }
+      }
+    });
+
+    const pollBox = document.getElementById('wall-poll-box');
+    if (pollBox) {
+      pollBox.classList.toggle('hidden', type !== 'poll');
+    }
+    if (window.lucide) lucide.createIcons();
+  },
+
+  handleWallPhotoSelect(file) {
+    if (!file) return;
+    this.wallPhotoFile = file;
+    const previewBox = document.getElementById('wall-photo-preview-box');
+    const previewImg = document.getElementById('wall-photo-preview-img');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (previewImg) previewImg.src = e.target.result;
+      if (previewBox) previewBox.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+    if (window.lucide) lucide.createIcons();
+  },
+
+  removeWallPhoto() {
+    this.wallPhotoFile = null;
+    this.wallPhotoUrl = '';
+    const previewBox = document.getElementById('wall-photo-preview-box');
+    const previewImg = document.getElementById('wall-photo-preview-img');
+    const input = document.getElementById('wall-photo-input');
+    if (previewImg) previewImg.src = '';
+    if (previewBox) previewBox.classList.add('hidden');
+    if (input) input.value = '';
+  },
+
+  async autoDetectWallLocation() {
+    const box = document.getElementById('wall-location-tag-box');
+    const textEl = document.getElementById('wall-location-tag-text');
+    if (box && textEl) {
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      textEl.textContent = 'Detecting location...';
+    }
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const d = await res.json();
+        if (d.city && d.country_name) {
+          this.wallLocation = `${d.city}, ${d.country_name}`;
+          if (textEl) textEl.textContent = this.wallLocation;
+          return;
+        }
+      }
+    } catch (_) {}
+    this.wallLocation = 'Bucharest, Romania';
+    if (textEl) textEl.textContent = this.wallLocation;
+  },
+
+  clearWallLocation() {
+    this.wallLocation = '';
+    const box = document.getElementById('wall-location-tag-box');
+    if (box) {
+      box.classList.add('hidden');
+      box.classList.remove('flex');
+    }
+  },
+
+  addWallPollChoice() {
+    const list = document.getElementById('wall-poll-options-list');
+    if (!list) return;
+    const count = list.children.length + 1;
+    if (count > 5) {
+      alert('Maximum 5 poll choices allowed.');
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'flex items-center gap-2';
+    div.innerHTML = `
+      <span class="font-mono text-[10px] text-slate-400 w-4">${count}.</span>
+      <input type="text" class="wall-poll-opt-input flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none" placeholder="Choice ${count}" />
+      <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-black font-bold text-xs p-1 cursor-pointer">&times;</button>
+    `;
+    list.appendChild(div);
+  },
+
+  async publishWallPost() {
+    const contentEl = document.getElementById('wall-post-content');
+    const content = (contentEl?.value || '').trim();
+    const btn = document.getElementById('btn-publish-wall');
+
+    let pollQuestion = '';
+    let pollOptions = [];
+    if (this.currentWallPostType === 'poll') {
+      const qInput = document.getElementById('wall-poll-question');
+      pollQuestion = (qInput?.value || '').trim() || content;
+      if (!pollQuestion) {
+        alert('Please provide a question for your poll.');
+        return;
+      }
+      const optInputs = document.querySelectorAll('.wall-poll-opt-input');
+      optInputs.forEach(inp => {
+        const val = inp.value.trim();
+        if (val) pollOptions.push(val);
+      });
+      if (pollOptions.length < 2) {
+        alert('Please provide at least 2 poll choices.');
+        return;
+      }
+    } else if (!content && !this.wallPhotoFile) {
+      alert('Please write something or attach a photo before posting.');
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="h-3.5 w-3.5 animate-spin"></i><span>Posting...</span>';
+    }
+
+    try {
+      let imageUrl = '';
+      if (this.wallPhotoFile) {
+        const formData = new FormData();
+        formData.append('photo', this.wallPhotoFile);
+        const upRes = await fetch('/api/wall/upload-photo', {
+          method: 'POST',
+          body: formData
+        });
+        const upData = await upRes.json();
+        if (upRes.ok && upData.url) {
+          imageUrl = upData.url;
+        }
+      }
+
+      const postType = imageUrl && this.currentWallPostType === 'status' ? 'photo' : this.currentWallPostType;
+
+      const res = await fetch('/api/wall/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: this.currentUser?.id,
+          post_type: postType,
+          content: content,
+          image_url: imageUrl,
+          location: this.wallLocation,
+          poll_question: pollQuestion,
+          poll_options: pollOptions
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to publish post');
+
+      // Reset form
+      if (contentEl) contentEl.value = '';
+      this.removeWallPhoto();
+      this.clearWallLocation();
+      const qInput = document.getElementById('wall-poll-question');
+      if (qInput) qInput.value = '';
+      this.setWallPostType('status');
+
+      this.showToast('Post shared to wall successfully! 🐾');
+      await this.loadWallPosts();
+    } catch (err) {
+      alert('Wall post error: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Post to Wall</span>';
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+  },
+
+  async loadWallPosts(userId = null) {
+    const feed = document.getElementById('profile-wall-feed');
+    if (!feed) return;
+    const targetId = userId || this.currentUser?.id;
+    if (!targetId) return;
+
+    feed.innerHTML = `
+      <div class="py-8 text-center text-slate-400 flex items-center justify-center gap-2">
+        <i data-lucide="loader" class="h-4 w-4 animate-spin"></i>
+        <span>Loading wall updates...</span>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+      const res = await fetch(`/api/wall/posts?user_id=${encodeURIComponent(targetId)}`);
+      const data = await res.json();
+      const posts = data.posts || [];
+      this.renderWallPosts(posts);
+    } catch (err) {
+      feed.innerHTML = `<div class="p-4 text-center text-slate-500">Could not load wall posts: ${err.message}</div>`;
+    }
+  },
+
+  renderWallPosts(posts) {
+    const feed = document.getElementById('profile-wall-feed');
+    if (!feed) return;
+
+    if (!posts || posts.length === 0) {
+      feed.innerHTML = `
+        <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 space-y-2">
+          <div class="text-3xl">🐾</div>
+          <h4 class="font-bold text-slate-900 text-sm">No wall posts yet</h4>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Be the first to share an update, photo, question, or interactive poll on the wall!</p>
+        </div>
+      `;
+      return;
+    }
+
+    feed.innerHTML = posts.map(p => {
+      const isOwner = this.currentUser && (p.author_id === this.currentUser.id || p.user_id === this.currentUser.id || this.currentUser.is_admin);
+      const formattedDate = new Date(p.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      // Post Type Badge
+      const typeBadges = {
+        status: { label: 'Status', icon: '📝' },
+        photo: { label: 'Photo', icon: '📷' },
+        question: { label: 'Question', icon: '❓' },
+        poll: { label: 'Interactive Poll', icon: '📊' }
+      };
+      const badge = typeBadges[p.post_type] || typeBadges.status;
+
+      // Poll Content rendering
+      let pollHtml = '';
+      if (p.post_type === 'poll' && p.poll_options_data) {
+        const totalVotes = p.total_votes || 0;
+        const userVoted = p.user_voted_option;
+        pollHtml = `
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 space-y-2 mt-2">
+            <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+              <span>📊</span>
+              <span>${this.escapeHtml(p.poll_question || p.content)}</span>
+            </h4>
+            <div class="space-y-1.5 pt-1">
+              ${p.poll_options_data.map(opt => {
+                const isSelected = userVoted === opt.id;
+                const pct = opt.percentage || 0;
+                return `
+                  <div onclick="app.voteWallPoll('${p.id}', ${opt.id})" class="relative overflow-hidden rounded-xl border ${isSelected ? 'border-slate-900 bg-white ring-1 ring-slate-900' : 'border-slate-200 bg-white hover:border-slate-400'} p-2.5 transition cursor-pointer select-none">
+                    <div class="wall-poll-bar absolute inset-y-0 left-0 bg-slate-100 ${isSelected ? 'bg-slate-200' : ''}" style="width: ${pct}%"></div>
+                    <div class="relative z-10 flex items-center justify-between text-xs font-semibold text-slate-800">
+                      <div class="flex items-center gap-2">
+                        ${isSelected ? '<span class="text-slate-900 font-bold">✓</span>' : '<span class="text-slate-400">•</span>'}
+                        <span>${this.escapeHtml(opt.text)}</span>
+                      </div>
+                      <div class="font-mono text-[11px] text-slate-600">
+                        <span>${opt.votes || 0} votes</span> (${pct}%)
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="text-[10px] text-slate-500 font-mono pt-1 text-right">
+              Total votes: ${totalVotes} &bull; ${userVoted ? 'Your vote is recorded' : 'Tap an option to vote'}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <article class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3" id="wall-post-${p.id}">
+          <!-- Post Author Header -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" onerror="this.src='/raccoon-logo.png';" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 leading-none flex-wrap">
+                  <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${this.escapeHtml(p.author_name)}</span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 border border-slate-200 text-slate-700">
+                    <span>${badge.icon}</span> <span>${badge.label}</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 text-[10px] text-slate-500 mt-1 font-mono">
+                  <span>${formattedDate}</span>
+                  ${p.location ? `<span>&bull;</span><span class="text-slate-700 flex items-center gap-0.5"><i data-lucide="map-pin" class="h-2.5 w-2.5"></i>${this.escapeHtml(p.location)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            ${isOwner ? `
+              <button onclick="app.deleteWallPost('${p.id}')" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-red-600 transition cursor-pointer" title="Delete post">
+                <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Post Content (If not purely a poll without extra body) -->
+          ${p.content && (p.post_type !== 'poll' || p.poll_question !== p.content) ? `
+            <div class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-wrap ${p.post_type === 'question' ? 'font-bold text-base text-slate-900 border-l-3 border-slate-900 pl-3 py-1' : ''}">
+              ${this.escapeHtml(p.content)}
+            </div>
+          ` : ''}
+
+          <!-- Poll Section -->
+          ${pollHtml}
+
+          <!-- Photo Section -->
+          ${p.image_url ? `
+            <div class="rounded-xl overflow-hidden border border-slate-200 bg-slate-50 max-h-96">
+              <img src="${p.image_url}" class="w-full h-auto object-cover max-h-96" onerror="this.parentElement.style.display='none';" />
+            </div>
+          ` : ''}
+
+          <!-- Actions Bar: Like, Comment -->
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                onclick="app.toggleWallLike('${p.id}')"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border ${p.has_liked ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'}"
+              >
+                <span>🐾</span>
+                <span id="wall-like-cnt-${p.id}">${p.likes_count || 0}</span>
+                <span class="text-[11px]">${p.likes_count === 1 ? 'Paw' : 'Paws'}</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="app.toggleWallComments('${p.id}')"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition cursor-pointer"
+              >
+                <i data-lucide="message-circle" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span id="wall-comm-cnt-${p.id}">${p.comments_count || 0}</span>
+                <span class="text-[11px]">${p.comments_count === 1 ? 'Comment' : 'Comments'}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Threaded Comments Drawer -->
+          <div id="wall-comments-box-${p.id}" class="hidden pt-3 border-t border-slate-100 space-y-2.5">
+            <div class="flex items-center gap-2">
+              <input
+                id="wall-comment-input-${p.id}"
+                type="text"
+                placeholder="Write a comment..."
+                onkeydown="if(event.key==='Enter') app.addWallComment('${p.id}')"
+                class="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-slate-400"
+              />
+              <button
+                type="button"
+                onclick="app.addWallComment('${p.id}')"
+                class="rounded-xl bg-slate-900 hover:bg-black text-white px-3 py-1.5 text-xs font-bold transition cursor-pointer"
+              >
+                Reply
+              </button>
+            </div>
+            <div id="wall-comments-list-${p.id}" class="space-y-1.5 pt-1">
+              <!-- Dynamically populated comments -->
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  async voteWallPoll(postId, optionId) {
+    if (!this.currentUser) {
+      alert('You must be signed in to vote.');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/wall/posts/${postId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ option_id: optionId })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to submit vote');
+      await this.loadWallPosts();
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+
+  async toggleWallLike(postId) {
+    if (!this.currentUser) {
+      alert('You must be signed in to like a post.');
+      return;
+    }
+    try {
+      const res = await fetch(`/api/wall/posts/${postId}/like`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const cntEl = document.getElementById(`wall-like-cnt-${postId}`);
+        if (cntEl) cntEl.textContent = data.likes_count;
+        await this.loadWallPosts();
+      }
+    } catch (_) {}
+  },
+
+  async toggleWallComments(postId) {
+    const box = document.getElementById(`wall-comments-box-${postId}`);
+    if (!box) return;
+    const isHidden = box.classList.contains('hidden');
+    box.classList.toggle('hidden');
+    if (isHidden) {
+      const listEl = document.getElementById(`wall-comments-list-${postId}`);
+      if (listEl) {
+        listEl.innerHTML = '<div class="text-[11px] text-slate-400 p-1">Loading comments...</div>';
+      }
+      try {
+        const res = await fetch(`/api/wall/posts/${postId}/comments`);
+        const data = await res.json();
+        const comments = data.comments || [];
+        if (listEl) {
+          if (comments.length === 0) {
+            listEl.innerHTML = '<div class="text-[11px] text-slate-400 p-1">No comments yet. Write the first reply!</div>';
+          } else {
+            listEl.innerHTML = comments.map(c => `
+              <div class="flex items-start gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover shrink-0" />
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-bold text-slate-900 text-[11px]">${this.escapeHtml(c.author_name)}</span>
+                    <span class="text-[9.5px] text-slate-400 font-mono">${new Date(c.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                  </div>
+                  <p class="text-xs text-slate-700 leading-snug break-words">${this.escapeHtml(c.content)}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        if (listEl) listEl.innerHTML = `<div class="text-[11px] text-red-500 p-1">${err.message}</div>`;
+      }
+    }
+  },
+
+  async addWallComment(postId) {
+    if (!this.currentUser) {
+      alert('You must be signed in to comment.');
+      return;
+    }
+    const inp = document.getElementById(`wall-comment-input-${postId}`);
+    const content = (inp?.value || '').trim();
+    if (!content) return;
+
+    try {
+      const res = await fetch(`/api/wall/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to post comment');
+      if (inp) inp.value = '';
+      const box = document.getElementById(`wall-comments-box-${postId}`);
+      if (box?.classList.contains('hidden')) {
+        box.classList.remove('hidden');
+      }
+      this.toggleWallComments(postId);
+      const cntEl = document.getElementById(`wall-comm-cnt-${postId}`);
+      if (cntEl) cntEl.textContent = parseInt(cntEl.textContent || '0') + 1;
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+
+  async deleteWallPost(postId) {
+    if (!confirm('Are you sure you want to delete this wall post?')) return;
+    try {
+      const res = await fetch(`/api/wall/posts/${postId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete');
+      this.showToast('Post deleted.');
+      await this.loadWallPosts();
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+
+  toggleReaderMoreDropdown() {
+    const el = document.getElementById('reader-more-dropdown');
+    el?.classList.toggle('hidden');
+  },
+
+  closeReaderMoreDropdown() {
+    document.getElementById('reader-more-dropdown')?.classList.add('hidden');
   },
 
   cropImageToSquare(file, targetSize = 400) {
@@ -3400,6 +4088,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       this.showToast('Profile picture updated! 📸');
       await this.fetchUser();
+      const profAv = document.getElementById('profile-avatar-preview');
+      if (profAv && data.avatar) profAv.src = data.avatar;
     } catch (err) {
       alert('Avatar upload error: ' + err.message);
     }
@@ -3421,6 +4111,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       this.showToast('Cover photo updated! 🌄');
       await this.fetchUser();
+      const profCover = document.getElementById('profile-cover-preview');
+      if (profCover && data.cover_photo) {
+        profCover.style.backgroundImage = `url('${data.cover_photo}')`;
+      }
     } catch (err) {
       alert('Cover photo upload error: ' + err.message);
     }
@@ -3430,6 +4124,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const av = document.getElementById('profile-avatar-preview');
     if (av) av.src = url;
     if (this.currentUser) this.currentUser.avatar = url;
+    this.saveProfile();
   },
 
   selectPresetCover(val) {
@@ -3442,40 +4137,40 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }
     }
     if (this.currentUser) this.currentUser.cover_photo = val;
+    this.saveProfile();
   },
 
   async saveProfile() {
-    const name = document.getElementById('profile-name-input').value.trim();
-    const signature = document.getElementById('profile-signature-input').value.trim();
-    const avatar = document.getElementById('profile-avatar-preview').src;
-    const covEl = document.getElementById('profile-cover-preview');
-    let cover_photo = this.currentUser?.cover_photo || '';
-    if (covEl.style.backgroundImage && covEl.style.backgroundImage !== 'none') {
-      cover_photo = covEl.style.backgroundImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
-    } else if (covEl.style.background) {
-      cover_photo = covEl.style.background;
-    }
-
+    const name = document.getElementById('profile-name-input')?.value.trim();
+    const sig = document.getElementById('profile-signature-input')?.value;
+    const bio = document.getElementById('profile-bio-input')?.value.trim();
+    const location = document.getElementById('profile-location-input')?.value.trim();
     const saveBtn = document.getElementById('profile-save-btn');
+
     if (saveBtn) {
       saveBtn.disabled = true;
       saveBtn.textContent = 'Saving...';
     }
 
-    const theme = localStorage.getItem('raccon_theme') || 'raccon';
-
     try {
       const res = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, signature, avatar, cover_photo, theme })
+        body: JSON.stringify({
+          name: name,
+          signature: sig,
+          bio: bio,
+          location: location,
+          avatar: this.currentUser?.avatar,
+          cover_photo: this.currentUser?.cover_photo
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to save profile');
 
       await this.fetchUser();
-      this.closeProfileModal();
-      this.showToast('Profile updated successfully!');
+      this.showToast('Profile updated successfully! ✨');
+      this.switchProfileTab('wall');
     } catch (err) {
       alert('Save profile error: ' + err.message);
     } finally {

@@ -1179,6 +1179,29 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
+
+    // Restriction check: Marketplace is strictly for the desktop Web App
+    const isMobileApp = /SWVAndroid|RacconMailApp|Android.*Version\/[0-9.]+\s+Chrome\/[0-9.]+\s+Mobile/i.test(navigator.userAgent) || !!window.Android || window.matchMedia('(display-mode: standalone)').matches;
+    if (isMobileApp) {
+      document.getElementById('mobile-app-restriction-modal')?.classList.remove('hidden');
+    }
   </script>
+
+  <!-- WEB APP EXCLUSIVE RESTRICTION MODAL -->
+  <div id="mobile-app-restriction-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-xs">
+    <div class="w-full max-w-sm rounded-3xl bg-white p-6 text-center space-y-4 border border-slate-200 shadow-2xl">
+      <div class="h-14 w-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-2xl">
+        💻
+      </div>
+      <h3 class="font-display font-bold text-lg text-slate-900">Web App Exclusive</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        Raccon Marketplace is currently exclusive to the Raccon Mail Web App. Please open <strong>racconmail.eu</strong> on your desktop browser to browse and list items.
+      </p>
+      <a href="/inbox" class="w-full py-2.5 px-4 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+        <span>Return to Webmail Inbox</span>
+        <i data-lucide="arrow-right" class="h-4 w-4"></i>
+      </a>
+    </div>
+  </div>
 </body>
 </html>
