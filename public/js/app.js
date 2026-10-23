@@ -891,9 +891,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
             <span>Read Tale</span>
           </button>
-          <a href="${story.url}" target="_blank" rel="noopener noreferrer" title="Listen with audio on worldstories.org.uk" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition border border-border shrink-0">
-            <i data-lucide="headphones" class="h-3.5 w-3.5"></i>
-          </a>
+          <button onclick="app.openStoryReader('${story.id}')" title="Read story in integrated reader" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition border border-border shrink-0 cursor-pointer">
+            <i data-lucide="book-open" class="h-3.5 w-3.5 text-primary"></i>
+          </button>
         </div>
       </div>
     `).join('');
@@ -3477,64 +3477,49 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   normalizeTheme(t) {
-    if (!t) return 'light';
-    t = t.toLowerCase().trim();
-    if (t === 'dark' || t === 'midnight' || t === 'midnight-green' || t === 'forest' || t === 'cyber') return 'dark';
     return 'light';
   },
 
   toggleTheme() {
-    const current = this.normalizeTheme(localStorage.getItem('raccon_theme') || this.currentUser?.theme || 'light');
-    const newTheme = current === 'dark' ? 'light' : 'dark';
-    this.setTheme(newTheme, true);
+    this.setTheme('light', false);
   },
 
-  setTheme(themeName, persist = true) {
-    const canonicalTheme = this.normalizeTheme(themeName);
-    const def = this.themeDefinitions[canonicalTheme] || this.themeDefinitions.light;
+  setTheme(themeName, persist = false) {
+    const canonicalTheme = 'light';
+    const def = this.themeDefinitions.light;
 
     // 1. Update document classes
-    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber'];
+    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber', 'theme-dark'];
     allThemeClasses.forEach(t => {
-      document.documentElement.classList.remove('theme-' + t);
-      if (document.body) document.body.classList.remove('theme-' + t);
+      document.documentElement.classList.remove(t, 'theme-' + t);
+      if (document.body) document.body.classList.remove(t, 'theme-' + t);
     });
     document.documentElement.classList.remove('dark');
-
-    if (canonicalTheme === 'dark') {
-      document.documentElement.classList.add('dark', 'theme-dark');
-      if (document.body) document.body.classList.add('dark', 'theme-dark');
-    } else {
-      document.documentElement.classList.add('theme-light');
-      if (document.body) document.body.classList.add('theme-light');
-    }
+    document.documentElement.classList.add('theme-light');
+    if (document.body) document.body.classList.add('theme-light');
 
     // 2. Set colorScheme for OS native controls
-    document.documentElement.style.colorScheme = def.colorScheme;
+    document.documentElement.style.colorScheme = 'light';
 
     // 3. Set custom variables
     for (const [k, v] of Object.entries(def.vars)) {
       document.documentElement.style.setProperty(k, v);
     }
 
-    // 4. Update Sun/Moon icon on toggle button
+    // 4. Update Sun/Moon icon on toggle button if present
     const sunIcon = document.getElementById('app-theme-sun');
     const moonIcon = document.getElementById('app-theme-moon');
     if (sunIcon && moonIcon) {
-      if (canonicalTheme === 'dark') {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      } else {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      }
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
     }
 
     // 5. Store in localStorage
-    localStorage.setItem('raccon_theme', canonicalTheme);
+    localStorage.setItem('raccon_theme', 'light');
 
     // 6. Highlight active theme button
-    this.highlightActiveTheme(canonicalTheme);
+    this.highlightActiveTheme('light');
+  },
 
     // 7. Persist to backend if requested
     if (persist) {

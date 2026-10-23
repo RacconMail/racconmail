@@ -30,22 +30,35 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
-  <!-- Early Theme Initializer to prevent flash -->
+  <!-- Early Theme Initializer (Strict Clean Modern White) -->
   <script>
     (function() {
-      let theme = localStorage.getItem('raccon_theme') || 'harmony';
-      if (theme === 'raccon' || theme === 'light') theme = 'harmony';
-      if (theme === 'midnight') theme = 'dark';
-      document.documentElement.className = 'theme-' + theme;
+      localStorage.setItem('raccon_theme', 'light');
+      document.documentElement.className = 'theme-light';
+      document.documentElement.classList.remove('dark', 'theme-dark', 'theme-midnight');
       const themeVars = {
-        harmony: { '--background': '#EFEDE9', '--foreground': '#1E293B', '--card': '#FFFFFF', '--card-foreground': '#1E293B', '--primary': '#208ED3', '--primary-foreground': '#FFFFFF', '--secondary': '#F2F2F2', '--muted': '#F6F6F6', '--muted-foreground': '#64748B', '--accent': '#EBF5FB', '--border': '#D5D5D5', '--border-light': '#E2E8F0', '--mask': '#1E293B', '--fur': '#334155', '--cream': '#EFEDE9' },
-        dark: { '--background': '#1D1D1F', '--foreground': '#FFFFFF', '--card': '#2B2C2E', '--card-foreground': '#FFFFFF', '--primary': '#208ED3', '--primary-foreground': '#FFFFFF', '--secondary': '#343536', '--muted': '#242526', '--muted-foreground': '#9CA3AF', '--accent': '#203345', '--border': '#404245', '--border-light': '#4F5155', '--mask': '#1D1D1F', '--fur': '#2B2C2E', '--cream': '#1D1D1F' },
-        'midnight-green': { '--background': '#0A1414', '--foreground': '#E6F2F2', '--card': '#112222', '--card-foreground': '#E6F2F2', '--primary': '#00B392', '--primary-foreground': '#0A1414', '--secondary': '#1C3838', '--muted': '#162E2E', '--muted-foreground': '#80A6A6', '--accent': '#162E2E', '--border': '#1C3838', '--border-light': '#254A4A', '--mask': '#0A1414', '--fur': '#112222', '--cream': '#1C3838' }
+        '--background': '#F8FAFC',
+        '--foreground': '#0F172A',
+        '--card': '#FFFFFF',
+        '--card-alt': '#F1F5F9',
+        '--card-foreground': '#0F172A',
+        '--primary': '#208ED3',
+        '--primary-hover': '#1A7BB8',
+        '--primary-foreground': '#FFFFFF',
+        '--secondary': '#F1F5F9',
+        '--secondary-foreground': '#0F172A',
+        '--muted': '#F1F5F9',
+        '--muted-foreground': '#64748B',
+        '--accent': '#EBF5FB',
+        '--accent-foreground': '#0284C7',
+        '--border': '#E2E8F0',
+        '--border-light': '#F1F5F9',
+        '--mask': '#0F172A',
+        '--fur': '#334155',
+        '--cream': '#FFFFFF'
       };
-      if (themeVars[theme]) {
-        for (const [k, v] of Object.entries(themeVars[theme])) {
-          document.documentElement.style.setProperty(k, v);
-        }
+      for (const [k, v] of Object.entries(themeVars)) {
+        document.documentElement.style.setProperty(k, v);
       }
     })();
   </script>
@@ -242,17 +255,6 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       
-      <!-- 1-Click Sun/Moon Theme Toggle Button -->
-      <button
-        onclick="app.toggleTheme()"
-        id="app-theme-toggle-btn"
-        type="button"
-        title="Toggle Light / Dark mode"
-        class="flex items-center justify-center w-8 h-8 rounded-full border border-border bg-card hover:bg-muted text-foreground transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
-      >
-        <i data-lucide="sun" id="app-theme-sun" class="h-4 w-4 text-amber-500 hidden"></i>
-        <i data-lucide="moon" id="app-theme-moon" class="h-4 w-4 text-foreground"></i>
-      </button>
 
       <!-- World Stories Button -->
       <button
@@ -455,7 +457,7 @@ if (empty($_SESSION['current_user_id'])) {
 
       <!-- Bottom Sidebar Utilities -->
       <div class="border-t border-border p-2 space-y-1 text-xs font-medium">
-        <a href="/forum" target="_blank" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 transition font-bold border border-emerald-500/25 mb-1 cursor-pointer">
+        <a href="/forum" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 transition font-bold border border-emerald-500/25 mb-1 cursor-pointer">
           <div class="flex items-center gap-2">
             <i data-lucide="messages-square" class="h-4 w-4 text-emerald-500"></i>
             <span>Community Wall</span>
@@ -508,7 +510,7 @@ if (empty($_SESSION['current_user_id'])) {
             <p id="current-folder-subtitle" class="text-xs text-muted-foreground">Loading emails...</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <a href="/forum" target="_blank" title="Open Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+            <a href="/forum" title="Open Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
               <i data-lucide="messages-square" class="h-3.5 w-3.5 text-emerald-500"></i>
               <span class="hidden sm:inline">Wall</span>
             </a>
@@ -953,60 +955,6 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </div>
 
-        <!-- EMAIL THEME COLOR SELECTION (4 DISTINCT THEMES) -->
-        <div class="border-t border-border pt-4">
-          <div class="flex items-center justify-between mb-1.5">
-            <div>
-              <span class="font-bold text-foreground text-sm flex items-center gap-1.5">
-                <i data-lucide="palette" class="h-4 w-4 text-primary"></i>
-                <span>Mailbox Color Theme</span>
-              </span>
-              <p class="text-[11px] text-muted-foreground mt-0.5">Choose your preferred visual atmosphere for inside webmail:</p>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-            <!-- Theme 1: Clean Light -->
-            <button
-              type="button"
-              onclick="app.setTheme('light')"
-              id="theme-btn-light"
-              class="theme-choice-btn rounded-2xl border-2 p-3.5 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary shadow-xs"
-            >
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-lg">☀️</span>
-                <span class="font-bold text-xs truncate text-foreground">Clean Modern Light</span>
-              </div>
-              <div class="flex items-center gap-1.5 my-1.5">
-                <span class="h-4 w-4 rounded-full" style="background: #F8FAFC; border: 1.5px solid #CBD5E1;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #FFFFFF; border: 1.5px solid #CBD5E1;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #208ED3;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #0F172A;"></span>
-              </div>
-              <span class="text-[11px] text-muted-foreground mt-1">Crisp white canvas, high-clarity typography</span>
-            </button>
-
-            <!-- Theme 2: Obsidian Dark -->
-            <button
-              type="button"
-              onclick="app.setTheme('dark')"
-              id="theme-btn-dark"
-              class="theme-choice-btn rounded-2xl border-2 p-3.5 text-left transition flex flex-col justify-between group cursor-pointer relative bg-card hover:border-primary shadow-xs"
-            >
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-lg">🌙</span>
-                <span class="font-bold text-xs truncate text-foreground">Obsidian Modern Dark</span>
-              </div>
-              <div class="flex items-center gap-1.5 my-1.5">
-                <span class="h-4 w-4 rounded-full" style="background: #0B0F17; border: 1.5px solid #334155;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #131B2E; border: 1.5px solid #334155;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #38BDF8;"></span>
-                <span class="h-4 w-4 rounded-full" style="background: #F8FAFC;"></span>
-              </div>
-              <span class="text-[11px] text-muted-foreground mt-1">Velvet obsidian night &amp; vibrant sky blue</span>
-            </button>
-          </div>
-        </div>
 
         <!-- PROFILE DETAILS FORM -->
         <div class="border-t border-border pt-4 space-y-3">
@@ -1325,13 +1273,9 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <a href="/news" target="_blank" class="rounded-full bg-emerald-500 hover:bg-emerald-600 text-obsidian font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-sm" title="Open modern full-page news wire">
+          <a href="/news" class="rounded-full bg-emerald-500 hover:bg-emerald-600 text-obsidian font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-sm" title="Open modern full-page news wire">
             <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
             <span>Open Full Page News</span>
-          </a>
-          <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="hidden sm:flex items-center gap-1 rounded-full bg-primary hover:bg-black text-primary-foreground text-xs font-semibold px-3 py-1.5 transition">
-            <span>CBN News</span>
-            <i data-lucide="external-link" class="h-3 w-3"></i>
           </a>
           <button onclick="app.closeNewsModal()" class="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
             <i data-lucide="x" class="h-5 w-5"></i>
@@ -1349,11 +1293,11 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Footer Bar -->
       <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground shrink-0">
         <div class="flex items-center gap-2">
-          <span>⏱️ Auto-updates every 5 mins &bull; Source: <a href="https://cbn.com/lp/cbn-news" target="_blank" class="font-bold underline text-foreground">CBN News</a></span>
+          <span>⏱️ 5-Minute Auto-Sync &bull; Syndicated Global Wire</span>
           <span class="text-muted-foreground">&bull;</span>
-          <a href="/news" target="_blank" class="font-bold text-primary hover:underline flex items-center gap-1">
-            <span>Open Full Page</span>
-            <i data-lucide="arrow-up-right" class="h-3 w-3"></i>
+          <a href="/news" class="font-bold text-primary hover:underline flex items-center gap-1">
+            <span>Open Full Page News</span>
+            <i data-lucide="arrow-right" class="h-3 w-3"></i>
           </a>
         </div>
         <button onclick="app.closeNewsModal()" class="rounded-full bg-primary text-primary-foreground font-semibold px-4 py-1.5 transition">
@@ -1420,12 +1364,7 @@ if (empty($_SESSION['current_user_id'])) {
         <!-- Footer Bar -->
         <div class="pt-3 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground shrink-0">
           <div class="flex items-center gap-2">
-            <span>🌍 175+ traditional stories &bull; Supporting literacy &amp; cultural heritage</span>
-            <span class="hidden sm:inline">&bull;</span>
-            <a href="https://worldstories.org.uk/lang/english" target="_blank" rel="noopener noreferrer" class="font-bold text-primary hover:underline flex items-center gap-1">
-              <span>Open worldstories.org.uk</span>
-              <i data-lucide="external-link" class="h-3 w-3"></i>
-            </a>
+            <span>🌍 175+ traditional folktales &bull; Read directly inside Raccon Mail</span>
           </div>
           <button onclick="app.closeStoriesModal()" class="rounded-full bg-muted hover:bg-accent text-foreground font-semibold px-4 py-1.5 transition cursor-pointer">
             Close Stories
@@ -1461,10 +1400,9 @@ if (empty($_SESSION['current_user_id'])) {
         <!-- Reader Footer -->
         <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground shrink-0">
           <span id="story-reader-origin-badge">Origin</span>
-          <a id="story-reader-source-link" href="https://worldstories.org.uk/lang/english" target="_blank" rel="noopener noreferrer" class="font-bold text-primary hover:underline flex items-center gap-1">
-            <span>Listen &amp; read with audio on WorldStories UK</span>
-            <i data-lucide="external-link" class="h-3 w-3"></i>
-          </a>
+          <span class="font-bold text-primary flex items-center gap-1">
+            <span>Integrated Reader &bull; Raccon Mail Library</span>
+          </span>
         </div>
       </div>
 

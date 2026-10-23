@@ -6,8 +6,28 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="google" content="notranslate" />
-  <title>Sign In &amp; Register — Raccon Mail</title>
-    <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+  <title>Sign In &amp; Register — Raccon Mail Free Encrypted Webmail</title>
+  <meta name="description" content="Sign in or create your free, 100% private @racconmail.eu email account. Fast, encrypted, zero tracking, and accessible anywhere." />
+  <meta name="keywords" content="raccon mail sign in, raccon mail register, create private email, free encrypted webmail, racconmail" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <link rel="canonical" href="https://racconmail.eu/auth" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://racconmail.eu/auth" />
+  <meta property="og:site_name" content="Raccon Mail" />
+  <meta property="og:title" content="Sign In &amp; Register — Raccon Mail" />
+  <meta property="og:description" content="Sign in or create your free, 100% private @racconmail.eu email account." />
+  <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:url" content="https://racconmail.eu/auth" />
+  <meta name="twitter:title" content="Sign In &amp; Register — Raccon Mail" />
+  <meta name="twitter:description" content="Sign in or create your free, 100% private @racconmail.eu email account." />
+  <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
+
+  <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
@@ -26,22 +46,28 @@
   <!-- AdSense script removed from auth screen to comply with Google Anti-Phishing policy -->
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Early Theme Initializer -->
+  <!-- Early Theme Initializer (Strict Clean Modern White) -->
   <script>
     (function() {
-      let theme = localStorage.getItem('raccon_theme') || 'harmony';
-      if (theme === 'raccon' || theme === 'light') theme = 'harmony';
-      if (theme === 'midnight') theme = 'dark';
-      document.documentElement.className = 'theme-' + theme;
+      localStorage.setItem('raccon_theme', 'light');
+      document.documentElement.className = 'theme-light';
+      document.documentElement.classList.remove('dark', 'theme-dark');
       const themeVars = {
-        harmony: { '--background': '#EFEDE9', '--foreground': '#1E293B', '--card': '#FFFFFF', '--primary': '#208ED3', '--muted': '#F6F6F6', '--border': '#D5D5D5' },
-        dark: { '--background': '#1D1D1F', '--foreground': '#FFFFFF', '--card': '#2B2C2E', '--primary': '#208ED3', '--muted': '#242526', '--border': '#404245' },
-        'midnight-green': { '--background': '#0A1414', '--foreground': '#E6F2F2', '--card': '#112222', '--primary': '#00B392', '--muted': '#162E2E', '--border': '#1C3838' }
+        '--background': '#F8FAFC',
+        '--foreground': '#0F172A',
+        '--card': '#FFFFFF',
+        '--card-foreground': '#0F172A',
+        '--primary': '#208ED3',
+        '--primary-hover': '#1A7BB8',
+        '--primary-foreground': '#FFFFFF',
+        '--secondary': '#F1F5F9',
+        '--muted': '#F1F5F9',
+        '--muted-foreground': '#64748B',
+        '--border': '#E2E8F0',
+        '--border-light': '#F1F5F9'
       };
-      if (themeVars[theme]) {
-        for (const [k, v] of Object.entries(themeVars[theme])) {
-          document.documentElement.style.setProperty(k, v);
-        }
+      for (const [k, v] of Object.entries(themeVars)) {
+        document.documentElement.style.setProperty(k, v);
       }
     })();
   </script>
@@ -267,60 +293,6 @@
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
         </button>
 
-        <!-- Social OAuth Sign In Options -->
-        <div class="relative my-3">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-[#E2E8F0]"></div>
-          </div>
-          <div class="relative flex justify-center text-xs uppercase">
-            <span class="bg-white px-2.5 text-[#94A3B8] font-bold text-[10px] tracking-wider">Or sign in with</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2">
-          <!-- Google -->
-          <button
-            type="button"
-            onclick="handleSocialAuth('google')"
-            class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-            title="Sign In with Google"
-          >
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span class="text-xs font-bold">Google</span>
-          </button>
-
-          <!-- GitHub -->
-          <button
-            type="button"
-            onclick="handleSocialAuth('github')"
-            class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-            title="Sign In with GitHub"
-          >
-            <svg class="w-4 h-4 shrink-0 text-[#24292F] fill-current" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            <span class="text-xs font-bold">GitHub</span>
-          </button>
-
-          <!-- LinkedIn -->
-          <button
-            type="button"
-            onclick="handleSocialAuth('linkedin')"
-            class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-            title="Sign In with LinkedIn"
-          >
-            <svg class="w-4 h-4 shrink-0 text-[#0A66C2] fill-current" viewBox="0 0 24 24">
-              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/>
-            </svg>
-            <span class="text-xs font-bold">LinkedIn</span>
-          </button>
-        </div>
-
         <div class="pt-2 text-center text-xs text-[#64748B]">
           Don't have an account yet? 
           <button type="button" onclick="setTab('register')" class="font-bold text-[#208ED3] hover:underline ml-1 cursor-pointer">
@@ -408,60 +380,6 @@
             <span>Create Free Account &amp; Enter Mailbox</span>
             <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
           </button>
-
-          <!-- Social OAuth Registration Options (Google, GitHub, LinkedIn) -->
-          <div class="relative my-3">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-[#E2E8F0]"></div>
-            </div>
-            <div class="relative flex justify-center text-xs uppercase">
-              <span class="bg-white px-2.5 text-[#94A3B8] font-bold text-[10px] tracking-wider">Or register with</span>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2">
-            <!-- Google -->
-            <button
-              type="button"
-              onclick="handleSocialAuth('google')"
-              class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-              title="Register with Google"
-            >
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-              <span class="text-xs font-bold">Google</span>
-            </button>
-
-            <!-- GitHub -->
-            <button
-              type="button"
-              onclick="handleSocialAuth('github')"
-              class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-              title="Register with GitHub"
-            >
-              <svg class="w-4 h-4 shrink-0 text-[#24292F] fill-current" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-              </svg>
-              <span class="text-xs font-bold">GitHub</span>
-            </button>
-
-            <!-- LinkedIn -->
-            <button
-              type="button"
-              onclick="handleSocialAuth('linkedin')"
-              class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-              title="Register with LinkedIn"
-            >
-              <svg class="w-4 h-4 shrink-0 text-[#0A66C2] fill-current" viewBox="0 0 24 24">
-                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/>
-              </svg>
-              <span class="text-xs font-bold">LinkedIn</span>
-            </button>
-          </div>
 
           <div class="pt-2 text-center text-xs text-[#64748B]">
             Already have an account? 
@@ -792,67 +710,6 @@
         }
       } catch (_) {}
     })();
-
-    function getSavedSocialProfile(provider) {
-      try {
-        const raw = localStorage.getItem('raccon_social_' + provider);
-        if (raw) return JSON.parse(raw);
-      } catch (_) {}
-      const match = document.cookie.match(new RegExp('(?:^|; )raccon_social_' + provider + '=([^;]*)'));
-      if (match) {
-        const val = decodeURIComponent(match[1]);
-        return { email: val, name: val.split('@')[0] };
-      }
-      return null;
-    }
-
-    async function handleSocialAuth(provider) {
-      hideError();
-      const provName = provider === 'google' ? 'Google' : (provider === 'github' ? 'GitHub' : 'LinkedIn');
-
-      // Check if user already registered or logged in with this provider on this device
-      let profile = getSavedSocialProfile(provider);
-      let name = profile?.name || '';
-      let email = profile?.email || '';
-
-      // Only if no profile exists anywhere in localStorage or cookies, ask once for preferred name
-      if (!name && !email) {
-        name = prompt(`Sign In / Register with ${provName}:\nEnter your preferred name or username:`, `${provName} User`);
-        if (name === null) return; // user cancelled
-        name = (name || `${provName} User`).trim();
-      }
-
-      const btnLogin = document.getElementById('btn-login');
-      const btnReg = document.getElementById('btn-reg');
-      if (btnLogin) btnLogin.disabled = true;
-      if (btnReg) btnReg.disabled = true;
-
-      try {
-        const res = await fetch(`/api/auth/oauth/${provider}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, email: email })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `${provName} authentication failed`);
-
-        // Permanently remember this account so it NEVER asks again
-        if (data.user) {
-          try {
-            localStorage.setItem('raccon_social_' + provider, JSON.stringify(data.user));
-            localStorage.setItem('raccon_last_social', JSON.stringify({ provider, user: data.user }));
-          } catch (_) {}
-          document.cookie = `raccon_social_${provider}=${encodeURIComponent(data.user.email)}; path=/; max-age=31536000; SameSite=Lax`;
-        }
-
-        window.location.href = '/inbox';
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        if (btnLogin) btnLogin.disabled = false;
-        if (btnReg) btnReg.disabled = false;
-      }
-    }
 
     window.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();

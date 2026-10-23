@@ -1,3 +1,6 @@
+# Raccon Mail Robots Policy
+# https://racconmail.eu/
+
 User-agent: *
 Allow: /
 Allow: /forum
@@ -7,8 +10,31 @@ Allow: /legal/terms
 Allow: /legal/privacy
 Allow: /downloads/
 
+Disallow: /inbox
+Disallow: /inbox.php
 Disallow: /api/
 Disallow: /admin
+Disallow: /admin.html
 Disallow: /uploads/
 
+# Specific major search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Canonical XML Sitemap
 Sitemap: https://racconmail.eu/sitemap.xml

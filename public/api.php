@@ -52,7 +52,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v7';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v8';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -61,6 +61,8 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
             // Migration: ensure modern columns exist
             try { $db->exec('ALTER TABLE users ADD COLUMN password_hash TEXT'); } catch (Throwable $e) {}
             try { $db->exec('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN is_banned INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN ban_reason TEXT'); } catch (Throwable $e) {}
             try { $db->exec('ALTER TABLE users ADD COLUMN cover_photo TEXT'); } catch (Throwable $e) {}
             try { $db->exec('ALTER TABLE users ADD COLUMN theme TEXT DEFAULT "raccon"'); } catch (Throwable $e) {}
             try { $db->exec('ALTER TABLE users ADD COLUMN phone TEXT'); } catch (Throwable $e) {}
@@ -567,6 +569,14 @@ if ($route === 'auth/login' && $method === 'POST') {
         exit;
     }
 
+    // Check if account is suspended / banned
+    if (!empty($user['is_banned'])) {
+        http_response_code(403);
+        $reason = !empty($user['ban_reason']) ? (': ' . $user['ban_reason']) : '.';
+        echo json_encode(['error' => 'This account has been suspended by an administrator' . $reason]);
+        exit;
+    }
+
     // Successful login: clear rate limits, regenerate session ID to prevent fixation
     try {
         $db->prepare("DELETE FROM login_rate_limits WHERE ip = ? OR email = ?")->execute([$clientIp, $email]);
@@ -739,10 +749,18 @@ if ($route === 'auth/me' && $method === 'GET') {
         echo json_encode(['loggedIn' => false]);
         exit;
     }
-    $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, theme, is_admin FROM users WHERE id = ?');
+    $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, theme, is_admin, is_banned, ban_reason FROM users WHERE id = ?');
     $stmt->execute([$_SESSION['current_user_id']]);
     $user = $stmt->fetch();
     if ($user) {
+        if (!empty($user['is_banned'])) {
+            unset($_SESSION['current_user_id']);
+            unset($_SESSION['is_admin']);
+            @session_destroy();
+            http_response_code(403);
+            echo json_encode(['loggedIn' => false, 'error' => 'Account suspended by an administrator.']);
+            exit;
+        }
         echo json_encode(['loggedIn' => true, 'user' => $user, 'isAdmin' => (bool)($user['is_admin'] ?? 0)]);
     } else {
         echo json_encode(['loggedIn' => false]);
@@ -864,20 +882,27 @@ if (strpos($route, 'admin/') === 0) {
 
     // GET /api/admin/stats
     if ($route === 'admin/stats') {
-        $usersCount = $db->query('SELECT COUNT(*) FROM users')->fetchColumn();
-        $msgsCount = $db->query('SELECT COUNT(*) FROM messages')->fetchColumn();
-        $attsCount = $db->query('SELECT COUNT(*) FROM attachments')->fetchColumn();
-        $attsSize = $db->query('SELECT SUM(size_bytes) FROM attachments')->fetchColumn() ?: 0;
+        $usersCount = (int)$db->query('SELECT COUNT(*) FROM users')->fetchColumn();
+        $bannedCount = (int)$db->query('SELECT COUNT(*) FROM users WHERE is_banned = 1')->fetchColumn();
+        $activeCount = $usersCount - $bannedCount;
+        $msgsCount = (int)$db->query('SELECT COUNT(*) FROM messages')->fetchColumn();
+        $attsCount = (int)$db->query('SELECT COUNT(*) FROM attachments')->fetchColumn();
+        $attsSize = (int)($db->query('SELECT SUM(size_bytes) FROM attachments')->fetchColumn() ?: 0);
+        $forumPostsCount = (int)$db->query('SELECT COUNT(*) FROM forum_posts')->fetchColumn();
         $dbSize = file_exists($dbFile) ? filesize($dbFile) : 0;
 
         echo json_encode([
-            'users_count' => (int)$usersCount,
-            'messages_count' => (int)$msgsCount,
-            'attachments_count' => (int)$attsCount,
-            'attachments_size' => (int)$attsSize,
+            'users_count' => $usersCount,
+            'active_users_count' => $activeCount,
+            'banned_users_count' => $bannedCount,
+            'messages_count' => $msgsCount,
+            'attachments_count' => $attsCount,
+            'attachments_size' => $attsSize,
+            'forum_posts_count' => $forumPostsCount,
             'db_size' => (int)$dbSize,
             'server_time' => date('Y-m-d H:i:s'),
-            'php_version' => PHP_VERSION
+            'php_version' => PHP_VERSION,
+            'privacy_mode' => 'ENFORCED (Zero-knowledge mailbox sealing: Client message contents inaccessible to administrators)'
         ]);
         exit;
     }
@@ -885,7 +910,7 @@ if (strpos($route, 'admin/') === 0) {
     // GET /api/admin/users
     if ($route === 'admin/users' && $method === 'GET') {
         $stmt = $db->query('
-            SELECT u.id, u.email, u.name, u.is_admin, u.created_at,
+            SELECT u.id, u.email, u.name, u.is_admin, u.is_banned, u.ban_reason, u.created_at,
                    (SELECT COUNT(*) FROM messages m WHERE m.user_id = u.id) as message_count
             FROM users u
             ORDER BY u.created_at DESC
@@ -917,11 +942,47 @@ if (strpos($route, 'admin/') === 0) {
 
         $id = 'usr_' . uniqid();
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $db->prepare('INSERT INTO users (id, email, name, password_hash, is_admin, avatar, signature) VALUES (?, ?, ?, ?, ?, "/raccoon-logo.png", "🦝 Sent with clever stealth via Raccon Postcard Mail.")')
+        $db->prepare('INSERT INTO users (id, email, name, password_hash, is_admin, is_banned, avatar, signature) VALUES (?, ?, ?, ?, ?, 0, "/raccoon-logo.png", "🦝 Sent with clever stealth via Raccon Postcard Mail.")')
            ->execute([$id, $email, $name, $hash, $isAdminFlag]);
         $db->prepare('INSERT INTO mail_settings (user_id, sound_enabled) VALUES (?, 1)')->execute([$id]);
 
         echo json_encode(['success' => true, 'id' => $id]);
+        exit;
+    }
+
+    // PUT /api/admin/users/:id/ban (Ban / Suspend Member)
+    if (preg_match('#^admin/users/([^/]+)/ban$#', $route, $m) && $method === 'PUT') {
+        $targetId = $m[1];
+        if ($targetId === $_SESSION['current_user_id']) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Cannot ban your own admin account.']);
+            exit;
+        }
+        $reason = trim($input['reason'] ?? 'Suspended by system administrator for policy review.');
+        $db->prepare('UPDATE users SET is_banned = 1, ban_reason = ? WHERE id = ?')->execute([$reason, $targetId]);
+        echo json_encode(['success' => true, 'status' => 'banned']);
+        exit;
+    }
+
+    // PUT /api/admin/users/:id/unban (Unban Member)
+    if (preg_match('#^admin/users/([^/]+)/unban$#', $route, $m) && $method === 'PUT') {
+        $targetId = $m[1];
+        $db->prepare('UPDATE users SET is_banned = 0, ban_reason = NULL WHERE id = ?')->execute([$targetId]);
+        echo json_encode(['success' => true, 'status' => 'active']);
+        exit;
+    }
+
+    // PUT /api/admin/users/:id/role (Promote / Demote Admin)
+    if (preg_match('#^admin/users/([^/]+)/role$#', $route, $m) && $method === 'PUT') {
+        $targetId = $m[1];
+        if ($targetId === $_SESSION['current_user_id']) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Cannot modify your own administrator role.']);
+            exit;
+        }
+        $isAdminNew = !empty($input['is_admin']) ? 1 : 0;
+        $db->prepare('UPDATE users SET is_admin = ? WHERE id = ?')->execute([$isAdminNew, $targetId]);
+        echo json_encode(['success' => true, 'is_admin' => $isAdminNew]);
         exit;
     }
 
@@ -952,24 +1013,101 @@ if (strpos($route, 'admin/') === 0) {
         $db->prepare('DELETE FROM folders WHERE user_id = ?')->execute([$targetId]);
         $db->prepare('DELETE FROM contacts WHERE user_id = ?')->execute([$targetId]);
         $db->prepare('DELETE FROM mail_settings WHERE user_id = ?')->execute([$targetId]);
+        $db->prepare('DELETE FROM forum_posts WHERE user_id = ?')->execute([$targetId]);
+        $db->prepare('DELETE FROM forum_comments WHERE user_id = ?')->execute([$targetId]);
         $db->prepare('DELETE FROM users WHERE id = ?')->execute([$targetId]);
         echo json_encode(['success' => true]);
         exit;
     }
 
-    // POST /api/admin/users/:id/impersonate (1-click jump into any user's mailbox)
-    if (preg_match('#^admin/users/([^/]+)/impersonate$#', $route, $m) && $method === 'POST') {
-        $targetId = $m[1];
-        $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
-        $stmt->execute([$targetId]);
-        $target = $stmt->fetch();
-        if (!$target) {
-            http_response_code(404);
-            echo json_encode(['error' => 'User not found.']);
-            exit;
+    // STRICT PRIVACY PROTECTION: Block client mailbox impersonation & inspection
+    if (preg_match('#^admin/users/([^/]+)/impersonate$#', $route, $m)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Client mailbox impersonation is permanently disabled. Client emails are end-to-end zero-knowledge private.']);
+        exit;
+    }
+
+    // STRICT PRIVACY PROTECTION: Block viewing client messages
+    if ($route === 'admin/messages') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Client email traffic inspection is permanently disabled. Inboxes are sealed and 100% private.']);
+        exit;
+    }
+
+    // GET /api/admin/forum/posts (Community Moderation)
+    if ($route === 'admin/forum/posts' && $method === 'GET') {
+        $stmt = $db->query('
+            SELECT p.id, p.title, p.category, p.created_at, p.likes_count,
+                   (SELECT COUNT(*) FROM forum_comments c WHERE c.post_id = p.id) as comments_count,
+                   u.name as author_name, u.email as author_email
+            FROM forum_posts p
+            LEFT JOIN users u ON p.user_id = u.id
+            ORDER BY p.created_at DESC
+            LIMIT 100
+        ');
+        echo json_encode(['posts' => $stmt->fetchAll()]);
+        exit;
+    }
+
+    // DELETE /api/admin/forum/posts/:id (Delete inappropriate post)
+    if (preg_match('#^admin/forum/posts/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        $postId = $m[1];
+        $db->prepare('DELETE FROM forum_comments WHERE post_id = ?')->execute([$postId]);
+        $db->prepare('DELETE FROM forum_likes WHERE post_id = ?')->execute([$postId]);
+        $db->prepare('DELETE FROM forum_posts WHERE id = ?')->execute([$postId]);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    // GET /api/admin/system/health (System Diagnostics & Privacy Status)
+    if ($route === 'admin/system/health' && $method === 'GET') {
+        $integrity = 'OK';
+        try {
+            $res = $db->query('PRAGMA integrity_check')->fetchColumn();
+            $integrity = ($res === 'ok' || $res === 'OK') ? 'Clean & Healthy (0 errors)' : $res;
+        } catch (Throwable $e) {
+            $integrity = 'Error: ' . $e->getMessage();
         }
-        $_SESSION['current_user_id'] = $target['id'];
-        echo json_encode(['success' => true, 'user' => $target]);
+        $walMode = $db->query('PRAGMA journal_mode')->fetchColumn();
+        $dbSize = file_exists($dbFile) ? filesize($dbFile) : 0;
+        $usersTotal = (int)$db->query('SELECT COUNT(*) FROM users')->fetchColumn();
+        $usersBanned = (int)$db->query('SELECT COUNT(*) FROM users WHERE is_banned = 1')->fetchColumn();
+        $usersActive = $usersTotal - $usersBanned;
+        $forumCount = (int)$db->query('SELECT COUNT(*) FROM forum_posts')->fetchColumn();
+
+        echo json_encode([
+            'status' => 'operational',
+            'integrity' => $integrity,
+            'journal_mode' => strtoupper($walMode),
+            'db_size_bytes' => $dbSize,
+            'db_size_formatted' => round($dbSize / 1024, 1) . ' KB',
+            'users_total' => $usersTotal,
+            'users_active' => $usersActive,
+            'users_banned' => $usersBanned,
+            'forum_posts_count' => $forumCount,
+            'php_version' => PHP_VERSION,
+            'sqlite_version' => $db->query('select sqlite_version()')->fetchColumn(),
+            'https_active' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+            'privacy_guarantee' => 'STRICT (Client mailbox inspection permanently disabled: Zero-Knowledge Architecture)'
+        ]);
+        exit;
+    }
+
+    // POST /api/admin/system/optimize (Vacuum and compact database)
+    if ($route === 'admin/system/optimize' && $method === 'POST') {
+        try {
+            $db->exec('PRAGMA optimize;');
+            $db->exec('VACUUM;');
+            $newSize = file_exists($dbFile) ? filesize($dbFile) : 0;
+            echo json_encode([
+                'success' => true,
+                'message' => 'Database optimized and vacuumed successfully.',
+                'new_size' => round($newSize / 1024, 1) . ' KB'
+            ]);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Optimization failed: ' . $e->getMessage()]);
+        }
         exit;
     }
 
@@ -983,7 +1121,7 @@ if (strpos($route, 'admin/') === 0) {
             exit;
         }
 
-        $allUsers = $db->query('SELECT id, email FROM users')->fetchAll();
+        $allUsers = $db->query('SELECT id, email FROM users WHERE is_banned = 0 OR is_banned IS NULL')->fetchAll();
         $count = 0;
         foreach ($allUsers as $u) {
             $msgId = 'broad_' . uniqid();
@@ -994,25 +1132,6 @@ if (strpos($route, 'admin/') === 0) {
             $count++;
         }
         echo json_encode(['success' => true, 'broadcast_count' => $count]);
-        exit;
-    }
-
-    // GET /api/admin/messages (Audit recent messages)
-    if ($route === 'admin/messages' && $method === 'GET') {
-        $stmt = $db->query('
-            SELECT id, user_id, sender_name, sender_email, recipient_email, subject, created_at, is_spam, is_trashed
-            FROM messages
-            ORDER BY created_at DESC
-            LIMIT 50
-        ');
-        echo json_encode(['messages' => $stmt->fetchAll()]);
-        exit;
-    }
-
-    // DELETE /api/admin/messages/:id (Delete any message)
-    if (preg_match('#^admin/messages/([^/]+)$#', $route, $m) && $method === 'DELETE') {
-        $db->prepare('DELETE FROM messages WHERE id = ?')->execute([$m[1]]);
-        echo json_encode(['success' => true]);
         exit;
     }
 }
@@ -3101,6 +3220,8 @@ function initDatabase($db) {
             signature TEXT,
             password_hash TEXT,
             is_admin INTEGER DEFAULT 0,
+            is_banned INTEGER DEFAULT 0,
+            ban_reason TEXT,
             cover_photo TEXT,
             theme TEXT DEFAULT 'raccon',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP

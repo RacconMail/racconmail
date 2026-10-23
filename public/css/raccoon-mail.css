@@ -1,25 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@500;600;700&family=Caveat:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&family=Caveat:wght@600;700&display=swap');
 
 /* ==========================================================================
-   THEME SPECIFICATIONS: Harmony (Default), Dark, Midnight Green
-   Inspired by Harmony SocialEngine: #208ED3, #EFEDE9, #FFFFFF, #1E293B, #F2F2F2
+   RACCON MAIL: SIGNATURE CLEAN WHITE THEME (MODERN, CLEAN, CRISP & MINIMALIST)
+   Designed with pure white cards, crisp slate typography, and signature azure.
    ========================================================================== */
 
-/* ==========================================================================
-   THEME SPECIFICATIONS: Clean Modern Light & Obsidian Dark (STRICTLY 2 THEMES)
-   ========================================================================== */
-
-/* 1. ☀️ Clean Modern Light Theme */
-:root, html, body, html.theme-light, body.theme-light, html.theme-harmony, body.theme-harmony, html.theme-raccon, body.theme-raccon {
-  --background: #F8FAFC; /* Crisp Clean Slate-50 body canvas */
-  --foreground: #0F172A; /* Deep Slate-900 High Readability Headline */
+:root, html, body,
+html.dark, body.dark,
+html.theme-light, body.theme-light,
+html.theme-dark, body.theme-dark,
+html.theme-harmony, body.theme-harmony,
+html.theme-raccon, body.theme-raccon,
+html.theme-midnight, body.theme-midnight,
+html.theme-midnight-green, body.theme-midnight-green {
+  --background: #F8FAFC; /* Crisp Clean Slate Canvas */
+  --foreground: #0F172A; /* Deep Slate Headline & Text */
   --card: #FFFFFF; /* Pure White Elevated Card */
-  --card-alt: #F1F5F9;
+  --card-alt: #F1F5F9; /* Subtle Elevated Surface */
   --card-foreground: #0F172A;
-  --primary: #208ED3; /* Signature Modern Azure */
+  --primary: #208ED3; /* Modern Signature Azure */
   --primary-hover: #1A7BB8;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(32, 142, 211, 0.3);
+  --primary-glow: rgba(32, 142, 211, 0.25);
   --secondary: #F1F5F9;
   --secondary-foreground: #0F172A;
   --secondary-hover: #E2E8F0;
@@ -31,93 +33,13 @@
   --border-light: #F1F5F9;
   --mask: #0F172A;
   --fur: #334155;
-  --cream: #F8FAFC;
+  --cream: #FFFFFF;
   --themewidget-radius: 16px;
   --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
   --stamp-red: #E11D48;
   --stamp-blue: #208ED3;
-}
-
-/* 2. 🌙 Obsidian Modern Dark Theme */
-html.dark, body.dark, html.theme-dark, body.theme-dark, html.theme-midnight, body.theme-midnight {
-  --background: #0B0F17; /* Deep Velvet Obsidian */
-  --foreground: #F8FAFC; /* Crisp Slate-50 Text */
-  --card: #131B2E; /* Sleek Dark Glass Card */
-  --card-alt: #1E293B;
-  --card-foreground: #F8FAFC;
-  --primary: #38BDF8; /* Electric Sky Blue */
-  --primary-hover: #0EA5E9;
-  --primary-foreground: #0B0F17;
-  --primary-glow: rgba(56, 189, 248, 0.4);
-  --secondary: #1E293B;
-  --secondary-foreground: #F8FAFC;
-  --secondary-hover: #334155;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #1E293B;
-  --accent-foreground: #38BDF8;
-  --border: #1E293B;
-  --border-light: #334155;
-  --mask: #0B0F17;
-  --fur: #1E293B;
-  --cream: #131B2E;
-  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --stamp-red: #F43F5E;
-  --stamp-blue: #38BDF8;
-}
-
-/* 3. 🌲 Midnight Green Theme */
-html.theme-midnight-green, body.theme-midnight-green, html.theme-forest, body.theme-forest, html.theme-cyber, body.theme-cyber {
-  --background: #0A1414;
-  --foreground: #E6F2F2;
-  --card: #112222;
-  --card-alt: #162E2E;
-  --card-foreground: #E6F2F2;
-  --primary: #00B392;
-  --primary-hover: #00997C;
-  --primary-foreground: #0A1414;
-  --primary-glow: rgba(0, 179, 146, 0.45);
-  --secondary: #1C3838;
-  --secondary-foreground: #E6F2F2;
-  --secondary-hover: #254A4A;
-  --muted: #162E2E;
-  --muted-foreground: #80A6A6;
-  --accent: #162E2E;
-  --accent-foreground: #00B392;
-  --border: #1C3838;
-  --border-light: #254A4A;
-  --mask: #0A1414;
-  --fur: #112222;
-  --cream: #1C3838;
-  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --stamp-red: #F43F5E;
-  --stamp-blue: #00B392;
-}
-  --card: #112222; /* Matte Pine */
-  --card-foreground: #E6F2F2;
-  --primary: #00B392; /* Cyber Emerald */
-  --primary-hover: #00997C;
-  --primary-foreground: #0A1414;
-  --primary-glow: rgba(0, 179, 146, 0.45);
-  --secondary: #1C3838;
-  --secondary-foreground: #E6F2F2;
-  --muted: #162E2E;
-  --muted-foreground: #80A6A6;
-  --accent: #162E2E;
-  --accent-foreground: #00B392;
-  --border: #1C3838;
-  --border-light: #254A4A;
-  --mask: #0A1414;
-  --fur: #112222;
-  --cream: #1C3838;
-  --shadow-soft: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --stamp-red: #F43F5E;
-  --stamp-blue: #00B392;
 }
 
 * {
@@ -998,68 +920,29 @@ h3, .heading-card, [data-heading="card"] {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 1. Light Theme Compose Button */
-html:not(.dark):not(.theme-dark) #btn-compose,
-html.theme-light #btn-compose,
-body.theme-light #btn-compose {
+/* Clean Modern Compose Button */
+#btn-compose {
   background-color: #FFFFFF !important;
   border: 1.5px solid #CBD5E1 !important;
   color: #0F172A !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
-html:not(.dark):not(.theme-dark) #btn-compose:hover,
-html.theme-light #btn-compose:hover,
-body.theme-light #btn-compose:hover {
+#btn-compose:hover {
   background-color: #F8FAFC !important;
   border-color: #208ED3 !important;
   transform: translateY(-1.5px) !important;
   box-shadow: 0 6px 18px rgba(32, 142, 211, 0.18) !important;
 }
-html:not(.dark):not(.theme-dark) #btn-compose .compose-pencil-badge,
-html.theme-light #btn-compose .compose-pencil-badge {
+#btn-compose .compose-pencil-badge {
   background-color: #EBF5FB !important;
   border: 1px solid #BAE6FD !important;
 }
-html:not(.dark):not(.theme-dark) #btn-compose svg,
-html.theme-light #btn-compose svg {
+#btn-compose svg {
   stroke: #208ED3 !important;
   color: #208ED3 !important;
 }
-html:not(.dark):not(.theme-dark) #btn-compose .compose-btn-text,
-html.theme-light #btn-compose .compose-btn-text {
+#btn-compose .compose-btn-text {
   color: #0F172A !important;
-}
-
-/* 2. Dark Theme Compose Button */
-html.dark #btn-compose,
-html.theme-dark #btn-compose,
-body.theme-dark #btn-compose {
-  background-color: #131B2E !important;
-  border: 1.5px solid #1E293B !important;
-  color: #F8FAFC !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
-}
-html.dark #btn-compose:hover,
-html.theme-dark #btn-compose:hover,
-body.theme-dark #btn-compose:hover {
-  background-color: #1A2438 !important;
-  border-color: #38BDF8 !important;
-  transform: translateY(-1.5px) !important;
-  box-shadow: 0 6px 18px rgba(56, 189, 248, 0.25) !important;
-}
-html.dark #btn-compose .compose-pencil-badge,
-html.theme-dark #btn-compose .compose-pencil-badge {
-  background-color: rgba(56, 189, 248, 0.15) !important;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
-}
-html.dark #btn-compose svg,
-html.theme-dark #btn-compose svg {
-  stroke: #38BDF8 !important;
-  color: #38BDF8 !important;
-}
-html.dark #btn-compose .compose-btn-text,
-html.theme-dark #btn-compose .compose-btn-text {
-  color: #F8FAFC !important;
 }
 
 #btn-compose:active {

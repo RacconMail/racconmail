@@ -1,6 +1,14 @@
 Options -Indexes +FollowSymLinks
 RewriteEngine On
 
+# 0. Canonical HTTPS & www-to-apex 301 Permanent Redirect (Consolidates all SEO Domain Authority)
+RewriteCond %{HTTP_HOST} ^www\.racconmail\.eu$ [NC]
+RewriteRule ^(.*)$ https://racconmail.eu/$1 [L,R=301]
+
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} (www\.)?racconmail\.eu$ [NC]
+RewriteRule ^(.*)$ https://racconmail.eu/$1 [L,R=301]
+
 <IfModule mod_headers.c>
     # Enterprise Security Headers (A+ Trust Score on SecurityHeaders & Google Safe Browsing)
     Header set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" env=HTTPS
