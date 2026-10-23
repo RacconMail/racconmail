@@ -120,8 +120,15 @@ if (empty($_SESSION['current_user_id'])) {
     <div class="flex items-center gap-3">
       <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
       <span class="font-bold text-base tracking-tight text-slate-500" style="color: #64748b !important;">Raccon</span>
-      <button onclick="app.toggleMobileSidebar()" class="ml-2 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs" style="background-color: #0f172a !important; color: #ffffff !important;" title="Toggle Sidebar">
-        <i data-lucide="panel-left" class="h-4 w-4 text-white" style="color: #ffffff !important;"></i>
+      <button
+        type="button"
+        id="btn-toggle-sidebar"
+        onclick="app.toggleSidebar()"
+        class="ml-1 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center"
+        style="background: transparent !important; color: #94a3b8 !important; border: none !important;"
+        title="Toggle Sidebar"
+      >
+        <i data-lucide="panel-left" class="h-4 w-4" style="color: #94a3b8 !important;"></i>
       </button>
     </div>
 
@@ -367,8 +374,8 @@ if (empty($_SESSION['current_user_id'])) {
           <p id="middle-folder-subtitle" class="text-xs text-slate-400 leading-normal mt-1 font-normal"></p>
 
           <!-- Search Bar with Click-to-Open Suggestions -->
-          <div id="global-search-container" class="mt-3.5 mb-1 relative">
-            <div class="bubble-search-box">
+          <div id="global-search-container" class="mt-3.5 mb-1 relative w-full" style="background: transparent !important; border: none !important;">
+            <div class="bubble-search-box relative w-full" style="background: transparent !important; border: none !important;">
               <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
               <input
                 id="global-search"
@@ -379,6 +386,7 @@ if (empty($_SESSION['current_user_id'])) {
                 oninput="app.onSearchInput(this.value)"
                 onkeydown="app.onSearchKeyDown(event)"
                 autocomplete="off"
+                style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
               />
               <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="h-3.5 w-3.5"></i>
@@ -1166,7 +1174,7 @@ if (empty($_SESSION['current_user_id'])) {
     })();
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v=<?php echo time(); ?>"></script>
 
   
 

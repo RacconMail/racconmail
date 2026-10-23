@@ -1511,9 +1511,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     // 4. Category Badges (Personal, Work, Community)
     const allMsgs = this.messages || [];
-    const personalCount = allMsgs.filter(m => !/work|project|meeting|invoice|deadline|forum|digest|newsletter|announcement|automated|noreply/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
-    const workCount = allMsgs.filter(m => /work|project|meeting|schedule|office|task|client|proposal|contract|invoice|report|deadline|sync|corp|job|business|budget|review|strategy/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
-    const commCount = allMsgs.filter(m => /community|forum|event|meetup|group|social|club|discussion|digest|update|announcement|welcome|stories|newsletter|public/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
+    const personalCount = allMsgs.filter(m => this.categorizeMessage(m) === 'personal').length;
+    const workCount = allMsgs.filter(m => this.categorizeMessage(m) === 'work').length;
+    const commCount = allMsgs.filter(m => this.categorizeMessage(m) === 'community').length;
 
     setBadge('badge-cat-personal', personalCount);
     setBadge('badge-cat-work', workCount);
@@ -1847,7 +1847,18 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   currentCategoryFilter: null,
 
-  filterByCategory(category) {
+  categorizeMessage(m) {
+    const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase();
+    if (/team|welcome|community|forum|event|meetup|group|social|club|discussion|digest|update|announcement|stories|newsletter|system|raccon/i.test(text)) {
+      return 'community';
+    }
+    if (/work|project|meeting|schedule|office|task|client|proposal|contract|invoice|report|deadline|sync|corp|job|business|budget|review|strategy/i.test(text)) {
+      return 'work';
+    }
+    return 'personal';
+  },
+
+  async filterByCategory(category) {
     if (this.currentCategoryFilter === category) {
       // Deselect category and return to current folder view
       this.currentCategoryFilter = null;
@@ -1861,21 +1872,40 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         'Trash': 'nav-item-trash',
         'Spam': 'nav-item-ignored'
       };
-      const activeNavId = activeNavMap[this.currentFolder];
-      if (activeNavId) document.getElementById(activeNavId)?.classList.add('active');
+      const activeNavId = activeNavMap[this.currentFolder] || 'nav-item-inbox';
+      document.getElementById(activeNavId)?.classList.add('active');
 
       const folderTitle = this.currentFolder === 'Spam' ? 'Spam & Ignored' : (this.currentFolder === 'Starred' ? 'Favorites' : this.currentFolder);
       const midTitle = document.getElementById('middle-folder-title');
       if (midTitle) midTitle.textContent = folderTitle;
+      const topTitle = document.getElementById('current-folder-title');
+      if (topTitle) topTitle.textContent = folderTitle;
+      const midSub = document.getElementById('middle-folder-subtitle');
+      if (midSub) midSub.textContent = 'Maximizing Efficiency, and Achieving Email Zen.';
     } else {
       this.currentCategoryFilter = category;
       document.querySelectorAll('.bubble-nav-item').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.category-nav-btn').forEach(btn => btn.classList.remove('active'));
       const btn = document.querySelector(`[data-category-filter="${category}"]`);
       if (btn) btn.classList.add('active');
 
       const catNames = { personal: 'Personal', work: 'Work', community: 'Community' };
+      const catSubs = {
+        personal: 'Direct messages and personal conversations.',
+        work: 'Work, projects, deadlines and business correspondence.',
+        community: 'Community updates, forum stories and announcements.'
+      };
       const midTitle = document.getElementById('middle-folder-title');
       if (midTitle) midTitle.textContent = catNames[category] || category;
+      const topTitle = document.getElementById('current-folder-title');
+      if (topTitle) topTitle.textContent = catNames[category] || category;
+      const midSub = document.getElementById('middle-folder-subtitle');
+      if (midSub) midSub.textContent = catSubs[category] || '';
+
+      if (this.currentFolder === 'Trash' || this.currentFolder === 'Spam' || !this.messages || this.messages.length === 0) {
+        this.currentFolder = 'Inbox';
+        await this.loadMessages();
+      }
     }
     this.closeMobileSidebar();
     this.renderMessagesList();
@@ -1887,17 +1917,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     if (this.currentCategoryFilter) {
       const cat = this.currentCategoryFilter;
-      list = list.filter(m => {
-        const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase();
-        if (cat === 'work') {
-          return /work|project|meeting|schedule|office|task|client|proposal|contract|invoice|report|deadline|sync|corp|job|business|budget|review|strategy/i.test(text);
-        } else if (cat === 'community') {
-          return /community|forum|event|meetup|group|social|club|discussion|digest|update|announcement|welcome|stories|newsletter|public/i.test(text);
-        } else if (cat === 'personal') {
-          return !/work|project|meeting|invoice|deadline|forum|digest|newsletter|announcement|automated|noreply/i.test(text);
-        }
-        return true;
-      });
+      return list.filter(m => this.categorizeMessage(m) === cat);
     }
 
     if (this.currentCategoryTab === 'other') {
@@ -4327,19 +4347,36 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  // Mobile responsive sidebar and view management
-  toggleMobileSidebar() {
+  // Responsive sidebar toggle (works on both Desktop and Mobile)
+  toggleSidebar() {
     const sidebar = document.getElementById('sidebar-panel');
     const backdrop = document.getElementById('mobile-sidebar-backdrop');
     if (!sidebar) return;
-    const isClosed = sidebar.classList.contains('-translate-x-full');
-    if (isClosed) {
-      sidebar.classList.remove('-translate-x-full');
-      backdrop?.classList.remove('hidden');
+
+    if (window.innerWidth < 768) {
+      // Mobile drawer slide in/out
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop?.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop?.classList.add('hidden');
+      }
     } else {
-      sidebar.classList.add('-translate-x-full');
-      backdrop?.classList.add('hidden');
+      // Desktop collapse toggle
+      if (sidebar.style.display === 'none' || sidebar.classList.contains('hidden') || sidebar.classList.contains('md:hidden')) {
+        sidebar.style.display = '';
+        sidebar.classList.remove('hidden', 'md:hidden');
+      } else {
+        sidebar.style.display = 'none';
+        sidebar.classList.add('hidden', 'md:hidden');
+      }
     }
+  },
+
+  toggleMobileSidebar() {
+    this.toggleSidebar();
   },
 
   closeMobileSidebar() {

@@ -1381,37 +1381,91 @@ header h1#current-folder-title {
   color: #94A3B8 !important;
 }
 
-/* Header buttons: Solid black buttons with white write & icons */
-header button,
-header #btn-top-compose {
+/* Header Compose Button: Solid black pill with white text & icon */
+#btn-top-compose {
   background: #0F172A !important;
   color: #FFFFFF !important;
   border: none !important;
 }
 
-header button:hover,
-header #btn-top-compose:hover {
+#btn-top-compose:hover {
   background: #000000 !important;
 }
 
-header button *,
-header #btn-top-compose * {
+#btn-top-compose * {
   color: #FFFFFF !important;
 }
 
+/* Sidebar Toggle in Header: Modern clean gray icon matching the rest of the site */
+#btn-toggle-sidebar {
+  background: transparent !important;
+  color: #94A3B8 !important;
+  border: none !important;
+  padding: 8px !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+#btn-toggle-sidebar:hover {
+  background: #F1F5F9 !important;
+  color: #475569 !important;
+}
+
+#btn-toggle-sidebar i,
+#btn-toggle-sidebar svg {
+  color: #94A3B8 !important;
+  stroke: #94A3B8 !important;
+  stroke-width: 2 !important;
+}
+
+#btn-toggle-sidebar:hover i,
+#btn-toggle-sidebar:hover svg {
+  color: #475569 !important;
+  stroke: #475569 !important;
+}
+
 /* 4. Minimalist Search Bar (Clean White Bubble) */
+#global-search-container,
 #global-search-container > div,
 .bubble-search-box {
-  background: #F8FAFC !important;
-  border: 1px solid #E2E8F0 !important;
+  position: relative !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
   box-shadow: none !important;
-  transition: all 0.2s ease;
 }
-#global-search-container > div:focus-within,
-.bubble-search-box:focus-within {
+
+.bubble-search-box input,
+#global-search {
+  width: 100% !important;
+  height: 38px !important;
   background: #FFFFFF !important;
-  border-color: #94A3B8 !important;
-  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2) !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 9999px !important;
+  padding: 8px 16px 8px 36px !important;
+  font-size: 13px !important;
+  color: #18181B !important;
+  outline: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
+}
+
+.bubble-search-box input:focus,
+#global-search:focus {
+  background: #FFFFFF !important;
+  border-color: #64748B !important;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12) !important;
+}
+
+/* Hide empty or 0 coral badge (eliminates red dash artifact) */
+.bubble-count-coral:empty,
+.bubble-count-coral.hidden,
+#inbox-coral-badge:empty,
+#inbox-coral-badge.hidden,
+#sidebar-inbox-badge:empty,
+#sidebar-inbox-badge.hidden {
+  display: none !important;
 }
 
 /* 5. Clean White Dropdowns & Modals */
@@ -2187,25 +2241,36 @@ body.app:not(.dark) {
   line-height: 1.2 !important;
 }
 
-/* Bubble Search Input */
-.bubble-search-box {
-  position: relative;
-  width: 100%;
+/* Bubble Search Input (100% Completely Oval Capsule) */
+.bubble-search-box,
+#global-search-container,
+#global-search-container > div {
+  position: relative !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  box-shadow: none !important;
 }
-.bubble-search-box input {
-  width: 100%;
-  background: #FFFFFF;
-  border: 1.5px solid #E5E7EB;
-  border-radius: 14px;
-  padding: 9px 16px 9px 38px;
-  font-size: 13px;
-  color: #18181B;
-  outline: none;
-  transition: all 0.2s ease;
+.bubble-search-box input,
+#global-search {
+  width: 100% !important;
+  height: 40px !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #E2E8F0 !important;
+  border-radius: 9999px !important;
+  padding: 0 18px 0 40px !important;
+  font-size: 13px !important;
+  color: #18181B !important;
+  outline: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.2s ease !important;
 }
-.bubble-search-box input:focus {
-  border-color: #18181B;
-  box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.08);
+.bubble-search-box input:focus,
+#global-search:focus {
+  background: #FFFFFF !important;
+  border-color: #64748B !important;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15) !important;
 }
 
 /* Messages List Item Card */
