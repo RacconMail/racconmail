@@ -304,6 +304,10 @@ if (empty($_SESSION['current_user_id'])) {
               <i data-lucide="image" class="h-4 w-4 text-slate-600 shrink-0"></i>
               <span>Change Avatar &amp; Cover</span>
             </button>
+            <button onclick="app.openProfileModal('info')" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap cursor-pointer">
+              <i data-lucide="edit-3" class="h-4 w-4 text-slate-600 shrink-0"></i>
+              <span>Edit Bio &amp; Profile Info</span>
+            </button>
             <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap cursor-pointer">
               <i data-lucide="settings" class="h-4 w-4 text-slate-600 shrink-0"></i>
               <span>Mail Settings &amp; SMTP</span>
@@ -447,13 +451,6 @@ if (empty($_SESSION['current_user_id'])) {
 
       <!-- Bottom Sidebar Utilities (Styled identical to standard folders) -->
       <div class="border-t border-border p-2 space-y-0.5 text-xs font-medium">
-        <button onclick="app.navToWall()" id="nav-btn-wall" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="layout" class="h-4 w-4 shrink-0 text-slate-800"></i>
-            <span class="truncate font-semibold">Wall &amp; Timeline</span>
-          </div>
-          <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-900 text-white">Live</span>
-        </button>
         <a href="/forum" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="messages-square" class="h-4 w-4 shrink-0"></i>
@@ -996,10 +993,6 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- Compose Center Button (Scaled to fit seamlessly in bottom nav bar) -->
     <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full bg-slate-900 hover:bg-black text-white shadow-md transform active:scale-90 transition border-2 border-white cursor-pointer shrink-0" title="Compose Postcard">
       <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
-    </button>
-    <button onclick="app.navToWall()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="Wall & Timeline">
-      <i data-lucide="layout" class="h-5 w-5"></i>
-      <span class="text-[10px] font-medium">Wall</span>
     </button>
     <button onclick="app.toggleMobileSidebar()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="All Folders">
       <i data-lucide="menu" class="h-5 w-5"></i>

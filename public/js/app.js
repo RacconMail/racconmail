@@ -3469,9 +3469,13 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     input.value = 'Bucharest, Romania';
   },
 
-  navToWall(tab = 'wall') {
+  async navToWall(tab = 'wall') {
     this.closeAccountDropdown();
     this.closeMobileSidebar();
+
+    if (!this.currentUser) {
+      try { await this.fetchUser(); } catch (_) {}
+    }
 
     const wallPanel = document.getElementById('wall-view-panel');
     const msgPanel = document.getElementById('messages-panel');
@@ -3488,57 +3492,51 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       wallPanel.scrollTo(0, 0);
     }
 
-    // Highlight sidebar Wall button
-    document.querySelectorAll('.nav-folder-btn').forEach(b => b.classList.remove('bg-muted', 'font-bold'));
-    const navBtn = document.getElementById('nav-btn-wall');
-    if (navBtn) navBtn.classList.add('bg-muted', 'font-bold');
-
     // Populate user profile info in wall header
-    if (this.currentUser) {
-      const avatar = this.currentUser.avatar || '/raccoon-logo.png';
-      const cover = this.currentUser.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
-      const profAv = document.getElementById('profile-avatar-preview');
-      if (profAv) profAv.src = avatar;
-      const covEl = document.getElementById('profile-cover-preview');
-      if (covEl) {
-        if (cover.startsWith('http') || cover.startsWith('/')) {
-          covEl.style.backgroundImage = `url('${cover}')`;
-        } else {
-          covEl.style.background = cover;
-        }
+    const user = this.currentUser || {};
+    const avatar = user.avatar || '/raccoon-logo.png';
+    const cover = user.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
+    const profAv = document.getElementById('profile-avatar-preview');
+    if (profAv) profAv.src = avatar;
+    const covEl = document.getElementById('profile-cover-preview');
+    if (covEl) {
+      if (cover.startsWith('http') || cover.startsWith('/')) {
+        covEl.style.backgroundImage = `url('${cover}')`;
+      } else {
+        covEl.style.background = cover;
       }
-      const pName = document.getElementById('profile-preview-name');
-      if (pName) pName.textContent = this.currentUser.name || '';
-      const pEmail = document.getElementById('profile-preview-email');
-      if (pEmail) pEmail.textContent = this.currentUser.email || '';
-
-      const joinedStr = this.formatJoinedDate(this.currentUser.created_at);
-      const profJoined = document.getElementById('profile-joined-text');
-      if (profJoined) profJoined.textContent = joinedStr;
-
-      const profLoc = document.getElementById('profile-location-text');
-      if (profLoc) profLoc.textContent = this.currentUser.location || 'Online';
-
-      const profBio = document.getElementById('profile-bio-text');
-      if (profBio) profBio.textContent = this.currentUser.bio || 'Verified nocturnal mail user & postcard collector.';
-
-      const inName = document.getElementById('profile-name-input');
-      if (inName) inName.value = this.currentUser.name || '';
-      const inEmail = document.getElementById('profile-email-input');
-      if (inEmail) inEmail.value = this.currentUser.email || '';
-      const inLoc = document.getElementById('profile-location-input');
-      if (inLoc) inLoc.value = this.currentUser.location || '';
-      const inBio = document.getElementById('profile-bio-input');
-      if (inBio) inBio.value = this.currentUser.bio || '';
-      const inSig = document.getElementById('profile-signature-input');
-      if (inSig) inSig.value = this.currentUser.signature || '';
-
-      const wallCompAv = document.getElementById('wall-composer-avatar');
-      if (wallCompAv) wallCompAv.src = avatar;
     }
+    const pName = document.getElementById('profile-preview-name');
+    if (pName) pName.textContent = user.name || 'Clever Raccoon';
+    const pEmail = document.getElementById('profile-preview-email');
+    if (pEmail) pEmail.textContent = user.email || 'me@racconmail.eu';
+
+    const joinedStr = this.formatJoinedDate(user.created_at);
+    const profJoined = document.getElementById('profile-joined-text');
+    if (profJoined) profJoined.textContent = joinedStr;
+
+    const profLoc = document.getElementById('profile-location-text');
+    if (profLoc) profLoc.textContent = user.location || 'Online';
+
+    const profBio = document.getElementById('profile-bio-text');
+    if (profBio) profBio.textContent = user.bio || 'Verified nocturnal mail user & postcard collector.';
+
+    const inName = document.getElementById('profile-name-input');
+    if (inName) inName.value = user.name || '';
+    const inEmail = document.getElementById('profile-email-input');
+    if (inEmail) inEmail.value = user.email || '';
+    const inLoc = document.getElementById('profile-location-input');
+    if (inLoc) inLoc.value = user.location || '';
+    const inBio = document.getElementById('profile-bio-input');
+    if (inBio) inBio.value = user.bio || '';
+    const inSig = document.getElementById('profile-signature-input');
+    if (inSig) inSig.value = user.signature || '';
+
+    const wallCompAv = document.getElementById('wall-composer-avatar');
+    if (wallCompAv) wallCompAv.src = avatar;
 
     this.switchProfileTab(tab);
-    this.loadWallPosts();
+    await this.loadWallPosts();
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
     }
@@ -3563,10 +3561,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         readerPanel.classList.add('flex');
       }
     }
-
-    // Unhighlight sidebar Wall button
-    const navBtn = document.getElementById('nav-btn-wall');
-    if (navBtn) navBtn.classList.remove('bg-muted', 'font-bold');
 
     // Highlight current folder
     const curFolder = this.currentFolder || 'Inbox';
@@ -3838,8 +3832,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   async loadWallPosts(userId = null) {
     const feed = document.getElementById('profile-wall-feed');
     if (!feed) return;
-    const targetId = userId || this.currentUser?.id;
-    if (!targetId) return;
+
+    if (!this.currentUser && !userId) {
+      try { await this.fetchUser(); } catch (_) {}
+    }
+    const targetId = userId || this.currentUser?.id || '';
 
     feed.innerHTML = `
       <div class="py-8 text-center text-slate-400 flex items-center justify-center gap-2">
@@ -3852,7 +3849,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
 
     try {
-      const res = await fetch(`/api/wall/posts?user_id=${encodeURIComponent(targetId)}`);
+      const url = targetId ? `/api/wall/posts?user_id=${encodeURIComponent(targetId)}` : `/api/wall/posts`;
+      const res = await fetch(url);
       const data = await res.json();
       const posts = data.posts || [];
       this.currentWallPosts = posts;
@@ -4047,8 +4045,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     let itemsHtml = `
       <!-- Milestone: Account Inception -->
-      <div class="relative">
-        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
+      <div class="relative pl-6 sm:pl-8 pb-6 border-l-2 border-slate-200">
+        <div class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
           <i data-lucide="award" class="h-3 w-3"></i>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-1">
@@ -4066,8 +4064,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       </div>
 
       <!-- Milestone: First Welcome Postcard Sealed -->
-      <div class="relative">
-        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-800 border-2 border-white shadow-xs flex items-center justify-center text-white">
+      <div class="relative pl-6 sm:pl-8 pb-6 border-l-2 border-slate-200">
+        <div class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-slate-800 border-2 border-white shadow-xs flex items-center justify-center text-white">
           <i data-lucide="mail" class="h-3 w-3"></i>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-1">
@@ -4086,7 +4084,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     `;
 
     if (posts && posts.length > 0) {
-      itemsHtml += posts.map(p => {
+      itemsHtml += posts.map((p, idx) => {
+        const isLast = idx === posts.length - 1;
         const d = new Date(p.created_at);
         const dateFormatted = d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -4099,8 +4098,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         const iconName = typeIcons[p.post_type] || 'file-text';
 
         return `
-          <div class="relative">
-            <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
+          <div class="relative pl-6 sm:pl-8 ${isLast ? '' : 'pb-6'} border-l-2 ${isLast ? 'border-transparent' : 'border-slate-200'}">
+            <div class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
               <i data-lucide="${iconName}" class="h-3 w-3"></i>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-2">
@@ -4128,7 +4127,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
 
     timeline.innerHTML = `
-      <div class="relative pl-6 sm:pl-8 ml-3 sm:ml-4 border-l-2 border-slate-300 space-y-5 py-2">
+      <div class="ml-4 py-2">
         ${itemsHtml}
       </div>
     `;

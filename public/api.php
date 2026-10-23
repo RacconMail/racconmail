@@ -52,7 +52,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v9';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v15_wall_fix';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -3176,12 +3176,70 @@ try {
     // PROFILE & MEMBER TIMELINE WALL API ENDPOINTS
     // ==========================================
 
+    // Ensure bio & location columns exist in users table
+    try { $db->exec("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN location TEXT DEFAULT ''"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN cover_photo TEXT DEFAULT ''"); } catch (Throwable $e) {}
+
+    // Ensure all profile wall tables exist
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_posts (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            author_name TEXT NOT NULL,
+            author_avatar TEXT,
+            post_type TEXT DEFAULT 'status',
+            content TEXT NOT NULL,
+            image_url TEXT DEFAULT '',
+            location TEXT DEFAULT '',
+            poll_question TEXT DEFAULT '',
+            poll_options TEXT DEFAULT '[]',
+            likes_count INTEGER DEFAULT 0,
+            comments_count INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_user_created ON profile_wall_posts(user_id, created_at)");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_votes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            option_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(post_id, user_id)
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_votes ON profile_wall_votes(post_id, option_id)");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_likes (
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (post_id, user_id)
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS profile_wall_comments (
+            id TEXT PRIMARY KEY,
+            post_id TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            author_name TEXT NOT NULL,
+            author_avatar TEXT,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_wall_comments_post ON profile_wall_comments(post_id, created_at)");
+    } catch (Throwable $e) {
+        error_log("Failed to ensure wall tables: " . $e->getMessage());
+    }
+
     // GET /api/wall/posts?user_id=...
     if ($route === 'wall/posts' && $method === 'GET') {
         $targetUserId = trim($_GET['user_id'] ?? $currentUserId ?? '');
+        if (!$targetUserId && $currentUserId) {
+            $targetUserId = $currentUserId;
+        }
         if (!$targetUserId) {
-            http_response_code(400);
-            echo json_encode(['error' => 'User ID is required.']);
+            echo json_encode(['posts' => []]);
             exit;
         }
 
@@ -3196,6 +3254,24 @@ try {
         ');
         $stmt->execute([$currentUserId ?: '', $currentUserId ?: '', $targetUserId]);
         $posts = $stmt->fetchAll();
+
+        // If user has zero posts on their wall, auto-seed an initial welcome status milestone
+        if (empty($posts) && $currentUserId && $targetUserId === $currentUserId) {
+            try {
+                $seedId = 'wp_seed_' . bin2hex(random_bytes(4));
+                $stmtMe = $db->prepare('SELECT name, avatar FROM users WHERE id = ?');
+                $stmtMe->execute([$currentUserId]);
+                $me = $stmtMe->fetch();
+                $aName = $me['name'] ?? 'Clever Raccoon';
+                $aAvatar = $me['avatar'] ?? '/raccoon-logo.png';
+                $initText = "Welcome to my Raccon Mail timeline wall! 🦝✨ Excited to be part of the private, nocturnal mailbox community. Ready for tracker-free messaging and postcards.";
+                $db->prepare('INSERT INTO profile_wall_posts (id, user_id, author_id, author_name, author_avatar, post_type, content, location, created_at) VALUES (?, ?, ?, ?, ?, "status", ?, "Nocturnal Forest", datetime("now"))')
+                   ->execute([$seedId, $currentUserId, $currentUserId, $aName, $aAvatar, $initText]);
+
+                $stmt->execute([$currentUserId, $currentUserId, $targetUserId]);
+                $posts = $stmt->fetchAll();
+            } catch (Throwable $e) {}
+        }
 
         // For each post with poll_options, calculate vote tallies
         foreach ($posts as &$post) {
@@ -4414,6 +4490,48 @@ function initDatabase($db) {
             sound_enabled INTEGER DEFAULT 1,
             postcard_theme TEXT DEFAULT 'classic-cream'
         );
+        CREATE TABLE IF NOT EXISTS profile_wall_posts (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            author_name TEXT NOT NULL,
+            author_avatar TEXT,
+            post_type TEXT DEFAULT 'status',
+            content TEXT NOT NULL,
+            image_url TEXT DEFAULT '',
+            location TEXT DEFAULT '',
+            poll_question TEXT DEFAULT '',
+            poll_options TEXT DEFAULT '[]',
+            likes_count INTEGER DEFAULT 0,
+            comments_count INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_wall_user_created ON profile_wall_posts(user_id, created_at);
+        CREATE TABLE IF NOT EXISTS profile_wall_votes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            option_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(post_id, user_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_wall_votes ON profile_wall_votes(post_id, option_id);
+        CREATE TABLE IF NOT EXISTS profile_wall_likes (
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (post_id, user_id)
+        );
+        CREATE TABLE IF NOT EXISTS profile_wall_comments (
+            id TEXT PRIMARY KEY,
+            post_id TEXT NOT NULL,
+            author_id TEXT NOT NULL,
+            author_name TEXT NOT NULL,
+            author_avatar TEXT,
+            content TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_wall_comments_post ON profile_wall_comments(post_id, created_at);
     ");
 
     // Seed default user
