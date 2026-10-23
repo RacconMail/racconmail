@@ -42,39 +42,15 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
-  <!-- Early Theme Initializer (Neon Flower Minimalist Palette) -->
+  <!-- Early Theme Initializer (Strictly 2 Themes: Dark Glass & Light Glass) -->
   <script>
     (function() {
-      localStorage.setItem('raccon_theme', 'neon_flower');
-      document.documentElement.className = 'dark theme-neon-flower';
-      const themeVars = {
-        '--background': '#070A14',
-        '--foreground': '#F8FAFC',
-        '--card': '#0B1120',
-        '--card-alt': '#0F172A',
-        '--card-foreground': '#F8FAFC',
-        '--primary': '#0EA5E9',
-        '--primary-hover': '#38BDF8',
-        '--primary-foreground': '#FFFFFF',
-        '--primary-glow': 'rgba(14, 165, 233, 0.35)',
-        '--secondary': '#0F172A',
-        '--secondary-foreground': '#F8FAFC',
-        '--secondary-hover': '#1E293B',
-        '--muted': '#0E162B',
-        '--muted-foreground': '#94A3B8',
-        '--accent': '#131E35',
-        '--accent-foreground': '#38BDF8',
-        '--accent-pink': '#EC4899',
-        '--border': 'rgba(56, 189, 248, 0.16)',
-        '--border-light': 'rgba(56, 189, 248, 0.08)',
-        '--mask': '#070A14',
-        '--fur': '#0EA5E9',
-        '--cream': '#0B1120',
-        '--stamp-red': '#EC4899',
-        '--stamp-blue': '#0EA5E9'
-      };
-      for (const [k, v] of Object.entries(themeVars)) {
-        document.documentElement.style.setProperty(k, v);
+      const saved = localStorage.getItem('raccon_theme') || 'dark';
+      const canonical = (saved === 'light') ? 'light' : 'dark';
+      if (canonical === 'dark') {
+        document.documentElement.className = 'dark theme-dark';
+      } else {
+        document.documentElement.className = 'theme-light';
       }
     })();
   </script>
@@ -123,540 +99,277 @@ if (empty($_SESSION['current_user_id'])) {
 
   <!-- Direct Theme-Adaptive Compose Button CSS (Immune to Cache) -->
   <style>
-    #btn-compose {
-      border-radius: 50px !important;
-      padding: 12px 20px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 10px !important;
-      font-family: inherit !important;
-      font-size: 0.95rem !important;
-      font-weight: 700 !important;
-      cursor: pointer !important;
-      transition: all 0.22s ease-in-out !important;
-      text-decoration: none !important;
+    /* Direct styles for the Figma Jarmel Mail Interface */
+    .jarmel-action-icon {
+      padding: 6px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      cursor: pointer;
     }
-
-    /* Clean Neon Flower Minimalist Compose Button */
-    #btn-compose,
-    html #btn-compose,
-    body #btn-compose {
-      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 60%, #1d4ed8 100%) !important;
-      border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
-      color: #FFFFFF !important;
-      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35), 0 0 12px rgba(14, 165, 233, 0.2) !important;
-    }
-    #btn-compose:hover,
-    html #btn-compose:hover,
-    body #btn-compose:hover {
-      background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%) !important;
-      border-color: rgba(56, 189, 248, 0.7) !important;
-      color: #FFFFFF !important;
-      transform: translateY(-1.5px) !important;
-      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.5) !important;
-    }
-    #btn-compose .compose-pencil-badge {
-      background-color: rgba(255, 255, 255, 0.22) !important;
-      border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    }
-    #btn-compose svg,
-    #btn-compose i {
-      stroke: #FFFFFF !important;
-      color: #FFFFFF !important;
-    }
-    #btn-compose .compose-btn-text {
-      color: #FFFFFF !important;
+    .jarmel-action-icon:hover {
+      background-color: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
-<body class="bg-background text-foreground flex flex-col h-screen relative selection:bg-sky-500 selection:text-white overflow-hidden">
+<body class="app jarmel-body text-foreground flex flex-col h-screen relative select-none overflow-hidden">
 
-  <!-- AMBIENT LUMINESCENT CORNER AURA (Static & Minimalist) -->
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" style="background: radial-gradient(ellipse 55% 45% at 95% 95%, rgba(236, 72, 153, 0.08) 0%, transparent 70%), radial-gradient(ellipse 45% 35% at 5% 5%, rgba(14, 165, 233, 0.08) 0%, transparent 70%);"></div>
+  <!-- OUTER DESKTOP PADDING CONTAINER -->
+  <div class="flex-1 flex flex-col p-1 sm:p-2 md:p-4 lg:p-6 h-screen w-screen overflow-hidden relative">
 
-  <!-- TOP POSTAL STRIPE ACCENT -->
-  <div class="stripes h-[2px] w-full shrink-0"></div>
+    <!-- MACOS APPLICATION / BROWSER WINDOW FRAME -->
+    <div class="jarmel-mac-window h-full flex flex-col flex-1 shadow-2xl relative overflow-hidden">
 
-  <!-- TOP APP BAR -->
-  <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-xs z-20">
-    <!-- Brand / Mascot / Hamburger (Stationary logo restored to original clean size on both mobile & desktop) -->
-    <div class="flex items-center gap-2 md:gap-3 shrink-0">
-      <!-- Mobile Sidebar Toggle -->
-      <button
-        onclick="app.toggleMobileSidebar()"
-        class="md:hidden p-2 rounded-xl bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs"
-        title="Open Folders"
-      >
-        <i data-lucide="menu" class="h-5 w-5 text-white"></i>
-      </button>
-
-      <!-- Desktop & Mobile Brand Logo (Visible on all screens, original clean size) -->
-      <a href="/inbox" class="flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
-        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-7 w-7 md:h-8 md:w-8 object-contain raccoon-wiggle shrink-0" />
-        <span class="text-foreground shrink-0 font-display font-bold">Raccon Mail</span>
-      </a>
-      <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
-        <span class="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-        Masked & Secure
-      </span>
-    </div>
-
-    <!-- Minimalist Compact Search Bar (Desktop Only, Small & Well-Fitted) -->
-    <div class="hidden md:block flex-1 min-w-0 max-w-sm lg:max-w-md mx-3 lg:mx-5 relative" id="global-search-container">
-      <div class="relative flex items-center rounded-full border border-sky-500/20 bg-[#090F1F]/90 shadow-2xs hover:border-sky-500/40 focus-within:border-sky-400 focus-within:ring-1 focus-within:ring-sky-500/30 transition h-9 px-3">
-        <!-- Integrated Left Search Loop Icon -->
-        <button
-          type="button"
-          onclick="app.triggerSearchSubmit()"
-          class="text-sky-400 hover:text-sky-300 transition cursor-pointer flex items-center shrink-0 pr-2"
-          title="Search"
-        >
-          <i data-lucide="search" class="h-3.5 w-3.5 stroke-[2.2]"></i>
-        </button>
-
-        <!-- Search Input Field -->
-        <input
-          id="global-search"
-          type="text"
-          autocomplete="off"
-          placeholder="Search mail..."
-          class="flex-1 min-w-0 bg-transparent py-1 text-xs outline-none text-white placeholder:text-slate-400 font-normal"
-          onclick="app.onSearchClick()"
-          oninput="app.onSearchInput(this.value)"
-          onfocus="app.onSearchClick()"
-          onkeydown="app.onSearchKeyDown(event)"
-        />
-
-        <!-- Clear 'X' Button (visible when typing) -->
-        <button
-          id="search-clear-btn"
-          type="button"
-          class="hidden px-1.5 text-slate-400 hover:text-white text-xs cursor-pointer shrink-0"
-          onclick="app.clearSearch()"
-          title="Clear search"
-        >
-          <i data-lucide="x" class="h-3.5 w-3.5"></i>
-        </button>
-
-        <!-- Advanced Search Filter Dropdown Toggle Button -->
-        <button
-          type="button"
-          onclick="app.toggleAdvancedSearchDropdown()"
-          class="p-1 text-slate-400 hover:text-sky-300 transition cursor-pointer flex items-center shrink-0"
-          title="Search filters"
-        >
-          <i data-lucide="sliders-horizontal" class="h-3.5 w-3.5"></i>
-        </button>
-
-        <!-- Keyboard Shortcut Badge (Ctrl+K) -->
-        <span class="hidden lg:inline-flex items-center text-[9px] font-mono text-sky-300/80 bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.5 rounded ml-1 pointer-events-none shrink-0">
-          ⌘K
-        </span>
-      </div>
-
-      <!-- Advanced Search Filters Dropdown -->
-      <div id="advanced-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-[#0B1120] rounded-2xl border border-sky-500/25 shadow-2xl p-4 text-xs text-slate-200 space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-sky-500/15">
-          <span class="font-bold text-sm text-white">Advanced Search</span>
-          <button type="button" onclick="app.closeAdvancedSearchDropdown()" class="text-slate-400 hover:text-white p-1 rounded-full cursor-pointer"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold text-sky-300 mb-1">From</label>
-            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-sky-300 mb-1">To</label>
-            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-sky-300 mb-1">Subject</label>
-            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-sky-300 mb-1">In Folder</label>
-            <select id="adv-search-folder" class="w-full rounded-lg border border-sky-500/20 px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400 bg-[#080D1A]">
-              <option value="all">All Folders</option>
-              <option value="Inbox">Inbox</option>
-              <option value="Sent">Sent</option>
-              <option value="Drafts">Drafts</option>
-              <option value="Archive">Archive</option>
-              <option value="Spam">Spam</option>
-              <option value="Trash">Trash</option>
-            </select>
-          </div>
-        </div>
-        <div class="flex items-center justify-between pt-2 border-t border-sky-500/15">
-          <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-300">
-            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-sky-500/30 accent-sky-500 cursor-pointer" />
-            <span>Has attachment</span>
-          </label>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1 rounded-full bg-[#0D152A] hover:bg-[#14203D] text-slate-300 border border-sky-500/20 font-semibold cursor-pointer transition">Reset</button>
-            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)] transition">Search</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Search Suggestions Dropdown -->
-      <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-[#0B1120] rounded-2xl border border-sky-500/25 shadow-2xl overflow-hidden max-h-96 flex-col text-xs divide-y divide-sky-500/15">
-        <!-- Populated dynamically by app.renderSearchSuggestions -->
-      </div>
-    </div>
-
-    <!-- Header Actions & Account Switcher -->
-    <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- World Stories Button (Desktop/Tablet) -->
-      <button
-        onclick="app.openStoriesModal()"
-        title="World Stories — Read global folktales & fables"
-        class="hidden sm:flex items-center gap-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
-      >
-        <i data-lucide="book-open" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
-        <span class="hidden sm:inline">Stories</span>
-        <span class="text-[10px] bg-gradient-to-r from-pink-500 to-rose-600 text-white px-1.5 py-0.2 rounded-full font-extrabold hidden md:inline shadow-[0_0_8px_rgba(236,72,153,0.4)]">175+</span>
-      </button>
-
-      <!-- Account Switcher Dropdown -->
-      <div class="relative">
-        <button
-          onclick="app.toggleAccountDropdown()"
-          class="flex items-center gap-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-white border border-sky-500/25 p-1 md:pl-2.5 md:pr-2 text-xs transition cursor-pointer shadow-xs"
-        >
-          <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline text-white">Clever Raccoon</span>
-          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-gradient-to-tr from-sky-600 to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-sky-400/40">
-            <span id="active-user-badge-initial">R</span>
-          </div>
-          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-sky-400 mr-1 hidden md:inline"></i>
-        </button>
-
-        <!-- Modern Profile Dropdown Menu (Auto-dismisses on click-outside) -->
-        <div id="account-dropdown" class="hidden absolute right-0 mt-2 rounded-3xl border border-sky-500/25 bg-[#0B1120] overflow-hidden shadow-2xl z-50 text-white w-72 max-w-[calc(100vw-20px)] animate-in fade-in-50 duration-150">
-          <!-- Cover Photo Header -->
-          <div id="dropdown-user-cover" class="h-20 w-full bg-gradient-to-r from-sky-900 via-blue-900 to-pink-900 relative bg-cover bg-center"></div>
-
-          <!-- User Info with overlapping Avatar & Registration Date -->
-          <div class="px-4 pb-3 pt-0 relative border-b border-sky-500/15">
-            <div class="flex items-end justify-between -mt-8 mb-2">
-              <img id="dropdown-user-avatar" src="/raccoon-logo.png" class="h-14 w-14 rounded-full bg-[#0B1120] object-cover aspect-square border-4 border-[#0B1120] shadow-md shrink-0" />
-            </div>
-            
-            <p id="dropdown-user-name" class="text-sm font-bold truncate text-white">Clever Raccoon</p>
-            <p id="dropdown-user-email" class="text-xs text-sky-300 truncate font-mono">me@racconmail.eu</p>
-            
-            <!-- Registration Date Badges -->
-            <div class="mt-2 flex flex-wrap items-center gap-1.5 text-[10.5px]">
-              <span id="dropdown-user-joined" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-950/60 border border-sky-500/25 text-sky-300 font-semibold">
-                <i data-lucide="calendar" class="h-3 w-3 text-sky-400"></i>
-                <span>Member since Oct 2026</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- Quick Navigation Links -->
-          <div class="p-2 space-y-0.5 text-xs">
-            <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-[#132040] font-semibold transition text-slate-200 hover:text-white whitespace-nowrap cursor-pointer">
-              <i data-lucide="settings" class="h-4 w-4 text-sky-400 shrink-0"></i>
-              <span>Profile &amp; Mail Settings</span>
-            </button>
-            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-[#132040] text-slate-300 hover:text-white font-medium transition whitespace-nowrap cursor-pointer">
-              <i data-lucide="log-out" class="h-4 w-4 text-rose-400 shrink-0"></i>
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Header Sign Out Button (Desktop only) -->
-      <button
-        onclick="app.logout()"
-        title="Sign Out of Raccon Mail"
-        class="hidden md:flex items-center gap-1.5 rounded-full border border-sky-500/20 bg-[#0D152A] hover:bg-[#132040] text-slate-300 hover:text-white px-3 py-1.5 text-xs font-semibold transition cursor-pointer"
-      >
-        <i data-lucide="log-out" class="h-3.5 w-3.5 text-sky-400"></i>
-        <span>Sign Out</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Sidebar Backdrop Overlay -->
-  <div id="mobile-sidebar-backdrop" onclick="app.closeMobileSidebar()" class="hidden fixed inset-0 z-40 bg-black/50 md:hidden backdrop-blur-xs"></div>
-
-  <!-- MAIN THREE-COLUMN MAIL INTERFACE -->
-  <div class="flex-1 flex overflow-hidden relative">
-
-    <!-- 1. NAVIGATION SIDEBAR (Off-canvas Drawer on Mobile, Left Panel on Desktop) -->
-    <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-50 w-72 bg-card transform -translate-x-full md:relative md:translate-x-0 md:w-60 transition-transform duration-300 ease-in-out shrink-0 flex flex-col border-r border-border shadow-2xl md:shadow-none">
-      <!-- Mobile Close Button in Drawer -->
-      <div class="p-3 border-b border-border flex items-center justify-between md:hidden">
-        <div class="flex items-center gap-2 font-display font-bold text-sm">
-          <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />
-          <span>Raccon Mail</span>
-        </div>
-        <button onclick="app.closeMobileSidebar()" class="p-1 rounded-full hover:bg-muted text-muted-foreground">
-          <i data-lucide="x" class="h-5 w-5"></i>
-        </button>
-      </div>
-
-      <!-- Compose Button: Theme-Adaptive Pill with High-Contrast Pencil Badge -->
-      <div class="p-4">
-        <button
-          id="btn-compose"
-          onclick="app.closeMobileSidebar(); app.openCompose()"
-          class="w-full flex items-center justify-center gap-2.5 rounded-full font-display font-bold text-sm py-3 px-4 shadow-md transition transform active:scale-95 cursor-pointer bg-slate-900 hover:bg-slate-800 text-white border border-slate-900"
-        >
-          <span class="compose-pencil-badge w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition bg-white/20 border border-white/30">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 shrink-0 text-white">
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-              <path d="m15 5 4 4"/>
-            </svg>
-          </span>
-          <span class="compose-btn-text font-bold text-white">Compose Postcard</span>
-        </button>
-      </div>
-
-      <!-- Navigation Folders List -->
-      <nav class="flex-1 overflow-y-auto px-2 space-y-1 text-sm">
-        <!-- Standard Folders -->
-        <div id="standard-folders-list" class="space-y-0.5">
-          <button onclick="app.navTo('Inbox')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer active font-bold shadow-sm">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Inbox</span>
-            </div>
-            <div class="pointer-events-none"><span id="inbox-badge-placeholder" class="badge-unread hidden">0</span></div>
-          </button>
-          <button onclick="app.navTo('Unread')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="mail-open" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Unread</span>
-            </div>
-            <div class="pointer-events-none"><span id="unread-badge-placeholder" class="badge-unread hidden">0</span></div>
-          </button>
-          <button onclick="app.navTo('Favorites')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="heart" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Favorites</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Drafts')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="file-text" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Drafts</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Sent')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="send" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Sent</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Archive')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="archive" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Archive</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Photos & Files')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="image" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Photos &amp; Files</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Spam')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Spam</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Trash')" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground">
-            <div class="flex items-center gap-2.5 truncate pointer-events-none">
-              <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Trash</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Custom Folders Section (Raccon style) -->
-        <div class="pt-4 pb-1">
-          <div class="flex items-center justify-between px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <span>Custom Folders</span>
-            <button onclick="app.openNewFolderModal()" title="Add new folder" class="hover:text-foreground p-0.5 rounded">
-              <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-            </button>
-          </div>
-          <div id="custom-folders-list" class="mt-1 space-y-0.5"></div>
-        </div>
-      </nav>
-
-      <!-- Bottom Sidebar Utilities (Styled identical to standard folders) -->
-      <div class="border-t border-border p-2 space-y-0.5 text-xs font-medium">
-        <a href="/forum" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="messages-square" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Raccon Forum</span>
-          </div>
-        </a>
-        <a href="/news" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="newspaper" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Raccon News Wire</span>
-          </div>
-        </a>
-        <a href="/stories" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="book-open" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">World Stories</span>
-          </div>
-        </a>
-        <button onclick="app.openContactsView()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="users" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Address Book</span>
-          </div>
-          <span id="contacts-count-badge" class="badge-count text-[10px]">5</span>
-        </button>
-        <button onclick="app.openSettingsModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="sliders-horizontal" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Raccon / SMTP Config</span>
-          </div>
-        </button>
-        <button onclick="app.openPrivacyModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="shield" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Privacy &amp; Policy</span>
-          </div>
-        </button>
-        <button onclick="app.logout()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="log-out" class="h-4 w-4 shrink-0 text-muted-foreground"></i>
-            <span class="truncate font-semibold">Sign Out</span>
-          </div>
-        </button>
-      </div>
-
-      <!-- Storage Quota Meter -->
-      <div class="px-3.5 py-3 border-t border-sky-500/15 bg-[#080D1A] shrink-0">
-        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-300 mb-1.5">
-          <span class="flex items-center gap-1.5"><i data-lucide="hard-drive" class="h-3.5 w-3.5 text-sky-400"></i>Storage</span>
-          <span id="sidebar-storage-text" class="font-mono text-[10.5px] text-sky-300">24.8 MB / 15 GB (0.2%)</span>
-        </div>
-        <div class="w-full bg-[#0E162B] rounded-full h-1.5 overflow-hidden border border-sky-500/20">
-          <div id="sidebar-storage-bar" class="bg-gradient-to-r from-sky-400 to-pink-500 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- 2. MESSAGES LIST PANEL (Full width on mobile until email opened, Middle Panel on Desktop) -->
-    <section id="messages-panel" class="w-full md:w-96 border-r border-sky-500/15 bg-[#0B1122] flex flex-col shrink-0 overflow-hidden">
-      <!-- Folder Header & Filter Toolbar -->
-      <div class="p-3 border-b border-sky-500/15 bg-[#080D1B]/90 backdrop-blur-md shrink-0 space-y-2">
-        <div class="flex items-center justify-between gap-2">
-          <div class="min-w-0 flex-1 truncate">
-            <h1 id="current-folder-title" class="font-display text-lg font-extrabold truncate text-white">Inbox</h1>
-            <p id="current-folder-subtitle" class="text-xs text-sky-200/60 font-medium truncate">Loading emails...</p>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <a href="/forum" title="Raccon Forum" class="px-3 py-1 rounded-full text-white bg-[#0F1A33] hover:bg-[#16274D] border border-sky-500/25 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
-              <span class="hidden sm:inline">Forum</span>
-            </a>
-            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-3 py-1 rounded-full text-white bg-[#0F1A33] hover:bg-[#16274D] border border-sky-500/25 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-pink-400 shrink-0"></i>
-              <span class="hidden sm:inline">News</span>
-            </button>
-            <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-full text-sky-300 hover:text-white hover:bg-sky-950/60 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-xs">
-              <i data-lucide="refresh-cw" class="h-4 w-4"></i>
-            </button>
-            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-full text-sky-300 hover:text-white hover:bg-sky-950/60 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-xs">
-              <i data-lucide="check-check" class="h-4 w-4"></i>
-            </button>
-            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-white bg-rose-900/80 hover:bg-rose-800 border border-rose-500/40 px-3 py-1 rounded-full transition font-bold shrink-0 shadow-xs">
-              Empty
-            </button>
-          </div>
-        </div>
-
-        <!-- Filter Pills & Sorting -->
-        <div class="flex items-center justify-between gap-1 pt-1 overflow-x-auto no-scrollbar">
-          <div class="flex items-center gap-1.5 text-xs shrink-0">
-            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-gradient-to-r from-sky-500 to-blue-600 text-white transition shadow-[0_0_12px_rgba(14,165,233,0.35)] whitespace-nowrap shrink-0 border border-sky-400/40">All</button>
-            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 whitespace-nowrap shrink-0">Unread</button>
-            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 whitespace-nowrap shrink-0">Starred</button>
-            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 flex items-center gap-1 whitespace-nowrap shrink-0">
-              <i data-lucide="paperclip" class="h-3 w-3 text-sky-400"></i> Files
-            </button>
-          </div>
-
-          <!-- Sort menu -->
-          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-[#090F1F] border border-sky-500/25 rounded-full px-2.5 py-1 outline-none text-slate-200 font-medium cursor-pointer shrink-0 ml-2 shadow-2xs">
-            <option value="date_desc">Newest</option>
-            <option value="date_asc">Oldest</option>
-            <option value="sender">Sender</option>
-            <option value="subject">Subject</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Batch Action Toolbar (Reveals when items are checked) -->
-      <div id="batch-toolbar" class="hidden bg-slate-900 text-white border-b border-slate-800 px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
+      <!-- TOP MACOS TITLE / URL BAR -->
+      <div class="jarmel-top-bar">
+        <!-- Left: Traffic Lights & Navigation Controls -->
         <div class="flex items-center gap-2">
-          <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
-          <span id="selected-count-label" class="font-bold text-white">0 selected</span>
+          <div class="flex items-center gap-2 mr-2">
+            <span class="macos-dot macos-dot-close" title="Close" onclick="app.closeAllModals()"></span>
+            <span class="macos-dot macos-dot-minimize" title="Minimize"></span>
+            <span class="macos-dot macos-dot-zoom" title="Full Screen"></span>
+          </div>
+          <button onclick="app.toggleMobileSidebar()" class="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer" title="Toggle Sidebar">
+            <i data-lucide="panel-left" class="h-4 w-4"></i>
+          </button>
+          <button class="p-1 rounded opacity-50 hover:opacity-100 transition hidden sm:inline-block cursor-pointer" title="Back" onclick="app.backToMessages()">
+            <i data-lucide="chevron-left" class="h-4 w-4"></i>
+          </button>
+          <button class="p-1 rounded opacity-50 hover:opacity-100 transition hidden sm:inline-block cursor-pointer" title="Forward">
+            <i data-lucide="chevron-right" class="h-4 w-4"></i>
+          </button>
         </div>
-        <div class="flex items-center gap-1">
-          <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800">
-            <i data-lucide="mail-open" class="h-4 w-4 text-white"></i>
+
+        <!-- Center: Safari/macOS URL Pill -->
+        <div class="jarmel-url-pill">
+          <i data-lucide="lock" class="h-3 w-3 text-emerald-500"></i>
+          <span class="font-mono text-xs tracking-tight">racconmail.eu</span>
+          <button onclick="app.refreshCurrentFolder()" class="ml-1 opacity-60 hover:opacity-100 transition cursor-pointer" title="Reload Mailbox">
+            <i data-lucide="rotate-cw" class="h-3 w-3"></i>
           </button>
-          <button onclick="app.batchAction('mark_unread')" title="Mark as unread" class="p-1 rounded text-white hover:bg-slate-800">
-            <i data-lucide="mail" class="h-4 w-4 text-white"></i>
+        </div>
+
+        <!-- Right: 1-Click Theme Toggle & Controls -->
+        <div class="flex items-center gap-2">
+          <!-- STRICT 2-THEME SWITCHER (Dark Glass / Light Glass) -->
+          <button onclick="app.toggleTheme()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 transition cursor-pointer text-xs font-semibold select-none" title="Switch Theme (Dark Glass / Light Glass)">
+            <i data-lucide="sun" class="app-theme-sun h-3.5 w-3.5 text-amber-400"></i>
+            <i data-lucide="moon" class="app-theme-moon h-3.5 w-3.5 text-sky-400"></i>
+            <span class="hidden md:inline text-[11px] font-medium opacity-80" id="theme-btn-label">Theme</span>
           </button>
-          <button onclick="app.batchAction('star')" title="Star" class="p-1 rounded text-white hover:bg-slate-800">
-            <i data-lucide="star" class="h-4 w-4 text-white"></i>
-          </button>
-          <button onclick="app.batchAction('archive')" title="Archive" class="p-1 rounded text-white hover:bg-slate-800">
-            <i data-lucide="archive" class="h-4 w-4 text-white"></i>
-          </button>
-          <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800">
-            <i data-lucide="trash-2" class="h-4 w-4 text-white"></i>
+          <button onclick="app.openCompose()" class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 opacity-70 hover:opacity-100 transition cursor-pointer" title="Compose New Mail">
+            <i data-lucide="plus" class="h-4 w-4"></i>
           </button>
         </div>
       </div>
 
-      <!-- Messages Scrollable List -->
-      <div id="messages-list" class="flex-1 overflow-y-auto py-2 space-y-1.5 pb-20 md:pb-2">
-        <!-- Rendered by JS -->
-      </div>
-    </section>
+      <!-- MAIN 3-COLUMN WORKSPACE (EXACT FIGMA LAYOUT) -->
+      <div class="flex-1 flex overflow-hidden min-h-0 relative">
 
-    <!-- 3. EMAIL READER & DETAILS PANEL (Right Panel, Full width on mobile when open) -->
-    <main class="hidden md:flex flex-1 flex-col bg-background overflow-hidden relative" id="reader-panel">
-      <!-- Rendered dynamically: Empty State OR Message Reader OR Photos & Files Gallery OR Contacts View -->
-      <div id="reader-content" class="h-full flex flex-col overflow-y-auto pb-20 md:pb-0">
-        <!-- Default Empty State -->
-        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
-          <div class="relative mb-6">
-            <div class="absolute inset-0 rounded-full bg-accent/60 blur-2xl"></div>
-            <img src="/raccoon-logo.png" alt="Clever Raccoon" class="raccoon-anim relative h-36 w-36 object-contain opacity-85" />
-          </div>
-          <h2 class="font-display text-2xl font-bold text-foreground">Pick an email to read</h2>
-          <p class="mt-2 max-w-sm text-sm text-muted-foreground">
-            Fast, private and beautifully simple — cleverly masked from spam, on web and smartphone.
-          </p>
-          <div class="mt-6 flex items-center gap-3">
-            <button onclick="app.openCompose()" class="rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 px-5 py-2 text-xs font-semibold text-white shadow-[0_0_12px_rgba(14,165,233,0.35)] transition cursor-pointer">
-              Write something clever
-            </button>
-            <button onclick="app.openStoriesModal()" class="rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] text-sky-200 px-4 py-2 text-xs font-medium transition flex items-center gap-1.5 cursor-pointer">
-              <i data-lucide="book-open" class="h-3.5 w-3.5 text-sky-400"></i>
-              <span>Explore World Stories</span>
+        <!-- 1. NAVIGATION SIDEBAR -->
+        <aside id="sidebar-panel" class="sidebar fixed inset-y-0 left-0 z-50 w-72 bg-card transform -translate-x-full md:relative md:translate-x-0 md:w-56 lg:w-64 transition-transform duration-300 ease-in-out shrink-0 flex flex-col border-r border-border/40 p-3 overflow-y-auto select-none shadow-2xl md:shadow-none">
+          <!-- Mobile Close Header in Drawer -->
+          <div class="p-2 border-b border-border/40 flex items-center justify-between md:hidden mb-2">
+            <div class="flex items-center gap-2 font-bold text-sm">
+              <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />
+              <span>Raccon Mail</span>
+            </div>
+            <button onclick="app.closeMobileSidebar()" class="p-1 rounded-full hover:bg-muted text-muted-foreground">
+              <i data-lucide="x" class="h-5 w-5"></i>
             </button>
           </div>
-        </div>
+
+          <!-- Compose New Mail Button -->
+          <div class="mb-3">
+            <button
+              id="btn-compose"
+              onclick="app.closeMobileSidebar(); app.openCompose()"
+              class="jarmel-compose-btn"
+            >
+              <i data-lucide="edit" class="h-4 w-4"></i>
+              <span>Compose New Mail</span>
+            </button>
+          </div>
+
+          <!-- Account Row: Avatar + Email + Chevron Down -->
+          <div class="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer select-none mb-3" onclick="app.toggleAccountDropdown()">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 border border-white/20">
+                <span id="active-user-badge-initial">R</span>
+              </div>
+              <span id="active-user-name" class="text-xs font-semibold truncate">me@racconmail.eu</span>
+            </div>
+            <i data-lucide="chevron-down" class="h-3.5 w-3.5 opacity-60 shrink-0"></i>
+          </div>
+
+          <!-- Navigation Folders (Exact counts and names from Figma) -->
+          <nav class="flex-1 space-y-0.5 overflow-y-auto">
+            <button onclick="app.navTo('Inbox')" id="nav-item-inbox" class="jarmel-nav-item active">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="mail" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Inbox</span>
+              </div>
+              <span id="sidebar-inbox-badge" class="text-xs font-mono opacity-70">413</span>
+            </button>
+            <button onclick="app.navTo('Starred')" id="nav-item-starred" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="star" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Starred</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">6</span>
+            </button>
+            <button onclick="app.navTo('Drafts')" id="nav-item-drafts" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="file-text" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Draft</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">1</span>
+            </button>
+            <button onclick="app.navTo('Sent')" id="nav-item-sent" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="send" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Sent</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">39</span>
+            </button>
+            <button onclick="app.navTo('Spam')" id="nav-item-spam" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="shield-alert" class="h-4 w-4 shrink-0 opacity-80 text-rose-400"></i>
+                <span class="truncate">Junk</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">25</span>
+            </button>
+            <button onclick="app.navTo('Snoozed')" id="nav-item-snoozed" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="clock" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Snoozed</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">13</span>
+            </button>
+            <button onclick="app.navTo('Archive')" id="nav-item-archive" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="archive" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Archive</span>
+              </div>
+              <span class="text-xs font-mono opacity-70">2381</span>
+            </button>
+
+            <!-- Custom Folders Placeholder -->
+            <div id="custom-folders-list" class="space-y-0.5 pt-2"></div>
+          </nav>
+
+          <!-- Bottom Utility Links -->
+          <div class="pt-3 border-t border-border/40 space-y-0.5 shrink-0">
+            <button onclick="app.logout()" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="user-plus" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Sign in with different account</span>
+              </div>
+            </button>
+            <button onclick="app.showToast('All notifications are up to date.')" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="bell" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Notifications</span>
+              </div>
+            </button>
+            <button onclick="app.openSettingsModal()" class="jarmel-nav-item">
+              <div class="flex items-center gap-2.5 truncate">
+                <i data-lucide="settings" class="h-4 w-4 shrink-0 opacity-80"></i>
+                <span class="truncate">Settings</span>
+              </div>
+            </button>
+          </div>
+        </aside>
+
+        <!-- 2. MESSAGES LIST PANEL (Middle Column) -->
+        <section id="messages-panel" class="w-full md:w-80 lg:w-[410px] border-r border-border/40 flex flex-col shrink-0 overflow-hidden select-none">
+          <!-- Header: Primary / Other Tabs & Quick Actions -->
+          <div class="px-4 pt-3.5 pb-0 border-b border-border/40 shrink-0">
+            <div class="flex items-center justify-between">
+              <!-- Primary (189) | Other (214) Tabs -->
+              <div class="flex items-center">
+                <button onclick="app.setJarmelTab('primary')" id="tab-primary" class="jarmel-tab active">
+                  Primary <span id="tab-primary-count" class="opacity-70">(189)</span>
+                </button>
+                <button onclick="app.setJarmelTab('other')" id="tab-other" class="jarmel-tab ml-5">
+                  Other <span id="tab-other-count" class="opacity-70">(214)</span>
+                </button>
+              </div>
+
+              <!-- Action Icons on the right: Search, Mark Read, Filter, More -->
+              <div class="flex items-center gap-1 pb-2">
+                <button onclick="app.toggleInlineSearch()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Search (⌘K)">
+                  <i data-lucide="search" class="h-4 w-4"></i>
+                </button>
+                <button onclick="app.markAllRead()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Mark All Read">
+                  <i data-lucide="check" class="h-4 w-4"></i>
+                </button>
+                <button onclick="app.toggleAdvancedSearchDropdown()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Filter Mail">
+                  <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
+                </button>
+                <button onclick="app.openSettingsModal()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="More Options">
+                  <i data-lucide="more-vertical" class="h-4 w-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Expandable Search Input Field -->
+            <div id="inline-search-bar" class="hidden pb-3 pt-1">
+              <div class="flex items-center rounded-lg bg-black/5 dark:bg-white/10 px-2.5 py-1 text-xs">
+                <i data-lucide="search" class="h-3.5 w-3.5 opacity-50 mr-2"></i>
+                <input id="global-search" type="text" placeholder="Search mail..." class="bg-transparent flex-1 outline-none text-xs text-foreground placeholder:text-muted-foreground" oninput="app.onSearchInput(this.value)" onkeydown="app.onSearchKeyDown(event)" />
+                <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden opacity-50 hover:opacity-100 p-0.5"><i data-lucide="x" class="h-3 w-3"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden Header elements preserved for JS compatibility -->
+          <div class="hidden">
+            <h1 id="current-folder-title">Inbox</h1>
+            <p id="current-folder-subtitle"></p>
+            <button id="empty-folder-btn"></button>
+          </div>
+
+          <!-- Batch Action Toolbar (Reveals when items are checked) -->
+          <div id="batch-toolbar" class="hidden bg-slate-900 text-white px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
+              <span id="selected-count-label" class="font-bold text-white">0 selected</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="mail-open" class="h-4 w-4 text-white"></i></button>
+              <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="trash-2" class="h-4 w-4 text-white"></i></button>
+            </div>
+          </div>
+
+          <!-- Messages Scrollable List -->
+          <div id="messages-list" class="flex-1 overflow-y-auto p-2 space-y-1 pb-20 md:pb-2">
+            <!-- Populated dynamically by app.renderMessagesList() -->
+          </div>
+        </section>
+
+        <!-- 3. EMAIL READER & DETAILS PANEL (Right Column) -->
+        <main class="hidden md:flex flex-1 flex-col bg-card overflow-hidden relative" id="reader-panel">
+          <div id="reader-content" class="h-full flex flex-col overflow-y-auto">
+            <!-- Default Empty State -->
+            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground select-none">
+              <div class="relative mb-6">
+                <img src="/raccoon-logo.png" alt="Raccon" class="raccoon-anim relative h-32 w-32 object-contain opacity-80" />
+              </div>
+              <h2 class="text-xl font-bold text-foreground">Select an email to read</h2>
+              <p class="mt-2 max-w-sm text-xs text-muted-foreground">
+                Ultra-fast, private and beautifully minimal mail client with Figma precision.
+              </p>
+              <div class="mt-6 flex items-center gap-3">
+                <button onclick="app.openCompose()" class="jarmel-compose-btn max-w-[180px]">
+                  <i data-lucide="edit" class="h-3.5 w-3.5"></i>
+                  <span>Compose Mail</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
-    </main>
+    </div>
   </div>
 
   <!-- FLOATING CAPSULE BOTTOM BAR (List Menu & Compose Pencil Only - No Search on Mobile) -->

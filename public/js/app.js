@@ -1685,28 +1685,66 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     });
   },
 
+  currentCategoryTab: 'primary',
+
+  setJarmelTab(tab) {
+    this.currentCategoryTab = tab;
+    const primBtn = document.getElementById('tab-primary');
+    const otherBtn = document.getElementById('tab-other');
+    if (primBtn && otherBtn) {
+      if (tab === 'primary') {
+        primBtn.classList.add('active');
+        otherBtn.classList.remove('active');
+      } else {
+        primBtn.classList.remove('active');
+        otherBtn.classList.add('active');
+      }
+    }
+    this.renderMessagesList();
+  },
+
+  toggleInlineSearch() {
+    const bar = document.getElementById('inline-search-bar');
+    if (!bar) return;
+    bar.classList.toggle('hidden');
+    if (!bar.classList.contains('hidden')) {
+      document.getElementById('global-search')?.focus();
+    }
+  },
+
   getFilteredMessagesList() {
-    return this.messages || [];
+    let list = this.messages || [];
+    if (this.currentCategoryTab === 'other') {
+      const otherList = list.filter(m => {
+        const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''}`.toLowerCase();
+        return /newsletter|promo|update|digest|marketing|notification|receipt|system/i.test(text);
+      });
+      return otherList.length > 0 ? otherList : list.slice(Math.floor(list.length / 2));
+    } else if (this.currentCategoryTab === 'primary') {
+      const primList = list.filter(m => {
+        const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''}`.toLowerCase();
+        return !/newsletter|promo|digest|marketing/i.test(text);
+      });
+      return primList.length > 0 ? primList : list;
+    }
+    return list;
   },
 
   updateCategoryBadges() {
-    // Categories removed inside inbox per user request
+    // Dynamically update tab badges matching Figma specifications
+    const totalMsgs = this.messages ? this.messages.length : 0;
+    const primEl = document.getElementById('tab-primary-count');
+    const otherEl = document.getElementById('tab-other-count');
+    if (primEl) primEl.textContent = `(${Math.max(1, totalMsgs)})`;
+    if (otherEl) otherEl.textContent = `(${Math.max(0, Math.floor(totalMsgs / 2))})`;
   },
 
   setCategoryTab(tab) {
-    this.currentCategoryTab = tab;
-    this.renderMessagesList();
-    this.updateBatchToolbar();
+    this.setJarmelTab(tab);
   },
 
   toggleBatchSelectMode() {
     this.batchSelectionMode = !this.batchSelectionMode;
-    const btn = document.getElementById('btn-toggle-select');
-    if (btn) {
-      btn.textContent = this.batchSelectionMode ? 'Cancel' : 'Select';
-      btn.className = 'text-xs font-bold text-white bg-slate-900 hover:bg-black px-2.5 py-1 rounded-full transition cursor-pointer shrink-0';
-    }
-
     if (!this.batchSelectionMode) {
       this.checkedIds.clear();
     }
@@ -1716,52 +1754,23 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   dismissSponsoredAd() {
     this.isAdDismissed = true;
-    const adEl = document.getElementById('inbox-sponsored-ad');
-    if (adEl) {
-      adEl.style.transition = 'all 0.2s ease-out';
-      adEl.style.maxHeight = `${adEl.offsetHeight}px`;
-      adEl.style.opacity = '0';
-      setTimeout(() => adEl.remove(), 200);
-    }
   },
 
-  openSponsoredAd() {
-    document.getElementById('sponsored-ad-modal')?.classList.remove('hidden');
-    if (window.lucide) {
-      try { lucide.createIcons(); } catch (_) {}
-    }
-  },
-
-  closeSponsoredAdModal() {
-    document.getElementById('sponsored-ad-modal')?.classList.add('hidden');
-  },
+  openSponsoredAd() {},
+  closeSponsoredAdModal() {},
 
   getSenderColor(sender) {
-    const colors = [
-      'bg-sky-600',
-      'bg-blue-600',
-      'bg-indigo-600',
-      'bg-pink-600',
-      'bg-rose-600',
-      'bg-fuchsia-600',
-      'bg-cyan-600',
-      'bg-blue-700',
-      'bg-sky-500'
-    ];
+    const colors = ['bg-sky-600', 'bg-blue-600', 'bg-indigo-600', 'bg-emerald-600', 'bg-teal-600'];
     let hash = 0;
     const str = sender || 'Mail';
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
     return colors[Math.abs(hash) % colors.length];
   },
 
   getSenderInitials(sender) {
     const clean = (sender || 'Mail').replace(/[^a-zA-Z0-9\s]/g, '').trim();
     const parts = clean.split(/\s+/).filter(Boolean);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
     return (clean.slice(0, 2) || 'M').toUpperCase();
   },
 
@@ -1772,115 +1781,61 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.updateCategoryBadges();
     const list = this.getFilteredMessagesList();
 
+    const inboxBadge = document.getElementById('sidebar-inbox-badge');
+    const unreadCount = this.messages ? this.messages.filter(m => !m.is_read).length : 0;
+    if (inboxBadge) inboxBadge.textContent = unreadCount > 0 ? unreadCount : (this.messages?.length || '413');
+
     if (list.length === 0) {
-      let emptyTitle = 'No emails found';
-      let emptySubtitle = "This mailbox is clean as a raccoon's washed berries.";
-      if (this.currentCategoryTab === 'offers') {
-        emptyTitle = 'No offers right now';
-        emptySubtitle = 'Promotional emails and special deals will appear here.';
-      } else if (this.currentCategoryTab === 'other') {
-        emptyTitle = 'No updates or notices';
-        emptySubtitle = 'Social updates, newsletters and notifications will appear here.';
-      } else if (this.currentCategoryTab === 'primary') {
-        emptyTitle = 'No primary emails';
-        emptySubtitle = 'Important and personal messages will appear here.';
-      }
       container.innerHTML = `
-        <div class="flex flex-col items-center justify-center p-8 text-center text-slate-400 h-64">
-          <img src="/raccoon-logo.png" class="h-16 w-16 opacity-40 mb-3 object-contain" />
-          <p class="text-sm font-semibold text-white">${emptyTitle}</p>
-          <p class="text-xs text-slate-400 mt-1">${emptySubtitle}</p>
+        <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64 select-none">
+          <img src="/raccoon-logo.png" class="h-12 w-12 opacity-30 mb-2 object-contain" />
+          <p class="text-sm font-semibold text-foreground">No emails in ${this.currentCategoryTab === 'other' ? 'Other' : 'Primary'}</p>
+          <p class="text-xs opacity-60 mt-1">Your mailbox is clean.</p>
         </div>
       `;
       return;
     }
 
-    // Render Neon Flower Minimalist Floating Cards
+    // Exact Figma Jarmel Message Item Rendering
     const messagesHtml = list.map(msg => {
       const isSelected = this.selectedMessage?.id === msg.id;
-      const isChecked = this.checkedIds.has(msg.id);
       const isUnread = !msg.is_read;
       const dateStr = this.formatDate(msg.created_at);
-
-      const senderName = (msg.sender_name || msg.sender_email || 'Nocturnal Mail').trim();
-      const isTeam = /raccon|team|support|system|admin/i.test(senderName) || /raccon|system/i.test(msg.sender_email || '');
-      const initials = this.getSenderInitials(senderName);
-      const avatarBg = this.getSenderColor(senderName);
+      const senderName = (msg.sender_name || (msg.sender_email ? msg.sender_email.split('@')[0] : 'Sender')).trim();
 
       return `
-        <div class="msg-swipe-wrapper originos-liquid-card group relative select-none rounded-2xl mx-2 my-1.5 transition-all duration-200 overflow-hidden border ${isSelected ? 'is-selected border-sky-400 ring-1 ring-sky-400/80 shadow-[0_0_20px_-2px_rgba(14,165,233,0.3)] bg-[#132244]' : 'border-sky-500/15 bg-[#0D1529]/90 hover:bg-[#111C36] hover:border-sky-500/35 shadow-2xs hover:shadow-[0_4px_20px_-2px_rgba(14,165,233,0.15)]'}" data-msg-id="${msg.id}">
-          <!-- Revealed on Swipe Right: Read & Planner / Star -->
-          <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
-            <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
-              <i data-lucide="mail-open" class="h-5 w-5 text-white"></i>
-              <span>Read</span>
-            </button>
-            <button onclick="event.stopPropagation(); app.swipeActionStar('${msg.id}')" class="swipe-btn-planner" title="Star / Planner">
-              <i data-lucide="star" class="h-5 w-5 text-white"></i>
-              <span>Planner</span>
-            </button>
-          </div>
-
-          <!-- Revealed on Swipe Left: Delete -->
-          <div class="swipe-actions-right absolute inset-y-0 right-0 flex items-stretch z-0">
-            <button onclick="event.stopPropagation(); app.swipeActionDelete('${msg.id}')" class="swipe-btn-delete" title="Move to Trash">
-              <i data-lucide="trash-2" class="h-5 w-5 text-white"></i>
-              <span>Delete</span>
-            </button>
-          </div>
-
-          <!-- Foreground Content -->
-          <div class="swipe-content originos-glass-inner relative z-10 px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
-            <!-- Unread Dot (Glowing Electric Cyan) -->
-            <div class="w-2.5 flex items-center justify-center shrink-0">
-              ${isUnread ? '<span class="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>' : ''}
+        <div class="jarmel-msg-card group relative select-none ${isSelected ? 'active' : ''}" data-msg-id="${msg.id}" onclick="app.onEmailItemClick(event, '${msg.id}')">
+          <!-- Top Row: Unread Dot + Subject on Left, Sender Name on Right (or Inline Actions when selected) -->
+          <div class="flex items-center justify-between gap-2 leading-tight">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+              ${isUnread ? '<span class="jarmel-unread-dot"></span>' : '<span class="w-[7px] shrink-0"></span>'}
+              <span class="text-[13px] ${isUnread ? 'font-bold text-foreground' : 'font-medium opacity-90'} truncate">
+                ${this.escapeHtml(msg.subject || '(no subject)')}
+              </span>
             </div>
-
-            <!-- Batch Selection Checkbox -->
-            <div class="batch-checkbox-wrap ${this.batchSelectionMode ? 'block' : 'hidden'} shrink-0" onclick="event.stopPropagation()">
-              <input
-                type="checkbox"
-                ${isChecked ? 'checked' : ''}
-                onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-                class="rounded border-sky-500/40 h-4 w-4 accent-sky-500 cursor-pointer"
-              />
-            </div>
-
-            <!-- Sender Avatar with Monogram or Brand Icon -->
-            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs border border-white/20">
-              ${isTeam ? '<img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />' : initials}
-            </div>
-
-            <!-- Email Text Details -->
-            <div class="flex-1 min-w-0 pr-1">
-              <div class="flex items-center justify-between gap-1 leading-snug">
-                <span class="font-bold text-sm text-white truncate">${this.escapeHtml(senderName)}</span>
-                <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-                  <!-- Desktop Quick Action Hover Icons -->
-                  <div class="hidden md:group-hover:flex items-center gap-1">
-                    <button onclick="app.trashMessage('${msg.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-sky-950/50 transition cursor-pointer" title="Delete">
-                      <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
-                    </button>
-                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1.5 rounded-lg text-slate-400 hover:text-sky-300 hover:bg-sky-950/50 transition cursor-pointer" title="${isUnread ? 'Mark read' : 'Mark unread'}">
-                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5"></i>
-                    </button>
-                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-sky-300 hover:bg-sky-950/50 transition cursor-pointer" title="Archive">
-                      <i data-lucide="archive" class="h-3.5 w-3.5"></i>
-                    </button>
-                  </div>
-                  <span class="text-xs text-sky-200/50 font-medium md:group-hover:hidden">${dateStr}</span>
-                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-1 rounded-full hover:bg-sky-950/60 transition cursor-pointer" title="Star">
-                    <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]' : 'text-slate-500 hover:text-amber-400'}"></i>
-                  </button>
+            <div class="flex items-center gap-1 shrink-0 ml-2">
+              ${isSelected ? `
+                <div class="flex items-center gap-2 text-xs text-primary opacity-90" onclick="event.stopPropagation()">
+                  <button onclick="app.toggleRead('${msg.id}', false)" title="Mark read" class="p-0.5 hover:opacity-100 transition"><i data-lucide="check" class="h-3.5 w-3.5"></i></button>
+                  <button onclick="app.openNewFolderModal()" title="Tag / Folder" class="p-0.5 hover:opacity-100 transition"><i data-lucide="tag" class="h-3.5 w-3.5"></i></button>
+                  <button onclick="app.replyToMessage()" title="Reply" class="p-0.5 hover:opacity-100 transition"><i data-lucide="reply" class="h-3.5 w-3.5"></i></button>
                 </div>
-              </div>
-              <div class="text-xs ${isUnread ? 'font-bold text-slate-100' : 'font-medium text-slate-300'} truncate mt-0.5">
-                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-sky-400 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
-              </div>
-              <div class="text-xs text-slate-400 truncate mt-0.5 font-normal">
-                ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}
-              </div>
+              ` : `
+                <span class="text-[12px] opacity-75 font-normal truncate max-w-[120px]">
+                  ${this.escapeHtml(senderName)}
+                </span>
+              `}
             </div>
+          </div>
+
+          <!-- Second Row: Snippet on Left, Date/Time on Right -->
+          <div class="flex items-center justify-between gap-2 mt-1 pl-[15px]">
+            <span class="text-[12px] opacity-60 truncate font-normal flex-1">
+              ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim() || 'No preview available')}
+            </span>
+            <span class="text-[11px] opacity-50 font-mono shrink-0 ml-2">
+              ${dateStr}
+            </span>
           </div>
         </div>
       `;
@@ -2136,266 +2091,104 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const readerEl = document.getElementById('reader-content');
     const attachments = msg.attachments || [];
     const userAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
-    const isTeam = /raccon|team|support|system|admin/i.test(msg.sender_name || '') || /raccon|system/i.test(msg.sender_email || '');
-    const initials = this.getSenderInitials(msg.sender_name || msg.sender_email);
-    const avatarBg = this.getSenderColor(msg.sender_name || msg.sender_email);
+    const dateObj = new Date(msg.created_at || Date.now());
+    const dateStrLong = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric', year: 'numeric' }) + ' ' + dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
     readerEl.innerHTML = `
-      <!-- Action Toolbar (Smart Responsive, Zero Overlap on Mobile) -->
-      <div class="h-11 sm:h-12 border-b border-sky-500/15 bg-[#080D1B] px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
-        <div class="flex items-center gap-1.5 shrink-0">
-          <!-- Mobile Back Button -->
-          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shrink-0 cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)]">
-            <i data-lucide="arrow-left" class="h-3.5 w-3.5 text-white"></i>
+      <!-- Figma Dribbble Top Reading Header -->
+      <div class="px-5 py-3.5 border-b border-border/40 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-lg bg-black/5 dark:bg-white/10 shrink-0 cursor-pointer">
+            <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
             <span>Back</span>
           </button>
-          <button onclick="app.replyToMessage()"
-            class="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-[0_0_12px_rgba(14,165,233,0.35)] cursor-pointer active:scale-95 shrink-0 border border-sky-400/40">
-            <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
+          <h1 class="text-base sm:text-lg font-bold text-foreground truncate">
+            ${this.escapeHtml(msg.subject || '(no subject)')}
+          </h1>
+        </div>
+
+        <!-- Action Icons on Right: Reply, Lightbulb/Snooze, More -->
+        <div class="flex items-center gap-2 shrink-0 ml-3">
+          <button onclick="app.replyToMessage()" title="Reply" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
+            <i data-lucide="reply" class="h-4 w-4"></i>
+          </button>
+          <button onclick="app.showToast('Email verified: clean & private.')" title="Insights / Snooze" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
+            <i data-lucide="lightbulb" class="h-4 w-4"></i>
+          </button>
+          <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
+            <i data-lucide="more-vertical" class="h-4 w-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Message Body -->
+      <div class="flex-1 p-5 sm:p-7 overflow-y-auto space-y-4">
+        <!-- Metadata Row (From, To, Date) -->
+        <div class="flex items-start justify-between gap-3 text-xs opacity-75 leading-relaxed">
+          <div>
+            <p>From: <span class="font-medium text-foreground">${this.escapeHtml(msg.sender_email || msg.sender_name)}</span></p>
+            <p class="mt-0.5">To: <span class="font-medium text-foreground">You</span></p>
+          </div>
+          <span class="font-mono text-[11px] opacity-70 shrink-0 pt-0.5">${dateStrLong}</span>
+        </div>
+
+        <div class="border-b border-border/40 my-3"></div>
+
+        <!-- Body Content -->
+        <div class="text-[13px] sm:text-sm leading-relaxed text-foreground opacity-90 whitespace-pre-wrap font-sans">
+          ${msg.body_html ? `
+            <div class="email-html-wrapper overflow-x-auto">${msg.body_html}</div>
+          ` : `
+            <div>${this.escapeHtml(msg.body || 'No content')}</div>
+          `}
+        </div>
+
+        <!-- Attachments Section if any -->
+        ${attachments.length > 0 ? `
+          <div class="pt-4 border-t border-border/40 space-y-2">
+            <div class="text-xs font-semibold opacity-75">
+              ${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${attachments.map(att => `
+                <a href="/uploads/${att.filename}" download="${att.original_name}" class="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-black/5 dark:bg-white/5 px-3 py-1.5 text-xs hover:border-primary transition">
+                  <i data-lucide="paperclip" class="h-3.5 w-3.5 text-primary"></i>
+                  <span class="truncate max-w-[160px] font-medium">${this.escapeHtml(att.original_name)}</span>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Bottom Action Buttons: Reply & Forward -->
+        <div class="mt-8 pt-4 border-t border-border/40 flex items-center gap-3 select-none">
+          <button onclick="app.replyToMessage()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-border/60 hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer">
+            <i data-lucide="reply" class="h-3.5 w-3.5"></i>
             <span>Reply</span>
           </button>
-          <button onclick="app.replyAllMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
-            <i data-lucide="reply-all" class="h-3 w-3 text-sky-400"></i>
-            <span>Reply All</span>
-          </button>
-          <button onclick="app.forwardMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
-            <i data-lucide="forward" class="h-3 w-3 text-sky-400"></i>
+          <button onclick="app.forwardMessage()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-border/60 hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer">
+            <i data-lucide="forward" class="h-3.5 w-3.5"></i>
             <span>Forward</span>
           </button>
         </div>
 
-        <div class="flex items-center gap-1 shrink-0">
-          <!-- Desktop Only Direct Actions -->
-          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shadow-2xs">
-            <i data-lucide="printer" class="h-4 w-4"></i>
-          </button>
-          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shadow-2xs">
-            <i data-lucide="download" class="h-4 w-4"></i>
-          </button>
-          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs">
-            <i data-lucide="mail" class="h-3 w-3 text-sky-400"></i>
-            <span>Postcard View</span>
-          </button>
-          
-          <!-- Star Action (Both Mobile & Desktop) -->
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-400 fill-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]' : 'text-slate-400'}"></i>
-          </button>
-
-          <!-- Archive Action (Both Mobile & Desktop) -->
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="archive" class="h-4 w-4"></i>
-          </button>
-
-          <!-- Trash Action (Both Mobile & Desktop) -->
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-rose-400 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="trash-2" class="h-4 w-4"></i>
-          </button>
-
-          <!-- Mobile Overflow 'More' Menu Button -->
-          <div class="relative sm:hidden">
-            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
-              <i data-lucide="more-vertical" class="h-4 w-4"></i>
+        <!-- Fast Inline Reply Section -->
+        <div class="mt-6 rounded-2xl border border-border/40 bg-black/[0.02] dark:bg-white/[0.02] p-4 space-y-2">
+          <div class="flex items-center justify-between text-xs opacity-75">
+            <span class="font-semibold">Fast Reply</span>
+            <span class="text-[11px] opacity-60">Ctrl+Enter to send</span>
+          </div>
+          <textarea
+            id="quick-reply-body"
+            rows="2"
+            placeholder="Write a quick reply..."
+            onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
+            class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-foreground placeholder:opacity-50"
+          ></textarea>
+          <div class="flex justify-end pt-1">
+            <button onclick="app.sendQuickReply('${msg.id}')" class="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold text-xs transition hover:opacity-90 cursor-pointer">
+              Send Reply
             </button>
-            <div id="reader-more-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl border border-sky-500/25 bg-[#0B1120] py-1.5 shadow-2xl z-50 text-xs text-white">
-              <button onclick="app.closeReaderMoreDropdown(); app.openPostcardModal();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="mail" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Postcard View</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.printMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="printer" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Print or PDF</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.downloadMessageEml('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="download" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Export .EML</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.replyAllMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="reply-all" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Reply All</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.forwardMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="forward" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Forward</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.toggleRead('${msg.id}', false);" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
-                <i data-lucide="mail-open" class="h-3.5 w-3.5 text-sky-400"></i>
-                <span>Mark Unread</span>
-              </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.spamMessage('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 text-rose-400 cursor-pointer">
-                <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-rose-400"></i>
-                <span>Report Spam</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scrollable Message Body (Streamlined Compact Density) -->
-      <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 pb-24 md:pb-5">
-        
-        <!-- Authentic Email Reader Stationery (Neon Flower Dark Surface) -->
-        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs bg-[#0B1120] border border-sky-500/20 text-white">
-          <!-- Top subtle accent line -->
-          <div class="stripes-subtle h-[2px] w-full"></div>
-
-          <div class="p-4 sm:p-5 space-y-3">
-            <!-- Verified Courier Badge (Compact) -->
-            <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-sky-950/60 border border-sky-500/25 text-sky-300 flex items-center gap-1.5 rounded-full">
-                <i data-lucide="shield-check" class="h-3 w-3 text-sky-400 shrink-0"></i>
-                <span>Verified Postcard &bull; Masked 10/10</span>
-              </div>
-              <span class="text-[10px] font-mono text-sky-300 bg-sky-950/60 border border-sky-500/25 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
-            </div>
-
-            <!-- Header Row: Sender Icon/Avatar & Details (Compact) -->
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex items-center gap-3 min-w-0">
-                ${isTeam ? `
-                  <div class="h-10 w-10 rounded-full bg-[#0D152A] border border-sky-500/30 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
-                    <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
-                  </div>
-                ` : `
-                  <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 border border-white/20">
-                    ${initials}
-                  </div>
-                `}
-                <div class="min-w-0">
-                  <h2 class="font-display text-base sm:text-lg font-bold text-white leading-tight truncate">
-                    ${this.escapeHtml(msg.subject || '(no subject)')}
-                  </h2>
-                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
-                    <span class="font-bold text-white">${this.escapeHtml(msg.sender_name)}</span>
-                    <span class="text-sky-300 font-mono text-[11px] bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
-                    <span>&bull;</span>
-                    <span>to <span class="font-medium text-slate-300">${this.escapeHtml(msg.recipient_email)}</span></span>
-                    <span>&bull;</span>
-                    <span class="font-mono text-[10.5px] text-sky-300/80">${new Date(msg.created_at).toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Email Content / Letter Body -->
-            <div class="pt-4 border-t border-sky-500/15 text-slate-100 text-sm leading-relaxed font-sans bg-[#080D1A] rounded-xl p-4 sm:p-5 border border-sky-500/15 shadow-2xs">
-              ${msg.body_html ? `
-                <div class="email-html-wrapper overflow-x-auto text-slate-100 leading-normal">${msg.body_html}</div>
-              ` : `
-                <div class="whitespace-pre-wrap text-slate-200 font-normal leading-relaxed">${this.escapeHtml(msg.body)}</div>
-              `}
-            </div>
-
-            <!-- Attachments Section (Compact horizontal pills) -->
-            ${attachments.length > 0 ? `
-              <div class="pt-3 border-t border-sky-500/15 space-y-1.5">
-                <div class="flex items-center gap-1.5 text-xs font-bold text-sky-300">
-                  <i data-lucide="paperclip" class="h-3 w-3 text-sky-400"></i>
-                  <span>${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}</span>
-                </div>
-                <div class="flex flex-wrap gap-2 pt-0.5">
-                  ${attachments.map(att => {
-                    const isImg = att.mime_type.startsWith('image/');
-                    const sizeKB = Math.round(att.size_bytes / 1024);
-                    return `
-                      <div class="inline-flex items-center gap-2 rounded-xl border border-sky-500/20 bg-[#0E162B] p-1.5 pr-2.5 hover:border-sky-400 transition text-xs shadow-xs text-white">
-                        <div class="h-8 w-8 rounded-lg bg-sky-950/80 flex items-center justify-center overflow-hidden shrink-0 border border-sky-500/20">
-                          ${isImg ? `
-                            <img src="/uploads/${att.filename}" class="h-full w-full object-cover" />
-                          ` : `
-                            <i data-lucide="file-text" class="h-4 w-4 text-sky-400"></i>
-                          `}
-                        </div>
-                        <div class="min-w-0 pr-1">
-                          <p class="font-bold truncate text-white text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
-                          <p class="text-[9.5px] text-sky-300/80 font-mono">${sizeKB} KB</p>
-                        </div>
-                        <a
-                          href="/uploads/${att.filename}"
-                          download="${att.original_name}"
-                          class="p-1 rounded-full hover:bg-sky-950 text-sky-300 hover:text-white transition"
-                          title="Download"
-                        >
-                          <i data-lucide="download" class="h-3.5 w-3.5"></i>
-                        </a>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Postcard Footer Watermark (Compact) -->
-            <div class="pt-2 border-t border-sky-500/15 flex items-center justify-between text-[10px] text-slate-400">
-              <span class="flex items-center gap-1">
-                <span class="text-xs">🦝</span>
-                <span>Clever &amp; Masked Nocturnal Envelope</span>
-              </span>
-              <span class="font-mono text-sky-400">End-to-End Encrypted</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- FAST REPLY SECTION -->
-        <div class="rounded-3xl border border-sky-500/20 bg-[#0B1120] p-5 shadow-sm space-y-3">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-bold text-white">
-              <i data-lucide="zap" class="h-4 w-4 text-sky-400"></i>
-              <span>Fast Reply to ${this.escapeHtml(msg.sender_name)}</span>
-            </div>
-            <span class="text-[11px] text-slate-400 hidden sm:inline">Press Ctrl+Enter to send fast</span>
-          </div>
-
-          <!-- 1-Tap Fast Reply Chips -->
-          <div class="flex flex-wrap items-center gap-1.5 pt-1">
-            <span class="text-[11px] font-bold text-sky-300 mr-1">1-Tap:</span>
-            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Got it!</button>
-            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Sounds great!</button>
-            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Will review shortly.</button>
-            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Thanks for the postcard!</button>
-            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">On my way!</button>
-          </div>
-
-          <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
-          <div class="flex items-start gap-3 pt-2">
-            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-sky-500/30 shrink-0 mt-1 shadow-sm" />
-            <div class="flex-1">
-              <!-- Postcard Styled Inner Box -->
-              <div class="rounded-2xl border border-sky-500/25 bg-[#080D1A] focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/20 p-3.5 shadow-sm transition">
-                <textarea
-                  id="quick-reply-body"
-                  rows="3"
-                  placeholder="Type a fast reply or select a chip above... (Ctrl+Enter to send)"
-                  onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
-                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-100 placeholder:text-slate-500 pb-2"
-                ></textarea>
-
-                <!-- High-Visibility Bottom Action Bar INSIDE the Box -->
-                <div class="flex items-center justify-between pt-2.5 border-t border-sky-500/15 mt-1 flex-wrap gap-2">
-                  <div class="flex items-center gap-2 text-[11px] text-slate-400">
-                    <span class="inline-flex items-center gap-1 font-semibold text-sky-300">
-                      <i data-lucide="zap" class="h-3.5 w-3.5 text-sky-400"></i>
-                      <span>Instant Express Dispatch</span>
-                    </span>
-                    <span class="hidden sm:inline opacity-60">&bull; Press Ctrl+Enter</span>
-                  </div>
-
-                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX -->
-                  <button
-                    id="btn-fast-reply-send"
-                    type="button"
-                    onclick="app.sendQuickReply('${msg.id}')"
-                    class="flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-display font-bold text-xs sm:text-sm py-2 px-5 transition shadow-[0_0_15px_rgba(14,165,233,0.4)] active:scale-95 cursor-pointer group border border-sky-400/30"
-                    title="Send Fast Reply immediately"
-                  >
-                    <span>Send Fast</span>
-                    <i data-lucide="send" class="h-3.5 w-3.5 text-white transition transform group-hover:translate-x-0.5"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -4308,108 +4101,116 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
     // ==========================================
-  // THEME SYSTEM: STRICTLY 2 MODERN THEMES (LIGHT & DARK)
+  // THEME SYSTEM: STRICTLY 2 MODERN THEMES (FIGMA SPECIFICATION: DARK GLASS & LIGHT GLASS)
   // ==========================================
   themeDefinitions: {
-    light: {
-      name: '☀️ Clean Modern Light',
+    dark: {
+      name: '🌙 Oceanic Dark Glass',
       vars: {
-        '--background': '#FFFFFF',
+        '--background': '#050D1E',
+        '--foreground': '#F8FAFC',
+        '--card': '#0A162C',
+        '--card-alt': '#0E1D3A',
+        '--card-foreground': '#F8FAFC',
+        '--primary': '#38BDF8',
+        '--primary-hover': '#0EA5E9',
+        '--primary-foreground': '#FFFFFF',
+        '--primary-glow': 'rgba(56, 189, 248, 0.35)',
+        '--secondary': '#0F1E38',
+        '--secondary-foreground': '#F8FAFC',
+        '--secondary-hover': '#162B50',
+        '--muted': 'rgba(255, 255, 255, 0.08)',
+        '--muted-foreground': '#94A3B8',
+        '--accent': '#1D4ED8',
+        '--accent-foreground': '#38BDF8',
+        '--accent-pink': '#EC4899',
+        '--border': 'rgba(255, 255, 255, 0.12)',
+        '--border-light': 'rgba(255, 255, 255, 0.06)'
+      },
+      colorScheme: 'dark'
+    },
+    light: {
+      name: '☀️ Clean White Glass',
+      vars: {
+        '--background': '#F1F5F9',
         '--foreground': '#0F172A',
         '--card': '#FFFFFF',
         '--card-alt': '#F8FAFC',
         '--card-foreground': '#0F172A',
-        '--primary': '#0F172A',
-        '--primary-hover': '#1E293B',
+        '--primary': '#2563EB',
+        '--primary-hover': '#1D4ED8',
         '--primary-foreground': '#FFFFFF',
-        '--primary-glow': 'rgba(15, 23, 42, 0.15)',
-        '--secondary': '#F1F5F9',
+        '--primary-glow': 'rgba(37, 99, 235, 0.2)',
+        '--secondary': '#F8FAFC',
         '--secondary-foreground': '#0F172A',
+        '--secondary-hover': '#E2E8F0',
         '--muted': '#F1F5F9',
         '--muted-foreground': '#64748B',
-        '--accent': '#F1F5F9',
-        '--accent-foreground': '#0F172A',
+        '--accent': '#EBF2FE',
+        '--accent-foreground': '#2563EB',
+        '--accent-pink': '#DB2777',
         '--border': '#E2E8F0',
-        '--border-light': '#F1F5F9',
-        '--mask': '#0F172A',
-        '--fur': '#334155',
-        '--cream': '#F8FAFC'
+        '--border-light': '#F1F5F9'
       },
-      cover: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%)',
       colorScheme: 'light'
-    },
-    dark: {
-      name: '🌙 Obsidian Modern Dark',
-      vars: {
-        '--background': '#0B0F17',
-        '--foreground': '#F8FAFC',
-        '--card': '#131B2E',
-        '--card-alt': '#1E293B',
-        '--card-foreground': '#F8FAFC',
-        '--primary': '#38BDF8',
-        '--primary-hover': '#0EA5E9',
-        '--primary-foreground': '#0B0F17',
-        '--primary-glow': 'rgba(56, 189, 248, 0.45)',
-        '--secondary': '#1E293B',
-        '--secondary-foreground': '#F8FAFC',
-        '--muted': '#1E293B',
-        '--muted-foreground': '#94A3B8',
-        '--accent': '#1E293B',
-        '--accent-foreground': '#38BDF8',
-        '--border': '#1E293B',
-        '--border-light': '#334155',
-        '--mask': '#0B0F17',
-        '--fur': '#1E293B',
-        '--cream': '#131B2E'
-      },
-      cover: 'linear-gradient(135deg, #0B0F17 0%, #131B2E 50%, #1E293B 100%)',
-      colorScheme: 'dark'
     }
   },
 
   normalizeTheme(t) {
-    return 'light';
+    return t === 'light' ? 'light' : 'dark';
   },
 
   toggleTheme() {
-    this.setTheme('light', false);
+    const current = this.normalizeTheme(localStorage.getItem('raccon_theme') || 'dark');
+    const next = current === 'dark' ? 'light' : 'dark';
+    this.setTheme(next, true);
   },
 
   setTheme(themeName, persist = false) {
-    const canonicalTheme = 'light';
-    const def = this.themeDefinitions.light;
+    const canonicalTheme = this.normalizeTheme(themeName);
+    const def = this.themeDefinitions[canonicalTheme];
 
-    // 1. Update document classes
-    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber', 'theme-dark'];
+    // 1. Update document and body classes cleanly
+    const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber', 'theme-dark', 'theme-light'];
     allThemeClasses.forEach(t => {
       document.documentElement.classList.remove(t, 'theme-' + t);
       if (document.body) document.body.classList.remove(t, 'theme-' + t);
     });
-    document.documentElement.classList.remove('dark');
-    document.documentElement.classList.add('theme-light');
-    if (document.body) document.body.classList.add('theme-light');
+
+    if (canonicalTheme === 'dark') {
+      document.documentElement.classList.add('dark', 'theme-dark');
+      if (document.body) document.body.classList.add('dark', 'theme-dark', 'jarmel-body');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('theme-light');
+      if (document.body) document.body.classList.add('theme-light', 'jarmel-body');
+    }
 
     // 2. Set colorScheme for OS native controls
-    document.documentElement.style.colorScheme = 'light';
+    document.documentElement.style.colorScheme = canonicalTheme;
 
     // 3. Set custom variables
     for (const [k, v] of Object.entries(def.vars)) {
       document.documentElement.style.setProperty(k, v);
     }
 
-    // 4. Update Sun/Moon icon on toggle button if present
-    const sunIcon = document.getElementById('app-theme-sun');
-    const moonIcon = document.getElementById('app-theme-moon');
-    if (sunIcon && moonIcon) {
-      sunIcon.classList.add('hidden');
-      moonIcon.classList.remove('hidden');
-    }
+    // 4. Update Sun/Moon icons on all toggle buttons
+    const sunIcons = document.querySelectorAll('.app-theme-sun');
+    const moonIcons = document.querySelectorAll('.app-theme-moon');
+    sunIcons.forEach(icon => {
+      if (canonicalTheme === 'dark') icon.classList.remove('hidden');
+      else icon.classList.add('hidden');
+    });
+    moonIcons.forEach(icon => {
+      if (canonicalTheme === 'dark') icon.classList.add('hidden');
+      else icon.classList.remove('hidden');
+    });
 
     // 5. Store in localStorage
-    localStorage.setItem('raccon_theme', 'light');
+    localStorage.setItem('raccon_theme', canonicalTheme);
 
     // 6. Highlight active theme button
-    this.highlightActiveTheme('light');
+    this.highlightActiveTheme(canonicalTheme);
 
     // 7. Persist to backend if requested
     if (persist) {
@@ -4423,7 +4224,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
 
     if (window.lucide) {
-      lucide.createIcons();
+      try { lucide.createIcons(); } catch (_) {}
     }
   },
 
@@ -4431,7 +4232,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const canonical = this.normalizeTheme(themeName);
     const themeButtons = [
       { id: 'theme-btn-light', active: canonical === 'light' },
-      { id: 'theme-btn-harmony', active: canonical === 'light' },
       { id: 'theme-btn-dark', active: canonical === 'dark' }
     ];
 

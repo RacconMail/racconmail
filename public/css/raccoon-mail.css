@@ -5,43 +5,77 @@
    Designed with pure white cards, crisp slate typography, and signature azure.
    ========================================================================== */
 
-:root, html, body,
+/* ==========================================================================
+   STRICTLY 2 THEMES (EXACT FIGMA / DRIBBBLE SPECIFICATION):
+   1. Oceanic Dark Glass (Dribbble/Jarmel Dark Theme)
+   2. Clean White Glass (Dribbble/Jarmel Light Theme)
+   ========================================================================== */
+
+/* 1. DARK GLASS THEME (DEFAULT / DARK MODE) */
+:root,
 html.dark, body.dark,
-html.theme-neon-flower, body.theme-neon-flower,
-html.theme-light, body.theme-light,
-html.theme-dark, body.theme-dark,
-html.theme-harmony, body.theme-harmony,
-html.theme-raccon, body.theme-raccon,
-html.theme-midnight, body.theme-midnight,
-html.theme-midnight-green, body.theme-midnight-green {
-  --background: #070A14; /* Deep Velvety Midnight Canvas */
-  --foreground: #F8FAFC; /* Crisp Pure Silver-White Text */
-  --card: #0B1120; /* Deep Sapphire Obsidian Surface */
-  --card-alt: #0F172A; /* Elevated Surface */
+html.theme-dark, body.theme-dark {
+  --background: #050D1E;
+  --foreground: #F8FAFC;
+  --card: #0A162C;
+  --card-alt: #0E1D3A;
   --card-foreground: #F8FAFC;
-  --primary: #0EA5E9; /* Electric Cyan Petal Accent */
-  --primary-hover: #38BDF8;
+  --primary: #38BDF8;
+  --primary-hover: #0EA5E9;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(14, 165, 233, 0.35);
-  --secondary: #0F172A;
+  --primary-glow: rgba(56, 189, 248, 0.35);
+  --secondary: #0F1E38;
   --secondary-foreground: #F8FAFC;
-  --secondary-hover: #1E293B;
-  --muted: #0E162B;
+  --secondary-hover: #162B50;
+  --muted: rgba(255, 255, 255, 0.08);
   --muted-foreground: #94A3B8;
-  --accent: #131E35;
+  --accent: #1D4ED8;
   --accent-foreground: #38BDF8;
-  --accent-pink: #EC4899; /* Radiant Peony Magenta Accent */
-  --border: rgba(56, 189, 248, 0.16);
-  --border-light: rgba(56, 189, 248, 0.08);
-  --mask: #070A14;
-  --fur: #0EA5E9;
-  --cream: #0B1120;
+  --accent-pink: #EC4899;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.06);
+  --mask: #050D1E;
+  --fur: #38BDF8;
+  --cream: #0A162C;
   --themewidget-radius: 16px;
   --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(14, 165, 233, 0.05);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --stamp-red: #EC4899;
-  --stamp-blue: #0EA5E9;
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(14, 165, 233, 0.1);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --stamp-red: #EF4444;
+  --stamp-blue: #38BDF8;
+}
+
+/* 2. LIGHT GLASS THEME (CLEAN WHITE / LIGHT MODE) */
+html.theme-light, body.theme-light,
+html:not(.dark), body:not(.dark) {
+  --background: #F1F5F9;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-alt: #F8FAFC;
+  --card-foreground: #0F172A;
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-foreground: #FFFFFF;
+  --primary-glow: rgba(37, 99, 235, 0.2);
+  --secondary: #F8FAFC;
+  --secondary-foreground: #0F172A;
+  --secondary-hover: #E2E8F0;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #EBF2FE;
+  --accent-foreground: #2563EB;
+  --accent-pink: #DB2777;
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
+  --mask: #0F172A;
+  --fur: #2563EB;
+  --cream: #FFFFFF;
+  --themewidget-radius: 16px;
+  --btn-radius: 50px;
+  --shadow-soft: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(37, 99, 235, 0.05);
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.06);
+  --stamp-red: #EF4444;
+  --stamp-blue: #2563EB;
 }
 
 * {
@@ -1525,6 +1559,483 @@ header {
   .safe-area-top {
     padding-top: max(0.85rem, env(safe-area-inset-top)) !important;
   }
+}
+
+/* ==========================================================================
+   MACOS LIQUID GLASS CLIENT THEME (EXACT FIDELITY TO MACBOOK SPECIFICATION)
+   Atmospheric Nebula Auroras, macOS Window Traffic Lights & Floating Glass Reader
+   ========================================================================== */
+
+.macos-aurora-bg {
+  background-color: #060913 !important;
+  background-image: 
+    radial-gradient(ellipse 65% 55% at 16% 45%, rgba(14, 165, 233, 0.25) 0%, rgba(20, 184, 166, 0.14) 35%, transparent 68%),
+    radial-gradient(ellipse 60% 50% at 85% 36%, rgba(217, 70, 239, 0.28) 0%, rgba(147, 51, 234, 0.16) 40%, transparent 68%),
+    radial-gradient(circle at 50% 95%, rgba(56, 189, 248, 0.10) 0%, transparent 58%) !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+.macos-window-shell {
+  background: rgba(11, 17, 32, 0.78) !important;
+  backdrop-filter: blur(34px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.8), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18) !important;
+  border-radius: 24px !important;
+}
+
+.macos-glass-inspector {
+  background: rgba(14, 21, 38, 0.78) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 30px 80px -12px rgba(0, 0, 0, 0.85), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.2) !important;
+  border-radius: 28px !important;
+}
+
+.macos-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  display: inline-block;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.macos-dot:hover {
+  filter: brightness(1.15);
+  transform: scale(1.1);
+}
+.macos-dot-close {
+  background-color: #FF5F56 !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.macos-dot-minimize {
+  background-color: #FFBD2E !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.macos-dot-zoom {
+  background-color: #27C93F !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.macos-email-card {
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  cursor: pointer;
+}
+.macos-email-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.macos-email-card.is-selected {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.18) !important;
+}
+
+.macos-tab-active {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  position: relative;
+}
+.macos-tab-active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #FFFFFF;
+  border-radius: 9999px;
+}
+.macos-tab-inactive {
+  color: #94A3B8 !important;
+  font-weight: 500 !important;
+  transition: color 0.15s ease;
+}
+.macos-tab-inactive:hover {
+  color: #F8FAFC !important;
+}
+
+.macos-reader-card-inner {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5) !important;
+}
+.macos-black-button {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 10px 24px !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.macos-black-button:hover {
+  background: #1E293B !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==========================================================================
+   FIGMA / DRIBBBLE MACOS MAIL INTERFACE (DRIBBBLE.COM/JARMEL REPLICATION)
+   ========================================================================== */
+
+/* Outer Canvas Backgrounds */
+body.jarmel-body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background-color 0.25s ease;
+}
+
+html.dark body.jarmel-body,
+html.theme-dark body.jarmel-body {
+  background: radial-gradient(circle at 50% 0%, #17386d 0%, #0a1733 35%, #050d1e 100%) !important;
+  background-attachment: fixed !important;
+  color: #F8FAFC !important;
+}
+
+html.theme-light body.jarmel-body,
+html:not(.dark) body.jarmel-body {
+  background: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F1F5F9 50%, #E2E8F0 100%) !important;
+  background-attachment: fixed !important;
+  color: #0F172A !important;
+}
+
+/* Central macOS Browser/App Window Frame */
+.jarmel-mac-window {
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+html.dark .jarmel-mac-window,
+html.theme-dark .jarmel-mac-window {
+  background: rgba(10, 22, 44, 0.82) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 30px 90px -10px rgba(0, 0, 0, 0.85), inset 0 1px 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+html.theme-light .jarmel-mac-window,
+html:not(.dark) .jarmel-mac-window {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 25px 70px -10px rgba(15, 23, 42, 0.12), inset 0 1px 1px 0 #FFFFFF !important;
+}
+
+/* macOS Top Title / URL Bar */
+.jarmel-top-bar {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 1px solid;
+  user-select: none;
+}
+
+html.dark .jarmel-top-bar,
+html.theme-dark .jarmel-top-bar {
+  background: rgba(8, 17, 36, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #94A3B8 !important;
+}
+
+html.theme-light .jarmel-top-bar,
+html:not(.dark) .jarmel-top-bar {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #64748B !important;
+}
+
+/* Safari URL / Domain Pill */
+.jarmel-url-pill {
+  height: 28px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 380px;
+  width: 100%;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+html.dark .jarmel-url-pill,
+html.theme-dark .jarmel-url-pill {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #E2E8F0 !important;
+}
+
+html.theme-light .jarmel-url-pill,
+html:not(.dark) .jarmel-url-pill {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+
+/* Left Sidebar Compose Button */
+.jarmel-compose-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+html.dark .jarmel-compose-btn,
+html.theme-dark .jarmel-compose-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+html.dark .jarmel-compose-btn:hover,
+html.theme-dark .jarmel-compose-btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-0.5px);
+}
+
+html.theme-light .jarmel-compose-btn,
+html:not(.dark) .jarmel-compose-btn {
+  background: #2563EB !important;
+  border: 1px solid #1D4ED8 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+}
+html.theme-light .jarmel-compose-btn:hover,
+html:not(.dark) .jarmel-compose-btn:hover {
+  background: #1D4ED8 !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35) !important;
+  transform: translateY(-0.5px);
+}
+
+/* Sidebar Navigation Items */
+.jarmel-nav-item {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+html.dark .jarmel-nav-item,
+html.theme-dark .jarmel-nav-item {
+  color: #94A3B8;
+}
+html.dark .jarmel-nav-item:hover,
+html.theme-dark .jarmel-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+html.dark .jarmel-nav-item.active,
+html.theme-dark .jarmel-nav-item.active {
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
+html.theme-light .jarmel-nav-item,
+html:not(.dark) .jarmel-nav-item {
+  color: #64748B;
+}
+html.theme-light .jarmel-nav-item:hover,
+html:not(.dark) .jarmel-nav-item:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+html.theme-light .jarmel-nav-item.active,
+html:not(.dark) .jarmel-nav-item.active {
+  background: #EBF2FE !important;
+  color: #2563EB !important;
+  font-weight: 600;
+}
+
+/* Tabs: Primary vs Other */
+.jarmel-tab {
+  font-size: 13px;
+  font-weight: 600;
+  padding-bottom: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s ease;
+  user-select: none;
+}
+
+html.dark .jarmel-tab,
+html.theme-dark .jarmel-tab {
+  color: #94A3B8;
+}
+html.dark .jarmel-tab:hover,
+html.theme-dark .jarmel-tab:hover {
+  color: #F8FAFC;
+}
+html.dark .jarmel-tab.active,
+html.theme-dark .jarmel-tab.active {
+  color: #FFFFFF !important;
+}
+html.dark .jarmel-tab.active::after,
+html.theme-dark .jarmel-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #38BDF8;
+  border-radius: 9999px;
+}
+
+html.theme-light .jarmel-tab,
+html:not(.dark) .jarmel-tab {
+  color: #64748B;
+}
+html.theme-light .jarmel-tab:hover,
+html:not(.dark) .jarmel-tab:hover {
+  color: #0F172A;
+}
+html.theme-light .jarmel-tab.active,
+html:not(.dark) .jarmel-tab.active {
+  color: #0F172A !important;
+}
+html.theme-light .jarmel-tab.active::after,
+html:not(.dark) .jarmel-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: #2563EB;
+  border-radius: 9999px;
+}
+
+/* Message Item in Middle Column */
+.jarmel-msg-card {
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+html.dark .jarmel-msg-card:hover,
+html.theme-dark .jarmel-msg-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+html.dark .jarmel-msg-card.active,
+html.theme-dark .jarmel-msg-card.active {
+  background: rgba(30, 58, 138, 0.35) !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.theme-light .jarmel-msg-card:hover,
+html:not(.dark) .jarmel-msg-card:hover {
+  background: #F8FAFC;
+}
+html.theme-light .jarmel-msg-card.active,
+html:not(.dark) .jarmel-msg-card.active {
+  background: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06) !important;
+}
+
+/* Emerald Unread Indicator Dot */
+.jarmel-unread-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #10B981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   USER-PROVIDED LIQUID GLASS SPECIFICATIONS (APPLIED TO DARK GLASS THEME)
+   ========================================================================== */
+
+/* 1. Deep Canvas Backdrop with Radiant Orbs */
+body.app,
+html.dark body.app,
+html.theme-dark body.app,
+html.dark body.jarmel-body,
+html.theme-dark body.jarmel-body {
+  background: radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.18), transparent 45%),
+              radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.18), transparent 45%),
+              radial-gradient(circle at 50% 0%, #15386c 0%, transparent 55%),
+              #090d16 !important;
+  color: #f8fafc !important;
+}
+
+/* 2. Frosted Sidebar Layout Layer */
+.sidebar, #layout-sidebar,
+html.dark #sidebar-panel,
+html.theme-dark #sidebar-panel {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 3. The Bubble Liquid Glass Email Panel */
+.messagelist, #layout-list, #layout-content,
+html.dark #messages-panel,
+html.theme-dark #messages-panel,
+html.dark #reader-panel,
+html.theme-dark #reader-panel {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+/* 4. Active Message Hover Selection states */
+.messagelist tr.selected, .listitem.selected,
+.jarmel-msg-card.selected, .jarmel-msg-card.active,
+html.dark .jarmel-msg-card.active,
+html.theme-dark .jarmel-msg-card.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-left: 4px solid #3b82f6 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 
