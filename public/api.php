@@ -39,7 +39,7 @@ try {
     $db->exec('PRAGMA synchronous = NORMAL;');
     $db->exec('PRAGMA temp_store = MEMORY;');
     $db->exec('PRAGMA foreign_keys = ON;');
-} catch (Exception $e) {
+} catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
     exit;
@@ -52,19 +52,20 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v4';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v7';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
             initDatabase($db);
         } else {
             // Migration: ensure modern columns exist
-            try { $db->exec('ALTER TABLE users ADD COLUMN password_hash TEXT'); } catch (Exception $e) {}
-            try { $db->exec('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0'); } catch (Exception $e) {}
-            try { $db->exec('ALTER TABLE users ADD COLUMN cover_photo TEXT'); } catch (Exception $e) {}
-            try { $db->exec('ALTER TABLE users ADD COLUMN theme TEXT DEFAULT "raccon"'); } catch (Exception $e) {}
-            try { $db->exec('ALTER TABLE users ADD COLUMN phone TEXT'); } catch (Exception $e) {}
-            try { $db->exec('ALTER TABLE users ADD COLUMN phone_verified INTEGER DEFAULT 0'); } catch (Exception $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN password_hash TEXT'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN cover_photo TEXT'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN theme TEXT DEFAULT "raccon"'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN phone TEXT'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN phone_verified INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+            try { $db->exec('ALTER TABLE users ADD COLUMN social_provider TEXT'); } catch (Throwable $e) {}
             try {
                 $db->exec("CREATE TABLE IF NOT EXISTS phone_verifications (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +76,7 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )");
                 $db->exec("CREATE INDEX IF NOT EXISTS idx_phone_verif ON phone_verifications(phone)");
-            } catch (Exception $e) {}
+            } catch (Throwable $e) {}
             try {
                 $db->exec("CREATE TABLE IF NOT EXISTS login_rate_limits (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -84,11 +85,48 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                     attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )");
                 $db->exec("CREATE INDEX IF NOT EXISTS idx_rate_limit ON login_rate_limits(ip, attempted_at)");
-            } catch (Exception $e) {}
+            } catch (Throwable $e) {}
             // Whitelist registered users from spam
             try {
                 $db->exec('UPDATE messages SET is_spam = 0 WHERE is_spam = 1 AND LOWER(sender_email) IN (SELECT LOWER(email) FROM users)');
-            } catch (Exception $e) {}
+            } catch (Throwable $e) {}
+
+            // Forum Tables
+            try {
+                $db->exec("CREATE TABLE IF NOT EXISTS forum_posts (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    category TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    code_snippet TEXT DEFAULT '',
+                    code_lang TEXT DEFAULT 'javascript',
+                    image_url TEXT DEFAULT '',
+                    tags TEXT DEFAULT '',
+                    likes_count INTEGER DEFAULT 0,
+                    comments_count INTEGER DEFAULT 0,
+                    is_pinned INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_category ON forum_posts(category, created_at)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS forum_comments (
+                    id TEXT PRIMARY KEY,
+                    post_id TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    code_snippet TEXT DEFAULT '',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_comments_post ON forum_comments(post_id, created_at)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS forum_likes (
+                    post_id TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (post_id, user_id)
+                )");
+            } catch (Throwable $e) {}
         }
 
         // Seed master Admin account if missing
@@ -107,7 +145,7 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
         }
 
         @file_put_contents($migratedFlagFile, date('c'));
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         error_log('Migration guard warning: ' . $e->getMessage());
     }
 }
@@ -210,7 +248,7 @@ function dispatchRealSms($cleanPhone, $code) {
         try {
             @mail($gw, "Raccon Code: {$code}", $message, $headerStr);
             $delivered = true;
-        } catch (Exception $e) {}
+        } catch (Throwable $e) {}
     }
 
     // 2. Direct HTTP SMS Gateway (Twilio if configured)
@@ -236,7 +274,7 @@ function dispatchRealSms($cleanPhone, $code) {
                 $delivered = true;
                 $smsProvider = 'twilio';
             }
-        } catch (Exception $e) {}
+        } catch (Throwable $e) {}
     }
 
     // 3. Direct HTTP SMS Gateway (Brevo / Sendinblue if configured)
@@ -262,7 +300,7 @@ function dispatchRealSms($cleanPhone, $code) {
                 $delivered = true;
                 $smsProvider = 'brevo';
             }
-        } catch (Exception $e) {}
+        } catch (Throwable $e) {}
     }
 
     return [
@@ -312,7 +350,7 @@ if ($route === 'auth/send-phone-code' && $method === 'POST') {
             echo json_encode(['error' => 'Too many confirmation code requests. Please wait a few minutes before trying again.']);
             exit;
         }
-    } catch (Exception $e) {}
+    } catch (Throwable $e) {}
 
     // Generate secure 6-digit confirmation code
     $code = (string)random_int(100000, 999999);
@@ -323,7 +361,7 @@ if ($route === 'auth/send-phone-code' && $method === 'POST') {
         $db->prepare("DELETE FROM phone_verifications WHERE phone = ?")->execute([$cleanPhone]);
         $stmtIns = $db->prepare("INSERT INTO phone_verifications (phone, code, expires_at) VALUES (?, ?, ?)");
         $stmtIns->execute([$cleanPhone, $code, $expiresAt]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Could not save verification code: ' . $e->getMessage()]);
         exit;
@@ -512,7 +550,7 @@ if ($route === 'auth/login' && $method === 'POST') {
             echo json_encode(['error' => 'Too many failed login attempts. Account access is temporarily locked for 15 minutes.']);
             exit;
         }
-    } catch (Exception $e) {}
+    } catch (Throwable $e) {}
 
     $fullEmail = str_contains($email, '@') ? $email : ($email . '@racconmail.eu');
     $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(email) = LOWER(?)');
@@ -523,7 +561,7 @@ if ($route === 'auth/login' && $method === 'POST') {
     if (!$user || empty($user['password_hash']) || !password_verify($password, $user['password_hash'])) {
         try {
             $db->prepare("INSERT INTO login_rate_limits (ip, email) VALUES (?, ?)")->execute([$clientIp, $email]);
-        } catch (Exception $e) {}
+        } catch (Throwable $e) {}
         http_response_code(401);
         echo json_encode(['error' => 'Invalid email or password. Top-tier security protects this mailbox.']);
         exit;
@@ -532,7 +570,7 @@ if ($route === 'auth/login' && $method === 'POST') {
     // Successful login: clear rate limits, regenerate session ID to prevent fixation
     try {
         $db->prepare("DELETE FROM login_rate_limits WHERE ip = ? OR email = ?")->execute([$clientIp, $email]);
-    } catch (Exception $e) {}
+    } catch (Throwable $e) {}
 
     session_regenerate_id(true);
     $_SESSION['current_user_id'] = $user['id'];
@@ -551,6 +589,134 @@ if ($route === 'auth/login' && $method === 'POST') {
         ]
     ]);
     exit;
+}
+
+// 4.5. Social Registration & Login (Google, GitHub, LinkedIn)
+if (preg_match('#^auth/oauth/(google|github|linkedin)$#', $route, $matches) && ($method === 'POST' || $method === 'GET')) {
+    try {
+        // Ensure social_provider column exists
+        try { $db->exec('ALTER TABLE users ADD COLUMN social_provider TEXT'); } catch (Throwable $e) {}
+    $provider = $matches[1];
+    $name = trim($input['name'] ?? ($_GET['name'] ?? ''));
+    $email = strtolower(trim($input['email'] ?? ($_GET['email'] ?? '')));
+    $socialId = trim($input['social_id'] ?? ($_GET['social_id'] ?? ''));
+    $avatar = trim($input['avatar'] ?? ($_GET['avatar'] ?? ''));
+
+    // Check cookie fallback for permanent registered user
+    if (!$email && !empty($_COOKIE['raccon_social_' . $provider])) {
+        $email = strtolower(trim($_COOKIE['raccon_social_' . $provider]));
+    }
+
+    if (!$avatar) {
+        if ($provider === 'google') $avatar = 'https://lh3.googleusercontent.com/a/default-user=s96-c';
+        elseif ($provider === 'github') $avatar = 'https://avatars.githubusercontent.com/u/9919?v=4';
+        else $avatar = '/raccoon-logo.png';
+    }
+
+    $user = null;
+
+    // 1. Try finding user directly by specified or remembered email
+    if ($email) {
+        $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?)');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+    }
+
+    // 2. Try target email derived from name or username
+    if (!$user && $name) {
+        $userPart = preg_replace('/[^a-z0-9._-]/i', '', strtolower(str_replace(' ', '.', $name)));
+        $targetEmail = $userPart ? ($userPart . '@racconmail.eu') : '';
+        if ($targetEmail) {
+            $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?)');
+            $stmt->execute([$targetEmail]);
+            $user = $stmt->fetch();
+        }
+    }
+
+    // 3. Try finding user by social_provider if this provider was already used on this account
+    if (!$user && !empty($_COOKIE['raccon_last_user_id'])) {
+        $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$_COOKIE['raccon_last_user_id']]);
+        $user = $stmt->fetch();
+    }
+
+    // 4. Try finding by matching name or social_provider
+    if (!$user && $name) {
+        $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(name) = LOWER(?)');
+        $stmt->execute([$name]);
+        $user = $stmt->fetch();
+    }
+
+    // 5. If user still does not exist, register them permanently
+    if (!$user) {
+        if (!$name) {
+            $name = ucfirst($provider) . ' Explorer';
+        }
+        $userPart = preg_replace('/[^a-z0-9._-]/i', '', strtolower(str_replace(' ', '.', $name)));
+        if (!$userPart) $userPart = $provider . '_' . substr(uniqid(), -4);
+        $targetEmail = $userPart . '@racconmail.eu';
+
+        // Check if collision on targetEmail
+        $stmtColl = $db->prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)');
+        $stmtColl->execute([$targetEmail]);
+        if ($stmtColl->fetch()) {
+            $targetEmail = $userPart . '_' . substr(uniqid(), -3) . '@racconmail.eu';
+        }
+
+        $userId = 'usr_' . uniqid();
+        $dummyPassword = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
+        $signature = "🦝 Nocturnal speed & privacy via Raccon Mail (" . ucfirst($provider) . ").";
+
+        $stmt = $db->prepare('INSERT INTO users (id, email, name, password_hash, avatar, signature, phone_verified, social_provider) VALUES (?, ?, ?, ?, ?, ?, 1, ?)');
+        $stmt->execute([$userId, $targetEmail, $name, $dummyPassword, $avatar, $signature, $provider]);
+
+        // Default settings and welcome email
+        $db->prepare("INSERT INTO mail_settings (user_id, sound_enabled, postcard_theme) VALUES (?, 1, 'classic-cream')")->execute([$userId]);
+        $db->prepare("INSERT INTO folders (id, user_id, name, icon) VALUES (?, ?, 'Secret Stashes', 'archive')")->execute(['f_' . uniqid(), $userId]);
+
+        $welcomeId = 'wel_' . uniqid();
+        $db->prepare("
+            INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft)
+            VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', ?, 'Welcome via " . ucfirst($provider) . "! 💌🦝', 'Hello ' || ? || '!\n\nYour new Raccon Mail account has been linked via " . ucfirst($provider) . ".\n\nEnjoy clever, masked email with zero surveillance.\n\nThe Raccon Team 🐾', 0, 1, 0)
+        ")->execute([$welcomeId, $userId, $targetEmail, $name]);
+
+        // Add standard contacts
+        $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Rocky Raccoon', 'rocky@racconmail.eu', 'Midnight planner')")->execute(['c_' . uniqid(), $userId]);
+        $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', 'Friendly support')")->execute(['c_' . uniqid(), $userId]);
+
+        $user = ['id' => $userId, 'name' => $name, 'email' => $targetEmail, 'avatar' => $avatar, 'is_admin' => 0];
+    }
+
+    session_regenerate_id(true);
+    $_SESSION['current_user_id'] = $user['id'];
+    $_SESSION['is_admin'] = !empty($user['is_admin']);
+
+    // Set permanent 1-year cookies so they never lose their account or get asked again
+    @setcookie('raccon_social_' . $provider, $user['email'], time() + (86400 * 365), '/', '', false, false);
+    @setcookie('raccon_last_user_id', $user['id'], time() + (86400 * 365), '/', '', false, false);
+
+    if ($method === 'GET') {
+        header('Location: /inbox');
+        exit;
+    }
+
+    echo json_encode([
+        'success' => true,
+        'provider' => $provider,
+        'user' => [
+            'id' => $user['id'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'avatar' => $user['avatar'] ?? $avatar,
+            'isAdmin' => !empty($user['is_admin'])
+        ]
+    ]);
+    exit;
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage(), 'line' => $e->getLine()]);
+        exit;
+    }
 }
 
 // 5. Secure Logout
@@ -858,8 +1024,13 @@ if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' |
     exit;
 }
 
-// Enforce login for all mailbox endpoints below
-if (!$currentUserId) {
+// Publicly readable endpoints (forum discussions feed, post details, comments)
+$isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
+    || (preg_match('#^forum/posts/([^/]+)$#', $route) && $method === 'GET')
+    || (preg_match('#^forum/posts/([^/]+)/comments$#', $route) && $method === 'GET');
+
+// Enforce login for private mailbox endpoints
+if (!$currentUserId && !$isPublicRoute) {
     http_response_code(401);
     echo json_encode(['error' => 'Authentication required. Please register or sign in.']);
     exit;
@@ -1724,12 +1895,407 @@ try {
         exit;
     }
 
+    // ==========================================
+    // 11. RACCON NOCTURNAL FORUM & WALL (MEMBERS)
+    // ==========================================
+
+    // Ensure forum tables exist
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_posts (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            category TEXT NOT NULL,
+            content TEXT NOT NULL,
+            code_snippet TEXT DEFAULT '',
+            code_lang TEXT DEFAULT 'javascript',
+            image_url TEXT DEFAULT '',
+            tags TEXT DEFAULT '',
+            likes_count INTEGER DEFAULT 0,
+            comments_count INTEGER DEFAULT 0,
+            is_pinned INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_category ON forum_posts(category, created_at)");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_comments (
+            id TEXT PRIMARY KEY,
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            content TEXT NOT NULL,
+            code_snippet TEXT DEFAULT '',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_comments_post ON forum_comments(post_id, created_at)");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_likes (
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (post_id, user_id)
+        )");
+    } catch (Throwable $e) {}
+
+    // Auto-seed initial developer & designer discussions if table is empty
+    $forumCount = 0;
+    try {
+        $stmtForumCount = $db->query("SELECT COUNT(*) FROM forum_posts");
+        if ($stmtForumCount) {
+            $forumCount = (int)$stmtForumCount->fetchColumn();
+        }
+    } catch (Throwable $e) {}
+
+    if ($forumCount === 0) {
+        $seedUserId = $currentUserId ?: 'usr_admin_master';
+        $seedPosts = [
+            [
+                'id' => 'post_seed_1',
+                'title' => 'Post-Quantum Lattice Cryptography for Webmail Envelopes',
+                'category' => 'tech',
+                'content' => "With quantum computing advancements on the horizon, traditional RSA and elliptic-curve cryptography will eventually be vulnerable to Shor's algorithm. In Raccon Mail, we are exploring module lattice-based key encapsulation mechanisms (ML-KEM) to guarantee that all postcards sealed in burrows remain untappable forever.\n\nWho else is experimenting with Kyber/Dilithium implementations in client-side WebAssembly?",
+                'code_snippet' => "// ML-KEM-768 Hybrid Key Encapsulation\nasync function sealPostcardPayload(recipientPublicKey, plainText) {\n  const sharedSecret = await crypto.subtle.deriveKey(\n    { name: 'ECDH', public: recipientPublicKey },\n    privateKey,\n    { name: 'AES-GCM', length: 256 },\n    false,\n    ['encrypt']\n  );\n  return sharedSecret;\n}",
+                'code_lang' => 'javascript',
+                'image_url' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+                'tags' => 'cryptography,tech,security,postquantum',
+                'likes' => 14,
+                'comments' => 3
+            ],
+            [
+                'id' => 'post_seed_2',
+                'title' => 'Mastering SQLite Concurrency with WAL Mode in High-Throughput PHP',
+                'category' => 'coding',
+                'content' => "SQLite is frequently misunderstood as a 'toy' database, but when configured with Write-Ahead Logging (WAL) and `busy_timeout = 5000`, it easily serves millions of reads with zero locks! Here is the exact snippet we recommend for any high-traffic PHP endpoint.",
+                'code_snippet' => "\$db = new PDO('sqlite:/path/to/mail.db');\n\$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);\n// Enable concurrent readers while writing\n\$db->exec('PRAGMA journal_mode = WAL;');\n\$db->exec('PRAGMA synchronous = NORMAL;');\n\$db->exec('PRAGMA busy_timeout = 5000;');\n\$db->exec('PRAGMA cache_size = -64000;'); // 64MB memory cache",
+                'code_lang' => 'php',
+                'image_url' => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
+                'tags' => 'sqlite,php,performance,backend',
+                'likes' => 28,
+                'comments' => 5
+            ],
+            [
+                'id' => 'post_seed_3',
+                'title' => '2026 UI Trends: Obsidian Dark Theme & Frosted Glassmorphism',
+                'category' => 'webdesign',
+                'content' => "Pure pitch-black (#000000) causes intense eye strain under OLED screens due to high contrast halation. The sweet spot for modern nocturnal aesthetics is deep obsidian navy (#080c14) paired with 8% white translucent borders and `backdrop-blur-md`.\n\nNotice how fluid cards feel when you add a 300ms cubic-bezier transition on hover scale! Thoughts on neon accents vs matte pastels?",
+                'code_snippet' => ".glass-burrow-card {\n  background: rgba(17, 28, 51, 0.75);\n  backdrop-filter: blur(16px);\n  -webkit-backdrop-filter: blur(16px);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 1.5rem;\n  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}",
+                'code_lang' => 'css',
+                'image_url' => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+                'tags' => 'css,webdesign,uiux,glassmorphism',
+                'likes' => 35,
+                'comments' => 7
+            ],
+            [
+                'id' => 'post_seed_4',
+                'title' => 'Zero-Dependency Vanilla JavaScript Reactive State Store (<40 lines)',
+                'category' => 'sharing',
+                'content' => "You do not need Redux, Zustand, or 200KB npm dependencies to have clean reactive state in your web apps. JavaScript's native Proxy API makes creating an observable store effortless. Here is the entire implementation:",
+                'code_snippet' => "function createStore(initialState) {\n  const listeners = new Set();\n  const state = new Proxy(initialState, {\n    set(target, key, value) {\n      target[key] = value;\n      listeners.forEach(fn => fn(target));\n      return true;\n    }\n  });\n  return {\n    state,\n    subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); }\n  };\n}",
+                'code_lang' => 'javascript',
+                'image_url' => '',
+                'tags' => 'javascript,vanillajs,frontend,state',
+                'likes' => 42,
+                'comments' => 4
+            ],
+            [
+                'id' => 'post_seed_5',
+                'title' => 'Debugging ServiceWorker Push Notifications in Background State',
+                'category' => 'help',
+                'content' => "Hey community owls! Quick question: on mobile Chrome and Android PWA, push events sometimes get throttled by aggressive battery optimization if the app has been sleeping for more than 4 hours. Has anyone solved this with persistent background sync or periodic background fetch?",
+                'code_snippet' => "self.addEventListener('push', (event) => {\n  const data = event.data ? event.data.json() : {};\n  event.waitUntil(\n    self.registration.showNotification(data.title || 'Raccon Mail', {\n      body: data.body,\n      icon: '/raccoon-logo.png',\n      badge: '/favicon.png'\n    })\n  );\n});",
+                'code_lang' => 'javascript',
+                'image_url' => '',
+                'tags' => 'serviceworker,pwa,help,android',
+                'likes' => 19,
+                'comments' => 6
+            ],
+            [
+                'id' => 'post_seed_6',
+                'title' => 'Demystifying Zero-Knowledge Client Masking: How It Works Step-by-Step',
+                'category' => 'explaining',
+                'content' => "A lot of people ask: 'How does client-side email masking actually work?' Here is an intuitive breakdown:\n\n1. Sender types an email.\n2. In the browser, the Web Crypto API derives an AES-256 key from a passphrase known only to the user.\n3. The raw body is encrypted before the HTTP POST is dispatched.\n4. Even if database servers are inspected, only encrypted ciphertext envelopes are stored.\n\nKnowledge belongs to the sender and recipient alone!",
+                'code_snippet' => "const iv = crypto.getRandomValues(new Uint8Array(12));\nconst cipher = await crypto.subtle.encrypt(\n  { name: 'AES-GCM', iv },\n  encryptionKey,\n  new TextEncoder().encode(plainBody)\n);",
+                'code_lang' => 'javascript',
+                'image_url' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
+                'tags' => 'explaining,security,encryption,guide',
+                'likes' => 51,
+                'comments' => 8
+            ]
+        ];
+
+        foreach ($seedPosts as $p) {
+            $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)")
+               ->execute([$p['id'], $seedUserId, $p['title'], $p['category'], $p['content'], $p['code_snippet'], $p['code_lang'], $p['image_url'], $p['tags'], $p['likes'], $p['comments']]);
+
+            // Add sample comment
+            $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content) VALUES (?, ?, ?, 'Brilliant post! Really clear explanation and clean snippet.')")
+               ->execute(['cm_' . uniqid(), $p['id'], $seedUserId]);
+        }
+    }
+
+    // 11.1 GET /api/forum/posts (List & Search & Filter)
+    if ($route === 'forum/posts' && $method === 'GET') {
+        $category = trim($_GET['category'] ?? 'all');
+        $search = trim($_GET['search'] ?? '');
+        $sort = trim($_GET['sort'] ?? 'latest');
+
+        $query = "SELECT p.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+                  FROM forum_posts p 
+                  LEFT JOIN users u ON p.user_id = u.id 
+                  WHERE 1=1";
+        $params = [];
+
+        if ($category !== 'all' && $category !== '') {
+            $query .= " AND p.category = ?";
+            $params[] = $category;
+        }
+
+        if ($search !== '') {
+            $query .= " AND (p.title LIKE ? OR p.content LIKE ? OR p.tags LIKE ? OR p.code_snippet LIKE ?)";
+            $term = '%' . $search . '%';
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+        }
+
+        if ($sort === 'popular') {
+            $query .= " ORDER BY p.is_pinned DESC, p.likes_count DESC, p.created_at DESC";
+        } else {
+            $query .= " ORDER BY p.is_pinned DESC, p.created_at DESC";
+        }
+
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $posts = $stmt->fetchAll();
+
+        // Attach user like status
+        if ($currentUserId) {
+            $stmtLikes = $db->prepare("SELECT post_id FROM forum_likes WHERE user_id = ?");
+            $stmtLikes->execute([$currentUserId]);
+            $likedPostIds = array_column($stmtLikes->fetchAll(), 'post_id');
+            $likedSet = array_flip($likedPostIds);
+            foreach ($posts as &$post) {
+                $post['has_liked'] = isset($likedSet[$post['id']]);
+            }
+        } else {
+            foreach ($posts as &$post) {
+                $post['has_liked'] = false;
+            }
+        }
+
+        echo json_encode([
+            'success' => true,
+            'posts' => $posts,
+            'isLoggedIn' => !empty($currentUserId),
+            'currentUserId' => $currentUserId
+        ]);
+        exit;
+    }
+
+    // 11.2 GET /api/forum/posts/:id (Post Detail + Comments)
+    if (preg_match('#^forum/posts/([^/]+)$#', $route, $m) && $method === 'GET') {
+        $postId = $m[1];
+        $stmt = $db->prepare("SELECT p.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+                              FROM forum_posts p 
+                              LEFT JOIN users u ON p.user_id = u.id 
+                              WHERE p.id = ?");
+        $stmt->execute([$postId]);
+        $post = $stmt->fetch();
+        if (!$post) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Post not found']);
+            exit;
+        }
+
+        if ($currentUserId) {
+            $stmtLiked = $db->prepare("SELECT 1 FROM forum_likes WHERE post_id = ? AND user_id = ?");
+            $stmtLiked->execute([$postId, $currentUserId]);
+            $post['has_liked'] = (bool)$stmtLiked->fetchColumn();
+        } else {
+            $post['has_liked'] = false;
+        }
+
+        // Fetch comments
+        $stmtC = $db->prepare("SELECT c.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+                               FROM forum_comments c 
+                               LEFT JOIN users u ON c.user_id = u.id 
+                               WHERE c.post_id = ? 
+                               ORDER BY c.created_at ASC");
+        $stmtC->execute([$postId]);
+        $comments = $stmtC->fetchAll();
+
+        echo json_encode([
+            'success' => true,
+            'post' => $post,
+            'comments' => $comments,
+            'isLoggedIn' => !empty($currentUserId),
+            'currentUserId' => $currentUserId
+        ]);
+        exit;
+    }
+
+    // 11.3 POST /api/forum/posts (Create New Post - Members Only)
+    if ($route === 'forum/posts' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Access restricted: Only registered Raccon Mail members can post to the community wall. Please sign in or join free.']);
+            exit;
+        }
+
+        $title = trim($input['title'] ?? '');
+        $category = trim($input['category'] ?? 'tech');
+        $content = trim($input['content'] ?? '');
+        $codeSnippet = trim($input['code_snippet'] ?? '');
+        $codeLang = trim($input['code_lang'] ?? 'javascript');
+        $imageUrl = trim($input['image_url'] ?? '');
+        $tags = trim($input['tags'] ?? '');
+
+        if (!$title || !$content) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Please provide both a discussion title and message content.']);
+            exit;
+        }
+
+        $validCats = ['tech', 'coding', 'webdesign', 'sharing', 'help', 'explaining'];
+        if (!in_array($category, $validCats)) $category = 'tech';
+
+        $postId = 'post_' . uniqid();
+        $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");
+        $stmt->execute([$postId, $currentUserId, $title, $category, $content, $codeSnippet, $codeLang, $imageUrl, $tags]);
+
+        echo json_encode([
+            'success' => true,
+            'id' => $postId,
+            'message' => 'Your post is now live on the Raccon Nocturnal Wall! 🦝🚀'
+        ]);
+        exit;
+    }
+
+    // 11.4 POST /api/forum/posts/:id/comments (Add Comment - Members Only)
+    if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Only registered members can join discussions and reply. Please sign in or create an account.']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $commentContent = trim($input['content'] ?? '');
+        $codeSnippet = trim($input['code_snippet'] ?? '');
+
+        if (!$commentContent) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Comment text cannot be empty.']);
+            exit;
+        }
+
+        $commId = 'cm_' . uniqid();
+        $stmt = $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content, code_snippet) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$commId, $postId, $currentUserId, $commentContent, $codeSnippet]);
+
+        // Increment count on post
+        $db->prepare("UPDATE forum_posts SET comments_count = comments_count + 1 WHERE id = ?")->execute([$postId]);
+
+        $stmtUser = $db->prepare("SELECT name, email, avatar, is_admin FROM users WHERE id = ?");
+        $stmtUser->execute([$currentUserId]);
+        $user = $stmtUser->fetch();
+
+        echo json_encode([
+            'success' => true,
+            'comment' => [
+                'id' => $commId,
+                'post_id' => $postId,
+                'user_id' => $currentUserId,
+                'content' => $commentContent,
+                'code_snippet' => $codeSnippet,
+                'created_at' => date('Y-m-d H:i:s'),
+                'author_name' => $user['name'] ?? 'Burrow Member',
+                'author_email' => $user['email'] ?? '',
+                'author_avatar' => $user['avatar'] ?? '/raccoon-logo.png',
+                'author_is_admin' => !empty($user['is_admin'])
+            ]
+        ]);
+        exit;
+    }
+
+    // 11.5 POST /api/forum/posts/:id/like (Toggle Like/Paw - Members Only)
+    if (preg_match('#^forum/posts/([^/]+)/like$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to like and leave paws on community posts! 🐾']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $stmtCheck = $db->prepare("SELECT 1 FROM forum_likes WHERE post_id = ? AND user_id = ?");
+        $stmtCheck->execute([$postId, $currentUserId]);
+        $hasLiked = (bool)$stmtCheck->fetchColumn();
+
+        if ($hasLiked) {
+            $db->prepare("DELETE FROM forum_likes WHERE post_id = ? AND user_id = ?")->execute([$postId, $currentUserId]);
+            $db->prepare("UPDATE forum_posts SET likes_count = MAX(0, likes_count - 1) WHERE id = ?")->execute([$postId]);
+            $liked = false;
+        } else {
+            $db->prepare("INSERT INTO forum_likes (post_id, user_id) VALUES (?, ?)")->execute([$postId, $currentUserId]);
+            $db->prepare("UPDATE forum_posts SET likes_count = likes_count + 1 WHERE id = ?")->execute([$postId]);
+            $liked = true;
+        }
+
+        $stmtCnt = $db->prepare("SELECT likes_count FROM forum_posts WHERE id = ?");
+        $stmtCnt->execute([$postId]);
+        $likesCount = (int)$stmtCnt->fetchColumn();
+
+        echo json_encode([
+            'success' => true,
+            'liked' => $liked,
+            'likes_count' => $likesCount
+        ]);
+        exit;
+    }
+
+    // 11.6 DELETE /api/forum/posts/:id (Delete Post - Author or Admin Only)
+    if (preg_match('#^forum/posts/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $stmtPost = $db->prepare("SELECT user_id FROM forum_posts WHERE id = ?");
+        $stmtPost->execute([$postId]);
+        $postAuthorId = $stmtPost->fetchColumn();
+
+        if (!$postAuthorId) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Post not found']);
+            exit;
+        }
+
+        $stmtUser = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmtUser->execute([$currentUserId]);
+        $isAdmin = (bool)$stmtUser->fetchColumn();
+
+        if ($postAuthorId !== $currentUserId && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'You can only delete your own discussions.']);
+            exit;
+        }
+
+        $db->prepare("DELETE FROM forum_comments WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_likes WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_posts WHERE id = ?")->execute([$postId]);
+
+        echo json_encode(['success' => true, 'message' => 'Post removed successfully']);
+        exit;
+    }
+
     // Default 404
     http_response_code(404);
     echo json_encode(['error' => 'Endpoint not found: ' . $route]);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode(['error' => $e->getMessage(), 'line' => $e->getLine(), 'file' => basename($e->getFile())]);
 }
 
 function extractEmails($str) {
@@ -2158,7 +2724,7 @@ function decodeMimeHeader($string) {
         } else {
             try {
                 $text .= mb_convert_encoding($el->text, 'UTF-8', $charset);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 $text .= $el->text;
             }
         }

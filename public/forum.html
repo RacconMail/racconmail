@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raccon Community Wall &bull; Tech, Coding, Web Design &amp; Explanations</title>
+  
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#080c14" />
+  <meta name="description" content="Raccon Nocturnal Wall — Exclusive developer, designer, and tech community for registered Raccon Mail members. Share coding tips, web design tricks, tech explanations, and get help." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            fun: ['"Fredoka"', 'sans-serif']
+          },
+          colors: {
+            obsidian: '#080c14',
+            surface: {
+              DEFAULT: '#0f172a',
+              card: '#111c33',
+              hover: '#172545',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderLight: 'rgba(255, 255, 255, 0.16)'
+            },
+            raccoon: {
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              sky: '#38bdf8',
+              violet: '#a855f7',
+              rose: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons & FontAwesome -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    body {
+      background-color: #080c14;
+      color: #f1f5f9;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    .glass-nav {
+      background: rgba(8, 12, 20, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(17, 28, 51, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="w-full glass-nav sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-3">
+      <!-- Brand & Hub Identity -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 group">
+          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition" />
+          <div class="leading-none">
+            <span class="font-display font-extrabold text-base sm:text-lg text-white tracking-tight flex items-center gap-1.5">
+              <span>Raccon Wall</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase">Members</span>
+            </span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Live Wall Search -->
+      <div class="flex-1 max-w-md mx-2 hidden md:block">
+        <div class="relative flex items-center">
+          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-slate-400"></i>
+          <input
+            id="forum-search-input"
+            type="text"
+            oninput="handleForumSearch(this.value)"
+            placeholder="Search discussions, code snippets, tags..."
+            class="w-full bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition"
+          />
+        </div>
+      </div>
+
+      <!-- Action Navigation & Auth Status -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0" id="forum-auth-bar">
+        <a href="/inbox" class="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-semibold border border-white/10 transition flex items-center gap-1.5">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-emerald-400"></i>
+          <span class="hidden sm:inline">Webmail</span>
+        </a>
+        <a href="/news" class="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-semibold border border-white/10 transition flex items-center gap-1.5">
+          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-sky-400"></i>
+          <span class="hidden sm:inline">News Wire</span>
+        </a>
+        <div id="user-status-pill" class="flex items-center gap-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER: 2-COLUMN MODERN COMMUNITY LAYOUT -->
+  <div class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT / MAIN COLUMN (Feed & Wall) -->
+    <main class="lg:col-span-8 space-y-5">
+
+      <!-- WELCOME HERO BANNER -->
+      <div class="glass-card rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-emerald-500/25 shadow-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-2 flex-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>NOCTURNAL DEVELOPER BURROW</span>
+            </div>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Share Code, Web Design &amp; Tech Insights
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+              An exclusive nocturnal wall for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
+            </p>
+          </div>
+          <button
+            onclick="focusComposer()"
+            class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer shrink-0"
+          >
+            <i data-lucide="plus" class="h-4 w-4"></i>
+            <span>Start Discussion</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CATEGORY PILL FILTER BAR -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
+        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-emerald-500 text-obsidian shadow-sm transition shrink-0 cursor-pointer">
+          All Wall Posts
+        </button>
+        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>💻</span><span>Tech &amp; AI</span>
+        </button>
+        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>⚡</span><span>Coding</span>
+        </button>
+        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>🎨</span><span>Web Design</span>
+        </button>
+        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>🎁</span><span>Sharing</span>
+        </button>
+        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>❓</span><span>Help</span>
+        </button>
+        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>📖</span><span>Explaining</span>
+        </button>
+      </div>
+
+      <!-- INTERACTIVE POST COMPOSER (Members Only) -->
+      <div id="post-composer-card" class="glass-card rounded-3xl p-5 border border-white/10 shadow-lg space-y-3.5">
+        <div class="flex items-center gap-3">
+          <img id="composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-white/20 shrink-0" />
+          <div class="flex-1">
+            <input
+              id="c-post-title"
+              type="text"
+              placeholder="What tech, coding or webdesign topic are you working on?"
+              class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition"
+            />
+          </div>
+        </div>
+
+        <!-- Category Selector Chips -->
+        <div class="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
+          <span class="text-slate-400 text-[11px] font-semibold mr-1">Topic:</span>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="tech" checked class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-sky-500 peer-checked:text-obsidian peer-checked:border-sky-500 font-semibold transition text-[11px]">💻 Tech</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="coding" class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-emerald-500 peer-checked:text-obsidian peer-checked:border-emerald-500 font-semibold transition text-[11px]">⚡ Coding</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="webdesign" class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-purple-500 peer-checked:text-white peer-checked:border-purple-500 font-semibold transition text-[11px]">🎨 Web Design</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="sharing" class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-amber-500 peer-checked:text-obsidian peer-checked:border-amber-500 font-semibold transition text-[11px]">🎁 Sharing</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="help" class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-rose-500 peer-checked:text-white peer-checked:border-rose-500 font-semibold transition text-[11px]">❓ Help</span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="post-cat" value="explaining" class="peer sr-only" />
+            <span class="px-2.5 py-1 rounded-full border border-white/10 text-slate-300 peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500 font-semibold transition text-[11px]">📖 Explaining</span>
+          </label>
+        </div>
+
+        <!-- Content Area -->
+        <textarea
+          id="c-post-content"
+          rows="3"
+          placeholder="Explain your idea, share your technique, or ask for guidance..."
+          class="w-full bg-white/5 border border-white/10 rounded-2xl p-3.5 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition resize-none leading-relaxed"
+        ></textarea>
+
+        <!-- Optional Expandable Code Block Container -->
+        <div id="composer-code-box" class="hidden space-y-2 pt-1">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1 font-mono text-[11px]">
+              <i data-lucide="code-2" class="h-3.5 w-3.5 text-emerald-400"></i>
+              <span>Code Snippet</span>
+            </span>
+            <select id="c-post-lang" class="bg-slate-900 border border-white/10 rounded-lg px-2 py-0.5 text-[11px] text-slate-200 focus:outline-none">
+              <option value="javascript">JavaScript / TypeScript</option>
+              <option value="php">PHP</option>
+              <option value="python">Python</option>
+              <option value="css">CSS / Tailwind</option>
+              <option value="html">HTML</option>
+              <option value="sql">SQL / SQLite</option>
+              <option value="bash">Bash / Shell</option>
+            </select>
+          </div>
+          <textarea
+            id="c-post-code"
+            rows="4"
+            placeholder="// Paste your code snippet here..."
+            class="w-full bg-slate-950 font-mono text-xs text-emerald-300 border border-white/10 rounded-2xl p-3 focus:outline-none focus:border-emerald-500 transition leading-relaxed resize-y"
+          ></textarea>
+        </div>
+
+        <!-- Bottom Action Row of Composer -->
+        <div class="flex items-center justify-between pt-2 border-t border-white/10 flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              onclick="toggleCodeBox()"
+              class="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 font-medium transition flex items-center gap-1 cursor-pointer text-[11px]"
+            >
+              <i data-lucide="code-2" class="h-3.5 w-3.5 text-emerald-400"></i>
+              <span>Add Code</span>
+            </button>
+            <input
+              id="c-post-tags"
+              type="text"
+              placeholder="Tags (e.g. #sqlite, #css)"
+              class="bg-white/5 border border-white/10 rounded-full px-3 py-1 text-[11px] text-slate-200 placeholder-slate-400 focus:outline-none focus:border-emerald-500 w-36 sm:w-48"
+            />
+          </div>
+
+          <button
+            type="button"
+            id="btn-publish-post"
+            onclick="publishForumPost()"
+            class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+          >
+            <i data-lucide="send" class="h-3.5 w-3.5"></i>
+            <span>Publish to Wall</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- WALL FEED CARDS CONTAINER -->
+      <div id="forum-feed-container" class="space-y-4">
+        <!-- Dynamically rendered via JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div id="forum-empty" class="hidden text-center py-16 px-4 glass-card rounded-3xl space-y-3">
+        <div class="h-16 w-16 mx-auto rounded-full bg-white/5 flex items-center justify-center text-3xl">🦝</div>
+        <h3 class="font-display text-lg font-bold text-white">No discussions found</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">Be the first nocturnal owl to post in this category!</p>
+        <button onclick="focusComposer()" class="rounded-full bg-emerald-500 text-obsidian text-xs font-bold px-4 py-2 mt-2">Create First Post</button>
+      </div>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR (Community Hub, Trending, Online Owls) -->
+    <aside class="lg:col-span-4 space-y-5">
+
+      <!-- Member Burrow Card -->
+      <div class="glass-card rounded-3xl p-5 border border-white/10 space-y-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <img src="/raccoon-logo.png" class="h-10 w-10 object-contain drop-shadow" />
+          <div>
+            <h3 class="font-display font-bold text-sm text-white">Nocturnal Community</h3>
+            <p class="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Encrypted Burrow Wall</span>
+            </p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Zero data harvesting, respectful engineering discussions, and peer mentoring. Every registered member with a <span class="text-emerald-400 font-mono">@racconmail.eu</span> account has full publishing rights.
+        </p>
+        <div class="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-400">
+          <span>Active Nocturnal Owls</span>
+          <span class="font-bold text-emerald-400 font-mono">84 Online</span>
+        </div>
+      </div>
+
+      <!-- Trending Topic Tags -->
+      <div class="glass-card rounded-3xl p-5 border border-white/10 space-y-3 shadow-lg">
+        <h3 class="font-display font-bold text-sm text-white flex items-center gap-1.5">
+          <i data-lucide="trending-up" class="h-4 w-4 text-amber-400"></i>
+          <span>Trending Burrow Tags</span>
+        </h3>
+        <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
+          <button onclick="searchByTag('#sqlite')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-emerald-400 border border-white/10 text-[11px] font-mono transition">#sqlite</button>
+          <button onclick="searchByTag('#cryptography')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-sky-400 border border-white/10 text-[11px] font-mono transition">#cryptography</button>
+          <button onclick="searchByTag('#css')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-purple-400 border border-white/10 text-[11px] font-mono transition">#css</button>
+          <button onclick="searchByTag('#javascript')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-amber-400 border border-white/10 text-[11px] font-mono transition">#javascript</button>
+          <button onclick="searchByTag('#uiux')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-rose-400 border border-white/10 text-[11px] font-mono transition">#uiux</button>
+          <button onclick="searchByTag('#security')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-emerald-300 border border-white/10 text-[11px] font-mono transition">#security</button>
+        </div>
+      </div>
+
+      <!-- Burrow Community Guidelines -->
+      <div class="glass-card rounded-3xl p-5 border border-white/10 space-y-2.5 text-xs text-slate-300 shadow-lg">
+        <h3 class="font-display font-bold text-sm text-white flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="h-4 w-4 text-emerald-400"></i>
+          <span>Burrow Guidelines</span>
+        </h3>
+        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-slate-400">
+          <li>Be constructive and encourage fellow developers.</li>
+          <li>Format code snippets with correct language tags.</li>
+          <li>Zero spam or unsolicited marketing allowed.</li>
+          <li>Help beginners understand technical concepts.</li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- AUTH REQUIRED POPUP MODAL (For Unregistered Visitors) -->
+  <div id="forum-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
+    <div class="w-full max-w-md rounded-3xl glass-card p-6 sm:p-7 relative border border-white/15 text-center space-y-4 shadow-2xl">
+      <button onclick="closeForumAuthModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer">
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+
+      <img src="/raccoon-logo.png" alt="Raccon" class="h-16 w-16 mx-auto object-contain drop-shadow" />
+
+      <div>
+        <h2 class="font-display text-xl font-bold text-white">Registered Burrow Members Only</h2>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          To publish discussions, share code, leave paws 🐾, and reply to fellow tech owls, please sign in or create your free encrypted account!
+        </p>
+      </div>
+
+      <div class="space-y-2 pt-2">
+        <a href="/auth?tab=register" class="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+          <span>Create Free Burrow Account</span>
+          <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        </a>
+        <a href="/auth?tab=login" class="w-full rounded-full bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-1.5">
+          <span>Sign In to Existing Mailbox</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="forum-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card rounded-2xl px-4 py-3 border border-emerald-500/40 text-emerald-400 text-xs font-semibold shadow-2xl flex items-center gap-2">
+      <i data-lucide="check-circle" class="h-4 w-4"></i>
+      <span id="forum-toast-text">Message</span>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE FOR FORUM & WALL -->
+  <script>
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let currentUser = null;
+    let isLoggedIn = false;
+    let activeOpenComments = new Set();
+
+    function showToast(msg) {
+      const toast = document.getElementById('forum-toast');
+      const text = document.getElementById('forum-toast-text');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function toggleCodeBox() {
+      const box = document.getElementById('composer-code-box');
+      if (box) {
+        box.classList.toggle('hidden');
+        if (!box.classList.contains('hidden')) {
+          document.getElementById('c-post-code')?.focus();
+        }
+      }
+    }
+
+    function focusComposer() {
+      if (!isLoggedIn) {
+        openForumAuthModal();
+        return;
+      }
+      const title = document.getElementById('c-post-title');
+      if (title) {
+        title.focus();
+        title.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function openForumAuthModal() {
+      document.getElementById('forum-auth-modal')?.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeForumAuthModal() {
+      document.getElementById('forum-auth-modal')?.classList.add('hidden');
+    }
+
+    function filterForumCat(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-emerald-500 text-obsidian shadow-sm transition shrink-0 cursor-pointer';
+        } else {
+          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/5 transition shrink-0 cursor-pointer flex items-center gap-1.5';
+        }
+      });
+      loadForumPosts();
+    }
+
+    function handleForumSearch(val) {
+      searchQuery = val.trim();
+      loadForumPosts();
+    }
+
+    function searchByTag(tag) {
+      const input = document.getElementById('forum-search-input');
+      if (input) input.value = tag;
+      searchQuery = tag;
+      loadForumPosts();
+    }
+
+    // Check user session
+    async function checkAuthSession() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        isLoggedIn = !!data.loggedIn;
+        currentUser = data.user || null;
+        renderUserStatusPill();
+      } catch (err) {
+        isLoggedIn = false;
+        currentUser = null;
+        renderUserStatusPill();
+      }
+    }
+
+    function renderUserStatusPill() {
+      const pill = document.getElementById('user-status-pill');
+      if (!pill) return;
+      if (isLoggedIn && currentUser) {
+        pill.innerHTML = `
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs">
+            <img src="${currentUser.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover" />
+            <span class="font-bold text-white hidden sm:inline">${escapeHtml(currentUser.name)}</span>
+            <span class="text-emerald-400 font-mono text-[10px]">●</span>
+          </div>
+        `;
+        const compAvatar = document.getElementById('composer-avatar');
+        if (compAvatar) compAvatar.src = currentUser.avatar || '/raccoon-logo.png';
+      } else {
+        pill.innerHTML = `
+          <a href="/auth?tab=login" class="px-3.5 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs transition cursor-pointer">
+            Sign In / Join
+          </a>
+        `;
+      }
+    }
+
+    // Load & Render Feed
+    async function loadForumPosts() {
+      const feed = document.getElementById('forum-feed-container');
+      const empty = document.getElementById('forum-empty');
+      if (!feed) return;
+
+      const params = new URLSearchParams();
+      if (currentCategory !== 'all') params.append('category', currentCategory);
+      if (searchQuery) params.append('search', searchQuery);
+
+      try {
+        const res = await fetch(`/api/forum/posts?${params.toString()}`);
+        const data = await res.json();
+        const posts = data.posts || [];
+
+        if (posts.length === 0) {
+          feed.innerHTML = '';
+          empty?.classList.remove('hidden');
+          return;
+        }
+
+        empty?.classList.add('hidden');
+        feed.innerHTML = posts.map(p => renderPostCard(p)).join('');
+        if (window.lucide) lucide.createIcons();
+
+        // Restore open comments drawers
+        activeOpenComments.forEach(postId => {
+          loadComments(postId);
+        });
+      } catch (err) {
+        console.error('Failed to load wall posts:', err);
+      }
+    }
+
+    function renderPostCard(p) {
+      const catBadges = {
+        tech: { label: 'Tech & AI', emoji: '💻', color: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
+        coding: { label: 'Coding', emoji: '⚡', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+        webdesign: { label: 'Web Design', emoji: '🎨', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+        sharing: { label: 'Sharing', emoji: '🎁', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+        help: { label: 'Help', emoji: '❓', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
+        explaining: { label: 'Explaining', emoji: '📖', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' }
+      };
+
+      const cat = catBadges[p.category] || catBadges.tech;
+      const formattedDate = formatTime(p.created_at);
+
+      return `
+        <article class="glass-card rounded-3xl p-5 border border-white/10 hover:border-emerald-500/30 transition shadow-lg space-y-3.5 group">
+          <!-- Post Author Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-white/5">
+            <div class="flex items-center gap-2.5">
+              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-white/10" onerror="this.src='/raccoon-logo.png';" />
+              <div>
+                <div class="flex items-center gap-1.5 leading-none">
+                  <span class="font-bold text-xs sm:text-sm text-white">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
+                  ${p.author_is_admin ? '<span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/30 font-bold px-1.5 py-0.2 rounded">ADMIN</span>' : '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono px-1 py-0.2 rounded">MEMBER</span>'}
+                </div>
+                <div class="text-[10px] text-slate-400 mt-1 font-mono">${formattedDate}</div>
+              </div>
+            </div>
+
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${cat.color}">
+              <span>${cat.emoji}</span>
+              <span>${cat.label}</span>
+            </span>
+          </div>
+
+          <!-- Post Title -->
+          <h2 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-emerald-400 transition leading-snug">
+            ${escapeHtml(p.title)}
+          </h2>
+
+          <!-- Post Body Content -->
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+            ${escapeHtml(p.content)}
+          </p>
+
+          <!-- Code Snippet Block (If Provided) -->
+          ${p.code_snippet ? `
+            <div class="rounded-2xl overflow-hidden border border-white/10 bg-slate-950 p-3.5 space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono border-b border-white/5 pb-2">
+                <span class="text-emerald-400 font-bold">${p.code_lang.toUpperCase()}</span>
+                <button onclick="copySnippet(this, \`${escapeJsString(p.code_snippet)}\`)" class="hover:text-white transition flex items-center gap-1 cursor-pointer">
+                  <i data-lucide="copy" class="h-3 w-3"></i>
+                  <span>Copy Code</span>
+                </button>
+              </div>
+              <pre class="overflow-x-auto text-xs text-emerald-300 font-mono leading-relaxed py-1"><code>${escapeHtml(p.code_snippet)}</code></pre>
+            </div>
+          ` : ''}
+
+          <!-- Image Attachment (If Provided) -->
+          ${p.image_url ? `
+            <div class="rounded-2xl overflow-hidden aspect-video border border-white/10 bg-slate-900">
+              <img src="${p.image_url}" alt="Attachment" class="w-full h-full object-cover" onerror="this.style.display='none';" />
+            </div>
+          ` : ''}
+
+          <!-- Tags -->
+          ${p.tags ? `
+            <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono text-slate-400">
+              ${p.tags.split(',').map(t => `<span class="bg-white/5 px-2 py-0.5 rounded-full border border-white/5">${escapeHtml(t.trim())}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Bottom Action Buttons: Like, Comment, Share -->
+          <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-300 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+              <!-- Paw / Like Button -->
+              <button
+                onclick="togglePostLike('${p.id}')"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer ${p.has_liked ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 font-bold' : 'bg-white/5 hover:bg-white/10 text-slate-300'}"
+              >
+                <span>🐾</span>
+                <span id="like-cnt-${p.id}">${p.likes_count || 0}</span>
+                <span class="text-[11px]">Paws</span>
+              </button>
+
+              <!-- Comment Drawer Toggle -->
+              <button
+                onclick="toggleCommentsDrawer('${p.id}')"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 transition cursor-pointer"
+              >
+                <i data-lucide="message-square" class="h-3.5 w-3.5 text-emerald-400"></i>
+                <span id="comment-cnt-${p.id}">${p.comments_count || 0}</span>
+                <span class="text-[11px]">Replies</span>
+              </button>
+            </div>
+
+            <button
+              onclick="shareForumPost('${p.id}', '${escapeJsString(p.title)}')"
+              class="px-2.5 py-1 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition flex items-center gap-1 text-[11px] cursor-pointer"
+            >
+              <i data-lucide="share-2" class="h-3.5 w-3.5"></i>
+              <span>Share</span>
+            </button>
+          </div>
+
+          <!-- Threaded Comments Drawer -->
+          <div id="comments-drawer-${p.id}" class="hidden pt-3 border-t border-white/5 space-y-3">
+            <div id="comments-list-${p.id}" class="space-y-2.5">
+              <!-- Comments load here -->
+            </div>
+
+            <!-- New Comment Input (Protected for Members) -->
+            <div class="flex items-start gap-2 pt-2">
+              <input
+                id="comment-input-${p.id}"
+                type="text"
+                placeholder="Write a constructive reply..."
+                onkeydown="if(event.key === 'Enter') submitComment('${p.id}')"
+                class="flex-1 bg-white/5 border border-white/10 rounded-full px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
+              />
+              <button
+                onclick="submitComment('${p.id}')"
+                class="rounded-full bg-emerald-500 hover:bg-emerald-400 text-obsidian font-bold text-xs px-4 py-2 transition shrink-0 cursor-pointer"
+              >
+                Reply
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // Toggle Comments Drawer
+    async function toggleCommentsDrawer(postId) {
+      const drawer = document.getElementById(`comments-drawer-${postId}`);
+      if (!drawer) return;
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        activeOpenComments.add(postId);
+        await loadComments(postId);
+      } else {
+        drawer.classList.add('hidden');
+        activeOpenComments.delete(postId);
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Load Comments for Post
+    async function loadComments(postId) {
+      const list = document.getElementById(`comments-list-${postId}`);
+      if (!list) return;
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}`);
+        const data = await res.json();
+        const comments = data.comments || [];
+        if (comments.length === 0) {
+          list.innerHTML = `<p class="text-[11px] text-slate-400 italic">No replies yet. Start the conversation!</p>`;
+          return;
+        }
+
+        list.innerHTML = comments.map(c => `
+          <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5 flex gap-2.5 items-start">
+            <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover shrink-0 mt-0.5" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 text-[11px] mb-0.5">
+                <span class="font-bold text-slate-200">${escapeHtml(c.author_name || 'Owl')}</span>
+                <span class="text-[10px] text-slate-400 font-mono">${formatTime(c.created_at)}</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">${escapeHtml(c.content)}</p>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Failed to load comments:', err);
+      }
+    }
+
+    // Submit Comment (Members Only)
+    async function submitComment(postId) {
+      if (!isLoggedIn) {
+        openForumAuthModal();
+        return;
+      }
+      const inp = document.getElementById(`comment-input-${postId}`);
+      const content = inp?.value?.trim();
+      if (!content) return;
+
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to post reply');
+
+        inp.value = '';
+        showToast('Reply published to the burrow! 🐾');
+        await loadComments(postId);
+
+        // Update comment counter
+        const cntEl = document.getElementById(`comment-cnt-${postId}`);
+        if (cntEl) {
+          cntEl.textContent = parseInt(cntEl.textContent || '0') + 1;
+        }
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // Toggle Post Like / Paw (Members Only)
+    async function togglePostLike(postId) {
+      if (!isLoggedIn) {
+        openForumAuthModal();
+        return;
+      }
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/like`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to toggle like');
+
+        const cntEl = document.getElementById(`like-cnt-${postId}`);
+        if (cntEl) cntEl.textContent = data.likes_count;
+
+        showToast(data.liked ? 'Paw left on post! 🐾' : 'Paw removed.');
+        loadForumPosts();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // Publish New Post (Members Only)
+    async function publishForumPost() {
+      if (!isLoggedIn) {
+        openForumAuthModal();
+        return;
+      }
+
+      const title = document.getElementById('c-post-title')?.value?.trim();
+      const content = document.getElementById('c-post-content')?.value?.trim();
+      const codeSnippet = document.getElementById('c-post-code')?.value?.trim() || '';
+      const codeLang = document.getElementById('c-post-lang')?.value || 'javascript';
+      const tags = document.getElementById('c-post-tags')?.value?.trim() || '';
+      const categoryRadio = document.querySelector('input[name="post-cat"]:checked');
+      const category = categoryRadio ? categoryRadio.value : 'tech';
+
+      if (!title || !content) {
+        alert('Please fill in both a discussion title and content.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-publish-post');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Publishing...</span>`;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch('/api/forum/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            category,
+            content,
+            code_snippet: codeSnippet,
+            code_lang: codeLang,
+            tags
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to publish post');
+
+        // Reset composer
+        document.getElementById('c-post-title').value = '';
+        document.getElementById('c-post-content').value = '';
+        document.getElementById('c-post-code').value = '';
+        document.getElementById('c-post-tags').value = '';
+        document.getElementById('composer-code-box')?.classList.add('hidden');
+
+        showToast(data.message || 'Post is now live on the wall! 🦝🚀');
+        loadForumPosts();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Publish to Wall</span>`;
+          if (window.lucide) lucide.createIcons();
+        }
+      }
+    }
+
+    // Copy Code Helper
+    function copySnippet(btn, code) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code);
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<span class="text-emerald-400 font-bold">✓ Copied!</span>`;
+        setTimeout(() => btn.innerHTML = originalText, 1500);
+      }
+    }
+
+    function shareForumPost(id, title) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${title} - Read and discuss on Raccon Wall: ${window.location.origin}/forum`);
+        showToast('Discussion link copied to clipboard!');
+      }
+    }
+
+    function formatTime(isoStr) {
+      if (!isoStr) return 'Just now';
+      const d = new Date(isoStr);
+      const now = new Date();
+      const diffMs = now - d;
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      const diffHrs = Math.floor(diffMins / 60);
+      if (diffHrs < 24) return `${diffHrs}h ago`;
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeJsString(str) {
+      if (!str) return '';
+      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', async () => {
+      await checkAuthSession();
+      await loadForumPosts();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

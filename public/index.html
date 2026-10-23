@@ -65,6 +65,39 @@
     }
   </script>
 
+  <!-- Early Global Auth Modal Controller -->
+  <script>
+    window.openAuthModal = function(mode) {
+      const modal = document.getElementById('auth-modal');
+      if (!modal) {
+        window.location.href = '/auth?tab=' + (mode || 'login');
+        return;
+      }
+      modal.style.display = 'flex';
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (typeof window.setModalTab === 'function') {
+        window.setModalTab(mode || 'login');
+      }
+      setTimeout(() => {
+        const inp = mode === 'register' ? document.getElementById('m-r-name') : document.getElementById('m-l-email');
+        if (inp) inp.focus();
+      }, 50);
+    };
+
+    window.closeAuthModal = function() {
+      const modal = document.getElementById('auth-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+      }
+      document.body.style.overflow = '';
+      if (typeof window.hideModalError === 'function') {
+        window.hideModalError();
+      }
+    };
+  </script>
+
   <link rel="stylesheet" href="/css/raccoon-mail.css?v=2.6" />
 
   <style>
@@ -172,10 +205,10 @@
 
     <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
     <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-xs">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-4">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-6 py-2 sm:py-4">
         <!-- Brand Logo -->
-        <a href="/" class="flex items-center gap-2 font-display text-base sm:text-xl font-bold text-[#1E293B] hover:opacity-95 transition shrink-0">
-          <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-8 w-8 sm:h-10 sm:w-10 raccoon-anim object-contain shrink-0"/>
+        <a href="/" class="flex items-center gap-1.5 sm:gap-2 font-display text-sm sm:text-xl font-bold text-[#1E293B] hover:opacity-95 transition shrink-0">
+          <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-7 w-7 sm:h-10 sm:w-10 raccoon-anim object-contain shrink-0"/>
           <span class="tracking-tight">Raccon Mail</span>
         </a>
 
@@ -191,17 +224,46 @@
           </div>
         </div>
 
-        <!-- Header Nav Links & Actions -->
-        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0" id="auth-nav-container">
-          <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
-          <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
-          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition active:scale-95 inline-flex items-center gap-1 cursor-pointer">
-            <i class="fas fa-sign-in-alt text-[11px] text-[#64748B]"></i>
+        <!-- Header Nav Links & Actions (Compact on Mobile to Fit Well) -->
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0" id="auth-nav-container">
+          <!-- Modern Forum Nav Pill with Vector Icon -->
+          <a href="/forum" class="px-1.5 py-1 sm:px-2.5 sm:py-1.5 text-xs sm:text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition flex items-center gap-1 rounded-full hover:bg-black/5 shrink-0" title="Community Wall & Forum">
+            <svg class="w-3.5 h-3.5 text-[#208ED3] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z"/>
+              <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>
+            </svg>
+            <span class="hidden sm:inline">Forum</span>
+          </a>
+
+          <!-- Modern News Nav Pill with Vector Icon -->
+          <a href="/news" class="px-1.5 py-1 sm:px-2.5 sm:py-1.5 text-xs sm:text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition flex items-center gap-1 rounded-full hover:bg-black/5 shrink-0" title="Raccon News Wire">
+            <svg class="w-3.5 h-3.5 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+              <path d="M18 14h-8"/>
+              <path d="M15 18h-5"/>
+              <path d="M10 6h8v4h-8V6Z"/>
+            </svg>
+            <span class="hidden sm:inline">News</span>
+          </a>
+
+          <a href="#app" class="hidden md:inline-flex text-xs sm:text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-2 py-1">Apps</a>
+
+          <!-- Compact Mobile Sign In Button -->
+          <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-2 py-0.5 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-bold transition active:scale-95 inline-flex items-center gap-1 cursor-pointer shrink-0">
+            <svg class="w-3 h-3 text-[#64748B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
             <span>Sign In</span>
           </a>
-          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition active:scale-95 shadow-sm inline-flex items-center gap-1 cursor-pointer">
+
+          <!-- Compact Mobile Join Free Button -->
+          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-2 py-0.5 sm:px-4 sm:py-1.5 text-[10px] sm:text-xs font-bold transition active:scale-95 shadow-xs inline-flex items-center gap-1 cursor-pointer shrink-0">
             <span>Join Free</span>
-            <i class="fas fa-chevron-right text-[8px] sm:text-[10px] bg-white/20 rounded-full w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center"></i>
+            <svg class="w-2.5 h-2.5 text-white/80 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
           </a>
         </div>
       </div>
@@ -226,14 +288,14 @@
           Fast, private, and beautifully simple. Sealed envelopes, zero trackers, and complete control on web and smartphone.
         </p>
 
-        <!-- Harmony Action Buttons (Responsive full-width on mobile, auto on desktop) -->
-        <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 relative z-30 w-full sm:w-auto">
-          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-6 py-3 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer relative z-30 touch-target w-full sm:w-auto text-center">
+        <!-- Harmony Action Buttons (Responsive & compact on mobile) -->
+        <div class="mt-5 sm:mt-6 flex flex-row items-center gap-2 sm:gap-3 relative z-30 w-full sm:w-auto">
+          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-4 py-2.5 sm:px-7 sm:py-3.5 text-xs sm:text-base font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-1.5 sm:gap-2.5 cursor-pointer relative z-30 touch-target flex-1 sm:flex-none text-center">
             <span>Create Free Account</span>
-            <i class="fas fa-chevron-right text-xs bg-white/20 rounded-full w-5 h-5 flex items-center justify-center"></i>
+            <i class="fas fa-chevron-right text-[10px] sm:text-xs bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"></i>
           </a>
-          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-5 py-3 sm:px-6 sm:py-3.5 text-sm sm:text-base font-semibold transition flex items-center justify-center gap-2 cursor-pointer relative z-30 touch-target w-full sm:w-auto text-center">
-            <i class="fas fa-key text-xs text-[#64748B]"></i>
+          <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-3.5 py-2.5 sm:px-6 sm:py-3.5 text-xs sm:text-base font-bold transition flex items-center justify-center gap-1.5 cursor-pointer relative z-30 touch-target flex-1 sm:flex-none text-center">
+            <i class="fas fa-key text-[10px] sm:text-xs text-[#64748B]"></i>
             <span>Sign In</span>
           </a>
         </div>
@@ -840,8 +902,8 @@
   </div>
 
   <!-- AUTH POPUP MODAL (Sign In & Join Free) -->
-  <div id="auth-modal" style="display: none;" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity" onclick="if(event.target === this) closeAuthModal()">
-    <div class="relative w-full max-w-md rounded-[24px] bg-white p-5 sm:p-8 shadow-2xl border border-[#D5D5D5] overflow-y-auto max-h-[92vh] transform transition-all scale-100">
+  <div id="auth-modal" style="display: none;" class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-opacity" onclick="if(event.target === this) closeAuthModal()">
+    <div class="relative w-full max-w-md rounded-[24px] bg-white p-5 sm:p-7 shadow-2xl border border-[#D5D5D5] overflow-y-auto max-h-[92vh] transform transition-all scale-100">
       
       <!-- Close Button (X) -->
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] flex items-center justify-center transition cursor-pointer z-10" title="Close">
@@ -849,14 +911,14 @@
       </button>
 
       <!-- Mascot & Title -->
-      <div class="text-center mb-5 pt-1">
-        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-14 w-14 mx-auto raccoon-anim object-contain mb-2" />
+      <div class="text-center mb-4 pt-1">
+        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-12 w-12 mx-auto raccoon-anim object-contain mb-1.5" />
         <h2 id="modal-auth-heading" class="font-display text-2xl font-bold tracking-tight text-[#1E293B]">Welcome to Raccon Mail</h2>
-        <p id="modal-auth-sub" class="text-xs text-[#64748B] mt-1">Clever, encrypted nocturnal mailbox.</p>
+        <p id="modal-auth-sub" class="text-xs text-[#64748B] mt-0.5">Clever, encrypted nocturnal mailbox.</p>
       </div>
 
       <!-- Segmented Tab Switcher (Harmony Style) -->
-      <div class="flex rounded-full bg-[#F2F2F2] p-1 mb-5 text-xs font-semibold border border-[#E4E6EB]">
+      <div class="flex rounded-full bg-[#F2F2F2] p-1 mb-4 text-xs font-semibold border border-[#E4E6EB]">
         <button
           id="modal-tab-login"
           type="button"
@@ -884,7 +946,7 @@
       </div>
 
       <!-- LOGIN FORM -->
-      <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3.5">
+      <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Email or Username</label>
           <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
@@ -926,11 +988,65 @@
         <button
           type="submit"
           id="m-btn-login"
-          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-3 transition shadow-md touch-target flex items-center justify-center gap-2 cursor-pointer mt-2 text-white"
+          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-2.5 transition shadow-md touch-target flex items-center justify-center gap-2 cursor-pointer mt-1 text-white"
         >
           <span>Sign In to Raccon Mail</span>
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
         </button>
+
+        <!-- Social OAuth Sign In Options -->
+        <div class="relative my-3">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#E2E8F0]"></div>
+          </div>
+          <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-white px-2 text-[#94A3B8] font-bold text-[10px] tracking-wider">Or sign in with</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <!-- Google -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('google')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Sign In with Google"
+          >
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span class="text-[11px] font-bold">Google</span>
+          </button>
+
+          <!-- GitHub -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('github')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Sign In with GitHub"
+          >
+            <svg class="w-4 h-4 shrink-0 text-[#24292F] fill-current" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+            <span class="text-[11px] font-bold">GitHub</span>
+          </button>
+
+          <!-- LinkedIn -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('linkedin')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Sign In with LinkedIn"
+          >
+            <svg class="w-4 h-4 shrink-0 text-[#0A66C2] fill-current" viewBox="0 0 24 24">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/>
+            </svg>
+            <span class="text-[11px] font-bold">LinkedIn</span>
+          </button>
+        </div>
 
         <div class="pt-2 text-center text-xs text-[#64748B]">
           Don't have an account yet? 
@@ -940,8 +1056,8 @@
         </div>
       </form>
 
-      <!-- REGISTER FORM (Join Free) -->
-      <form id="modal-form-register" onsubmit="handleModalRegister(event)" class="hidden space-y-3">
+      <!-- REGISTER FORM (Join Free with Social Options) -->
+      <form id="modal-form-register" onsubmit="handleModalRegister(event)" class="hidden space-y-2.5">
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Your Name</label>
           <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
@@ -1000,7 +1116,7 @@
         </div>
 
         <!-- Anti-bot indicator -->
-        <div class="p-2.5 bg-[#EBF5FB] rounded-xl border border-[#208ED3]/20 flex items-center justify-between text-xs">
+        <div class="p-2 bg-[#EBF5FB] rounded-xl border border-[#208ED3]/20 flex items-center justify-between text-xs">
           <span class="font-bold text-[#1E293B] flex items-center gap-1.5 text-[11px]">
             <i class="fas fa-shield-alt text-[#208ED3]"></i> Anti-Bot Verification
           </span>
@@ -1012,11 +1128,65 @@
         <button
           type="submit"
           id="m-btn-reg"
-          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-3 transition shadow-md mt-1 touch-target flex items-center justify-center gap-2 cursor-pointer text-white"
+          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-2.5 transition shadow-md mt-1 touch-target flex items-center justify-center gap-2 cursor-pointer text-white"
         >
           <span>Create Free Account</span>
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
         </button>
+
+        <!-- Social OAuth Registration Options (Google, GitHub, LinkedIn) -->
+        <div class="relative my-3">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#E2E8F0]"></div>
+          </div>
+          <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-white px-2 text-[#94A3B8] font-bold text-[10px] tracking-wider">Or register with</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <!-- Google -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('google')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Register with Google"
+          >
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span class="text-[11px] font-bold">Google</span>
+          </button>
+
+          <!-- GitHub -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('github')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Register with GitHub"
+          >
+            <svg class="w-4 h-4 shrink-0 text-[#24292F] fill-current" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+            </svg>
+            <span class="text-[11px] font-bold">GitHub</span>
+          </button>
+
+          <!-- LinkedIn -->
+          <button
+            type="button"
+            onclick="handleSocialAuth('linkedin')"
+            class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] hover:border-[#94A3B8] text-[#1E293B] text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            title="Register with LinkedIn"
+          >
+            <svg class="w-4 h-4 shrink-0 text-[#0A66C2] fill-current" viewBox="0 0 24 24">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.6 1.6 0 1 0 1.6 1.6 1.6 1.6 0 0 0-1.6-1.6Z"/>
+            </svg>
+            <span class="text-[11px] font-bold">LinkedIn</span>
+          </button>
+        </div>
 
         <div class="pt-2 text-center text-xs text-[#64748B]">
           Already have an account? 
@@ -1025,6 +1195,8 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
     </div>
   </div>
 
@@ -1082,8 +1254,14 @@
           : 'flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
       }
 
-      if (formLogin) formLogin.classList.toggle('hidden', !isLogin);
-      if (formReg) formReg.classList.toggle('hidden', isLogin);
+      if (formLogin) {
+        formLogin.style.display = isLogin ? 'block' : 'none';
+        formLogin.classList.toggle('hidden', !isLogin);
+      }
+      if (formReg) {
+        formReg.style.display = isLogin ? 'none' : 'block';
+        formReg.classList.toggle('hidden', isLogin);
+      }
 
       const heading = document.getElementById('modal-auth-heading');
       const sub = document.getElementById('modal-auth-sub');
@@ -1195,6 +1373,67 @@
         }
       }
     }
+
+    function getSavedSocialProfile(provider) {
+      try {
+        const raw = localStorage.getItem('raccon_social_' + provider);
+        if (raw) return JSON.parse(raw);
+      } catch (_) {}
+      const match = document.cookie.match(new RegExp('(?:^|; )raccon_social_' + provider + '=([^;]*)'));
+      if (match) {
+        const val = decodeURIComponent(match[1]);
+        return { email: val, name: val.split('@')[0] };
+      }
+      return null;
+    }
+
+    window.handleSocialAuth = async function(provider) {
+      hideModalError();
+      const provName = provider === 'google' ? 'Google' : (provider === 'github' ? 'GitHub' : 'LinkedIn');
+
+      // Check if user already registered or logged in with this provider on this device
+      let profile = getSavedSocialProfile(provider);
+      let name = profile?.name || '';
+      let email = profile?.email || '';
+
+      // Only if no profile exists in localStorage or cookies, ask once for preferred name
+      if (!name && !email) {
+        name = prompt(`Sign In / Register with ${provName}:\nEnter your preferred name or username:`, `${provName} User`);
+        if (name === null) return; // user cancelled
+        name = (name || `${provName} User`).trim();
+      }
+
+      const btnLogin = document.getElementById('m-btn-login');
+      const btnReg = document.getElementById('m-btn-reg');
+      if (btnLogin) btnLogin.disabled = true;
+      if (btnReg) btnReg.disabled = true;
+
+      try {
+        const res = await fetch(`/api/auth/oauth/${provider}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, email: email })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `${provName} login failed`);
+
+        // Permanently remember this account so it NEVER asks again
+        if (data.user) {
+          try {
+            localStorage.setItem('raccon_social_' + provider, JSON.stringify(data.user));
+            localStorage.setItem('raccon_last_social', JSON.stringify({ provider, user: data.user }));
+          } catch (_) {}
+          document.cookie = `raccon_social_${provider}=${encodeURIComponent(data.user.email)}; path=/; max-age=31536000; SameSite=Lax`;
+        }
+
+        window.location.href = '/inbox';
+      } catch (err) {
+        showModalError(err.message);
+      } finally {
+        if (btnLogin) btnLogin.disabled = false;
+        if (btnReg) btnReg.disabled = false;
+      }
+    };
 
     // Close modal on Escape key
     document.addEventListener('keydown', (e) => {

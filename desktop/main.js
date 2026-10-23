@@ -1,6 +1,7 @@
 // 🦝 Raccon Mail - Official Desktop Client
 const { app, BrowserWindow, Menu, Tray, nativeImage, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 let mainWindow = null;
 let tray = null;

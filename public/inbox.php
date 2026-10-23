@@ -464,9 +464,16 @@ if (empty($_SESSION['current_user_id'])) {
 
       <!-- Bottom Sidebar Utilities -->
       <div class="border-t border-border p-2 space-y-1 text-xs font-medium">
+        <a href="/forum" target="_blank" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 transition font-bold border border-emerald-500/25 mb-1 cursor-pointer">
+          <div class="flex items-center gap-2">
+            <i data-lucide="messages-square" class="h-4 w-4 text-emerald-500"></i>
+            <span>Community Wall</span>
+          </div>
+          <span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.2 rounded-full font-bold">Forum</span>
+        </a>
         <button onclick="app.openNewsModal()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-muted hover:bg-card transition font-bold border border-border mb-1 cursor-pointer">
           <div class="flex items-center gap-2">
-            <span>🗞️</span>
+            <i data-lucide="newspaper" class="h-4 w-4 text-amber-500"></i>
             <span>Raccon News Wire</span>
           </div>
           <span class="text-[9px] bg-red-500 text-white px-1.5 py-0.2 rounded-full font-bold">5m Live</span>
@@ -510,8 +517,12 @@ if (empty($_SESSION['current_user_id'])) {
             <p id="current-folder-subtitle" class="text-xs text-muted-foreground">Loading emails...</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="app.openNewsModal()" title="Raccon News Wire (Updated every 5 mins from CBN)" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1 text-xs font-bold shadow-xs cursor-pointer">
-              <span>🗞️</span>
+            <a href="/forum" target="_blank" title="Open Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-emerald-500"></i>
+              <span class="hidden sm:inline">Wall</span>
+            </a>
+            <button onclick="app.openNewsModal()" title="Raccon News Wire (Updated every 5 mins from CBN)" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-amber-500"></i>
               <span class="hidden sm:inline">News</span>
               <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
             </button>

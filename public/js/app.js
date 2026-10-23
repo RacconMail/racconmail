@@ -276,77 +276,98 @@ const app = {
     if (!grid) return;
     const sections = [
       {
-        name: 'Tech', icon: '💻', tag: 'AI & Cyber',
+        name: 'Tech & AI', icon: '💻', tag: 'Stealth & Chips',
+        cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
         items: [
-          { title: "Next-Gen Stealth Chips Deliver 10x On-Device Encryption", time: "Just now", desc: "Hardware isolation prevents memory scraping & data harvesting." },
-          { title: "Open-Source AI Models Challenge Big Tech Monopolies", time: "14m ago", desc: "Decentralized models put full control back in developers' hands." },
-          { title: "Quantum-Resistant Email Protocols Adopted", time: "28m ago", desc: "Postcard networks transition to lattice-based post-quantum cryptography." }
+          { title: "Next-Gen Stealth Chips Deliver 10x On-Device Encryption", time: "Just now", desc: "Hardware isolation prevents memory scraping & data harvesting.", image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80' },
+          { title: "Open-Source AI Models Challenge Big Tech Monopolies", time: "14m ago", desc: "Decentralized models put full control back in developers' hands.", image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80' },
+          { title: "Solar-Powered Nocturnal Microservers Deployed", time: "31m ago", desc: "Green computing provides uninterrupted nocturnal relay processing.", image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80' }
         ]
       },
       {
-        name: 'Sport', icon: '⚽', tag: 'Arena',
+        name: 'Sports Arena', icon: '⚽', tag: 'Nocturnal Games',
+        cover: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80',
         items: [
-          { title: "Champions League Night Clashes Deliver Dramatic Late Winners", time: "3m ago", desc: "Extra-time heroics seal quarterfinal spots under stadium lights." },
-          { title: "Global Marathon Records Shattered in Historic Night Race", time: "18m ago", desc: "Crisp cool 12°C nocturnal air fuels historic distance times." },
-          { title: "Midnight Street Basketball Tournaments Surge", time: "42m ago", desc: "Local city courts light up with intense 3-on-3 showdowns." }
+          { title: "Champions League Night Clashes Deliver Late Winners", time: "3m ago", desc: "Extra-time heroics seal quarterfinal spots under stadium lights.", image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80' },
+          { title: "Global Marathon Records Shattered in Historic Night Race", time: "18m ago", desc: "Crisp cool 12°C nocturnal air fuels historic distance times.", image: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=600&q=80' },
+          { title: "Midnight Street Basketball Tournaments Surge", time: "42m ago", desc: "Local city courts light up with intense 3-on-3 showdowns.", image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80' }
         ]
       },
       {
-        name: 'Games', icon: '🎮', tag: 'Esports',
+        name: 'Games & Esports', icon: '🎮', tag: 'Burrows & RPG',
+        cover: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80',
         items: [
-          { title: "Nocturnal RPG 'Shadow Bandit' Announced", time: "5m ago", desc: "Play as a masked woodland creature solving midnight bakery mysteries." },
-          { title: "Global Esports Grand Finals Break Milestones", time: "21m ago", desc: "Over 4.9 million concurrent viewers tune into intense nocturnal decider." },
-          { title: "Next-Gen Handheld Update Boosts OLED Contrast", time: "44m ago", desc: "Firmware optimization extends portable gameplay sessions." }
+          { title: "Nocturnal RPG 'Shadow Bandit' Announced", time: "5m ago", desc: "Play as a masked woodland creature solving midnight bakery mysteries.", image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80' },
+          { title: "Global Esports Grand Finals Break Milestones", time: "21m ago", desc: "Over 4.9 million concurrent viewers tune into intense nocturnal decider.", image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80' },
+          { title: "Next-Gen Handheld Update Boosts OLED Contrast", time: "44m ago", desc: "Firmware optimization extends portable gameplay sessions.", image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80' }
         ]
       },
       {
-        name: 'Music', icon: '🎵', tag: 'Lo-Fi',
+        name: 'Music & Audio', icon: '🎵', tag: 'Lo-Fi Chillhop',
+        cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
         items: [
-          { title: "Midnight Lo-Fi Beats Stream Surpasses 1B Hours", time: "4m ago", desc: "Night owls and study groups make ambient chillhop the top stream." },
-          { title: "Underground Synthwave Album Climbs Charts", time: "24m ago", desc: "Retro 80s analog synthesizers captivate night drivers worldwide." },
-          { title: "Acoustic Forest Sessions Recorded Under Moonlight", time: "49m ago", desc: "Natural woodland acoustics bring intimate folk guitar tracks to life." }
+          { title: "Midnight Lo-Fi Beats Stream Surpasses 1B Hours", time: "4m ago", desc: "Night owls and study groups make ambient chillhop the top stream.", image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80' },
+          { title: "Underground Synthwave Album Climbs Charts", time: "24m ago", desc: "Retro 80s analog synthesizers captivate night drivers worldwide.", image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80' },
+          { title: "Acoustic Forest Sessions Recorded Under Moonlight", time: "49m ago", desc: "Natural woodland acoustics bring intimate folk guitar tracks to life.", image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80' }
         ]
       },
       {
-        name: 'Weather', icon: '☀️', tag: 'Radar',
+        name: 'Night Radar', icon: '☀️', tag: 'Starlight & Moon',
+        cover: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80',
         items: [
-          { title: "Night Sky Clarity: 98% (Exceptional Star Visibility)", time: "Live radar", desc: "Crisp atmospheric pressure; ideal for nocturnal stargazing." },
-          { title: "Moon Phase: Waxing Gibbous (84% Illuminated)", time: "Astronomical", desc: "Gentle natural silver moonlight over European burrows and cities." },
-          { title: "Barometric Pressure: 1018 hPa (Steady & Peaceful)", time: "Live sensor", desc: "Stable nocturnal high pressure system guaranteeing dry night skies." }
+          { title: "Night Sky Clarity: 98% (Exceptional Star Visibility)", time: "Live radar", desc: "Crisp atmospheric pressure; ideal for nocturnal stargazing.", image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80' },
+          { title: "Moon Phase: Waxing Gibbous (84% Illuminated)", time: "Astronomical", desc: "Gentle natural silver moonlight over European burrows and cities.", image: 'https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=600&q=80' },
+          { title: "Northern Aurora Borealis Visible in Upper Latitudes", time: "Live Alert", desc: "Solar wind geomagnetic index generates dancing emerald curtains.", image: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=600&q=80' }
         ]
       }
     ];
 
     grid.innerHTML = sections.map(sec => `
-      <div class="rounded-2xl border border-border bg-card p-3 shadow-xs flex flex-col justify-between">
+      <div class="rounded-2xl border border-border bg-card p-3 shadow-xs flex flex-col justify-between group hover:border-primary/50 transition duration-200">
         <div>
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-border">
-            <span class="font-display font-bold text-xs flex items-center gap-1.5 text-foreground">
-              <span>${sec.icon}</span>
-              <span>${sec.name}</span>
-            </span>
-            <span class="text-[9px] font-mono text-muted-foreground bg-muted px-1.5 py-0.2 rounded-full">${sec.tag}</span>
+          <!-- Header with Category & Cover Thumbnail -->
+          <div class="relative aspect-video rounded-xl overflow-hidden mb-2.5 bg-muted">
+            <img src="${sec.cover}" alt="${sec.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md border border-white/10">
+                <span>${sec.icon}</span>
+                <span>${sec.name}</span>
+              </span>
+            </div>
+            <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] text-white/90">
+              <span class="font-mono bg-emerald-500/80 text-obsidian font-bold px-1.5 py-0.2 rounded">${sec.tag}</span>
+              <span class="flex items-center gap-1 font-bold text-emerald-400">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>LIVE</span>
+              </span>
+            </div>
           </div>
-          <div class="space-y-2.5">
+
+          <!-- Stories List with Images on Every Post -->
+          <div class="space-y-2">
             ${sec.items.map(it => `
-              <div class="p-2 rounded-xl bg-muted/40 hover:bg-muted transition">
-                <div class="flex justify-between text-[9px] text-muted-foreground mb-0.5">
-                  <span class="text-orange-600 font-bold">CBN Live</span>
-                  <span>${it.time}</span>
+              <div class="p-2 rounded-xl bg-muted/40 hover:bg-muted transition flex gap-2.5 items-start">
+                <img src="${it.image}" alt="${it.title}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-border/60 shadow-xs" onerror="this.src='/raccoon-logo.png';" />
+                <div class="min-w-0 flex-1">
+                  <div class="flex justify-between items-center text-[9px] text-muted-foreground mb-0.5">
+                    <span class="text-orange-600 font-bold">CBN News</span>
+                    <span class="font-mono">${it.time}</span>
+                  </div>
+                  <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
+                    ${it.title}
+                  </a>
+                  <p class="text-[10px] text-muted-foreground mt-0.5 line-clamp-1 leading-relaxed">
+                    ${it.desc}
+                  </p>
                 </div>
-                <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
-                  ${it.title}
-                </a>
-                <p class="text-[10px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
-                  ${it.desc}
-                </p>
               </div>
             `).join('')}
           </div>
         </div>
         <div class="pt-2 mt-2 border-t border-border-light text-[10px]">
-          <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-bold flex items-center justify-between">
-            <span>Read on CBN</span>
+          <a href="/news" target="_blank" class="text-primary hover:underline font-bold flex items-center justify-between">
+            <span>Open in Full Wire</span>
             <span>&rarr;</span>
           </a>
         </div>
@@ -1574,14 +1595,35 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = `<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Sending...</span>`;
-      lucide.createIcons();
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch (_) {}
+      }
     }
 
     try {
-      const msg = this.selectedMessage;
+      const msg = (this.messages || []).find(m => String(m.id) === String(msgId)) || this.selectedMessage;
+      if (!msg) {
+        alert('Could not find active message to reply to.');
+        return;
+      }
+      this.selectedMessage = msg;
+
+      // Smart recipient resolution:
+      // If we are looking at an email we sent, reply to recipient_email; otherwise sender_email
+      let toRecipient = (msg.sender_email && msg.sender_email !== this.currentUser?.email)
+        ? msg.sender_email
+        : (msg.recipient_email || msg.sender_email);
+
+      if (!toRecipient) {
+        alert('Could not resolve recipient for reply.');
+        return;
+      }
+
+      const subject = (msg.subject || '').startsWith('Re:') ? msg.subject : `Re: ${msg.subject || 'Message'}`;
+
       const formData = new FormData();
-      formData.append('to', msg.sender_email);
-      formData.append('subject', msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`);
+      formData.append('to', toRecipient);
+      formData.append('subject', subject);
       formData.append('body', text);
 
       const res = await fetch('/api/messages/send', {
@@ -1593,7 +1635,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       this.playChime();
       this.showToast('Fast reply delivered via nocturnal express! 💌🦝');
-      textEl.value = '';
+      if (textEl) {
+        textEl.value = '';
+        textEl.focus();
+      }
+
       await this.fetchFolders();
       await this.loadMessages();
     } catch (err) {
@@ -1601,8 +1647,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Send Fast Reply</span>`;
-        lucide.createIcons();
+        btn.innerHTML = `<i data-lucide="send" class="h-4 w-4 text-white"></i><span>Send Fast Reply</span><span class="paw-bounce text-sm">🐾</span>`;
+        if (window.lucide) {
+          try { lucide.createIcons(); } catch (_) {}
+        }
       }
     }
   },
