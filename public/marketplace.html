@@ -155,13 +155,13 @@
         <div class="space-y-2 flex-1">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
             <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-            <span>MEMBER-TO-MEMBER MARKETPLACE</span>
+            <span>MEMBER-TO-MEMBER &bull; VÂNZARE EXCLUSIV ÎN PERSOANĂ</span>
           </div>
           <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Buy &amp; Sell Pre-Loved &amp; New Articles
           </h1>
           <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
-            Clean, verified classifieds directly between Raccon Mail members. Sell electronics, gadgets, furniture, books or clothes you no longer need with zero commission.
+            Vânzări directe între membri verificați. <strong>Totul se vinde în persoană, nimic nu se plătește online.</strong> Adresa vânzătorului este protejată împotriva spamului și se dezvăluie doar dacă dorești sigur să cumperi articolul.
           </p>
         </div>
         <button
@@ -438,6 +438,17 @@
         </div>
       </div>
 
+      <!-- In-Person Only Guarantee Banner -->
+      <div class="flex items-start gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+        <i data-lucide="handshake" class="h-4 w-4 text-slate-900 shrink-0 mt-0.5"></i>
+        <div class="space-y-0.5">
+          <span class="font-bold text-slate-900">Vânzare exclusiv în persoană &bull; Nimic nu se plătește online</span>
+          <p class="text-[11px] text-slate-500 leading-normal">
+            Tranzacțiile se realizează direct între membri: întâlnire fizică, verificare pe loc și plată cash/la predare. Adresa de email a vânzătorului este protejată și se afișează doar după confirmarea intenției sigure de cumpărare.
+          </p>
+        </div>
+      </div>
+
       <!-- Description -->
       <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line" id="detail-desc"></div>
 
@@ -447,11 +458,83 @@
           <img id="detail-seller-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" />
           <div class="leading-tight">
             <div id="detail-seller-name" class="font-bold text-xs text-slate-900"></div>
-            <div id="detail-seller-email" class="text-[11px] text-slate-500 font-mono"></div>
+            <div id="detail-seller-email-box" class="flex items-center gap-1.5 mt-0.5">
+              <span id="detail-seller-email" class="text-[11px] text-slate-500 font-mono"></span>
+              <button id="copy-email-btn" onclick="copySellerEmail()" class="hidden p-0.5 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition" title="Copiază email">
+                <i data-lucide="copy" class="h-3 w-3"></i>
+              </button>
+            </div>
           </div>
         </div>
 
         <div id="detail-actions" class="flex items-center gap-2 w-full sm:w-auto justify-end"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM IN-PERSON PURCHASE MODAL -->
+  <div id="confirm-purchase-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center gap-2">
+          <div class="h-8 w-8 rounded-full bg-slate-900 text-white flex items-center justify-center">
+            <i data-lucide="handshake" class="h-4 w-4"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base text-slate-900">Confirmare Cumpărare</h3>
+            <p class="text-[11px] text-slate-500">Dezvăluie adresa vânzătorului doar dacă cumperi sigur</p>
+          </div>
+        </div>
+        <button onclick="closeConfirmPurchaseModal()" class="p-1 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <!-- Item Preview Mini Card -->
+      <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+        <img id="confirm-item-image" src="" class="h-12 w-12 object-cover rounded-xl border border-slate-200 shrink-0" />
+        <div class="min-w-0 flex-1">
+          <h4 id="confirm-item-title" class="font-bold text-xs text-slate-900 truncate"></h4>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 mt-0.5">
+            <span id="confirm-item-location" class="truncate"></span>
+            <span id="confirm-item-price" class="font-bold text-slate-900 shrink-0"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- In-Person Rules List -->
+      <div class="space-y-2.5 text-xs text-slate-600 bg-slate-50/60 p-3 rounded-2xl border border-slate-200">
+        <div class="flex items-start gap-2">
+          <i data-lucide="check" class="h-3.5 w-3.5 text-slate-900 shrink-0 mt-0.5 font-bold"></i>
+          <span><strong>Totul se vinde în persoană</strong>: Nimic nu se plătește online. Predarea și plata se fac față în față după ce inspectezi articolul.</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <i data-lucide="check" class="h-3.5 w-3.5 text-slate-900 shrink-0 mt-0.5 font-bold"></i>
+          <span><strong>Dezvăluire la cumpărare sigură</strong>: Emailul vânzătorului este privat și se arată doar celor hotărâți să cumpere, evitând mesajele inutile.</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <i data-lucide="check" class="h-3.5 w-3.5 text-slate-900 shrink-0 mt-0.5 font-bold"></i>
+          <span><strong>Zero comisioane</strong>: Raccon Marketplace nu percepe nicio taxă de intermediere.</span>
+        </div>
+      </div>
+
+      <!-- Confirmation Checkbox -->
+      <label class="flex items-start gap-2.5 p-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 cursor-pointer transition">
+        <input type="checkbox" id="confirm-intent-checkbox" onchange="toggleRevealConfirmBtn(this.checked)" class="mt-0.5 rounded text-slate-900 focus:ring-0" />
+        <span class="text-xs font-semibold text-slate-800 leading-snug">
+          Confirm că sunt sigur că vreau să cumpăr acest articol și mă angajez să mă întâlnesc în persoană cu vânzătorul pentru predare și plată la fața locului.
+        </span>
+      </label>
+
+      <!-- Actions -->
+      <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-200">
+        <button type="button" onclick="closeConfirmPurchaseModal()" class="px-4 py-2 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition cursor-pointer">
+          Renunță
+        </button>
+        <button type="button" id="confirm-reveal-submit-btn" disabled onclick="executeRevealEmail()" class="px-5 py-2 rounded-full bg-slate-200 text-slate-400 cursor-not-allowed text-xs font-bold transition flex items-center gap-1.5 shadow-xs">
+          <i data-lucide="eye" class="h-3.5 w-3.5"></i>
+          <span>Reveal the Email</span>
+        </button>
       </div>
     </div>
   </div>
@@ -612,8 +695,18 @@
       `;
     }
 
-    function openDetailModal(itemId) {
-      const item = allItems.find(i => i.id === itemId);
+    async function openDetailModal(itemId) {
+      document.getElementById('detail-modal').classList.remove('hidden');
+
+      let item = allItems.find(i => i.id === itemId);
+      try {
+        const res = await fetch(`/api/marketplace/items/${itemId}`);
+        const data = await res.json();
+        if (data.item) {
+          item = data.item;
+        }
+      } catch (_) {}
+
       if (!item) return;
       selectedItem = item;
 
@@ -632,7 +725,7 @@
       const priceText = item.is_free ? 'GRATIS / FREE' : `${item.currency === 'EUR' ? '€' : item.currency === 'USD' ? '$' : 'RON '}${item.price}`;
       document.getElementById('detail-price').textContent = priceText;
 
-      document.getElementById('detail-location').querySelector('span').textContent = item.location || 'Local Pickup / Delivery';
+      document.getElementById('detail-location').querySelector('span').textContent = item.location || 'Predare în persoană';
       document.getElementById('detail-date').textContent = new Date(item.created_at).toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' });
 
       const statusEl = document.getElementById('detail-status');
@@ -647,12 +740,16 @@
       const img = document.getElementById('detail-image');
       img.src = item.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
 
-      document.getElementById('detail-seller-name').textContent = item.seller_name || 'Verified Member';
-      document.getElementById('detail-seller-email').textContent = item.seller_email || '';
+      document.getElementById('detail-seller-name').textContent = item.seller_name || 'Membru Verificat';
       document.getElementById('detail-seller-avatar').src = item.seller_avatar || '/raccoon-logo.png';
 
+      const emailText = document.getElementById('detail-seller-email');
+      const copyBtn = document.getElementById('copy-email-btn');
       const actionsContainer = document.getElementById('detail-actions');
+
       if (item.is_owner || (currentUser && currentUser.is_admin)) {
+        emailText.textContent = item.seller_email || item.seller_email_preview || '';
+        copyBtn.classList.remove('hidden');
         actionsContainer.innerHTML = `
           <button onclick="toggleSoldStatus('${item.id}', '${item.status}')" class="px-3.5 py-1.5 rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold transition cursor-pointer">
             ${item.status === 'sold' ? 'Mark Available' : 'Mark as Sold'}
@@ -661,21 +758,130 @@
             Delete
           </button>
         `;
-      } else {
+      } else if (item.has_revealed_contact && item.seller_email) {
+        // Buyer has confirmed in-person purchase intent
+        emailText.innerHTML = `<span class="text-slate-900 font-bold">${escapeHtml(item.seller_email)}</span> <span class="ml-1 text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">✓ Confirmat</span>`;
+        copyBtn.classList.remove('hidden');
         actionsContainer.innerHTML = `
-          <button onclick="contactSeller('${escapeHtml(item.seller_email)}', '${escapeHtml(item.title)}')" class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-xs transition transform active:scale-95 cursor-pointer">
+          <button onclick="contactSeller('${escapeHtml(item.seller_email)}', '${escapeHtml(item.title)}')" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-xs transition transform active:scale-95 cursor-pointer">
             <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
             <span>Send Postcard to Seller</span>
           </button>
         `;
+      } else {
+        // Contact is protected: buyer must confirm serious purchase intent
+        emailText.innerHTML = `<span class="text-slate-400 italic font-sans flex items-center gap-1"><i data-lucide="lock" class="h-3 w-3"></i> ${escapeHtml(item.seller_email_preview || '••••••••@racconmail.eu')} (ascuns)</span>`;
+        copyBtn.classList.add('hidden');
+        actionsContainer.innerHTML = `
+          <button onclick="openConfirmPurchaseModal('${item.id}')" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-xs transition transform active:scale-95 cursor-pointer">
+            <i data-lucide="eye" class="h-3.5 w-3.5 text-white"></i>
+            <span>Reveal the Email &bull; Cumpăr sigur</span>
+          </button>
+        `;
       }
 
-      document.getElementById('detail-modal').classList.remove('hidden');
       if (window.lucide) lucide.createIcons();
     }
 
     function closeDetailModal() {
       document.getElementById('detail-modal').classList.add('hidden');
+    }
+
+    function openConfirmPurchaseModal(itemId) {
+      if (!currentUser) {
+        showToast('Te rugăm să te autentifici pentru a confirma intenția fermă de cumpărare.');
+        setTimeout(() => {
+          window.location.href = '/auth?tab=login';
+        }, 1200);
+        return;
+      }
+
+      const item = selectedItem || allItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      document.getElementById('confirm-item-title').textContent = item.title;
+      document.getElementById('confirm-item-price').textContent = item.is_free ? 'GRATIS' : `${item.currency === 'EUR' ? '€' : item.currency === 'USD' ? '$' : 'RON '}${item.price}`;
+      document.getElementById('confirm-item-location').textContent = item.location || 'Predare în persoană';
+      document.getElementById('confirm-item-image').src = item.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';
+
+      const checkbox = document.getElementById('confirm-intent-checkbox');
+      checkbox.checked = false;
+      toggleRevealConfirmBtn(false);
+
+      document.getElementById('confirm-purchase-modal').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeConfirmPurchaseModal() {
+      document.getElementById('confirm-purchase-modal').classList.add('hidden');
+    }
+
+    function toggleRevealConfirmBtn(checked) {
+      const btn = document.getElementById('confirm-reveal-submit-btn');
+      if (!btn) return;
+      if (checked) {
+        btn.disabled = false;
+        btn.className = 'px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white cursor-pointer text-xs font-bold transition flex items-center gap-1.5 shadow-xs';
+      } else {
+        btn.disabled = true;
+        btn.className = 'px-5 py-2 rounded-full bg-slate-200 text-slate-400 cursor-not-allowed text-xs font-bold transition flex items-center gap-1.5 shadow-xs';
+      }
+    }
+
+    async function executeRevealEmail() {
+      if (!selectedItem) return;
+      const btn = document.getElementById('confirm-reveal-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="h-3.5 w-3.5 animate-spin"></i><span>Dezvăluire...</span>';
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const res = await fetch(`/api/marketplace/items/${selectedItem.id}/reveal-contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Nu am putut dezvălui emailul vânzătorului.');
+        }
+
+        selectedItem.seller_email = data.seller_email;
+        selectedItem.has_revealed_contact = true;
+
+        closeConfirmPurchaseModal();
+        showToast('Intenția de cumpărare confirmată! Adresa vânzătorului a fost dezvăluită.');
+
+        // Update detail modal view instantly
+        const emailText = document.getElementById('detail-seller-email');
+        const copyBtn = document.getElementById('copy-email-btn');
+        const actionsContainer = document.getElementById('detail-actions');
+
+        emailText.innerHTML = `<span class="text-slate-900 font-bold">${escapeHtml(data.seller_email)}</span> <span class="ml-1 text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">✓ Confirmat</span>`;
+        if (copyBtn) copyBtn.classList.remove('hidden');
+
+        actionsContainer.innerHTML = `
+          <button onclick="contactSeller('${escapeHtml(data.seller_email)}', '${escapeHtml(selectedItem.title)}')" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-xs transition transform active:scale-95 cursor-pointer">
+            <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
+            <span>Send Postcard to Seller</span>
+          </button>
+        `;
+        if (window.lucide) lucide.createIcons();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="eye" class="h-3.5 w-3.5"></i><span>Reveal the Email</span>';
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function copySellerEmail() {
+      if (!selectedItem || !selectedItem.seller_email) return;
+      navigator.clipboard.writeText(selectedItem.seller_email).then(() => {
+        showToast(`Adresă copiată: ${selectedItem.seller_email}`);
+      }).catch(() => {
+        showToast(`Email: ${selectedItem.seller_email}`);
+      });
     }
 
     function contactSeller(sellerEmail, itemTitle) {
@@ -687,9 +893,9 @@
         return;
       }
 
-      // Seamlessly navigate to inbox with compose open
-      const subject = encodeURIComponent(`Interested in: ${itemTitle} (Raccon Marketplace)`);
-      const body = encodeURIComponent(`Hello!\n\nI saw your listing for "${itemTitle}" on Raccon Marketplace and I am interested in purchasing it. Is it still available?\n\nBest regards,\n${currentUser.name || 'Member'}`);
+      // Seamlessly navigate to inbox with compose open, pre-filled for in-person handover
+      const subject = encodeURIComponent(`Cumpărare în persoană: ${itemTitle} (Raccon Marketplace)`);
+      const body = encodeURIComponent(`Bună ziua!\n\nAm confirmat intenția fermă de a cumpăra articolul "${itemTitle}" de pe Raccon Marketplace.\n\nAșa cum este specificat, predarea și plata se fac exclusiv în persoană. Unde și când ne-am putea întâlni pentru verificare și predare?\n\nCu respect,\n${currentUser.name || 'Cumpărător'}`);
       window.location.href = `/inbox?compose=${encodeURIComponent(sellerEmail)}&subject=${subject}&body=${body}`;
     }
 

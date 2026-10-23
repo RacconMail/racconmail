@@ -2586,7 +2586,30 @@ try {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_category ON marketplace_items(category, created_at)");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_status ON marketplace_items(status, created_at)");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_user ON marketplace_items(user_id)");
+
+        // Table for in-person buyers who confirmed serious purchase intent to reveal contact
+        $db->exec("CREATE TABLE IF NOT EXISTS marketplace_reveals (
+            item_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (item_id, user_id)
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_reveals ON marketplace_reveals(user_id, item_id)");
     } catch (Throwable $e) {}
+
+    if (!function_exists('maskMarketplaceEmail')) {
+        function maskMarketplaceEmail($email) {
+            if (!$email || !strpos($email, '@')) return '••••••••@racconmail.eu';
+            list($user, $domain) = explode('@', $email, 2);
+            $len = strlen($user);
+            if ($len <= 2) {
+                $maskedUser = substr($user, 0, 1) . '***';
+            } else {
+                $maskedUser = substr($user, 0, 2) . str_repeat('•', min(6, $len - 2));
+            }
+            return $maskedUser . '@' . $domain;
+        }
+    }
 
     // Auto-seed initial marketplace listings if table is empty
     $mktCount = 0;
@@ -2751,10 +2774,16 @@ try {
 
         $items = [];
         foreach ($rows as $r) {
-            $r['is_owner'] = ($currentUserId && $r['user_id'] === $currentUserId);
+            $isOwner = ($currentUserId && $r['user_id'] === $currentUserId);
+            $r['is_owner'] = $isOwner;
             $r['price'] = (float)$r['price'];
             $r['is_free'] = (int)$r['is_free'];
             $r['views_count'] = (int)$r['views_count'];
+            $rawEmail = $r['seller_email'] ?? '';
+            $r['seller_email_preview'] = maskMarketplaceEmail($rawEmail);
+            if (!$isOwner) {
+                $r['seller_email'] = ''; // Hidden until in-person purchase intent is confirmed
+            }
             $items[] = $r;
         }
 
@@ -2816,10 +2845,33 @@ try {
             exit;
         }
 
-        $item['is_owner'] = ($currentUserId && $item['user_id'] === $currentUserId);
+        $isOwner = ($currentUserId && $item['user_id'] === $currentUserId);
+        $rawEmail = $item['seller_email'] ?? '';
+
+        // Check if user has confirmed in-person purchase intent
+        $hasRevealed = false;
+        if ($currentUserId) {
+            try {
+                $stmtRev = $db->prepare("SELECT 1 FROM marketplace_reveals WHERE item_id = ? AND user_id = ?");
+                $stmtRev->execute([$itemId, $currentUserId]);
+                $hasRevealed = (bool)$stmtRev->fetchColumn();
+            } catch (Throwable $e) {}
+        }
+
+        $canViewDirectEmail = ($isOwner || $hasRevealed);
+
+        $item['is_owner'] = $isOwner;
+        $item['has_revealed_contact'] = $canViewDirectEmail;
         $item['price'] = (float)$item['price'];
         $item['is_free'] = (int)$item['is_free'];
         $item['views_count'] = (int)$item['views_count'];
+        $item['seller_email_preview'] = maskMarketplaceEmail($rawEmail);
+
+        if (!$canViewDirectEmail) {
+            $item['seller_email'] = ''; // Hidden until buyer confirms in-person purchase intent
+        } else {
+            $item['seller_email'] = $rawEmail;
+        }
 
         echo json_encode(['item' => $item]);
         exit;
@@ -3023,6 +3075,47 @@ try {
             echo json_encode(['error' => 'Failed to save uploaded image.']);
             exit;
         }
+    }
+
+    // 12.7 POST /api/marketplace/items/:id/reveal-contact (Confirm In-Person Purchase Intent & Reveal Email)
+    if (preg_match('#^marketplace/items/([^/]+)/reveal-contact$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Trebuie să fii autentificat pentru a confirma intenția de cumpărare în persoană și a dezvălui emailul vânzătorului.']);
+            exit;
+        }
+
+        $itemId = $m[1];
+        $stmtItem = $db->prepare("
+            SELECT m.*, u.name as seller_name, u.email as seller_email
+            FROM marketplace_items m
+            LEFT JOIN users u ON m.user_id = u.id
+            WHERE m.id = ?
+        ");
+        $stmtItem->execute([$itemId]);
+        $item = $stmtItem->fetch();
+
+        if (!$item) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Articolul nu a fost găsit.']);
+            exit;
+        }
+
+        // Record serious in-person purchase intent in database
+        try {
+            $stmtInsert = $db->prepare("INSERT OR IGNORE INTO marketplace_reveals (item_id, user_id) VALUES (?, ?)");
+            $stmtInsert->execute([$itemId, $currentUserId]);
+        } catch (Throwable $e) {}
+
+        echo json_encode([
+            'success' => true,
+            'seller_email' => $item['seller_email'],
+            'seller_name' => $item['seller_name'],
+            'item_title' => $item['title'],
+            'location' => $item['location'],
+            'message' => 'Intenția fermă de cumpărare în persoană a fost confirmată. Adresa de email a vânzătorului este acum vizibilă!'
+        ]);
+        exit;
     }
 
     // Default 404
