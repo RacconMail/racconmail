@@ -13,7 +13,7 @@ html.theme-harmony, body.theme-harmony,
 html.theme-raccon, body.theme-raccon,
 html.theme-midnight, body.theme-midnight,
 html.theme-midnight-green, body.theme-midnight-green {
-  --background: #FFFFFF; /* Pure Clean White Canvas */
+  --background: #F3F5F8; /* Sleek White & Gray Contrast Canvas */
   --foreground: #0F172A; /* Deep Slate Headline & Text */
   --card: #FFFFFF; /* Pure White Card */
   --card-alt: #F8FAFC; /* Subtle Elevated Surface */
@@ -27,7 +27,7 @@ html.theme-midnight-green, body.theme-midnight-green {
   --secondary-hover: #E2E8F0;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --accent: #F1F5F9;
+  --accent: #EEF2F6;
   --accent-foreground: #0F172A;
   --border: #E2E8F0;
   --border-light: #F1F5F9;
@@ -1371,6 +1371,58 @@ header img[src*="raccoon-logo"]:hover {
   font-weight: 800 !important;
   border-bottom: 2.5px solid #0F172A !important;
 }
+
+/* =======================================================
+   WHITE & GRAY VISIBLE THEME POLISH & APP/DESKTOP/IOS
+   ======================================================= */
+/* Floating Docked Compose Window */
+#compose-modal.compose-minimized {
+  max-height: 48px !important;
+  height: 48px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15) !important;
+}
+#compose-modal.compose-minimized #compose-body-container,
+#compose-modal.compose-minimized #compose-footer-container {
+  display: none !important;
+}
+#compose-modal.compose-maximized {
+  top: 1rem !important;
+  bottom: 1rem !important;
+  left: 1rem !important;
+  right: 1rem !important;
+  max-width: none !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 1.25rem !important;
+}
+#compose-modal.compose-maximized #compose-body-container {
+  max-height: none !important;
+  height: calc(100vh - 160px) !important;
+}
+
+/* High-contrast Sidebar Active Folder Indicator */
+.nav-folder-btn.active {
+  background-color: #EDE9FE !important;
+  color: #4F46E5 !important;
+  font-weight: 800 !important;
+  border-left: 3px solid #4F46E5 !important;
+}
+.nav-folder-btn.active svg,
+.nav-folder-btn.active i {
+  color: #4F46E5 !important;
+}
+
+/* iOS Safe Area Insets for Mobile App & Web */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: max(0.85rem, env(safe-area-inset-bottom)) !important;
+  }
+  .safe-area-top {
+    padding-top: max(0.85rem, env(safe-area-inset-top)) !important;
+  }
+}
+
 
 
 

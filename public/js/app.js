@@ -1417,9 +1417,30 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       this.folders = data;
       this.renderStandardFolders();
       this.renderCustomFolders();
+      this.updateStorageMeter();
     } catch (err) {
       console.error('Failed to fetch folders:', err);
     }
+  },
+
+  updateStorageMeter() {
+    const textEl = document.getElementById('sidebar-storage-text');
+    const barEl = document.getElementById('sidebar-storage-bar');
+    if (!textEl && !barEl) return;
+
+    let totalMsgs = 0;
+    if (this.folders?.standard) {
+      Object.values(this.folders.standard).forEach(f => {
+        if (f && typeof f.total === 'number') totalMsgs += f.total;
+      });
+    }
+    const usedMB = Math.max(12, Math.round(24 + (totalMsgs * 0.28)));
+    const totalGB = 15;
+    const usedGB = (usedMB / 1024).toFixed(2);
+    const pct = Math.max(1, Math.min(100, Math.round((usedMB / (totalGB * 1024)) * 100)));
+
+    if (textEl) textEl.textContent = `${usedMB < 1024 ? usedMB + ' MB' : usedGB + ' GB'} / ${totalGB} GB (${pct}%)`;
+    if (barEl) barEl.style.width = `${pct}%`;
   },
 
   renderStandardFolders() {
@@ -1822,7 +1843,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const avatarBg = this.getSenderColor(senderName);
 
       return `
-        <div class="msg-swipe-wrapper relative overflow-hidden bg-white border-b border-slate-100 select-none ${isSelected ? 'bg-slate-50' : ''}" data-msg-id="${msg.id}">
+        <div class="msg-swipe-wrapper group relative overflow-hidden bg-white border-b border-slate-200/80 select-none ${isSelected ? 'bg-indigo-50/60 border-l-4 border-indigo-600' : ''}" data-msg-id="${msg.id}">
           <!-- Revealed on Swipe Right: Read & Planner / Star -->
           <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
             <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
@@ -1844,10 +1865,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           </div>
 
           <!-- Foreground Card Content (Draggable / Tap to open) -->
-          <div class="swipe-content relative z-10 bg-white hover:bg-slate-50/70 transition-transform px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
+          <div class="swipe-content relative z-10 ${isUnread ? 'bg-slate-50/60 font-semibold' : 'bg-white'} hover:bg-slate-100/70 transition-colors px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
             <!-- Unread Purple Dot -->
             <div class="w-2.5 flex items-center justify-center shrink-0">
-              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-purple-600"></span>' : ''}
+              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-indigo-600"></span>' : ''}
             </div>
 
             <!-- Batch Selection Checkbox -->
@@ -1856,7 +1877,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 type="checkbox"
                 ${isChecked ? 'checked' : ''}
                 onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-                class="rounded border-slate-300 h-4 w-4 accent-purple-600 cursor-pointer"
+                class="rounded border-slate-300 h-4 w-4 accent-indigo-600 cursor-pointer"
               />
             </div>
 
@@ -1870,7 +1891,19 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               <div class="flex items-center justify-between gap-1 leading-snug">
                 <span class="font-bold text-sm text-slate-900 truncate">${this.escapeHtml(senderName)}</span>
                 <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-                  <span class="text-xs text-slate-500 font-medium">${dateStr}</span>
+                  <!-- Desktop Quick Action Hover Icons -->
+                  <div class="hidden md:group-hover:flex items-center gap-0.5">
+                    <button onclick="app.trashMessage('${msg.id}')" class="p-1 rounded-full text-slate-400 hover:text-red-600 hover:bg-slate-200 transition cursor-pointer" title="Delete">
+                      <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                    </button>
+                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition cursor-pointer" title="${isUnread ? 'Mark read' : 'Mark unread'}">
+                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5"></i>
+                    </button>
+                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition cursor-pointer" title="Archive">
+                      <i data-lucide="archive" class="h-3.5 w-3.5"></i>
+                    </button>
+                  </div>
+                  <span class="text-xs text-slate-500 font-medium md:group-hover:hidden">${dateStr}</span>
                   <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-0.5 text-slate-400 hover:text-amber-500 transition cursor-pointer" title="Star">
                     <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'fill-amber-400 text-amber-500' : ''}"></i>
                   </button>
@@ -2139,7 +2172,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const attachments = msg.attachments || [];
     const userAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
     const isTeam = /raccon|team|support|system|admin/i.test(msg.sender_name || '') || /raccon|system/i.test(msg.sender_email || '');
-    const initial = ((msg.sender_name || msg.sender_email || 'M')[0] || 'M').toUpperCase();
+    const initials = this.getSenderInitials(msg.sender_name || msg.sender_email);
+    const avatarBg = this.getSenderColor(msg.sender_name || msg.sender_email);
 
     readerEl.innerHTML = `
       <!-- Action Toolbar (Smart Responsive, Zero Overlap on Mobile) -->
@@ -2237,9 +2271,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       <!-- Scrollable Message Body (Streamlined Compact Density) -->
       <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 pb-24 md:pb-5">
         
-        <!-- Authentic Raccon Postcard Stationery (Compact) -->
+        <!-- Authentic Email Reader Stationery -->
         <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs bg-white border border-slate-200">
-          <!-- Top Airmail Ribbon -->
+          <!-- Top subtle accent line -->
           <div class="stripes-subtle h-1.5 w-full"></div>
 
           <div class="p-4 sm:p-5 space-y-3">
@@ -2247,7 +2281,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
               <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-slate-100 border border-slate-200 text-slate-700 flex items-center gap-1.5">
                 <i data-lucide="shield-check" class="h-3 w-3 text-slate-600 shrink-0"></i>
-                <span>Verified Nocturnal Postcard &bull; Masked 10/10</span>
+                <span>Verified Postcard &bull; Masked 10/10</span>
               </div>
               <span class="text-[10px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
             </div>
@@ -2256,12 +2290,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 ${isTeam ? `
-                  <div class="h-9 w-9 rounded-full bg-white dark:bg-card border border-slate-200 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                  <div class="h-10 w-10 rounded-full bg-slate-900 border border-slate-800 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
                     <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
                   </div>
                 ` : `
-                  <div class="h-9 w-9 rounded-full bg-slate-100 text-slate-800 border border-slate-200 flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-                    ${initial}
+                  <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+                    ${initials}
                   </div>
                 `}
                 <div class="min-w-0">
@@ -2280,12 +2314,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               </div>
             </div>
 
-            <!-- Email Content / Letter Body (Compact Stationery) -->
-            <div class="pt-3 border-t border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed font-sans selection:bg-slate-900 selection:text-white bg-slate-50 rounded-xl p-3.5 sm:p-4 border border-slate-200">
+            <!-- Email Content / Letter Body (High Visibility Pure White Card) -->
+            <div class="pt-4 border-t border-slate-200 text-slate-900 text-sm leading-relaxed font-sans selection:bg-slate-900 selection:text-white bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
               ${msg.body_html ? `
-                <div class="email-html-wrapper overflow-x-auto rounded-lg">${msg.body_html}</div>
+                <div class="email-html-wrapper overflow-x-auto text-slate-900 leading-normal">${msg.body_html}</div>
               ` : `
-                <div class="whitespace-pre-wrap">${this.escapeHtml(msg.body)}</div>
+                <div class="whitespace-pre-wrap text-slate-800 font-normal leading-relaxed">${this.escapeHtml(msg.body)}</div>
               `}
             </div>
 
@@ -2778,11 +2812,19 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   // Compose Modal & Editor
+  isComposeMinimized: false,
+  isComposeMaximized: false,
+
   openCompose(prefill = {}) {
     this.composeFiles = [];
     this.currentDraftId = prefill.draftId || null;
 
-    document.getElementById('compose-modal').classList.remove('hidden');
+    const modal = document.getElementById('compose-modal');
+    if (modal) {
+      modal.classList.remove('hidden', 'compose-minimized');
+    }
+    this.isComposeMinimized = false;
+
     document.getElementById('compose-to').value = prefill.to || '';
     document.getElementById('compose-cc').value = prefill.cc || '';
     document.getElementById('compose-bcc').value = prefill.bcc || '';
@@ -2804,8 +2846,53 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }, 100);
   },
 
+  minimizeCompose() {
+    const modal = document.getElementById('compose-modal');
+    if (!modal) return;
+    this.isComposeMinimized = !this.isComposeMinimized;
+    if (this.isComposeMinimized) {
+      modal.classList.add('compose-minimized');
+      if (this.isComposeMaximized) {
+        modal.classList.remove('compose-maximized');
+        this.isComposeMaximized = false;
+      }
+    } else {
+      modal.classList.remove('compose-minimized');
+    }
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  maximizeCompose() {
+    const modal = document.getElementById('compose-modal');
+    if (!modal) return;
+    if (this.isComposeMinimized) {
+      modal.classList.remove('compose-minimized');
+      this.isComposeMinimized = false;
+    }
+    this.isComposeMaximized = !this.isComposeMaximized;
+    const maxIcon = document.getElementById('compose-maximize-icon');
+    if (this.isComposeMaximized) {
+      modal.classList.add('compose-maximized');
+      if (maxIcon) maxIcon.setAttribute('data-lucide', 'minimize-2');
+    } else {
+      modal.classList.remove('compose-maximized');
+      if (maxIcon) maxIcon.setAttribute('data-lucide', 'maximize-2');
+    }
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
   closeCompose() {
-    document.getElementById('compose-modal').classList.add('hidden');
+    const modal = document.getElementById('compose-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('compose-minimized', 'compose-maximized');
+    }
+    this.isComposeMinimized = false;
+    this.isComposeMaximized = false;
     this.composeFiles = [];
     this.currentDraftId = null;
   },

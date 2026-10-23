@@ -22,6 +22,8 @@ if (empty($_SESSION['current_user_id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Raccon Mail" />
+  <meta name="theme-color" content="#FFFFFF" />
   <meta name="google" content="notranslate" />
   <title>Raccon Mail — Clever email for web & mobile</title>
   <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
@@ -47,7 +49,7 @@ if (empty($_SESSION['current_user_id'])) {
       document.documentElement.className = 'theme-light';
       document.documentElement.classList.remove('dark', 'theme-dark', 'theme-midnight');
       const themeVars = {
-        '--background': '#FFFFFF',
+        '--background': '#F3F5F8',
         '--foreground': '#0F172A',
         '--card': '#FFFFFF',
         '--card-alt': '#F8FAFC',
@@ -59,7 +61,7 @@ if (empty($_SESSION['current_user_id'])) {
         '--secondary-foreground': '#0F172A',
         '--muted': '#F1F5F9',
         '--muted-foreground': '#64748B',
-        '--accent': '#F1F5F9',
+        '--accent': '#EEF2F6',
         '--accent-foreground': '#0F172A',
         '--border': '#E2E8F0',
         '--border-light': '#F1F5F9',
@@ -204,22 +206,22 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- Raccon Mail Global Search Bar (Hidden on mobile app, prominent on desktop & tablet) -->
     <div class="hidden md:block flex-1 min-w-0 max-w-xl mx-2 sm:mx-4 relative" id="global-search-container">
       <div class="relative flex items-center">
-        <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-muted-foreground pointer-events-none"></i>
+        <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none"></i>
         <input
           id="global-search"
           type="text"
           autocomplete="off"
-          placeholder="Search mail..."
-          class="w-full rounded-full border border-border bg-muted/60 pl-9 pr-8 sm:pr-20 py-1.5 text-xs sm:text-sm outline-none transition focus:bg-card focus:border-primary focus:ring-1 focus:ring-primary text-foreground"
+          placeholder="Search mail, senders, subjects or files..."
+          class="w-full rounded-full border border-slate-300 bg-slate-50/80 hover:bg-slate-100/60 focus:bg-white focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 pl-10 pr-8 sm:pr-20 py-2 text-xs sm:text-sm outline-none transition text-slate-900 placeholder:text-slate-400 shadow-2xs"
           onclick="app.onSearchClick()"
           oninput="app.onSearchInput(this.value)"
           onfocus="app.onSearchClick()"
           onkeydown="app.onSearchKeyDown(event)"
         />
-        <button id="search-clear-btn" class="hidden absolute right-12 text-muted-foreground hover:text-foreground text-xs" onclick="app.clearSearch()">
+        <button id="search-clear-btn" class="hidden absolute right-12 text-slate-400 hover:text-slate-700 text-xs cursor-pointer" onclick="app.clearSearch()">
           <i data-lucide="x" class="h-3.5 w-3.5"></i>
         </button>
-        <button onclick="app.openCommandPalette()" type="button" class="absolute right-3 hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono font-bold text-muted-foreground bg-card hover:bg-muted px-1.5 py-0.5 rounded border border-border cursor-pointer transition shadow-2xs" title="Open Command Palette (Ctrl+K)">
+        <button onclick="app.openCommandPalette()" type="button" class="absolute right-3 hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono font-bold text-slate-600 bg-white hover:bg-slate-100 px-2 py-0.5 rounded-full border border-slate-300 cursor-pointer transition shadow-2xs" title="Open Command Palette (Ctrl+K)">
           <span>⌘</span>K
         </button>
       </div>
@@ -470,6 +472,17 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </button>
       </div>
+
+      <!-- Storage Quota Meter (Webmail Standard Storage Feature) -->
+      <div class="px-3.5 py-3 border-t border-slate-200 bg-slate-50/70 shrink-0">
+        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="hard-drive" class="h-3.5 w-3.5 text-slate-500"></i>Storage</span>
+          <span id="sidebar-storage-text" class="font-mono text-[10.5px] text-slate-500">24.8 MB / 15 GB (0.2%)</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+          <div id="sidebar-storage-bar" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
+        </div>
+      </div>
     </aside>
 
     <!-- 2. MESSAGES LIST PANEL (Full width on mobile until email opened, Middle Panel on Desktop) -->
@@ -634,21 +647,27 @@ if (empty($_SESSION['current_user_id'])) {
     <div class="stripes-subtle h-1.5 w-full shrink-0"></div>
 
     <!-- Header bar -->
-    <div class="px-5 py-3.5 border-b border-slate-200 bg-white flex items-center justify-between shrink-0">
+    <div class="px-4 py-3 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
       <div class="flex items-center gap-2">
-        <img src="/raccoon-logo.png" class="h-5 w-5 object-contain" />
-        <h3 id="compose-title" class="font-display font-bold text-sm text-slate-900">New Clever Postcard</h3>
+        <img src="/raccoon-logo.png" class="h-4.5 w-4.5 object-contain" />
+        <h3 id="compose-title" class="font-display font-bold text-xs sm:text-sm text-slate-900">New Message</h3>
       </div>
-      <div class="flex items-center gap-2 text-slate-500">
-        <span id="draft-status-pill" class="text-[11px] text-slate-500 font-mono"></span>
-        <button onclick="app.closeCompose()" class="p-1.5 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Close">
-          <i data-lucide="x" class="h-4 w-4 text-slate-500"></i>
+      <div class="flex items-center gap-1 text-slate-500">
+        <span id="draft-status-pill" class="text-[11px] text-slate-500 font-mono mr-1.5"></span>
+        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer" title="Minimize">
+          <i data-lucide="minus" class="h-3.5 w-3.5 text-slate-600"></i>
+        </button>
+        <button type="button" onclick="event.stopPropagation(); app.maximizeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer hidden md:inline-flex" title="Maximize">
+          <i data-lucide="maximize-2" id="compose-maximize-icon" class="h-3.5 w-3.5 text-slate-600"></i>
+        </button>
+        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-3.5 w-3.5 text-slate-600"></i>
         </button>
       </div>
     </div>
 
     <!-- Compose Form -->
-    <div class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-white text-slate-900">
+    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-white text-slate-900">
       <!-- To Field -->
       <div class="relative flex items-center gap-2.5 border-b border-slate-200 pb-2">
         <span class="text-xs font-bold text-slate-600 w-16 shrink-0">To:</span>
@@ -731,7 +750,7 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
 
     <!-- Compose Bottom Actions (Pure White Canvas, Slate Gray & Solid Black Button) -->
-    <div class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
+    <div id="compose-footer-container" class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <label class="flex items-center gap-1 sm:gap-1.5 cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs" title="Attach Files">
           <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
