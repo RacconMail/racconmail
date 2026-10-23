@@ -236,33 +236,52 @@
           </div>
         </div>
 
-        <!-- Category Selector Chips -->
-        <div class="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
-          <span class="text-slate-500 text-[11px] font-semibold mr-1">Topic:</span>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="tech" checked class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">💻 Tech</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="coding" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">⚡ Coding</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="webdesign" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">🎨 Web Design</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="sharing" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">🎁 Sharing</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="help" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">❓ Help</span>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="post-cat" value="explaining" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">📖 Explaining</span>
-          </label>
+        <!-- Topic Category Selector (Organized Clean Grid) -->
+        <div class="pt-1 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1">
+              <i data-lucide="tag" class="h-3 w-3 text-slate-500"></i> Category
+            </span>
+            <span id="selected-cat-label" class="text-slate-800 font-bold text-[11px]">💻 Tech &amp; AI</span>
+          </div>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-xs">
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="tech" checked onchange="updateCatLabel('💻 Tech & AI')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>💻</span><span class="truncate">Tech</span>
+              </span>
+            </label>
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="coding" onchange="updateCatLabel('⚡ Coding')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>⚡</span><span class="truncate">Coding</span>
+              </span>
+            </label>
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="webdesign" onchange="updateCatLabel('🎨 Web Design')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>🎨</span><span class="truncate">Design</span>
+              </span>
+            </label>
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="sharing" onchange="updateCatLabel('🎁 Sharing')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>🎁</span><span class="truncate">Sharing</span>
+              </span>
+            </label>
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="help" onchange="updateCatLabel('❓ Help & Q&A')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>❓</span><span class="truncate">Help</span>
+              </span>
+            </label>
+            <label class="cursor-pointer select-none">
+              <input type="radio" name="post-cat" value="explaining" onchange="updateCatLabel('📖 Explaining')" class="peer sr-only" />
+              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
+                <span>📖</span><span class="truncate">Guides</span>
+              </span>
+            </label>
+          </div>
         </div>
 
         <!-- Content Area -->
@@ -298,22 +317,41 @@
           ></textarea>
         </div>
 
-        <!-- Bottom Action Row of Composer -->
-        <div class="flex items-center justify-between pt-2 border-t border-slate-200 flex-wrap gap-2 text-xs">
-          <div class="flex items-center gap-2">
+        <!-- Bottom Action Row of Composer with Auto-Location & Tags -->
+        <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-2 flex-wrap">
             <button
               type="button"
               onclick="toggleCodeBox()"
-              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px]"
+              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px] shadow-2xs"
             >
               <i data-lucide="code-2" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Add Code</span>
             </button>
+
+            <!-- Share Location Button & Auto-Detected Badge -->
+            <button
+              type="button"
+              id="btn-location-toggle"
+              onclick="toggleLocationPrompt()"
+              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px] shadow-2xs"
+              title="Share Location"
+            >
+              <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-600"></i>
+              <span id="btn-location-text">Share Location</span>
+            </button>
+            <span id="composer-location-badge" class="hidden items-center gap-1 text-[11px] font-semibold text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full shadow-2xs">
+              <i data-lucide="map-pin" class="h-3 w-3 text-slate-600"></i>
+              <span id="composer-location-val"></span>
+              <button type="button" onclick="clearLocation(event)" class="text-slate-400 hover:text-slate-900 ml-0.5 text-xs font-bold leading-none cursor-pointer" title="Remove location">&times;</button>
+            </span>
+            <input type="hidden" id="c-post-location" value="" />
+
             <input
               id="c-post-tags"
               type="text"
               placeholder="Tags (e.g. #sqlite, #css)"
-              class="bg-white border border-slate-200 rounded-full px-3 py-1 text-[11px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-36 sm:w-48"
+              class="bg-white border border-slate-200 rounded-full px-3 py-1 text-[11px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-32 sm:w-44"
             />
           </div>
 
@@ -321,7 +359,7 @@
             type="button"
             id="btn-publish-post"
             onclick="publishForumPost()"
-            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer border border-slate-900"
+            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer border border-slate-900 ml-auto"
           >
             <i data-lucide="send" class="h-3.5 w-3.5"></i>
             <span>Publish to Forum</span>
@@ -607,6 +645,23 @@
       }
     }
 
+    function formatPostContent(str) {
+      if (!str) return '';
+      // Strip any leaked aggregator metadata or comments URLs
+      let clean = str.replace(/Comments\s+URL:\s*https?:\/\/[^\s]+/gi, '')
+                     .replace(/Article\s+URL:\s*https?:\/\/[^\s]+/gi, '')
+                     .replace(/Points:\s*\d+/gi, '')
+                     .replace(/#\s*Comments:\s*\d+/gi, '')
+                     .replace(/https?:\/\/news\.ycombinator\.com[^\s]*/gi, '')
+                     .trim();
+
+      const escaped = escapeHtml(clean);
+      const urlRegex = /(https?:\/\/[^\s<]+)/g;
+      return escaped.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-slate-900 font-semibold underline underline-offset-2 hover:text-slate-600 break-all [overflow-wrap:anywhere]">${url}</a>`;
+      });
+    }
+
     function renderPostCard(p) {
       const catBadges = {
         tech: { label: 'Tech & AI', emoji: '💻', color: 'text-slate-700 bg-slate-100 border-slate-200' },
@@ -621,35 +676,41 @@
       const formattedDate = formatTime(p.created_at);
 
       return `
-        <article class="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition p-5 space-y-3.5 group shadow-xs">
+        <article class="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition p-4 sm:p-5 space-y-3.5 group shadow-xs max-w-full overflow-hidden">
           <!-- Post Author Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-            <div class="flex items-center gap-2.5">
-              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200" onerror="this.src='/raccoon-logo.png';" />
-              <div>
-                <div class="flex items-center gap-1.5 leading-none">
-                  <span class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
-                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-1 py-0.2 rounded">MEMBER</span>'}
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 flex-wrap gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" onerror="this.src='/raccoon-logo.png';" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 leading-none flex-wrap">
+                  <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
+                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded shrink-0">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-1 py-0.2 rounded shrink-0">MEMBER</span>'}
+                  ${p.location ? `
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shrink-0" title="Posted from ${escapeHtml(p.location)}">
+                      <i data-lucide="map-pin" class="h-2.5 w-2.5 text-slate-500 shrink-0"></i>
+                      <span class="truncate max-w-[120px] sm:max-w-[200px]">${escapeHtml(p.location)}</span>
+                    </span>
+                  ` : ''}
                 </div>
                 <div class="text-[10px] text-slate-500 mt-1 font-mono">${formattedDate}</div>
               </div>
             </div>
 
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${cat.color}">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${cat.color} shrink-0">
               <span>${cat.emoji}</span>
               <span>${cat.label}</span>
             </span>
           </div>
 
           <!-- Post Title -->
-          <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug">
+          <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug break-words max-w-full">
             ${escapeHtml(p.title)}
           </h2>
 
-          <!-- Post Body Content -->
-          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-            ${escapeHtml(p.content)}
-          </p>
+          <!-- Post Body Content (Strict Boundaries - never exceeds chenar) -->
+          <div class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line break-words break-all [overflow-wrap:anywhere] max-w-full overflow-hidden">
+            ${formatPostContent(p.content)}
+          </div>
 
           <!-- Code Snippet Block (If Provided) -->
           ${p.code_snippet ? `
@@ -775,7 +836,7 @@
                 <span class="font-bold text-slate-900">${escapeHtml(c.author_name || 'Owl')}</span>
                 <span class="text-[10px] text-slate-500 font-mono">${formatTime(c.created_at)}</span>
               </div>
-              <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(c.content)}</p>
+              <p class="text-xs text-slate-600 leading-relaxed break-words break-all [overflow-wrap:anywhere] max-w-full overflow-hidden">${formatPostContent(c.content)}</p>
             </div>
           </div>
         `).join('');
@@ -850,6 +911,7 @@
       const codeSnippet = document.getElementById('c-post-code')?.value?.trim() || '';
       const codeLang = document.getElementById('c-post-lang')?.value || 'javascript';
       const tags = document.getElementById('c-post-tags')?.value?.trim() || '';
+      const location = document.getElementById('c-post-location')?.value?.trim() || userLocation || '';
       const categoryRadio = document.querySelector('input[name="post-cat"]:checked');
       const category = categoryRadio ? categoryRadio.value : 'tech';
 
@@ -875,7 +937,8 @@
             content,
             code_snippet: codeSnippet,
             code_lang: codeLang,
-            tags
+            tags,
+            location
           })
         });
         const data = await res.json();
@@ -899,6 +962,121 @@
           if (window.lucide) lucide.createIcons();
         }
       }
+    }
+
+    // Auto-Location Detection & Management
+    let userLocation = '';
+
+    async function autoDetectLocation() {
+      try {
+        const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+          const d = await res.json();
+          if (d && (d.city || d.country_name)) {
+            const loc = d.city ? `${d.city}, ${d.country_code || d.country_name}` : d.country_name;
+            applyLocation(loc);
+            return loc;
+          }
+        }
+      } catch (_) {}
+
+      try {
+        const res2 = await fetch('https://api.country.is/', { signal: AbortSignal.timeout(2000) });
+        if (res2.ok) {
+          const d2 = await res2.json();
+          if (d2 && d2.country) {
+            applyLocation(d2.country);
+            return d2.country;
+          }
+        }
+      } catch (_) {}
+
+      return '';
+    }
+
+    function applyLocation(loc) {
+      if (!loc) return;
+      userLocation = loc;
+      const input = document.getElementById('c-post-location');
+      const badge = document.getElementById('composer-location-badge');
+      const val = document.getElementById('composer-location-val');
+      const btn = document.getElementById('btn-location-toggle');
+      const btnText = document.getElementById('btn-location-text');
+
+      if (input) input.value = loc;
+      if (val) val.textContent = loc;
+      if (badge) {
+        badge.classList.remove('hidden');
+        badge.classList.add('inline-flex');
+      }
+      if (btn) {
+        btn.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-900');
+        if (btnText) btnText.textContent = 'Location Active';
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function clearLocation(e) {
+      if (e) e.stopPropagation();
+      userLocation = '';
+      const input = document.getElementById('c-post-location');
+      const badge = document.getElementById('composer-location-badge');
+      const btn = document.getElementById('btn-location-toggle');
+      const btnText = document.getElementById('btn-location-text');
+
+      if (input) input.value = '';
+      if (badge) {
+        badge.classList.add('hidden');
+        badge.classList.remove('inline-flex');
+      }
+      if (btn) {
+        btn.classList.remove('bg-slate-100', 'border-slate-300', 'text-slate-900');
+        if (btnText) btnText.textContent = 'Share Location';
+      }
+    }
+
+    async function toggleLocationPrompt() {
+      const input = document.getElementById('c-post-location');
+      if (input && input.value) {
+        if (confirm(`Current location attached: "${input.value}".\n\nClick OK to update with exact GPS coordinates, or Cancel to remove location.`)) {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+              try {
+                const { latitude, longitude } = pos.coords;
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                if (geoRes.ok) {
+                  const geoData = await geoRes.json();
+                  const city = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.county || '';
+                  const country = geoData.address.country || '';
+                  const loc = city ? `${city}, ${country}` : country;
+                  if (loc) {
+                    applyLocation(loc);
+                    showToast('Location updated: ' + loc);
+                    return;
+                  }
+                }
+              } catch (_) {}
+            });
+          }
+        } else {
+          clearLocation();
+        }
+      } else {
+        const loc = await autoDetectLocation();
+        if (loc) {
+          showToast('Location attached: ' + loc);
+        } else {
+          const manual = prompt('Enter your City, Country to attach to this post:', 'Bucharest, Romania');
+          if (manual && manual.trim()) {
+            applyLocation(manual.trim());
+          }
+        }
+      }
+    }
+
+    function updateCatLabel(label) {
+      const el = document.getElementById('selected-cat-label');
+      if (el) el.textContent = label;
     }
 
     // Copy Code Helper
@@ -950,6 +1128,7 @@
     window.addEventListener('DOMContentLoaded', async () => {
       await checkAuthSession();
       await loadForumPosts();
+      autoDetectLocation(); // Automatically detect client location for forum sharing
       if (window.lucide) lucide.createIcons();
     });
   </script>

@@ -47,6 +47,19 @@ html.theme-midnight-green, body.theme-midnight-green {
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
+  overflow-wrap: anywhere;
+}
+
+/* Universal text & link boundaries protection - prevents any text/links from exceeding boxes */
+p, span, h1, h2, h3, h4, h5, h6, label, div, td, th, article, section {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 html, body {

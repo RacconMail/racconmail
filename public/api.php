@@ -2150,6 +2150,17 @@ try {
         )");
     } catch (Throwable $e) {}
 
+    // Ensure location column exists and clean any external aggregator URLs from existing posts
+    try {
+        $db->exec("ALTER TABLE forum_posts ADD COLUMN location TEXT DEFAULT ''");
+    } catch (Throwable $e) {}
+
+    try {
+        $db->exec("UPDATE forum_posts SET content = trim(substr(content, 1, instr(content, 'Comments URL:') - 1)) WHERE content LIKE '%Comments URL:%'");
+        $db->exec("UPDATE forum_posts SET content = trim(substr(content, 1, instr(content, 'https://news.ycombinator.com') - 1)) WHERE content LIKE '%https://news.ycombinator.com%'");
+        $db->exec("UPDATE forum_posts SET location = 'Bucharest, Romania' WHERE location IS NULL OR location = ''");
+    } catch (Throwable $e) {}
+
     // Auto-seed initial developer & designer discussions if table is empty
     $forumCount = 0;
     try {
@@ -2382,6 +2393,10 @@ try {
         $codeLang = trim($input['code_lang'] ?? 'javascript');
         $imageUrl = trim($input['image_url'] ?? '');
         $tags = trim($input['tags'] ?? '');
+        $location = trim($input['location'] ?? '');
+        if (empty($location)) {
+            $location = 'Bucharest, Romania';
+        }
 
         if (!$title || !$content) {
             http_response_code(400);
@@ -2393,8 +2408,8 @@ try {
         if (!in_array($category, $validCats)) $category = 'tech';
 
         $postId = 'post_' . uniqid();
-        $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");
-        $stmt->execute([$postId, $currentUserId, $title, $category, $content, $codeSnippet, $codeLang, $imageUrl, $tags]);
+        $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, location, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");
+        $stmt->execute([$postId, $currentUserId, $title, $category, $content, $codeSnippet, $codeLang, $imageUrl, $tags, $location]);
 
         echo json_encode([
             'success' => true,

@@ -308,6 +308,13 @@ class UpdateEngine
                 $rawDesc = trim((string)($item->description ?? ''));
                 $cleanContent = trim(strip_tags(html_entity_decode($rawDesc, ENT_QUOTES | ENT_HTML5, 'UTF-8')));
 
+                // Strip any external aggregator links, comments URL, or source leaks
+                $cleanContent = preg_replace('/Comments\s+URL:\s*https?:\/\/[^\s]+/i', '', $cleanContent);
+                $cleanContent = preg_replace('/Article\s+URL:\s*https?:\/\/[^\s]+/i', '', $cleanContent);
+                $cleanContent = preg_replace('/Points:\s*\d+/i', '', $cleanContent);
+                $cleanContent = preg_replace('/#\s*Comments:\s*\d+/i', '', $cleanContent);
+                $cleanContent = trim($cleanContent);
+
                 if (mb_strlen($cleanContent) < 30) {
                     $cleanContent = "Let's explore and discuss {$cleanTitle}. What are your experiences, architecture tradeoffs, and recommended approaches in production environments? Would love to hear your insights!";
                 }
@@ -340,12 +347,38 @@ class UpdateEngine
 
                 $tags = '#' . $cat . ', #tech, #engineering';
 
+                // Assign automatic nocturnal hub location
+                $hubLocations = [
+                    'Bucharest, Romania',
+                    'Cluj-Napoca, Romania',
+                    'Timisoara, Romania',
+                    'Zurich, Switzerland',
+                    'Berlin, Germany',
+                    'Amsterdam, Netherlands',
+                    'Vienna, Austria',
+                    'Stockholm, Sweden',
+                    'Helsinki, Finland',
+                    'London, UK',
+                    'Dublin, Ireland',
+                    'Oslo, Norway',
+                    'Copenhagen, Denmark',
+                    'Prague, Czech Republic',
+                    'Tallinn, Estonia',
+                    'Tokyo, Japan'
+                ];
+                $postLocation = $hubLocations[array_rand($hubLocations)];
+
+                // Ensure location column exists
+                try {
+                    $this->db->exec("ALTER TABLE forum_posts ADD COLUMN location TEXT DEFAULT ''");
+                } catch (\Throwable $e) {}
+
                 // Insert into forum_posts
                 $insPost = $this->db->prepare("
-                    INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, '', ?, 1, 0, datetime('now'))
+                    INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, location, likes_count, comments_count, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, '', ?, ?, 1, 0, datetime('now'))
                 ");
-                $insPost->execute([$postId, $userId, $cleanTitle, $cat, $cleanContent, $codeSnippet, $codeLang, $tags]);
+                $insPost->execute([$postId, $userId, $cleanTitle, $cat, $cleanContent, $codeSnippet, $codeLang, $tags, $postLocation]);
 
                 // Insert 1-2 thoughtful nocturnal replies
                 $replyAuthor = $responderHandles[array_rand($responderHandles)];
