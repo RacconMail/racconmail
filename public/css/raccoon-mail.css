@@ -11,71 +11,74 @@
    2. Clean White Glass (Dribbble/Jarmel Light Theme)
    ========================================================================== */
 
-/* 1. DARK GLASS THEME (DEFAULT / DARK MODE) */
+/* ==========================================================================
+   PURE CLEAN BUBBLE WHITE DESIGN SYSTEM (DEFAULT & PRIMARY)
+   ========================================================================== */
 :root,
-html.dark, body.dark,
-html.theme-dark, body.theme-dark {
-  --background: #050D1E;
-  --foreground: #F8FAFC;
-  --card: #0A162C;
-  --card-alt: #0E1D3A;
-  --card-foreground: #F8FAFC;
-  --primary: #38BDF8;
-  --primary-hover: #0EA5E9;
-  --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(56, 189, 248, 0.35);
-  --secondary: #0F1E38;
-  --secondary-foreground: #F8FAFC;
-  --secondary-hover: #162B50;
-  --muted: rgba(255, 255, 255, 0.08);
-  --muted-foreground: #94A3B8;
-  --accent: #1D4ED8;
-  --accent-foreground: #38BDF8;
-  --accent-pink: #EC4899;
-  --border: rgba(255, 255, 255, 0.12);
-  --border-light: rgba(255, 255, 255, 0.06);
-  --mask: #050D1E;
-  --fur: #38BDF8;
-  --cream: #0A162C;
-  --themewidget-radius: 16px;
-  --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(14, 165, 233, 0.1);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --stamp-red: #EF4444;
-  --stamp-blue: #38BDF8;
-}
-
-/* 2. LIGHT GLASS THEME (CLEAN WHITE / LIGHT MODE) */
+html, body,
 html.theme-light, body.theme-light,
 html:not(.dark), body:not(.dark) {
-  --background: #F1F5F9;
-  --foreground: #0F172A;
+  --background: #FFFFFF;
+  --foreground: #18181B;
   --card: #FFFFFF;
-  --card-alt: #F8FAFC;
-  --card-foreground: #0F172A;
-  --primary: #2563EB;
-  --primary-hover: #1D4ED8;
+  --card-alt: #F4F4F5;
+  --card-foreground: #18181B;
+  --primary: #18181B;
+  --primary-hover: #09090B;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(37, 99, 235, 0.2);
-  --secondary: #F8FAFC;
-  --secondary-foreground: #0F172A;
-  --secondary-hover: #E2E8F0;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #EBF2FE;
-  --accent-foreground: #2563EB;
-  --accent-pink: #DB2777;
-  --border: #E2E8F0;
-  --border-light: #F1F5F9;
-  --mask: #0F172A;
-  --fur: #2563EB;
+  --primary-glow: rgba(24, 24, 27, 0.15);
+  --secondary: #F4F4F5;
+  --secondary-foreground: #18181B;
+  --secondary-hover: #E4E4E7;
+  --muted: #F4F4F5;
+  --muted-foreground: #71717A;
+  --accent: #F4F4F5;
+  --accent-foreground: #18181B;
+  --accent-pink: #FF4D6D;
+  --border: #E4E4E7;
+  --border-light: #F4F4F5;
+  --mask: #18181B;
+  --fur: #18181B;
   --cream: #FFFFFF;
   --themewidget-radius: 16px;
   --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(37, 99, 235, 0.05);
-  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.06);
-  --stamp-red: #EF4444;
-  --stamp-blue: #2563EB;
+  --shadow-soft: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+  --stamp-red: #FF4D6D;
+  --stamp-blue: #18181B;
+}
+
+/* Optional Dark fallback strictly isolated to html.dark */
+html.dark, body.dark,
+html.theme-dark, body.theme-dark {
+  --background: #090D16;
+  --foreground: #F8FAFC;
+  --card: #0F172A;
+  --card-alt: #1E293B;
+  --card-foreground: #F8FAFC;
+  --primary: #FFFFFF;
+  --primary-hover: #F1F5F9;
+  --primary-foreground: #090D16;
+  --primary-glow: rgba(255, 255, 255, 0.2);
+  --secondary: #1E293B;
+  --secondary-foreground: #F8FAFC;
+  --secondary-hover: #334155;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #1E293B;
+  --accent-foreground: #FFFFFF;
+  --accent-pink: #FF4D6D;
+  --border: #334155;
+  --border-light: #1E293B;
+  --mask: #090D16;
+  --fur: #FFFFFF;
+  --cream: #0F172A;
+  --themewidget-radius: 16px;
+  --btn-radius: 50px;
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --stamp-red: #FF4D6D;
+  --stamp-blue: #38BDF8;
 }
 
 * {
@@ -1379,16 +1382,16 @@ header {
   box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 4px 18px rgba(14, 165, 233, 0.25) !important;
 }
 
-/* 5. Minimalist Dark Dropdowns & Modals */
+/* 5. Clean White Dropdowns & Modals */
 #search-suggestions-dropdown,
 #advanced-search-dropdown,
 #account-dropdown,
 #reader-more-dropdown,
 .unique-email-card {
-  background: #0B1120 !important;
-  border: 1px solid rgba(56, 189, 248, 0.2) !important;
-  box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(14, 165, 233, 0.15) !important;
-  color: #F8FAFC !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E4E4E7 !important;
+  box-shadow: 0 20px 48px -6px rgba(15, 23, 42, 0.1) !important;
+  color: #18181B !important;
 }
 
 /* 6. Mobile Floating Capsule Bar */

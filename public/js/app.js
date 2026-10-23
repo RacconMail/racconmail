@@ -4199,57 +4199,38 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   normalizeTheme(t) {
-    return t === 'light' ? 'light' : 'dark';
+    return 'light';
   },
 
   toggleTheme() {
-    const current = this.normalizeTheme(localStorage.getItem('raccon_theme') || 'dark');
-    const next = current === 'dark' ? 'light' : 'dark';
-    this.setTheme(next, true);
+    this.setTheme('light', true);
   },
 
   setTheme(themeName, persist = false) {
-    const canonicalTheme = this.normalizeTheme(themeName);
-    const def = this.themeDefinitions[canonicalTheme];
+    const canonicalTheme = 'light';
+    const def = this.themeDefinitions.light;
 
-    // 1. Update document and body classes cleanly
+    // Remove any dark classes
     const allThemeClasses = ['light', 'dark', 'midnight-green', 'raccon', 'harmony', 'midnight', 'forest', 'cyber', 'theme-dark', 'theme-light'];
     allThemeClasses.forEach(t => {
       document.documentElement.classList.remove(t, 'theme-' + t);
       if (document.body) document.body.classList.remove(t, 'theme-' + t);
     });
 
-    if (canonicalTheme === 'dark') {
-      document.documentElement.classList.add('dark', 'theme-dark');
-      if (document.body) document.body.classList.add('dark', 'theme-dark', 'jarmel-body');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('theme-light');
-      if (document.body) document.body.classList.add('theme-light', 'jarmel-body');
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('theme-light');
+    if (document.body) {
+      document.body.classList.remove('dark');
+      document.body.classList.add('theme-light');
     }
 
-    // 2. Set colorScheme for OS native controls
-    document.documentElement.style.colorScheme = canonicalTheme;
+    document.documentElement.style.colorScheme = 'light';
 
-    // 3. Set custom variables
     for (const [k, v] of Object.entries(def.vars)) {
       document.documentElement.style.setProperty(k, v);
     }
 
-    // 4. Update Sun/Moon icons on all toggle buttons
-    const sunIcons = document.querySelectorAll('.app-theme-sun');
-    const moonIcons = document.querySelectorAll('.app-theme-moon');
-    sunIcons.forEach(icon => {
-      if (canonicalTheme === 'dark') icon.classList.remove('hidden');
-      else icon.classList.add('hidden');
-    });
-    moonIcons.forEach(icon => {
-      if (canonicalTheme === 'dark') icon.classList.add('hidden');
-      else icon.classList.remove('hidden');
-    });
-
-    // 5. Store in localStorage
-    localStorage.setItem('raccon_theme', canonicalTheme);
+    localStorage.setItem('raccon_theme', 'light');
 
     // 6. Highlight active theme button
     this.highlightActiveTheme(canonicalTheme);

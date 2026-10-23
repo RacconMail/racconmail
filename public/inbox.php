@@ -42,16 +42,12 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
-  <!-- Early Theme Initializer (Default: Clean Modern Bubble White) -->
+  <!-- Early Theme Initializer (Strictly Light Bubble White) -->
   <script>
     (function() {
-      const saved = localStorage.getItem('raccon_theme') || 'light';
-      const canonical = (saved === 'dark') ? 'dark' : 'light';
-      if (canonical === 'dark') {
-        document.documentElement.className = 'dark theme-dark';
-      } else {
-        document.documentElement.className = 'theme-light';
-      }
+      localStorage.setItem('raccon_theme', 'light');
+      document.documentElement.className = 'theme-light';
+      document.documentElement.classList.remove('dark', 'theme-dark');
     })();
   </script>
 
@@ -116,59 +112,41 @@ if (empty($_SESSION['current_user_id'])) {
     }
   </style>
 </head>
-<body class="bubble-canvas text-slate-900 flex flex-col h-screen relative select-none overflow-hidden p-2 sm:p-3 md:p-5">
+<body class="bg-white text-slate-900 flex flex-col h-screen w-screen relative select-none overflow-hidden m-0 p-0">
 
-  <!-- THE FLOATING BUBBLE WINDOW SHELL -->
-  <div class="bubble-window flex-1 flex flex-col h-full w-full relative overflow-hidden">
+  <!-- TOP APP BAR (EDGE-TO-EDGE, NO LOGO, NO THEME BUTTON) -->
+  <header class="h-14 border-b border-slate-100 bg-white flex items-center justify-between px-6 shrink-0 z-20">
+    <!-- Left: Brand Text & Sidebar Toggle (NO LOGO) -->
+    <div class="flex items-center gap-3">
+      <span class="font-bold text-lg tracking-tight text-slate-900">Raccon</span>
+      <button onclick="app.toggleMobileSidebar()" class="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition cursor-pointer" title="Toggle Sidebar">
+        <i data-lucide="panel-left" class="h-4 w-4"></i>
+      </button>
+    </div>
 
-    <!-- TOP APP BAR -->
-    <header class="bubble-top-bar">
-      <!-- Left: Logo & Navigation Toggle -->
-      <div class="flex items-center gap-3">
-        <div class="h-8 w-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs">
-          <img src="/raccoon-logo.png" alt="Raccon" class="h-5 w-5 object-contain invert brightness-200" />
-        </div>
-        <span class="font-bold text-base tracking-tight text-slate-900">Raccon</span>
-        <button onclick="app.toggleMobileSidebar()" class="ml-2 p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Toggle Sidebar">
-          <i data-lucide="panel-left" class="h-4 w-4"></i>
-        </button>
-      </div>
+    <!-- Center: View Title -->
+    <div class="hidden sm:flex items-center gap-2">
+      <h1 id="current-folder-title" class="text-base font-bold text-slate-900">All Mail</h1>
+      <p id="current-folder-subtitle" class="hidden"></p>
+      <button id="empty-folder-btn" class="hidden"></button>
+    </div>
 
-      <!-- Center / Left: Current View Title -->
-      <div class="hidden sm:flex items-center gap-2">
-        <h1 id="current-folder-title" class="text-lg font-bold tracking-tight text-slate-900">All Mail</h1>
-        <p id="current-folder-subtitle" class="hidden"></p>
-        <button id="empty-folder-btn" class="hidden"></button>
-      </div>
+    <!-- Right: ONLY Compose Button (NO THEME BUTTON) -->
+    <div class="flex items-center gap-2">
+      <button
+        onclick="app.openCompose()"
+        id="btn-top-compose"
+        class="bubble-compose-pill"
+        title="Compose Message"
+      >
+        <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+        <span>Compose</span>
+      </button>
+    </div>
+  </header>
 
-      <!-- Right: Action Buttons -->
-      <div class="flex items-center gap-2">
-        <!-- Compose Button (Black Capsule / Pill) -->
-        <button
-          onclick="app.openCompose()"
-          id="btn-top-compose"
-          class="bubble-compose-pill"
-          title="Compose Message"
-        >
-          <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
-          <span>Compose</span>
-        </button>
-
-        <!-- Secondary Outline Pill: Theme Switcher -->
-        <button
-          onclick="app.toggleTheme()"
-          class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2 text-xs font-semibold transition cursor-pointer shadow-2xs"
-          title="Toggle Theme"
-        >
-          <i data-lucide="sun" class="app-theme-sun h-3.5 w-3.5 text-amber-500"></i>
-          <i data-lucide="moon" class="app-theme-moon h-3.5 w-3.5 text-sky-500 hidden"></i>
-          <span class="text-xs">Theme</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- MAIN 3-COLUMN WORKSPACE -->
-    <div class="flex-1 flex overflow-hidden min-h-0 relative">
+  <!-- MAIN 3-COLUMN WORKSPACE (EDGE-TO-EDGE) -->
+  <div class="flex-1 flex overflow-hidden min-h-0 relative bg-white">
 
       <!-- 1. NAVIGATION SIDEBAR -->
       <aside id="sidebar-panel" class="sidebar fixed inset-y-0 left-0 z-50 w-64 bg-white transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-200 ease-in-out shrink-0 flex flex-col border-r border-slate-100 p-3 overflow-y-auto select-none shadow-xl md:shadow-none">
@@ -412,17 +390,15 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </div>
       </main>
-      </div>
     </div>
-  </div>
 
-  <!-- FLOATING CAPSULE BOTTOM BAR (List Menu & Compose Pencil Only - No Search on Mobile) -->
-  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#080D1C]/95 backdrop-blur-md text-white px-8 py-3 rounded-full shadow-2xl flex items-center gap-10 border border-sky-500/30 safe-area-bottom select-none">
-    <button onclick="app.toggleMobileSidebar()" class="text-sky-300 hover:text-white transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="All Folders (List)">
-      <i data-lucide="list" class="h-6 w-6 text-sky-400"></i>
+  <!-- FLOATING CAPSULE BOTTOM BAR (MOBILE ONLY) -->
+  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-7 py-2.5 rounded-full shadow-2xl flex items-center gap-8 border border-slate-700 safe-area-bottom select-none">
+    <button onclick="app.toggleMobileSidebar()" class="text-white hover:text-slate-200 transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="All Folders (List)">
+      <i data-lucide="list" class="h-5 w-5 text-white"></i>
     </button>
-    <button onclick="app.openCompose()" class="text-sky-300 hover:text-white transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="Compose New Message (Pencil)">
-      <i data-lucide="pencil" class="h-5.5 w-5.5 text-sky-400"></i>
+    <button onclick="app.openCompose()" class="text-white hover:text-slate-200 transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="Compose New Email">
+      <i data-lucide="edit-3" class="h-5 w-5 text-white"></i>
     </button>
   </nav>
 
