@@ -284,27 +284,27 @@ const app = {
             "items": [
                   {
                         "title": "Next-Gen Stealth Chips Deliver 10x On-Device Encryption",
-                        "source": "TechCrunch",
+                        "source": "Raccon News",
                         "time": "2m ago",
                         "desc": "Hardware isolation prevents memory scraping & data harvesting.",
                         "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://techcrunch.com/category/security/"
+                        "link": "/news"
                   },
                   {
                         "title": "Open-Source AI Models Challenge Big Tech Monopolies",
-                        "source": "The Verge",
+                        "source": "Raccon News",
                         "time": "14m ago",
                         "desc": "Decentralized models put full control back in developers' hands.",
                         "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.theverge.com/ai-artificial-intelligence"
+                        "link": "/news"
                   },
                   {
                         "title": "Global Cyber Treaties Move Toward Universal End-to-End Encryption",
-                        "source": "BBC News",
+                        "source": "Raccon News",
                         "time": "52m ago",
                         "desc": "Privacy coalition declares client-side zero-knowledge encryption a human right.",
                         "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.bbc.com/news/technology"
+                        "link": "/news"
                   }
             ]
       },
@@ -316,27 +316,27 @@ const app = {
             "items": [
                   {
                         "title": "European Union Finalizes Ambitious Clean Energy Supergrid",
-                        "source": "BBC News",
+                        "source": "Raccon News",
                         "time": "15m ago",
                         "desc": "Interconnected wind and solar arrays share power across 14 nations.",
                         "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.bbc.com/news/world"
+                        "link": "/news"
                   },
                   {
                         "title": "Global Markets Rally as Tech Innovations Spur Manufacturing",
-                        "source": "Reuters",
+                        "source": "Raccon News",
                         "time": "38m ago",
                         "desc": "Lower energy costs drive positive quarterly trade volumes.",
                         "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.reuters.com/business/"
+                        "link": "/news"
                   },
                   {
                         "title": "Green Hydrogen Pipeline Network Commences Construction in North Sea",
-                        "source": "Bloomberg",
+                        "source": "Raccon News",
                         "time": "1h ago",
                         "desc": "Multi-billion euro infrastructure to replace fossil fuels in steel making.",
                         "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.bloomberg.com/markets"
+                        "link": "/news"
                   }
             ]
       },
@@ -348,27 +348,27 @@ const app = {
             "items": [
                   {
                         "title": "Champions League Night Clashes Deliver Dramatic Late Winners",
-                        "source": "ESPN",
+                        "source": "Raccon News",
                         "time": "3m ago",
                         "desc": "Extra-time heroics seal quarterfinal spots under stadium lights.",
                         "image": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.espn.com/soccer/"
+                        "link": "/news"
                   },
                   {
                         "title": "Global Marathon Records Shattered in Historic Night Race",
-                        "source": "Sky Sports",
+                        "source": "Raccon News",
                         "time": "18m ago",
                         "desc": "Crisp cool 12°C nocturnal air fuels historic distance times in Berlin.",
                         "image": "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.skysports.com/football"
+                        "link": "/news"
                   },
                   {
                         "title": "Midnight Street Basketball Tournaments Surge in Popularity",
-                        "source": "BBC Sport",
+                        "source": "Raccon News",
                         "time": "42m ago",
                         "desc": "Local city courts light up with intense 3-on-3 showdowns and DJ sets.",
                         "image": "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.bbc.com/sport"
+                        "link": "/news"
                   }
             ]
       },
@@ -380,27 +380,27 @@ const app = {
             "items": [
                   {
                         "title": "Nocturnal RPG 'Shadow Bandit' Announced for PC & Consoles",
-                        "source": "IGN",
+                        "source": "Raccon News",
                         "time": "5m ago",
                         "desc": "Play as a masked woodland creature solving midnight bakery mysteries.",
                         "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.ign.com/"
+                        "link": "/news"
                   },
                   {
                         "title": "Global Esports Grand Finals Break Viewership Milestones",
-                        "source": "GameSpot",
+                        "source": "Raccon News",
                         "time": "21m ago",
                         "desc": "Over 4.9 million concurrent viewers tune into intense nocturnal decider.",
                         "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.gamespot.com/"
+                        "link": "/news"
                   },
                   {
                         "title": "Next-Gen Handheld Update Boosts OLED Contrast & Battery",
-                        "source": "PC Gamer",
+                        "source": "Raccon News",
                         "time": "44m ago",
                         "desc": "Firmware optimization extends portable gameplay sessions by 2 full hours.",
                         "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.pcgamer.com/"
+                        "link": "/news"
                   }
             ]
       },
@@ -412,27 +412,27 @@ const app = {
             "items": [
                   {
                         "title": "James Webb Telescope Captures Atmospheric Chemistry of Exoplanet",
-                        "source": "NASA",
+                        "source": "Raccon News",
                         "time": "12m ago",
                         "desc": "Spectroscopic readings detect water vapor and carbon clouds in habitable zone.",
                         "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.nasa.gov/"
+                        "link": "/news"
                   },
                   {
                         "title": "Deep Ocean Expedition Uncovers Glowing Bioluminescent Ecosystems",
-                        "source": "National Geographic",
+                        "source": "Raccon News",
                         "time": "35m ago",
                         "desc": "Submersibles document never-before-seen deep trench marine species.",
                         "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.nationalgeographic.com/"
+                        "link": "/news"
                   },
                   {
                         "title": "Room-Temperature Superconductivity Synthesized in Crystal Matrix",
-                        "source": "Nature",
+                        "source": "Raccon News",
                         "time": "1h ago",
                         "desc": "New ambient pressure material conduct electricity with zero resistance.",
                         "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.nature.com/"
+                        "link": "/news"
                   }
             ]
       },
@@ -444,27 +444,27 @@ const app = {
             "items": [
                   {
                         "title": "Midnight Lo-Fi Beats Stream Surpasses 1B Hours Worldwide",
-                        "source": "Billboard",
+                        "source": "Raccon News",
                         "time": "4m ago",
                         "desc": "Night owls and study groups make ambient chillhop the top stream.",
                         "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.billboard.com/"
+                        "link": "/news"
                   },
                   {
                         "title": "Underground Synthwave Album Climbs Global Vinyl Charts",
-                        "source": "Rolling Stone",
+                        "source": "Raccon News",
                         "time": "24m ago",
                         "desc": "Retro 80s analog synthesizers captivate night drivers worldwide.",
                         "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.rollingstone.com/music/"
+                        "link": "/news"
                   },
                   {
                         "title": "Acoustic Forest Sessions Recorded Under Moonlight Goes Viral",
-                        "source": "Pitchfork",
+                        "source": "Raccon News",
                         "time": "49m ago",
                         "desc": "Natural woodland acoustics bring intimate folk guitar tracks to life.",
                         "image": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://pitchfork.com/"
+                        "link": "/news"
                   }
             ]
       },
@@ -476,27 +476,27 @@ const app = {
             "items": [
                   {
                         "title": "Night Sky Clarity: 98% (Exceptional Star Visibility Across Europe)",
-                        "source": "AccuWeather",
+                        "source": "Raccon News",
                         "time": "Live radar",
                         "desc": "Crisp atmospheric pressure; ideal for nocturnal stargazing.",
                         "image": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.accuweather.com/"
+                        "link": "/news"
                   },
                   {
                         "title": "Moon Phase: Waxing Gibbous (84% Illuminated Night Glow)",
-                        "source": "Astronomical Observatory",
+                        "source": "Raccon News",
                         "time": "Astronomical",
                         "desc": "Gentle natural silver moonlight over European burrows and cities.",
                         "image": "https://images.unsplash.com/photo-1532767153582-b1a0e5145009?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.timeanddate.com/astronomy/"
+                        "link": "/news"
                   },
                   {
                         "title": "Northern Aurora Borealis Visible in Upper Latitudes Tonight",
-                        "source": "NOAA Space Weather",
+                        "source": "Raccon News",
                         "time": "Live Alert",
                         "desc": "Solar wind geomagnetic index generates dancing emerald curtains.",
                         "image": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=600&q=80",
-                        "link": "https://www.swpc.noaa.gov/"
+                        "link": "/news"
                   }
             ]
       }
