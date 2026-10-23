@@ -447,21 +447,6 @@ const newsData = {
       time: '2h ago',
       readTime: '3 min read',
       link: 'https://www.billboard.com/c/music/'
-    },
-    {
-      id: 'music-5',
-      category: 'music',
-      catLabel: 'Music & Audio',
-      catColor: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-      catEmoji: '🎵',
-      source: 'TikTok Spotlight',
-      sourceSlug: 'tiktok',
-      image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80',
-      title: 'Viral Nocturnal Beats & Soundscapes by @canturovibe Surge Across TikTok',
-      desc: 'Discover the hypnotic audio edits, deep beats and atmospheric nocturnal soundscapes curated by @canturovibe on TikTok. Stream the official clips now.',
-      time: 'Just now',
-      readTime: '1 min listen',
-      link: 'https://www.tiktok.com/@canturovibe'
     }
   ],
   weather: [

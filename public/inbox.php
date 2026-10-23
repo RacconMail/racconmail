@@ -15,7 +15,14 @@ if (empty($_SESSION['current_user_id'])) {
   <meta name="google" content="notranslate" />
   <title>Raccon Mail — Clever email for web & mobile</title>
   <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
-  <link rel="icon" href="/favicon.png" type="image/png" />
+    <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   
   <!-- FontAwesome 6 (Harmony SocialEngine icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -1560,19 +1567,7 @@ if (empty($_SESSION['current_user_id'])) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="/js/app.js"></script>
 
-  <!-- Persistent Floating Music Pill: @canturovibe on TikTok -->
-  <div id="canturovibe-floating-pill" class="fixed bottom-4 right-4 z-40 hidden sm:flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-black text-white text-xs border border-rose-500/40 shadow-xl backdrop-blur-md transition-all hover:scale-105 group">
-    <span class="flex h-2 w-2 relative">
-      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-      <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-    </span>
-    <i class="fab fa-tiktok text-rose-400 text-sm"></i>
-    <span class="font-medium text-[11px] text-slate-300">Nocturnal Beats: <strong class="text-white font-bold group-hover:text-rose-400 transition">@canturovibe</strong></span>
-    <a href="https://www.tiktok.com/@canturovibe" target="_blank" rel="noopener noreferrer" class="px-2.5 py-0.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold text-[10px] tracking-wide ml-1 transition shadow-xs flex items-center gap-1">
-      <span>Play on TikTok</span>
-      <span>&rarr;</span>
-    </a>
-  </div>
+  
 
 </body>
 </html>

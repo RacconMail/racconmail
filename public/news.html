@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Raccon News Wire — Live 5-Minute Nocturnal News &bull; Tech, Sport, Games, Music, Weather</title>
   
-  <link rel="icon" type="image/png" href="/favicon.png" />
+    <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#080c14" />
   <meta name="description" content="Raccon Nocturnal News Wire — Auto-updating live headlines every 5 minutes syndicated from CBN News across Tech, Sports, Gaming, Music, and Weather." />
@@ -1082,21 +1089,6 @@
       "time": "2h ago",
       "readTime": "3 min read",
       "link": "https://www.billboard.com/c/music/"
-    },
-    {
-      "id": "music-5",
-      "category": "music",
-      "catLabel": "Music & Audio",
-      "catColor": "text-rose-400 bg-rose-500/10 border-rose-500/20",
-      "catEmoji": "🎵",
-      "source": "TikTok Spotlight",
-      "sourceSlug": "tiktok",
-      "image": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80",
-      "title": "Viral Nocturnal Beats & Soundscapes by @canturovibe Surge Across TikTok",
-      "desc": "Discover the hypnotic audio edits, deep beats and atmospheric nocturnal soundscapes curated by @canturovibe on TikTok. Stream the official clips now.",
-      "time": "Just now",
-      "readTime": "1 min listen",
-      "link": "https://www.tiktok.com/@canturovibe"
     }
   ],
   "weather": [
@@ -1165,13 +1157,7 @@
     function renderTicker() {
       const marqueeEl = document.getElementById('ticker-marquee');
       if (!marqueeEl) return;
-      const items = getAllItems();
-      const canturoTicker = `
-        <a href="https://www.tiktok.com/@canturovibe" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-rose-500/25 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white transition cursor-pointer font-bold mr-4 shadow-sm">
-          <span>🎵 TIKTOK SPOTLIGHT: @canturovibe (Viral Beats) &bull; Listen Now &rarr;</span>
-        </a>
-      `;
-      const tickerHtml = canturoTicker + items.map(item => `
+      const items = getAllItems();      const tickerHtml = items.map(item => `
         <span onclick="openQuickReader('${item.id}')" class="inline-flex items-center gap-2 hover:text-emerald-400 transition cursor-pointer">
           <span class="text-amber-400 font-bold">${item.catEmoji} ${item.catLabel.toUpperCase()}:</span>
           <span>${item.title}</span>
