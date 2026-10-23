@@ -102,11 +102,12 @@ const app = {
       }
     });
 
-    // Escape key closes open dropdowns
+    // Escape key closes open dropdowns & profile modal
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         document.getElementById('account-dropdown')?.classList.add('hidden');
         document.getElementById('reader-more-dropdown')?.classList.add('hidden');
+        document.getElementById('profile-modal')?.classList.add('hidden');
       }
     });
   },
@@ -3404,7 +3405,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  // Profile Picture, Cover Photo & Facebook-Style Wall Management
+  // Profile Picture, Cover Photo & Member Wall & Timeline Management
   formatJoinedDate(dateStr) {
     if (!dateStr) return 'Member since Oct 2026';
     const d = new Date(dateStr);
@@ -3534,9 +3535,40 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   // Wall State & Methods
   currentWallPostType: 'status',
+  currentWallView: 'feed',
+  currentWallPosts: [],
   wallPhotoFile: null,
   wallPhotoUrl: '',
   wallLocation: '',
+
+  switchWallView(view = 'feed') {
+    this.currentWallView = view;
+    const feed = document.getElementById('profile-wall-feed');
+    const timeline = document.getElementById('profile-wall-timeline');
+    const btnFeed = document.getElementById('btn-wall-view-feed');
+    const btnTimeline = document.getElementById('btn-wall-view-timeline');
+
+    if (feed) feed.classList.toggle('hidden', view !== 'feed');
+    if (timeline) timeline.classList.toggle('hidden', view !== 'timeline');
+
+    if (btnFeed) {
+      btnFeed.className = view === 'feed'
+        ? 'px-3.5 py-1 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs'
+        : 'px-3.5 py-1 rounded-full text-slate-700 hover:text-slate-900 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer';
+    }
+    if (btnTimeline) {
+      btnTimeline.className = view === 'timeline'
+        ? 'px-3.5 py-1 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs'
+        : 'px-3.5 py-1 rounded-full text-slate-700 hover:text-slate-900 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer';
+    }
+
+    if (view === 'timeline') {
+      this.renderTimeline(this.currentWallPosts);
+    }
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
 
   setWallPostType(type) {
     this.currentWallPostType = type;
@@ -3731,18 +3763,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     feed.innerHTML = `
       <div class="py-8 text-center text-slate-400 flex items-center justify-center gap-2">
         <i data-lucide="loader" class="h-4 w-4 animate-spin"></i>
-        <span>Loading wall updates...</span>
+        <span>Loading updates...</span>
       </div>
     `;
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
 
     try {
       const res = await fetch(`/api/wall/posts?user_id=${encodeURIComponent(targetId)}`);
       const data = await res.json();
       const posts = data.posts || [];
+      this.currentWallPosts = posts;
+
+      const counter = document.getElementById('wall-posts-counter');
+      if (counter) {
+        counter.textContent = `${posts.length} ${posts.length === 1 ? 'update' : 'updates'}`;
+      }
+
       this.renderWallPosts(posts);
+      this.renderTimeline(posts);
     } catch (err) {
-      feed.innerHTML = `<div class="p-4 text-center text-slate-500">Could not load wall posts: ${err.message}</div>`;
+      feed.innerHTML = `<div class="p-4 text-center text-slate-500">Could not load updates: ${err.message}</div>`;
     }
   },
 
@@ -3753,11 +3795,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (!posts || posts.length === 0) {
       feed.innerHTML = `
         <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 space-y-2">
-          <div class="text-3xl">🐾</div>
-          <h4 class="font-bold text-slate-900 text-sm">No wall posts yet</h4>
-          <p class="text-xs text-slate-500 max-w-sm mx-auto">Be the first to share an update, photo, question, or interactive poll on the wall!</p>
+          <i data-lucide="newspaper" class="h-8 w-8 text-slate-400 mx-auto stroke-1"></i>
+          <h4 class="font-bold text-slate-900 text-sm">No updates shared yet</h4>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Be the first to share an update, photo, question, or interactive poll on the timeline!</p>
         </div>
       `;
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch (_) {}
+      }
       return;
     }
 
@@ -3765,12 +3810,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const isOwner = this.currentUser && (p.author_id === this.currentUser.id || p.user_id === this.currentUser.id || this.currentUser.is_admin);
       const formattedDate = new Date(p.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-      // Post Type Badge
+      // Post Type Badge (Consistent Lucide icons)
       const typeBadges = {
-        status: { label: 'Status', icon: '📝' },
-        photo: { label: 'Photo', icon: '📷' },
-        question: { label: 'Question', icon: '❓' },
-        poll: { label: 'Interactive Poll', icon: '📊' }
+        status: { label: 'Status', icon: 'file-text' },
+        photo: { label: 'Photo', icon: 'image' },
+        question: { label: 'Question', icon: 'help-circle' },
+        poll: { label: 'Interactive Poll', icon: 'bar-chart-2' }
       };
       const badge = typeBadges[p.post_type] || typeBadges.status;
 
@@ -3782,7 +3827,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         pollHtml = `
           <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 space-y-2 mt-2">
             <h4 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-              <span>📊</span>
+              <i data-lucide="bar-chart-2" class="h-4 w-4 text-slate-800 shrink-0"></i>
               <span>${this.escapeHtml(p.poll_question || p.content)}</span>
             </h4>
             <div class="space-y-1.5 pt-1">
@@ -3822,7 +3867,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 <div class="flex items-center gap-1.5 leading-none flex-wrap">
                   <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${this.escapeHtml(p.author_name)}</span>
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 border border-slate-200 text-slate-700">
-                    <span>${badge.icon}</span> <span>${badge.label}</span>
+                    <i data-lucide="${badge.icon}" class="h-3 w-3 text-slate-700"></i>
+                    <span>${badge.label}</span>
                   </span>
                 </div>
                 <div class="flex items-center gap-1.5 text-[10px] text-slate-500 mt-1 font-mono">
@@ -3864,9 +3910,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 onclick="app.toggleWallLike('${p.id}')"
                 class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border ${p.has_liked ? 'bg-slate-900 text-white border-slate-900 font-bold' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'}"
               >
-                <span>🐾</span>
+                <i data-lucide="heart" class="h-3.5 w-3.5 ${p.has_liked ? 'text-white fill-white' : 'text-slate-700'}"></i>
                 <span id="wall-like-cnt-${p.id}">${p.likes_count || 0}</span>
-                <span class="text-[11px]">${p.likes_count === 1 ? 'Paw' : 'Paws'}</span>
+                <span class="text-[11px]">${p.likes_count === 1 ? 'Like' : 'Likes'}</span>
               </button>
 
               <button
@@ -3874,7 +3920,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 onclick="app.toggleWallComments('${p.id}')"
                 class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition cursor-pointer"
               >
-                <i data-lucide="message-circle" class="h-3.5 w-3.5 text-slate-600"></i>
+                <i data-lucide="message-square" class="h-3.5 w-3.5 text-slate-600"></i>
                 <span id="wall-comm-cnt-${p.id}">${p.comments_count || 0}</span>
                 <span class="text-[11px]">${p.comments_count === 1 ? 'Comment' : 'Comments'}</span>
               </button>
@@ -3906,6 +3952,105 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         </article>
       `;
     }).join('');
+
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  renderTimeline(posts) {
+    const timeline = document.getElementById('profile-wall-timeline');
+    if (!timeline) return;
+
+    const joinedStr = this.formatJoinedDate(this.currentUser?.created_at);
+
+    let itemsHtml = `
+      <!-- Milestone: Account Inception -->
+      <div class="relative">
+        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
+          <i data-lucide="award" class="h-3 w-3"></i>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-1">
+          <div class="flex items-center justify-between text-[11px] flex-wrap gap-1">
+            <span class="font-bold text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="calendar" class="h-3.5 w-3.5 text-slate-600"></i>
+              <span>Account Inception Milestone</span>
+            </span>
+            <span class="font-mono text-slate-500">${joinedStr}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Joined Raccon Mail nocturnal network. 100% private, tracker-free mailbox registered.
+          </p>
+        </div>
+      </div>
+
+      <!-- Milestone: First Welcome Postcard Sealed -->
+      <div class="relative">
+        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-800 border-2 border-white shadow-xs flex items-center justify-center text-white">
+          <i data-lucide="mail" class="h-3 w-3"></i>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-1">
+          <div class="flex items-center justify-between text-[11px] flex-wrap gap-1">
+            <span class="font-bold text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="h-3.5 w-3.5 text-slate-600"></i>
+              <span>Official Welcome Postcard Received</span>
+            </span>
+            <span class="font-mono text-slate-500">Security Gate</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Anti-phishing security verified. Nocturnal encryption keys active.
+          </p>
+        </div>
+      </div>
+    `;
+
+    if (posts && posts.length > 0) {
+      itemsHtml += posts.map(p => {
+        const d = new Date(p.created_at);
+        const dateFormatted = d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        const typeIcons = {
+          status: 'file-text',
+          photo: 'image',
+          question: 'help-circle',
+          poll: 'bar-chart-2'
+        };
+        const iconName = typeIcons[p.post_type] || 'file-text';
+
+        return `
+          <div class="relative">
+            <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-white shadow-xs flex items-center justify-center text-white">
+              <i data-lucide="${iconName}" class="h-3 w-3"></i>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-2">
+              <div class="flex items-center justify-between text-[11px] flex-wrap gap-1">
+                <div class="flex items-center gap-1.5 font-bold text-slate-900">
+                  <span class="capitalize">${p.post_type}</span>
+                  ${p.location ? `<span class="text-slate-500 font-normal">&bull; <i data-lucide="map-pin" class="inline h-2.5 w-2.5"></i> ${this.escapeHtml(p.location)}</span>` : ''}
+                </div>
+                <span class="font-mono text-slate-500 text-[10px]">${dateFormatted}</span>
+              </div>
+              <p class="text-xs text-slate-800 leading-relaxed whitespace-pre-wrap">${this.escapeHtml(p.poll_question || p.content || 'Photo update')}</p>
+              ${p.image_url ? `
+                <div class="rounded-xl overflow-hidden border border-slate-200 max-h-44">
+                  <img src="${p.image_url}" class="w-full h-auto object-cover max-h-44" />
+                </div>
+              ` : ''}
+              <div class="flex items-center gap-3 text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+                <span class="flex items-center gap-1"><i data-lucide="heart" class="h-3 w-3 text-slate-600"></i> ${p.likes_count || 0} Likes</span>
+                <span class="flex items-center gap-1"><i data-lucide="message-square" class="h-3 w-3 text-slate-600"></i> ${p.comments_count || 0} Comments</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    timeline.innerHTML = `
+      <div class="relative pl-6 sm:pl-8 ml-3 sm:ml-4 border-l-2 border-slate-300 space-y-5 py-2">
+        ${itemsHtml}
+      </div>
+    `;
 
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}

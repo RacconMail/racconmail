@@ -1214,28 +1214,13 @@ header img[src*="raccoon-logo"]:hover {
 }
 
 /* =======================================================
-   WEB APP EXCLUSIVE / MOBILE APP RESTRICTION DIRECTIVES
-   Marketplace is shown strictly in Web App, hidden in Mobile App
+   MARKETPLACE COMPLETELY REMOVED FROM ALL VIEWS
    ======================================================= */
-.web-app-only {
-  display: none !important;
-}
-
-@media (min-width: 768px) {
-  body:not(.is-mobile-app) .web-app-only {
-    display: flex !important;
-  }
-  body:not(.is-mobile-app) a.web-app-only.inline-flex {
-    display: inline-flex !important;
-  }
-}
-
-/* Inside Mobile App (Android APK / Standalone / Mobile View) - strictly hide Marketplace */
-.is-mobile-app .marketplace-nav-link,
-.is-mobile-app .web-app-only,
-.is-mobile-app [href*="marketplace"],
-.is-mobile-app [href*="articles"],
-.is-mobile-app #mobile-market-btn {
+.web-app-only,
+.marketplace-nav-link,
+[href*="marketplace"],
+[href*="articles"],
+#mobile-market-btn {
   display: none !important;
 }
 

@@ -3173,7 +3173,7 @@ try {
     }
 
     // ==========================================
-    // PROFILE & FACEBOOK-LIKE WALL API ENDPOINTS
+    // PROFILE & MEMBER TIMELINE WALL API ENDPOINTS
     // ==========================================
 
     // GET /api/wall/posts?user_id=...

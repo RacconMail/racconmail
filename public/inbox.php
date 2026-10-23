@@ -298,7 +298,7 @@ if (empty($_SESSION['current_user_id'])) {
           <div class="p-2 space-y-0.5 text-xs">
             <button onclick="app.openProfileModal('wall')" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-semibold transition text-slate-900 whitespace-nowrap cursor-pointer">
               <i data-lucide="newspaper" class="h-4 w-4 text-slate-700 shrink-0"></i>
-              <span>My Profile &amp; Facebook Wall</span>
+              <span>My Profile &amp; Timeline Wall</span>
             </button>
             <button onclick="app.openProfileModal('photos')" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap cursor-pointer">
               <i data-lucide="image" class="h-4 w-4 text-slate-600 shrink-0"></i>
@@ -463,12 +463,6 @@ if (empty($_SESSION['current_user_id'])) {
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="book-open" class="h-4 w-4 shrink-0"></i>
             <span class="truncate">World Stories</span>
-          </div>
-        </a>
-        <a href="/marketplace" class="web-app-only nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
-          <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="shopping-bag" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Raccon Marketplace</span>
           </div>
         </a>
         <button onclick="app.openContactsView()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
@@ -839,7 +833,7 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
   </div>
 
-  <!-- MODERN PROFILE & FACEBOOK-STYLE WALL MODAL -->
+  <!-- MODERN PROFILE & TIMELINE WALL MODAL -->
   <div id="profile-modal" onclick="if(event.target === this) app.closeProfileModal()" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-200">
     <div class="w-full max-w-3xl rounded-3xl bg-white text-slate-900 shadow-2xl border border-slate-200 flex flex-col max-h-[92vh] overflow-hidden">
       <div class="stripes-subtle h-1.5 w-full shrink-0"></div>
@@ -902,7 +896,7 @@ if (empty($_SESSION['current_user_id'])) {
           <div class="flex items-center gap-2 pt-3 border-t border-slate-100 text-xs font-bold overflow-x-auto no-scrollbar">
             <button type="button" onclick="app.switchProfileTab('wall')" id="profile-tab-btn-wall" class="px-4 py-1.5 rounded-full bg-slate-900 text-white transition flex items-center gap-1.5 shrink-0 shadow-2xs">
               <i data-lucide="newspaper" class="h-3.5 w-3.5"></i>
-              <span>Facebook Wall</span>
+              <span>Wall &amp; Timeline</span>
             </button>
             <button type="button" onclick="app.switchProfileTab('photos')" id="profile-tab-btn-photos" class="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 shrink-0 border border-slate-200">
               <i data-lucide="image" class="h-3.5 w-3.5"></i>
@@ -919,7 +913,7 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Tab Content Area -->
       <div class="p-4 sm:p-6 flex-1 overflow-y-auto space-y-5 text-xs bg-slate-50/50">
 
-        <!-- 1. TAB: FACEBOOK-STYLE MEMBER WALL -->
+        <!-- 1. TAB: MEMBER WALL & TIMELINE -->
         <div id="profile-tab-wall" class="space-y-4">
           <!-- Wall Composer Card -->
           <div class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs space-y-3">
@@ -988,29 +982,29 @@ if (empty($_SESSION['current_user_id'])) {
               <div class="flex items-center gap-1.5 flex-wrap">
                 <!-- Status Tab -->
                 <button type="button" onclick="app.setWallPostType('status')" id="btn-post-type-status" class="px-2.5 py-1 rounded-full bg-slate-900 text-white font-bold text-[11px] transition flex items-center gap-1 cursor-pointer shadow-2xs">
-                  <span>📝</span> <span>Status</span>
+                  <i data-lucide="file-text" class="h-3.5 w-3.5"></i> <span>Status</span>
                 </button>
 
                 <!-- Photo Tab -->
                 <label class="cursor-pointer px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 border border-slate-200 shadow-2xs">
-                  <span>📷</span> <span>Photo</span>
+                  <i data-lucide="image" class="h-3.5 w-3.5 text-slate-600"></i> <span>Photo</span>
                   <input type="file" id="wall-photo-input" accept="image/*" class="hidden" onchange="app.handleWallPhotoSelect(this.files[0])" />
                 </label>
 
                 <!-- Question Tab -->
                 <button type="button" onclick="app.setWallPostType('question')" id="btn-post-type-question" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs">
-                  <span>❓</span> <span>Question</span>
+                  <i data-lucide="help-circle" class="h-3.5 w-3.5 text-slate-600"></i> <span>Question</span>
                 </button>
 
                 <!-- Poll Tab -->
                 <button type="button" onclick="app.setWallPostType('poll')" id="btn-post-type-poll" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs">
-                  <span>📊</span> <span>Poll</span>
+                  <i data-lucide="bar-chart-2" class="h-3.5 w-3.5 text-slate-600"></i> <span>Poll</span>
                 </button>
 
                 <!-- Auto-Location Button -->
                 <button type="button" onclick="app.autoDetectWallLocation()" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition flex items-center gap-1 cursor-pointer border border-slate-200 shadow-2xs" title="Auto-Detect & Tag Current Location">
                   <i data-lucide="map-pin" class="h-3 w-3 text-slate-600"></i>
-                  <span>Auto-Location</span>
+                  <span>Location</span>
                 </button>
               </div>
 
@@ -1027,9 +1021,39 @@ if (empty($_SESSION['current_user_id'])) {
             </div>
           </div>
 
+          <!-- Wall Sub-Navigation: Feed vs Timeline Switcher -->
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2 pt-1">
+            <div class="flex items-center gap-1.5 p-1 rounded-full bg-slate-100 border border-slate-200">
+              <button
+                type="button"
+                id="btn-wall-view-feed"
+                onclick="app.switchWallView('feed')"
+                class="px-3.5 py-1 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+              >
+                <i data-lucide="layout-list" class="h-3.5 w-3.5"></i>
+                <span>Activity Feed</span>
+              </button>
+              <button
+                type="button"
+                id="btn-wall-view-timeline"
+                onclick="app.switchWallView('timeline')"
+                class="px-3.5 py-1 rounded-full text-slate-700 hover:text-slate-900 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer"
+              >
+                <i data-lucide="git-commit" class="h-3.5 w-3.5"></i>
+                <span>Member Timeline</span>
+              </button>
+            </div>
+            <span id="wall-posts-counter" class="text-[11px] font-mono text-slate-500">0 updates</span>
+          </div>
+
           <!-- Wall Feed Posts List -->
           <div id="profile-wall-feed" class="space-y-3.5">
             <!-- Dynamically populated via app.renderWallPosts -->
+          </div>
+
+          <!-- Wall Timeline View (Chronological Milestones) -->
+          <div id="profile-wall-timeline" class="hidden space-y-4">
+            <!-- Dynamically populated via app.renderTimeline -->
           </div>
         </div>
 

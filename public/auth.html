@@ -423,12 +423,11 @@
       if (!input) return;
       if (input.type === 'password') {
         input.type = 'text';
-        if (icon) icon.setAttribute('data-lucide', 'eye-off');
+        if (icon) icon.className = 'fas fa-eye-slash text-xs';
       } else {
         input.type = 'password';
-        if (icon) icon.setAttribute('data-lucide', 'eye');
+        if (icon) icon.className = 'fas fa-eye text-xs';
       }
-      if (window.lucide) lucide.createIcons();
     }
 
     function setTab(tab) {
@@ -455,8 +454,10 @@
     }
 
     function backToStep1() {
-      document.getElementById('form-register').classList.remove('hidden');
-      document.getElementById('step-verify').classList.add('hidden');
+      const reg = document.getElementById('form-register');
+      if (reg) reg.classList.remove('hidden');
+      const stepVerify = document.getElementById('step-verify');
+      if (stepVerify) stepVerify.classList.add('hidden');
       hideError();
     }
 
@@ -719,9 +720,14 @@
     })();
 
     window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+      try {
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+          lucide.createIcons();
+        }
+      } catch (_) {}
       const params = new URLSearchParams(window.location.search);
-      if (params.get('mode') === 'login') {
+      const tabParam = params.get('tab') || params.get('mode');
+      if (tabParam === 'login') {
         setTab('login');
       } else {
         setTab('register');
