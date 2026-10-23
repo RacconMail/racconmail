@@ -115,18 +115,18 @@
 <body class="min-h-screen bg-background text-foreground flex flex-col antialiased transition-colors duration-200 selection:bg-[#208ED3] selection:text-white">
 
   <!-- TOP NAVIGATION HEADER -->
-  <header class="w-full glass-nav sticky top-0 z-40 bg-card border-b border-border shadow-2xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-3">
-      <!-- Brand & Hub Identity -->
-      <div class="flex items-center gap-3">
-        <a href="/" class="flex items-center gap-2 group">
-          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition" />
-          <div class="leading-none">
-            <span class="font-display font-extrabold text-base sm:text-lg text-foreground tracking-tight flex items-center gap-1.5">
+  <header class="w-full glass-nav sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
+      <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
+        <a href="/" class="flex items-center gap-2 group shrink-0">
+          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
+          <div class="leading-none shrink-0">
+            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
               <span>Raccon Wall</span>
-              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/25 uppercase font-bold">Members</span>
+              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Members</span>
             </span>
-            <span class="text-[10px] text-muted-foreground hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
+            <span class="text-[10px] text-slate-500 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
           </div>
         </a>
       </div>
@@ -134,33 +134,32 @@
       <!-- Live Wall Search -->
       <div class="flex-1 max-w-md mx-2 hidden md:block">
         <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-muted-foreground"></i>
+          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-slate-500"></i>
           <input
             id="forum-search-input"
             type="text"
             oninput="handleForumSearch(this.value)"
             placeholder="Search discussions, code snippets, tags..."
-            class="w-full bg-muted/40 border border-border rounded-full pl-9 pr-4 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card transition"
+            class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
           />
         </div>
       </div>
 
-      <!-- Action Navigation & Auth Status -->
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0" id="forum-auth-bar">
-
-        <a href="/inbox" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-[#208ED3]"></i>
+      <!-- Action Navigation & Auth Status (Compact icon buttons on mobile: NEVER overlaps logo) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="forum-auth-bar">
+        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Webmail</span>
         </a>
-        <a href="/news" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-amber-500"></i>
-          <span class="hidden sm:inline">News Wire</span>
+        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
+          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+          <span class="hidden sm:inline">News</span>
         </a>
-        <a href="/stories" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-purple-500"></i>
+        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
+          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Stories</span>
         </a>
-        <div id="user-status-pill" class="flex items-center gap-2">
+        <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -174,23 +173,23 @@
     <main class="lg:col-span-8 space-y-5">
 
       <!-- WELCOME HERO BANNER -->
-      <div class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-border bg-card shadow-sm">
+      <div class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200 bg-white shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="space-y-2 flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-bold">
-              <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+              <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
               <span>NOCTURNAL DEVELOPER BURROW</span>
             </div>
             <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
               Share Code, Web Design &amp; Tech Insights
             </h1>
-            <p class="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
               An exclusive nocturnal wall for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
             </p>
           </div>
           <button
             onclick="focusComposer()"
-            class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-md shadow-primary/20 active:scale-95 cursor-pointer shrink-0"
+            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
           >
             <i data-lucide="plus" class="h-4 w-4"></i>
             <span>Start Discussion</span>
@@ -200,24 +199,28 @@
 
       <!-- CATEGORY PILL FILTER BAR -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-primary text-white shadow-2xs transition shrink-0 cursor-pointer">
+        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-2xs transition shrink-0 cursor-pointer">
           All Wall Posts
         </button>
-        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>💻</span><span>Tech &amp; AI</span>
         </button>
-        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>⚡</span><span>Coding</span>
         </button>
-        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎨</span><span>Web Design</span>
         </button>
-        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎁</span><span>Sharing</span>
         </button>
-        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>❓</span><span>Help</span>
         </button>
+        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+          <span>📖</span><span>Explaining</span>
+        </button>
+      </div>
         <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>📖</span><span>Explaining</span>
         </button>
@@ -349,52 +352,55 @@
     <aside class="lg:col-span-4 space-y-5">
 
       <!-- Member Burrow Card -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-3 shadow-xs">
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
         <div class="flex items-center gap-3">
           <img src="/raccoon-logo.png" class="h-10 w-10 object-contain drop-shadow" />
           <div>
-            <h3 class="font-display font-bold text-sm text-foreground">Nocturnal Community</h3>
-            <p class="text-[11px] text-primary font-mono flex items-center gap-1 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            <h3 class="font-display font-bold text-sm text-slate-900">Nocturnal Community</h3>
+            <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
               <span>Encrypted Burrow Wall</span>
             </p>
           </div>
         </div>
-        <p class="text-xs text-muted-foreground leading-relaxed">
-          Zero data harvesting, respectful engineering discussions, and peer mentoring. Every registered member with a <span class="text-primary font-mono font-semibold">@racconmail.eu</span> account has full publishing rights.
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Zero data harvesting, respectful engineering discussions, and peer mentoring. Every registered member with a <span class="text-slate-900 font-mono font-semibold">@racconmail.eu</span> account has full publishing rights.
         </p>
-        <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
+        <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
           <span>Active Nocturnal Owls</span>
-          <span class="font-bold text-primary font-mono">84 Online</span>
+          <span class="font-bold text-slate-900 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-mono">84 Online</span>
         </div>
       </div>
 
       <!-- Trending Topic Tags -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-3 shadow-xs">
-        <h3 class="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
-          <i data-lucide="trending-up" class="h-4 w-4 text-amber-500"></i>
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
+        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="trending-up" class="h-4 w-4 text-slate-600"></i>
           <span>Trending Burrow Tags</span>
         </h3>
         <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-          <button onclick="searchByTag('#sqlite')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-emerald-600 border border-border text-[11px] font-mono transition cursor-pointer">#sqlite</button>
-          <button onclick="searchByTag('#cryptography')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-sky-600 border border-border text-[11px] font-mono transition cursor-pointer">#cryptography</button>
-          <button onclick="searchByTag('#css')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-purple-600 border border-border text-[11px] font-mono transition cursor-pointer">#css</button>
-          <button onclick="searchByTag('#javascript')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-amber-600 border border-border text-[11px] font-mono transition cursor-pointer">#javascript</button>
-          <button onclick="searchByTag('#uiux')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-rose-600 border border-border text-[11px] font-mono transition cursor-pointer">#uiux</button>
-          <button onclick="searchByTag('#security')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-emerald-600 border border-border text-[11px] font-mono transition cursor-pointer">#security</button>
+          <button onclick="searchByTag('#sqlite')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#sqlite</button>
+          <button onclick="searchByTag('#cryptography')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#cryptography</button>
+          <button onclick="searchByTag('#css')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#css</button>
+          <button onclick="searchByTag('#javascript')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#javascript</button>
+          <button onclick="searchByTag('#uiux')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#uiux</button>
+          <button onclick="searchByTag('#security')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#security</button>
         </div>
       </div>
 
       <!-- Burrow Community Guidelines -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
-          <i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i>
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
+        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="h-4 w-4 text-slate-600"></i>
           <span>Burrow Guidelines</span>
         </h3>
-        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-muted-foreground">
+        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-slate-600">
           <li>Be constructive and encourage fellow developers.</li>
           <li>Format code snippets with correct language tags.</li>
           <li>Zero spam or unsolicited marketing allowed.</li>
+          <li>Help beginners understand technical concepts.</li>
+        </ul>
+      </div>
           <li>Help beginners understand technical concepts.</li>
         </ul>
       </div>
@@ -535,17 +541,17 @@
       if (!pill) return;
       if (isLoggedIn && currentUser) {
         pill.innerHTML = `
-          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs text-foreground shadow-2xs">
-            <img src="${currentUser.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover" />
-            <span class="font-bold text-foreground hidden sm:inline">${escapeHtml(currentUser.name)}</span>
-            <span class="text-primary font-mono text-[10px]">●</span>
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs text-slate-800 shadow-2xs">
+            <img src="${currentUser.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
+            <span class="font-bold text-slate-900 hidden sm:inline">${escapeHtml(currentUser.name)}</span>
+            <span class="text-slate-400 font-mono text-[10px]">●</span>
           </div>
         `;
         const compAvatar = document.getElementById('composer-avatar');
         if (compAvatar) compAvatar.src = currentUser.avatar || '/raccoon-logo.png';
       } else {
         pill.innerHTML = `
-          <a href="/auth?tab=login" class="px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs transition cursor-pointer shadow-2xs">
+          <a href="/auth?tab=login" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition cursor-pointer shadow-2xs whitespace-nowrap">
             Sign In / Join
           </a>
         `;
@@ -588,29 +594,29 @@
 
     function renderPostCard(p) {
       const catBadges = {
-        tech: { label: 'Tech & AI', emoji: '💻', color: 'text-sky-600 bg-sky-50 border-sky-200' },
-        coding: { label: 'Coding', emoji: '⚡', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-        webdesign: { label: 'Web Design', emoji: '🎨', color: 'text-purple-600 bg-purple-50 border-purple-200' },
-        sharing: { label: 'Sharing', emoji: '🎁', color: 'text-amber-600 bg-amber-50 border-amber-200' },
-        help: { label: 'Help', emoji: '❓', color: 'text-rose-600 bg-rose-50 border-rose-200' },
-        explaining: { label: 'Explaining', emoji: '📖', color: 'text-blue-600 bg-blue-50 border-blue-200' }
+        tech: { label: 'Tech & AI', emoji: '💻', color: 'text-slate-700 bg-slate-100 border-slate-200' },
+        coding: { label: 'Coding', emoji: '⚡', color: 'text-slate-700 bg-slate-100 border-slate-200' },
+        webdesign: { label: 'Web Design', emoji: '🎨', color: 'text-slate-700 bg-slate-100 border-slate-200' },
+        sharing: { label: 'Sharing', emoji: '🎁', color: 'text-slate-700 bg-slate-100 border-slate-200' },
+        help: { label: 'Help', emoji: '❓', color: 'text-slate-700 bg-slate-100 border-slate-200' },
+        explaining: { label: 'Explaining', emoji: '📖', color: 'text-slate-700 bg-slate-100 border-slate-200' }
       };
 
       const cat = catBadges[p.category] || catBadges.tech;
       const formattedDate = formatTime(p.created_at);
 
       return `
-        <article class="rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-md transition p-5 space-y-3.5 group shadow-xs">
+        <article class="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition p-5 space-y-3.5 group shadow-xs">
           <!-- Post Author Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-border">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
             <div class="flex items-center gap-2.5">
-              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-border" onerror="this.src='/raccoon-logo.png';" />
+              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200" onerror="this.src='/raccoon-logo.png';" />
               <div>
                 <div class="flex items-center gap-1.5 leading-none">
-                  <span class="font-bold text-xs sm:text-sm text-foreground">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
-                  ${p.author_is_admin ? '<span class="text-[9px] bg-red-500/10 text-red-600 border border-red-500/20 font-bold px-1.5 py-0.2 rounded">ADMIN</span>' : '<span class="text-[9px] bg-primary/10 text-primary border border-primary/20 font-mono px-1 py-0.2 rounded">MEMBER</span>'}
+                  <span class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
+                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-1 py-0.2 rounded">MEMBER</span>'}
                 </div>
-                <div class="text-[10px] text-muted-foreground mt-1 font-mono">${formattedDate}</div>
+                <div class="text-[10px] text-slate-500 mt-1 font-mono">${formattedDate}</div>
               </div>
             </div>
 
@@ -621,50 +627,50 @@
           </div>
 
           <!-- Post Title -->
-          <h2 class="font-display font-bold text-base sm:text-lg text-foreground group-hover:text-primary transition leading-snug">
+          <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug">
             ${escapeHtml(p.title)}
           </h2>
 
           <!-- Post Body Content -->
-          <p class="text-xs sm:text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line">
             ${escapeHtml(p.content)}
           </p>
 
           <!-- Code Snippet Block (If Provided) -->
           ${p.code_snippet ? `
-            <div class="rounded-2xl overflow-hidden border border-border bg-slate-900 p-3.5 space-y-2">
+            <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 p-3.5 space-y-2">
               <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono border-b border-slate-800 pb-2">
-                <span class="text-emerald-400 font-bold">${p.code_lang.toUpperCase()}</span>
+                <span class="text-slate-300 font-bold">${p.code_lang.toUpperCase()}</span>
                 <button onclick="copySnippet(this, \`${escapeJsString(p.code_snippet)}\`)" class="hover:text-white transition flex items-center gap-1 cursor-pointer">
                   <i data-lucide="copy" class="h-3 w-3"></i>
                   <span>Copy Code</span>
                 </button>
               </div>
-              <pre class="overflow-x-auto text-xs text-emerald-400 font-mono leading-relaxed py-1"><code>${escapeHtml(p.code_snippet)}</code></pre>
+              <pre class="overflow-x-auto text-xs text-slate-200 font-mono leading-relaxed py-1"><code>${escapeHtml(p.code_snippet)}</code></pre>
             </div>
           ` : ''}
 
           <!-- Image Attachment (If Provided) -->
           ${p.image_url ? `
-            <div class="rounded-2xl overflow-hidden aspect-video border border-border bg-muted/40">
+            <div class="rounded-2xl overflow-hidden aspect-video border border-slate-200 bg-slate-50">
               <img src="${p.image_url}" alt="Attachment" class="w-full h-full object-cover" onerror="this.style.display='none';" />
             </div>
           ` : ''}
 
           <!-- Tags -->
           ${p.tags ? `
-            <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono text-muted-foreground">
-              ${p.tags.split(',').map(t => `<span class="bg-muted/60 px-2 py-0.5 rounded-full border border-border">${escapeHtml(t.trim())}</span>`).join('')}
+            <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono text-slate-500">
+              ${p.tags.split(',').map(t => `<span class="bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">${escapeHtml(t.trim())}</span>`).join('')}
             </div>
           ` : ''}
 
           <!-- Bottom Action Buttons: Like, Comment, Share -->
-          <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground flex-wrap gap-2">
+          <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
             <div class="flex items-center gap-3">
               <!-- Paw / Like Button -->
               <button
                 onclick="togglePostLike('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border ${p.has_liked ? 'bg-amber-500/10 text-amber-600 border-amber-500/30 font-bold' : 'bg-muted/50 hover:bg-muted text-foreground border-border'}"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border ${p.has_liked ? 'bg-slate-200 text-slate-900 border-slate-300 font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}"
               >
                 <span>🐾</span>
                 <span id="like-cnt-${p.id}">${p.likes_count || 0}</span>
@@ -674,9 +680,9 @@
               <!-- Comment Drawer Toggle -->
               <button
                 onclick="toggleCommentsDrawer('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 hover:bg-muted text-foreground border border-border transition cursor-pointer"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition cursor-pointer"
               >
-                <i data-lucide="message-square" class="h-3.5 w-3.5 text-primary"></i>
+                <i data-lucide="message-square" class="h-3.5 w-3.5 text-slate-600"></i>
                 <span id="comment-cnt-${p.id}">${p.comments_count || 0}</span>
                 <span class="text-[11px]">Replies</span>
               </button>
@@ -684,15 +690,15 @@
 
             <button
               onclick="shareForumPost('${p.id}', '${escapeJsString(p.title)}')"
-              class="px-2.5 py-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition flex items-center gap-1 text-[11px] cursor-pointer"
+              class="px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition flex items-center gap-1 text-[11px] cursor-pointer"
             >
-              <i data-lucide="share-2" class="h-3.5 w-3.5"></i>
+              <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Share</span>
             </button>
           </div>
 
           <!-- Threaded Comments Drawer -->
-          <div id="comments-drawer-${p.id}" class="hidden pt-3 border-t border-border space-y-3">
+          <div id="comments-drawer-${p.id}" class="hidden pt-3 border-t border-slate-200 space-y-3">
             <div id="comments-list-${p.id}" class="space-y-2.5">
               <!-- Comments load here -->
             </div>
@@ -704,11 +710,11 @@
                 type="text"
                 placeholder="Write a constructive reply..."
                 onkeydown="if(event.key === 'Enter') submitComment('${p.id}')"
-                class="flex-1 bg-muted/40 border border-border rounded-full px-3.5 py-2 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card"
+                class="flex-1 bg-white border border-slate-200 rounded-full px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400"
               />
               <button
                 onclick="submitComment('${p.id}')"
-                class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-4 py-2 transition shrink-0 cursor-pointer shadow-2xs"
+                class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 transition shrink-0 cursor-pointer shadow-2xs"
               >
                 Reply
               </button>

@@ -260,11 +260,11 @@ if (empty($_SESSION['current_user_id'])) {
       <button
         onclick="app.openStoriesModal()"
         title="World Stories — Read global folktales & fables"
-        class="flex items-center gap-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 px-2.5 sm:px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
+        class="flex items-center gap-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2.5 sm:px-3 py-1.5 text-xs font-medium transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
       >
-        <i data-lucide="book-open" class="h-3.5 w-3.5 text-primary shrink-0"></i>
+        <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
         <span class="hidden sm:inline">Stories</span>
-        <span class="text-[10px] bg-primary text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
+        <span class="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
       </button>
 
       <!-- Account Switcher Dropdown -->
@@ -1263,19 +1263,19 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Header -->
       <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-primary/10 text-primary border border-primary/20">
-            <i data-lucide="newspaper" class="h-5 w-5 text-primary"></i>
+          <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200">
+            <i data-lucide="newspaper" class="h-5 w-5 text-slate-600"></i>
           </div>
           <div>
             <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
               <span>Raccon News Wire</span>
-              <span class="text-xs font-mono bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">Live Updates</span>
+              <span class="text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold">Live Updates</span>
             </h3>
             <p class="text-xs text-muted-foreground">Tech, Sport, Games, Music, and Weather articles updated every 5 minutes</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <a href="/news" class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page news wire">
+          <a href="/news" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page news wire">
             <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
             <span>Open Full Page News</span>
           </a>
@@ -1319,19 +1319,19 @@ if (empty($_SESSION['current_user_id'])) {
         <!-- Header -->
         <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
           <div class="flex items-center gap-3">
-            <div class="p-2.5 rounded-2xl bg-primary/10 text-primary border border-primary/20">
-              <i data-lucide="book-open" class="h-5 w-5 text-primary"></i>
+            <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200">
+              <i data-lucide="book-open" class="h-5 w-5 text-slate-600"></i>
             </div>
             <div>
               <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
                 <span>World Stories</span>
-                <span class="text-xs font-mono bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">English Library</span>
+                <span class="text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold">English Library</span>
               </h3>
               <p class="text-xs text-muted-foreground">Folktales, myths, and fables from cultures around the globe</p>
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <a href="/stories" class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page stories library">
+            <a href="/stories" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page stories library">
               <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
               <span>Open Full Page Stories</span>
             </a>

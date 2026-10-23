@@ -101,21 +101,21 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-background text-foreground flex flex-col antialiased transition-colors duration-200 selection:bg-[#208ED3] selection:text-white">
+<body class="min-h-screen bg-background text-foreground flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white">
 
   <!-- TOP NAVIGATION HEADER (Matching Forum & Stories Exact Design) -->
-  <header class="w-full glass-nav sticky top-0 z-40 bg-card border-b border-border shadow-2xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-3">
-      <!-- Brand & Hub Identity -->
-      <div class="flex items-center gap-3">
-        <a href="/" class="flex items-center gap-2 group">
-          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition" />
-          <div class="leading-none">
-            <span class="font-display font-extrabold text-base sm:text-lg text-foreground tracking-tight flex items-center gap-1.5">
+  <header class="w-full glass-nav sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
+      <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
+      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
+        <a href="/" class="flex items-center gap-2 group shrink-0">
+          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
+          <div class="leading-none shrink-0">
+            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
               <span>Raccon News</span>
-              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/25 uppercase font-bold">Live Wire</span>
+              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Live Wire</span>
             </span>
-            <span class="text-[10px] text-muted-foreground hidden sm:inline">Tech &bull; World &bull; Sports &bull; Science</span>
+            <span class="text-[10px] text-slate-500 hidden sm:inline">Tech &bull; World &bull; Sports &bull; Science</span>
           </div>
         </a>
       </div>
@@ -123,39 +123,39 @@
       <!-- Live Wire Search -->
       <div class="flex-1 max-w-md mx-2 hidden md:block">
         <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-muted-foreground"></i>
+          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-slate-500"></i>
           <input
             id="news-search-input"
             type="text"
             oninput="handleNewsSearch(this.value)"
             placeholder="Search headlines, topics, stories..."
-            class="w-full bg-muted/40 border border-border rounded-full pl-9 pr-4 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card transition"
+            class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
           />
         </div>
       </div>
 
-      <!-- Action Navigation Links -->
-      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0" id="news-auth-bar">
+      <!-- Action Navigation Links (Compact icon buttons on mobile: NEVER overlaps logo) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="news-auth-bar">
         <!-- Live Countdown Pill -->
-        <div class="hidden sm:flex items-center gap-1.5 bg-muted/60 border border-border rounded-full px-2.5 py-1 text-[11px] text-muted-foreground">
-          <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div class="hidden lg:flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1 text-[11px] text-slate-600">
+          <span class="h-2 w-2 rounded-full bg-slate-500 animate-pulse"></span>
           <span>Sync:</span>
-          <span id="news-timer" class="font-mono font-bold text-primary">04:59</span>
+          <span id="news-timer" class="font-mono font-bold text-slate-900">04:59</span>
         </div>
 
-        <a href="/inbox" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-[#208ED3]"></i>
+        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Webmail</span>
         </a>
-        <a href="/stories" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-purple-500"></i>
+        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
+          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Stories</span>
         </a>
-        <a href="/forum" class="px-3 py-1.5 rounded-full border border-border bg-card hover:bg-muted text-foreground text-xs font-semibold transition flex items-center gap-1.5">
-          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-emerald-500"></i>
+        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Community Wall">
+          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Wall</span>
         </a>
-        <div id="user-status-pill" class="flex items-center gap-2">
+        <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -169,11 +169,11 @@
     <main class="lg:col-span-8 space-y-5">
 
       <!-- WELCOME HERO BANNER -->
-      <div id="news-hero-card" class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-border bg-card shadow-sm">
+      <div id="news-hero-card" class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200 bg-white shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="space-y-2 flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-bold">
-              <span class="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+              <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
               <span>24/7 RACCON NEWS DESK</span>
             </div>
             <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
@@ -186,7 +186,7 @@
           <button
             onclick="refreshRacconNews(true)"
             id="btn-sync-news"
-            class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-md shadow-primary/20 active:scale-95 cursor-pointer shrink-0"
+            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
           >
             <i data-lucide="rotate-cw" id="sync-icon" class="h-4 w-4"></i>
             <span>Sync Live Wire</span>
@@ -196,28 +196,28 @@
 
       <!-- CATEGORY PILL FILTER BAR (Matching Forum Design) -->
       <div id="news-filter-bar" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterNewsCat('all')" data-cat="all" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-primary text-white shadow-2xs transition shrink-0 cursor-pointer">
+        <button onclick="filterNewsCat('all')" data-cat="all" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
           All Wire (32)
         </button>
-        <button onclick="filterNewsCat('tech')" data-cat="tech" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('tech')" data-cat="tech" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>💻</span><span>Tech &amp; AI</span>
         </button>
-        <button onclick="filterNewsCat('world')" data-cat="world" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('world')" data-cat="world" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🌍</span><span>World</span>
         </button>
-        <button onclick="filterNewsCat('sport')" data-cat="sport" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('sport')" data-cat="sport" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>⚽</span><span>Sports</span>
         </button>
-        <button onclick="filterNewsCat('games')" data-cat="games" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('games')" data-cat="games" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎮</span><span>Gaming</span>
         </button>
-        <button onclick="filterNewsCat('science')" data-cat="science" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('science')" data-cat="science" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🔭</span><span>Science</span>
         </button>
-        <button onclick="filterNewsCat('music')" data-cat="music" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterNewsCat('music')" data-cat="music" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎵</span><span>Music</span>
         </button>
-        <button onclick="toggleBookmarksView()" id="btn-bookmarks" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="toggleBookmarksView()" id="btn-bookmarks" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🔖</span><span>Saved (<span id="bookmark-count">0</span>)</span>
         </button>
       </div>
@@ -229,7 +229,7 @@
 
       <!-- Empty state -->
       <div id="news-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-border bg-card space-y-3">
-        <div class="h-16 w-16 mx-auto rounded-full bg-muted/60 flex items-center justify-center text-3xl">📰</div>
+        <div class="h-16 w-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">📰</div>
         <h3 class="font-display text-lg font-bold text-foreground">No articles found</h3>
         <p class="text-xs text-muted-foreground max-w-sm mx-auto">Try clearing search terms or selecting another category.</p>
         <button onclick="filterNewsCat('all')" class="rounded-full bg-primary text-white text-xs font-bold px-4 py-2 mt-2">Reset Filters</button>
@@ -244,7 +244,7 @@
             <span>Back to Live Wire</span>
           </button>
           <div class="flex items-center gap-2">
-            <button onclick="copyCurrentArticleLink()" class="px-3.5 py-1.5 rounded-full bg-muted/50 hover:bg-muted text-foreground border border-border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <button onclick="copyCurrentArticleLink()" class="px-3.5 py-1.5 rounded-full bg-white hover:bg-muted text-foreground border border-border text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="link" class="h-3.5 w-3.5"></i>
               <span>Copy Link</span>
             </button>
@@ -256,10 +256,10 @@
         </div>
 
         <!-- Reader Card -->
-        <article class="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-6 shadow-sm">
+        <article class="rounded-3xl border border-border bg-white p-6 sm:p-8 space-y-6 shadow-xs">
           <div class="space-y-2 pb-4 border-b border-border">
             <div class="flex items-center justify-between gap-2 flex-wrap text-xs text-muted-foreground">
-              <span id="article-reader-category" class="px-2.5 py-0.5 rounded-full font-bold text-primary bg-primary/10 border border-primary/20">Category</span>
+              <span id="article-reader-category" class="px-2.5 py-0.5 rounded-full font-bold text-primary bg-slate-100 border border-slate-200">Category</span>
               <span id="article-reader-time" class="font-mono">Just now</span>
             </div>
             <h1 id="article-reader-title" class="font-display text-2xl sm:text-3xl font-extrabold text-foreground leading-tight">
@@ -307,13 +307,13 @@
     <aside class="lg:col-span-4 space-y-5">
 
       <!-- News Desk Card -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-3 shadow-xs">
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
         <div class="flex items-center gap-3">
           <img src="/raccoon-logo.png" class="h-10 w-10 object-contain drop-shadow" alt="Raccon" />
           <div>
             <h3 class="font-display font-bold text-sm text-foreground">Raccon News Desk</h3>
-            <p class="text-[11px] text-primary font-mono flex items-center gap-1 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
               <span>Live Auto-Sync Active</span>
             </p>
           </div>
@@ -323,28 +323,28 @@
         </p>
         <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
           <span>Active Nocturnal Readers</span>
-          <span class="font-bold text-primary font-mono">148 Online</span>
+          <span class="font-bold text-slate-700 font-mono">148 Online</span>
         </div>
       </div>
 
       <!-- Trending Topics Tags -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-3 shadow-xs">
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
         <h3 class="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
           <i data-lucide="trending-up" class="h-4 w-4 text-amber-500"></i>
           <span>Trending Wire Topics</span>
         </h3>
         <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-          <button onclick="searchNewsKeyword('AI')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-sky-600 border border-border text-[11px] font-mono transition cursor-pointer">#ai</button>
-          <button onclick="searchNewsKeyword('Security')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-emerald-600 border border-border text-[11px] font-mono transition cursor-pointer">#security</button>
-          <button onclick="searchNewsKeyword('Space')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-purple-600 border border-border text-[11px] font-mono transition cursor-pointer">#space</button>
-          <button onclick="searchNewsKeyword('Economy')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-amber-600 border border-border text-[11px] font-mono transition cursor-pointer">#economy</button>
-          <button onclick="searchNewsKeyword('Gaming')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-rose-600 border border-border text-[11px] font-mono transition cursor-pointer">#gaming</button>
-          <button onclick="searchNewsKeyword('Culture')" class="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-teal-600 border border-border text-[11px] font-mono transition cursor-pointer">#culture</button>
+          <button onclick="searchNewsKeyword('AI')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#ai</button>
+          <button onclick="searchNewsKeyword('Security')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#security</button>
+          <button onclick="searchNewsKeyword('Space')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#space</button>
+          <button onclick="searchNewsKeyword('Economy')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#economy</button>
+          <button onclick="searchNewsKeyword('Gaming')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#gaming</button>
+          <button onclick="searchNewsKeyword('Culture')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-muted text-slate-700 border border-border text-[11px] font-mono transition cursor-pointer">#culture</button>
         </div>
       </div>
 
       <!-- Nocturnal Editorial Guidelines -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-2.5 text-xs shadow-xs">
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
         <h3 class="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
           <i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i>
           <span>Editorial Charter</span>
@@ -358,21 +358,21 @@
       </div>
 
       <!-- Quick Navigation Card -->
-      <div class="rounded-3xl p-5 border border-border bg-card space-y-2.5 text-xs shadow-xs">
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
         <h3 class="font-display font-bold text-sm text-foreground flex items-center gap-1.5">
           <i data-lucide="compass" class="h-4 w-4 text-amber-500"></i>
           <span>Raccon Hub Navigation</span>
         </h3>
         <div class="space-y-1.5 pt-1">
-          <a href="/stories" class="w-full flex items-center justify-between p-2 rounded-xl bg-muted/40 hover:bg-muted text-foreground text-xs font-semibold transition">
+          <a href="/stories" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
             <span class="flex items-center gap-2"><i data-lucide="book-open" class="h-3.5 w-3.5 text-purple-500"></i> World Stories Library</span>
             <span class="text-[10px] text-muted-foreground">&rarr;</span>
           </a>
-          <a href="/forum" class="w-full flex items-center justify-between p-2 rounded-xl bg-muted/40 hover:bg-muted text-foreground text-xs font-semibold transition">
+          <a href="/forum" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
             <span class="flex items-center gap-2"><i data-lucide="messages-square" class="h-3.5 w-3.5 text-emerald-500"></i> Community Wall</span>
             <span class="text-[10px] text-muted-foreground">&rarr;</span>
           </a>
-          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-muted/40 hover:bg-muted text-foreground text-xs font-semibold transition">
+          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
             <span class="flex items-center gap-2"><i data-lucide="mail" class="h-3.5 w-3.5 text-primary"></i> Private Webmail</span>
             <span class="text-[10px] text-muted-foreground">&rarr;</span>
           </a>
@@ -385,7 +385,7 @@
 
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="news-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-card rounded-2xl px-4 py-3 border border-border text-foreground text-xs font-semibold shadow-2xl flex items-center gap-2">
+    <div class="bg-card rounded-2xl px-4 py-3 border border-slate-200 text-slate-700 text-xs font-semibold shadow-2xl flex items-center gap-2">
       <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
       <span id="news-toast-text">Message</span>
     </div>
@@ -399,7 +399,7 @@
       "id": "tech-1",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -414,7 +414,7 @@
       "id": "tech-2",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -429,7 +429,7 @@
       "id": "tech-3",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -444,7 +444,7 @@
       "id": "tech-4",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -459,7 +459,7 @@
       "id": "tech-5",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -474,7 +474,7 @@
       "id": "tech-6",
       "category": "tech",
       "catLabel": "Tech & AI",
-      "catColor": "text-sky-400 bg-sky-500/10 border-sky-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "💻",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -491,7 +491,7 @@
       "id": "world-1",
       "category": "world",
       "catLabel": "World & Economy",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🌍",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -506,7 +506,7 @@
       "id": "world-2",
       "category": "world",
       "catLabel": "World & Economy",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🌍",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -521,7 +521,7 @@
       "id": "world-3",
       "category": "world",
       "catLabel": "World & Economy",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🌍",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -536,7 +536,7 @@
       "id": "world-4",
       "category": "world",
       "catLabel": "World & Economy",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🌍",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -551,7 +551,7 @@
       "id": "world-5",
       "category": "world",
       "catLabel": "World & Economy",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🌍",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -568,7 +568,7 @@
       "id": "sport-1",
       "category": "sport",
       "catLabel": "Sports Arena",
-      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "⚽",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -583,7 +583,7 @@
       "id": "sport-2",
       "category": "sport",
       "catLabel": "Sports Arena",
-      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "⚽",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -598,7 +598,7 @@
       "id": "sport-3",
       "category": "sport",
       "catLabel": "Sports Arena",
-      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "⚽",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -613,7 +613,7 @@
       "id": "sport-4",
       "category": "sport",
       "catLabel": "Sports Arena",
-      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "⚽",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -628,7 +628,7 @@
       "id": "sport-5",
       "category": "sport",
       "catLabel": "Sports Arena",
-      "catColor": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "⚽",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -645,7 +645,7 @@
       "id": "games-1",
       "category": "games",
       "catLabel": "Gaming & Esports",
-      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🎮",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -660,7 +660,7 @@
       "id": "games-2",
       "category": "games",
       "catLabel": "Gaming & Esports",
-      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🎮",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -675,7 +675,7 @@
       "id": "games-3",
       "category": "games",
       "catLabel": "Gaming & Esports",
-      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🎮",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -690,7 +690,7 @@
       "id": "games-4",
       "category": "games",
       "catLabel": "Gaming & Esports",
-      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🎮",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -705,7 +705,7 @@
       "id": "games-5",
       "category": "games",
       "catLabel": "Gaming & Esports",
-      "catColor": "text-purple-400 bg-purple-500/10 border-purple-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "🎮",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -846,7 +846,7 @@
       "id": "weather-1",
       "category": "weather",
       "catLabel": "Night Radar",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "☀️",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -861,7 +861,7 @@
       "id": "weather-2",
       "category": "weather",
       "catLabel": "Night Radar",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "☀️",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -876,7 +876,7 @@
       "id": "weather-3",
       "category": "weather",
       "catLabel": "Night Radar",
-      "catColor": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
       "catEmoji": "☀️",
       "source": "Raccon Editorial",
       "sourceSlug": "raccon",
@@ -921,7 +921,7 @@
             <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs text-foreground shadow-2xs">
               <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover" />
               <span class="font-bold text-foreground hidden sm:inline">${escapeHtml(data.user.name)}</span>
-              <span class="text-primary font-mono text-[10px]">●</span>
+              <span class="text-slate-700 font-mono text-[10px]">●</span>
             </div>
           `;
         } else {
@@ -955,9 +955,9 @@
       const btn = document.getElementById('btn-bookmarks');
       if (btn) {
         if (isBookmarksView) {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-primary text-white shadow-2xs transition shrink-0 cursor-pointer flex items-center gap-1.5';
+          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer flex items-center gap-1.5';
         } else {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5';
+          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
         }
       }
       renderNewsFeed();
@@ -983,13 +983,13 @@
       isBookmarksView = false;
       document.querySelectorAll('.news-cat-btn').forEach(btn => {
         if (btn.dataset.cat === cat) {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-primary text-white shadow-2xs transition shrink-0 cursor-pointer';
+          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer';
         } else if (btn.id !== 'btn-bookmarks') {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5';
+          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
         }
       });
       const bBtn = document.getElementById('btn-bookmarks');
-      if (bBtn) bBtn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5';
+      if (bBtn) bBtn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
       renderNewsFeed();
     }
 
@@ -1049,15 +1049,15 @@
       const image = item.image || '/raccoon-logo.png';
 
       return `
-        <article class="rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-md transition p-5 space-y-3.5 group shadow-xs">
+        <article class="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition p-5 space-y-3.5 group shadow-xs">
           <!-- Card Header -->
           <div class="flex items-center justify-between pb-3 border-b border-border">
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${item.catColor || 'text-primary bg-primary/10 border-primary/20'}">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${item.catColor || 'text-slate-700 bg-slate-100 border-slate-200'}">
               <span>${catEmoji}</span>
               <span>${escapeHtml(catLabel)}</span>
             </span>
             <div class="flex items-center gap-2 text-[11px] font-mono text-muted-foreground">
-              <span class="bg-muted/60 px-2 py-0.5 rounded-full border border-border">${time}</span>
+              <span class="bg-slate-100 px-2 py-0.5 rounded-full border border-border">${time}</span>
               <span>⏱️ ${readTime}</span>
             </div>
           </div>
@@ -1086,7 +1086,7 @@
           <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground flex-wrap gap-2">
             <button
               onclick="openNewsReader('${item.id}')"
-              class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-4 py-2 transition flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95"
+              class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 transition flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95"
             >
               <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
               <span>Read Full Article</span>
@@ -1095,7 +1095,7 @@
             <div class="flex items-center gap-2">
               <button
                 onclick="toggleBookmark('${item.id}', event)"
-                class="p-2 rounded-full border border-border transition cursor-pointer ${isBookmarked ? 'bg-amber-500/10 text-amber-600 border-amber-500/30' : 'bg-muted/50 hover:bg-muted text-foreground'}"
+                class="p-2 rounded-full border border-border transition cursor-pointer ${isBookmarked ? 'bg-amber-500/10 text-slate-700 border-amber-500/30' : 'bg-white hover:bg-muted text-foreground'}"
                 title="${isBookmarked ? 'Saved to bookmarks' : 'Save bookmark'}"
               >
                 <i data-lucide="${isBookmarked ? 'bookmark-check' : 'bookmark'}" class="h-3.5 w-3.5"></i>
@@ -1103,7 +1103,7 @@
 
               <button
                 onclick="shareArticle('${escapeJsString(item.title)}', event)"
-                class="px-2.5 py-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition flex items-center gap-1 text-[11px] cursor-pointer"
+                class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition flex items-center gap-1 text-[11px] cursor-pointer"
                 title="Share article"
               >
                 <i data-lucide="share-2" class="h-3.5 w-3.5"></i>
