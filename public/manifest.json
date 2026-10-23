@@ -4,8 +4,8 @@
   "description": "Clever, secure email on web and mobile. Masked from spam.",
   "start_url": "/inbox",
   "display": "standalone",
-  "background_color": "#fbf9f5",
-  "theme_color": "#181c1f",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F172A",
   "icons": [
     {
       "src": "/raccoon-logo.png",

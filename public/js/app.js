@@ -220,6 +220,8 @@ const app = {
         return;
       }
 
+      const key = e.key.toLowerCase();
+
       if (e.key === '/') {
         e.preventDefault();
         if (window.innerWidth < 768) {
@@ -228,14 +230,145 @@ const app = {
           const searchInput = document.getElementById('global-search');
           if (searchInput) searchInput.focus();
         }
-      } else if (e.key === 'c' || e.key === 'C') {
+      } else if (key === 'c') {
         e.preventDefault();
         this.openCompose();
+      } else if (e.key === '?' || (e.shiftKey && key === '?') || key === 'h') {
+        e.preventDefault();
+        this.openKeyboardShortcuts();
+      } else if (key === 'r') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          const fastInput = document.getElementById('quick-reply-body');
+          if (fastInput) fastInput.focus();
+          else this.replyToMessage();
+        }
+      } else if (key === 'a') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.replyAllMessage();
+        }
+      } else if (key === 'f') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.forwardMessage();
+        }
+      } else if (key === 'e') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.archiveMessage(this.selectedMessage.id);
+        }
+      } else if (e.key === '#' || e.key === 'Delete') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.trashMessage(this.selectedMessage.id);
+        }
+      } else if (key === 's') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.toggleStar(this.selectedMessage.id, !this.selectedMessage.is_starred);
+        }
+      } else if (key === 'u') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.toggleRead(this.selectedMessage.id, false);
+        }
+      } else if (key === 'p') {
+        if (this.selectedMessage) {
+          e.preventDefault();
+          this.printMessage();
+        }
+      } else if (key === 'j') {
+        e.preventDefault();
+        this.selectNextMessage();
+      } else if (key === 'k') {
+        e.preventDefault();
+        this.selectPreviousMessage();
       } else if (e.key === 'Escape') {
         this.closeAllModals();
         this.closeCommandPalette();
+        if (window.innerWidth < 768) {
+          this.backToMessages();
+        }
       }
     });
+  },
+
+  openKeyboardShortcuts() {
+    document.getElementById('keyboard-shortcuts-modal')?.classList.remove('hidden');
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  closeKeyboardShortcuts() {
+    document.getElementById('keyboard-shortcuts-modal')?.classList.add('hidden');
+  },
+
+  printMessage() {
+    window.print();
+  },
+
+  downloadMessageEml(msgId) {
+    const msg = (this.messages || []).find(m => String(m.id) === String(msgId)) || this.selectedMessage;
+    if (!msg) return;
+
+    const emlContent = [
+      `From: ${msg.sender_name || 'Raccon Mail'} <${msg.sender_email || 'anonymous@racconmail.eu'}>`,
+      `To: <${msg.recipient_email || ''}>`,
+      `Date: ${new Date(msg.created_at || Date.now()).toUTCString()}`,
+      `Subject: ${msg.subject || '(no subject)'}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/plain; charset=UTF-8`,
+      `X-Mailer: Raccon Mail Webmail Client (https://racconmail.eu)`,
+      ``,
+      msg.body || ''
+    ].join('\r\n');
+
+    const blob = new Blob([emlContent], { type: 'message/rfc822' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const safeSubject = (msg.subject || 'message').replace(/[^a-z0-9_-]/gi, '_').substring(0, 50);
+    a.download = `${safeSubject}.eml`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  async markAllRead() {
+    if (!confirm('Mark all messages in this folder as read?')) return;
+    try {
+      const res = await fetch('/api/messages/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_all_read', folder: this.currentFolder })
+      });
+      const data = await res.json();
+      if (data.success) {
+        (this.messages || []).forEach(m => m.is_read = 1);
+        this.renderMessagesList();
+        this.fetchFolders();
+        this.playChime?.();
+      }
+    } catch (err) {
+      console.error('Failed to mark all as read:', err);
+    }
+  },
+
+  selectNextMessage() {
+    if (!this.messages || this.messages.length === 0) return;
+    const currentIndex = this.selectedMessage ? this.messages.findIndex(m => String(m.id) === String(this.selectedMessage.id)) : -1;
+    const nextIndex = (currentIndex + 1) < this.messages.length ? currentIndex + 1 : 0;
+    this.openMessage(this.messages[nextIndex].id);
+  },
+
+  selectPreviousMessage() {
+    if (!this.messages || this.messages.length === 0) return;
+    const currentIndex = this.selectedMessage ? this.messages.findIndex(m => String(m.id) === String(this.selectedMessage.id)) : 0;
+    const prevIndex = (currentIndex - 1) >= 0 ? currentIndex - 1 : this.messages.length - 1;
+    this.openMessage(this.messages[prevIndex].id);
   },
 
   closeAllModals() {
@@ -247,6 +380,7 @@ const app = {
     document.getElementById('contact-form-modal')?.classList.add('hidden');
     document.getElementById('settings-modal')?.classList.add('hidden');
     document.getElementById('postcard-print-modal')?.classList.add('hidden');
+    document.getElementById('keyboard-shortcuts-modal')?.classList.add('hidden');
     document.getElementById('privacy-modal')?.classList.add('hidden');
     document.getElementById('news-modal')?.classList.add('hidden');
     document.getElementById('stories-modal')?.classList.add('hidden');
@@ -801,13 +935,13 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.currentStoryCategory = category;
     const tabs = document.querySelectorAll('#story-filter-tabs .story-tab');
     tabs.forEach(tab => {
-      tab.classList.remove('btn-orange-matte', 'font-bold', 'shadow-xs', 'active');
-      tab.classList.add('font-medium', 'text-muted-foreground');
+      tab.classList.remove('bg-slate-900', 'text-white', 'btn-orange-matte', 'font-bold', 'shadow-xs', 'active');
+      tab.classList.add('font-medium', 'text-slate-600', 'hover:bg-slate-100');
     });
     const clicked = event?.currentTarget;
     if (clicked) {
-      clicked.classList.remove('font-medium', 'text-muted-foreground');
-      clicked.classList.add('btn-orange-matte', 'font-bold', 'shadow-xs', 'active');
+      clicked.classList.remove('font-medium', 'text-slate-600', 'hover:bg-slate-100');
+      clicked.classList.add('bg-slate-900', 'text-white', 'font-bold', 'shadow-xs', 'active');
     }
     this.renderStoriesGrid();
   },
@@ -887,8 +1021,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
         <!-- Action Buttons -->
         <div class="pt-2.5 border-t border-border/60 flex items-center justify-between gap-2">
-          <button onclick="app.openStoryReader('${story.id}')" class="flex-1 py-1.5 px-3 rounded-full btn-orange-matte text-white text-xs font-bold flex items-center justify-center gap-1 shadow-2xs hover:opacity-95 transition cursor-pointer">
-            <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
+          <button onclick="app.openStoryReader('${story.id}')" class="flex-1 py-1.5 px-3 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1 shadow-2xs hover:opacity-95 transition cursor-pointer">
+            <i data-lucide="book-open" class="h-3.5 w-3.5 text-white"></i>
             <span>Read Tale</span>
           </button>
           <button onclick="app.openStoryReader('${story.id}')" title="Read story in integrated reader" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition border border-border shrink-0 cursor-pointer">
@@ -953,8 +1087,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               <h5 class="font-display font-bold text-sm text-foreground">Share this tale as a clever postcard</h5>
               <p class="text-xs text-muted-foreground">Deliver this folktale directly to any friend's inbox.</p>
             </div>
-            <button onclick="app.sendStoryAsPostcard()" class="py-2 px-5 rounded-full btn-orange-matte text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition cursor-pointer shrink-0">
-              <i data-lucide="send" class="h-3.5 w-3.5"></i>
+            <button onclick="app.sendStoryAsPostcard()" class="py-2 px-5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition cursor-pointer shrink-0">
+              <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
               <span>Send Postcard</span>
               <span class="paw-bounce text-xs">🐾</span>
             </button>
@@ -1250,7 +1384,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           </button>
           <div class="flex items-center gap-1">
             ${f.unread > 0 ? `<span class="badge-unread">${f.unread}</span>` : ''}
-            <button onclick="app.deleteFolder('${f.id}')" title="Delete folder" class="hidden group-hover:inline-block p-1 text-muted-foreground hover:text-red-600 rounded transition cursor-pointer">
+            <button onclick="app.deleteFolder('${f.id}')" title="Delete folder" class="hidden group-hover:inline-block p-1 text-slate-500 hover:text-slate-900 rounded transition cursor-pointer">
               <i data-lucide="trash" class="h-3 w-3"></i>
             </button>
           </div>
@@ -1513,54 +1647,60 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const initial = ((msg.sender_name || msg.sender_email || 'M')[0] || 'M').toUpperCase();
 
     readerEl.innerHTML = `
-      <!-- Action Toolbar (Compact) -->
-      <div class="h-11 sm:h-12 border-b border-border bg-card px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
+      <!-- Action Toolbar (Compact & Pure Monochrome) -->
+      <div class="h-11 sm:h-12 border-b border-slate-200 bg-white px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
         <div class="flex items-center gap-1.5">
           <!-- Mobile Back Button -->
-          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-full bg-muted hover:bg-accent text-foreground shrink-0 cursor-pointer">
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 shrink-0 cursor-pointer">
             <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
             <span>Back</span>
           </button>
           <button onclick="app.replyToMessage()"
-            class="flex items-center gap-1.5 rounded-full btn-orange-matte px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95">
-            <i data-lucide="reply" class="h-3.5 w-3.5"></i>
+            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95">
+            <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
             <span>Reply</span>
             <span class="paw-bounce text-xs">🐾</span>
           </button>
           <button onclick="app.replyAllMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full btn-orange-matte-subtle px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
-            <i data-lucide="reply-all" class="h-3 w-3"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            <i data-lucide="reply-all" class="h-3 w-3 text-slate-600"></i>
             <span>Reply All</span>
           </button>
           <button onclick="app.forwardMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full btn-orange-matte-subtle px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
-            <i data-lucide="forward" class="h-3 w-3"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+            <i data-lucide="forward" class="h-3 w-3 text-slate-600"></i>
             <span>Forward</span>
           </button>
         </div>
 
         <div class="flex items-center gap-1">
-          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="flex items-center gap-1 rounded-full bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-slate-200">
-            <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-600"></i>
-            <span class="hidden sm:inline">Screenshot</span>
+          <button onclick="app.printMessage()" title="Print Email or Save as PDF (P)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="printer" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="flex items-center gap-1 rounded-full btn-orange-matte-subtle px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
+          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="download" class="h-4 w-4 text-slate-600"></i>
+          </button>
+          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="hidden sm:flex items-center gap-1 rounded-full bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-slate-200">
+            <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-600"></i>
+            <span>Screenshot</span>
+          </button>
+          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
             <i data-lucide="mail" class="h-3 w-3 text-slate-600"></i>
             <span class="hidden sm:inline">Postcard View</span>
           </button>
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite (S)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-slate-900 fill-slate-900' : ''}"></i>
           </button>
-          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread (U)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="mail" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive (E)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="archive" class="h-4 w-4 text-slate-600"></i>
           </button>
           <button onclick="app.spamMessage('${msg.id}')" title="Report Spam" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="shield-alert" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-red-600 transition cursor-pointer">
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete (#)" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
             <i data-lucide="trash-2" class="h-4 w-4 text-slate-600"></i>
           </button>
         </div>
@@ -2168,7 +2308,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       <span class="inline-flex items-center gap-1.5 rounded-full bg-muted border border-border px-3 py-1 text-xs">
         <i data-lucide="paperclip" class="h-3 w-3 text-muted-foreground"></i>
         <span class="max-w-[150px] truncate font-medium">${this.escapeHtml(file.name)}</span>
-        <button type="button" onclick="app.removeComposeFile(${idx})" class="text-muted-foreground hover:text-red-600 ml-1">
+        <button type="button" onclick="app.removeComposeFile(${idx})" class="text-slate-500 hover:text-slate-900 ml-1">
           <i data-lucide="x" class="h-3 w-3"></i>
         </button>
       </span>
@@ -2321,9 +2461,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const btn = document.getElementById(`filter-${f}`);
       if (btn) {
         if (f === filter) {
-          btn.className = 'px-3 py-1 rounded-full font-bold btn-orange-matte transition text-xs shadow-xs';
+          btn.className = 'px-3 py-1 rounded-full font-bold bg-slate-900 text-white transition text-xs shadow-xs shrink-0 whitespace-nowrap';
         } else {
-          btn.className = 'px-3 py-1 rounded-full font-medium text-muted-foreground hover:bg-muted transition text-xs border border-transparent hover:border-border';
+          btn.className = 'px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition text-xs border border-transparent hover:border-slate-200 shrink-0 whitespace-nowrap';
         }
       }
     });
@@ -3131,12 +3271,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     if (!host || !user || !pass) {
       statusEl.textContent = 'Enter host, user, and password';
-      statusEl.className = 'text-[11px] text-red-600 font-semibold';
+      statusEl.className = 'text-[11px] text-slate-900 font-semibold';
       return;
     }
 
     statusEl.textContent = 'Testing connection...';
-    statusEl.className = 'text-[11px] text-muted-foreground';
+    statusEl.className = 'text-[11px] text-slate-600';
 
     try {
       const res = await fetch('/api/settings/mail/test', {
@@ -3147,14 +3287,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const data = await res.json();
       if (data.success) {
         statusEl.textContent = 'Connected successfully!';
-        statusEl.className = 'text-[11px] text-slate-800 font-bold';
+        statusEl.className = 'text-[11px] text-slate-900 font-bold';
       } else {
         statusEl.textContent = 'Failed: ' + (data.error || 'Check credentials');
-        statusEl.className = 'text-[11px] text-red-600 font-semibold';
+        statusEl.className = 'text-[11px] text-slate-900 font-semibold';
       }
     } catch (err) {
       statusEl.textContent = 'Error: ' + err.message;
-      statusEl.className = 'text-[11px] text-red-600 font-semibold';
+      statusEl.className = 'text-[11px] text-slate-900 font-semibold';
     }
   },
 

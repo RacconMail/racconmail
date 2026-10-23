@@ -708,7 +708,7 @@
           </h2>
 
           <!-- Post Body Content (Strict Boundaries - never exceeds chenar) -->
-          <div class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line break-words break-all [overflow-wrap:anywhere] max-w-full overflow-hidden">
+          <div class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line break-words [overflow-wrap:break-word] max-w-full overflow-hidden">
             ${formatPostContent(p.content)}
           </div>
 
@@ -836,7 +836,7 @@
                 <span class="font-bold text-slate-900">${escapeHtml(c.author_name || 'Owl')}</span>
                 <span class="text-[10px] text-slate-500 font-mono">${formatTime(c.created_at)}</span>
               </div>
-              <p class="text-xs text-slate-600 leading-relaxed break-words break-all [overflow-wrap:anywhere] max-w-full overflow-hidden">${formatPostContent(c.content)}</p>
+              <p class="text-xs text-slate-600 leading-relaxed break-words [overflow-wrap:break-word] max-w-full overflow-hidden">${formatPostContent(c.content)}</p>
             </div>
           </div>
         `).join('');

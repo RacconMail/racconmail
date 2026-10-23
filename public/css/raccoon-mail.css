@@ -47,19 +47,23 @@ html.theme-midnight-green, body.theme-midnight-green {
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  overflow-wrap: anywhere;
 }
 
-/* Universal text & link boundaries protection - prevents any text/links from exceeding boxes */
-p, span, h1, h2, h3, h4, h5, h6, label, div, td, th, article, section {
-  overflow-wrap: anywhere;
+/* Safe boundary protection for user content & URLs without breaking UI flex items */
+.break-words,
+.post-content,
+.message-body,
+.forum-card-desc,
+.user-content {
+  overflow-wrap: break-word;
   word-break: break-word;
-  max-width: 100%;
 }
 
-a {
-  word-break: break-all;
+a.break-all,
+.post-content a,
+.forum-card-desc a {
   overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 html, body {
@@ -1158,4 +1162,55 @@ header img[src*="raccoon-logo"]:hover {
 
 /* Strictly hide top menu auth & nav on mobile screens (< 768px) */
 @media (max-width: 768px) { #auth-nav-container, .top-menu-auth-group { display: none !important; } }
+
+/* ==========================================
+   HIGH-FIDELITY PRINT & PDF STYLESHEET
+   Clean, distraction-free document printing
+   ========================================== */
+@media print {
+  header,
+  footer,
+  nav,
+  #mobile-bottom-bar,
+  #desktop-compose-fab,
+  #messages-panel,
+  #main-sidebar,
+  #reader-content > div:first-child,
+  #reader-screenshot-btn,
+  #keyboard-shortcuts-modal,
+  #compose-modal,
+  #command-palette-backdrop,
+  button,
+  .stripes-subtle {
+    display: none !important;
+  }
+
+  body, html {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 12pt !important;
+  }
+
+  #reader-panel,
+  #reader-content,
+  #message-reader-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .unique-email-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .email-html-wrapper {
+    overflow: visible !important;
+  }
+}
+
 

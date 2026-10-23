@@ -1917,6 +1917,26 @@ try {
     if ($route === 'messages/batch' && $method === 'POST') {
         $action = $input['action'] ?? '';
         $ids = $input['ids'] ?? [];
+
+        if ($action === 'mark_all_read') {
+            $folder = strtolower($input['folder'] ?? 'inbox');
+            if ($folder === 'inbox') {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND is_trashed = 0 AND is_spam = 0 AND is_archived = 0 AND is_draft = 0")->execute([$currentUserId]);
+            } elseif ($folder === 'starred') {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND is_starred = 1 AND is_trashed = 0")->execute([$currentUserId]);
+            } elseif ($folder === 'archive') {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND is_archived = 1 AND is_trashed = 0")->execute([$currentUserId]);
+            } elseif ($folder === 'trash') {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND is_trashed = 1")->execute([$currentUserId]);
+            } elseif ($folder === 'spam') {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND is_spam = 1")->execute([$currentUserId]);
+            } else {
+                $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND folder_id = ?")->execute([$currentUserId, $folder]);
+            }
+            echo json_encode(['success' => true]);
+            exit;
+        }
+
         if (empty($ids)) {
             echo json_encode(['success' => true, 'count' => 0]);
             exit;

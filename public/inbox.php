@@ -240,57 +240,57 @@ if (empty($_SESSION['current_user_id'])) {
           <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1"></i>
         </button>
 
-        <!-- Dropdown Menu -->
-        <div id="account-dropdown" class="hidden absolute right-0 mt-2 w-72 rounded-3xl border border-border bg-card overflow-hidden shadow-2xl z-50">
+        <!-- Dropdown Menu (Bullet-proof Responsive Sizing) -->
+        <div id="account-dropdown" class="hidden absolute right-0 mt-2 rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-2xl z-50 text-slate-900" style="width: 280px; min-width: 280px; max-width: calc(100vw - 20px);">
           <!-- Cover Photo Header -->
-          <div id="dropdown-user-cover" class="h-20 w-full bg-gradient-to-r from-fur via-mask to-fur relative bg-cover bg-center">
+          <div id="dropdown-user-cover" class="h-20 w-full bg-slate-900 relative bg-cover bg-center">
             <button
               onclick="app.openProfileModal()"
-              class="absolute top-2 right-2 p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white transition text-xs flex items-center gap-1 backdrop-blur-xs"
+              class="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black text-white transition text-xs flex items-center gap-1 backdrop-blur-xs cursor-pointer"
               title="Edit Profile & Photos"
             >
-              <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+              <i data-lucide="camera" class="h-3.5 w-3.5 text-white"></i>
             </button>
           </div>
 
           <!-- User Info with overlapping Avatar -->
-          <div class="px-4 pb-3 pt-0 relative border-b border-border">
+          <div class="px-4 pb-3 pt-0 relative border-b border-slate-200">
             <div class="flex items-end justify-between -mt-8 mb-2">
-              <img id="dropdown-user-avatar" src="/raccoon-logo.png" class="h-16 w-16 rounded-full bg-card object-cover aspect-square border-4 border-card shadow-md cursor-pointer shrink-0" onclick="app.openProfileModal()" />
+              <img id="dropdown-user-avatar" src="/raccoon-logo.png" class="h-16 w-16 rounded-full bg-white object-cover aspect-square border-4 border-white shadow-md cursor-pointer shrink-0" onclick="app.openProfileModal()" />
               <button
                 onclick="app.openProfileModal()"
-                class="rounded-full border border-border bg-muted/60 hover:bg-muted px-3 py-1 text-[11px] font-bold text-foreground transition flex items-center gap-1"
+                class="rounded-full border border-slate-200 bg-slate-100 hover:bg-slate-200 px-3 py-1 text-[11px] font-bold text-slate-800 transition flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
               >
-                <i data-lucide="edit-3" class="h-3 w-3"></i>
+                <i data-lucide="edit-3" class="h-3 w-3 text-slate-600"></i>
                 <span>Edit Profile</span>
               </button>
             </div>
-            <p id="dropdown-user-name" class="text-sm font-bold truncate text-foreground">Clever Raccoon</p>
-            <p id="dropdown-user-email" class="text-xs text-muted-foreground truncate">me@racconmail.eu</p>
+            <p id="dropdown-user-name" class="text-sm font-bold truncate text-slate-900">Clever Raccoon</p>
+            <p id="dropdown-user-email" class="text-xs text-slate-500 truncate">me@racconmail.eu</p>
           </div>
 
           <!-- Dropdown Navigation Links -->
           <div class="p-2 space-y-0.5">
-            <button onclick="app.openProfileModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-muted font-medium transition text-foreground">
-              <i data-lucide="user" class="h-4 w-4 text-muted-foreground"></i>
-              Profile &amp; Themes
+            <button onclick="app.openProfileModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap cursor-pointer">
+              <i data-lucide="user" class="h-4 w-4 text-slate-600 shrink-0"></i>
+              <span>Profile &amp; Themes</span>
             </button>
-            <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-muted font-medium transition text-foreground">
-              <i data-lucide="settings" class="h-4 w-4 text-muted-foreground"></i>
-              Mail Settings &amp; SMTP
+            <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap cursor-pointer">
+              <i data-lucide="settings" class="h-4 w-4 text-slate-600 shrink-0"></i>
+              <span>Mail Settings &amp; SMTP</span>
             </button>
-            <a href="/" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-muted font-medium transition text-muted-foreground hover:text-foreground">
-              <i data-lucide="home" class="h-4 w-4"></i>
-              Landing Page
+            <a href="/" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap">
+              <i data-lucide="home" class="h-4 w-4 text-slate-600 shrink-0"></i>
+              <span>Landing Page</span>
             </a>
-            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-muted text-foreground font-medium transition">
-              <i data-lucide="log-out" class="h-4 w-4 text-muted-foreground"></i>
-              Sign Out
+            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-slate-100 text-slate-800 font-medium transition whitespace-nowrap cursor-pointer">
+              <i data-lucide="log-out" class="h-4 w-4 text-slate-600 shrink-0"></i>
+              <span>Sign Out</span>
             </button>
           </div>
 
           <!-- Switchable accounts container (prevents app.js null crash) -->
-          <div id="accounts-list" class="p-2 border-t border-border space-y-1 bg-muted/20"></div>
+          <div id="accounts-list" class="p-2 border-t border-slate-200 space-y-1 bg-slate-50"></div>
         </div>
       </div>
 
@@ -486,6 +486,9 @@ if (empty($_SESSION['current_user_id'])) {
             <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer">
               <i data-lucide="refresh-cw" class="h-4 w-4"></i>
             </button>
+            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer">
+              <i data-lucide="check-check" class="h-4 w-4"></i>
+            </button>
             <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-muted-foreground hover:text-foreground hover:bg-muted px-2 py-1 rounded-md transition font-medium">
               Empty
             </button>
@@ -493,18 +496,18 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
 
         <!-- Filter Pills & Sorting -->
-        <div class="flex items-center justify-between gap-1 pt-1">
-          <div class="flex items-center gap-1.5 text-xs">
-            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold btn-orange-matte transition shadow-xs">All</button>
-            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium text-muted-foreground hover:bg-muted transition border border-transparent hover:border-border">Unread</button>
-            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium text-muted-foreground hover:bg-muted transition border border-transparent hover:border-border">Starred</button>
-            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium text-muted-foreground hover:bg-muted transition border border-transparent hover:border-border flex items-center gap-1">
+        <div class="flex items-center justify-between gap-1 pt-1 overflow-x-auto no-scrollbar">
+          <div class="flex items-center gap-1.5 text-xs shrink-0">
+            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-slate-900 text-white transition shadow-xs whitespace-nowrap shrink-0">All</button>
+            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 whitespace-nowrap shrink-0">Unread</button>
+            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 whitespace-nowrap shrink-0">Starred</button>
+            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 flex items-center gap-1 whitespace-nowrap shrink-0">
               <i data-lucide="paperclip" class="h-3 w-3"></i> Files
             </button>
           </div>
 
           <!-- Sort menu -->
-          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-muted/60 border border-border rounded-lg px-2 py-1 outline-none text-muted-foreground cursor-pointer">
+          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-muted/60 border border-border rounded-lg px-2 py-1 outline-none text-muted-foreground cursor-pointer shrink-0 ml-2">
             <option value="date_desc">Newest</option>
             <option value="date_asc">Oldest</option>
             <option value="sender">Sender</option>
@@ -584,7 +587,7 @@ if (empty($_SESSION['current_user_id'])) {
       <span class="text-[10px] font-medium">Search</span>
     </button>
     <!-- Compose Center Button (Scaled to fit seamlessly in bottom nav bar) -->
-    <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full btn-orange-matte text-white shadow-md transform active:scale-90 transition border-2 border-card cursor-pointer shrink-0" title="Compose Postcard">
+    <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full bg-slate-900 hover:bg-black text-white shadow-md transform active:scale-90 transition border-2 border-white cursor-pointer shrink-0" title="Compose Postcard">
       <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
     </button>
     <button onclick="app.openStoriesModal()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="World Stories">
@@ -602,7 +605,7 @@ if (empty($_SESSION['current_user_id'])) {
     id="desktop-compose-fab"
     onclick="app.openCompose()"
     title="Compose New Message"
-    class="hidden fixed bottom-6 right-6 z-30 h-14 w-14 rounded-full btn-orange-matte shadow-2xl items-center justify-center transform active:scale-90 transition border-2 border-white/20 cursor-pointer"
+    class="hidden fixed bottom-6 right-6 z-30 h-14 w-14 rounded-full bg-slate-900 hover:bg-black text-white shadow-2xl items-center justify-center transform active:scale-90 transition border-2 border-white cursor-pointer"
   >
     <i data-lucide="pencil" class="h-6 w-6 text-white"></i>
   </button>
@@ -728,7 +731,7 @@ if (empty($_SESSION['current_user_id'])) {
         <button
           onclick="app.sendMessage()"
           id="send-mail-btn"
-          class="flex items-center gap-1.5 rounded-full btn-orange-matte font-display font-bold text-xs py-1.5 px-3 sm:px-3.5 shadow-sm transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+          class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-1.5 px-3 sm:px-3.5 shadow-sm transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
           title="Send Postcard"
         >
           <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
@@ -1054,8 +1057,8 @@ if (empty($_SESSION['current_user_id'])) {
 
   <!-- PRINTABLE VINTAGE POSTCARD MODAL -->
   <div id="postcard-print-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-3xl bg-[#fdfaf5] rounded-3xl p-8 border-4 border-[#e0d6c5] shadow-2xl relative overflow-hidden text-foreground">
-      <button onclick="app.closePostcardModal()" class="absolute top-4 right-4 p-1 rounded-full bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground">
+    <div class="w-full max-w-3xl bg-white rounded-3xl p-8 border-2 border-slate-300 shadow-2xl relative overflow-hidden text-slate-900">
+      <button onclick="app.closePostcardModal()" class="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition">
         <i data-lucide="x" class="h-5 w-5"></i>
       </button>
 
@@ -1065,17 +1068,17 @@ if (empty($_SESSION['current_user_id'])) {
         <div class="col-span-full stripes-subtle h-3 rounded-full mb-2"></div>
 
         <!-- Left Half: Postcard Letter Message -->
-        <div class="flex flex-col justify-between pr-4 border-r border-[#d4c6b0]">
+        <div class="flex flex-col justify-between pr-4 border-r border-slate-200">
           <div>
             <div class="flex items-center gap-2 mb-4">
               <img src="/raccoon-logo.png" class="h-8 w-8 object-contain" />
-              <span class="font-display font-bold text-xs uppercase tracking-widest text-[#786b59]">Official Raccon Postcard</span>
+              <span class="font-display font-bold text-xs uppercase tracking-widest text-slate-500">Official Raccon Postcard</span>
             </div>
-            <h2 id="postcard-subject" class="font-display text-xl font-bold mb-3 text-[#2a2620]"></h2>
-            <div id="postcard-body" class="font-handwriting text-2xl text-[#3b342a] leading-relaxed whitespace-pre-wrap min-h-[140px]"></div>
+            <h2 id="postcard-subject" class="font-display text-xl font-bold mb-3 text-slate-900"></h2>
+            <div id="postcard-body" class="font-handwriting text-2xl text-slate-800 leading-relaxed whitespace-pre-wrap min-h-[140px]"></div>
           </div>
-          <div class="mt-6 pt-4 border-t border-[#e2d8c9] text-xs font-display text-[#786b59]">
-            From: <span id="postcard-from" class="font-bold"></span>
+          <div class="mt-6 pt-4 border-t border-slate-200 text-xs font-display text-slate-500">
+            From: <span id="postcard-from" class="font-bold text-slate-900"></span>
           </div>
         </div>
 
@@ -1090,7 +1093,7 @@ if (empty($_SESSION['current_user_id'])) {
             </div>
             <div class="postcard-stamp">
               <img src="/raccoon-logo.png" class="h-10 w-10 object-contain" />
-              <div class="text-[9px] font-bold text-[#8b7355] leading-tight">
+              <div class="text-[9px] font-bold text-slate-600 leading-tight">
                 RACCON<br/>POSTAGE<br/>25 ACORNS
               </div>
             </div>
@@ -1098,24 +1101,109 @@ if (empty($_SESSION['current_user_id'])) {
 
           <!-- Bottom: Postcard Address Lines -->
           <div class="space-y-4 my-8">
-            <div class="border-b border-[#a89880] pb-1 text-sm font-handwriting text-xl text-[#3b342a]">
+            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-900">
               To: <span id="postcard-to"></span>
             </div>
-            <div class="border-b border-[#a89880] pb-1 text-sm font-handwriting text-xl text-[#786b59]">
+            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-600">
               Forest Burrow #42, Whispering Pines
             </div>
-            <div class="border-b border-[#a89880] pb-1 text-sm font-handwriting text-xl text-[#786b59]">
+            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-600">
               The Great Northern Woodland, ZIP 00042
             </div>
           </div>
 
           <div class="flex justify-end gap-3 mt-4">
-            <button onclick="window.print()" class="rounded-full bg-primary text-primary-foreground px-5 py-2 text-xs font-medium hover:bg-black transition flex items-center gap-1.5">
-              <i data-lucide="printer" class="h-3.5 w-3.5"></i>
+            <button onclick="window.print()" class="rounded-full bg-slate-900 text-white px-5 py-2 text-xs font-bold hover:bg-black transition flex items-center gap-1.5 cursor-pointer">
+              <i data-lucide="printer" class="h-3.5 w-3.5 text-white"></i>
               <span>Print Physical Postcard</span>
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEYBOARD SHORTCUTS MODAL -->
+  <div id="keyboard-shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div class="flex items-center gap-2">
+          <div class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-800">
+            <i data-lucide="keyboard" class="h-4 w-4 text-slate-700"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base text-slate-900">Keyboard Shortcuts</h3>
+            <p class="text-xs text-slate-500">Speed up your nocturnal workflow</p>
+          </div>
+        </div>
+        <button onclick="app.closeKeyboardShortcuts()" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="py-4 space-y-2.5 text-xs text-slate-700 max-h-[60vh] overflow-y-auto">
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Compose New Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">C</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Reply to Open Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">R</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Reply All</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">A</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Forward Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">F</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Archive Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">E</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Delete / Move to Trash</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">#</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Star / Unstar Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">S</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Mark as Unread / Read</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">U</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Print / Export PDF</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">P</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Next Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">J</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Previous Message</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">K</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Global Search</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">/</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+          <span>Command Palette</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">Ctrl + K</kbd>
+        </div>
+        <div class="flex items-center justify-between py-1.5">
+          <span>Open Shortcuts Help</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">?</kbd>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 flex justify-end">
+        <button onclick="app.closeKeyboardShortcuts()" class="rounded-full bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-bold transition cursor-pointer">
+          Got It
+        </button>
       </div>
     </div>
   </div>
@@ -1223,25 +1311,25 @@ if (empty($_SESSION['current_user_id'])) {
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
       <!-- Header -->
-      <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
-        <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200">
-            <i data-lucide="newspaper" class="h-5 w-5 text-slate-600"></i>
+      <div class="flex items-start justify-between gap-2 sm:gap-4 pb-4 border-b border-border shrink-0">
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div class="p-2 sm:p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+            <i data-lucide="newspaper" class="h-4 w-4 sm:h-5 sm:w-5 text-slate-600"></i>
           </div>
-          <div>
-            <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-              <span>Raccon News Wire</span>
-              <span class="text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold">Live Updates</span>
+          <div class="min-w-0">
+            <h3 class="font-display text-base sm:text-2xl font-bold text-foreground flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span class="whitespace-nowrap">Raccon News Wire</span>
+              <span class="text-[10px] sm:text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold whitespace-nowrap">Live Updates</span>
             </h3>
-            <p class="text-xs text-muted-foreground">Tech, Sport, Games, Music, and Weather articles updated every 5 minutes</p>
+            <p class="text-xs text-muted-foreground line-clamp-1 sm:line-clamp-none">Tech, Sport, Games, Music, and Weather articles updated every 5 minutes</p>
           </div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <a href="/news" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page news wire">
-            <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
-            <span>Open Full Page News</span>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <a href="/news" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-2 sm:px-3.5 sm:py-1.5 transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap" title="Open full-page news wire">
+            <i data-lucide="maximize-2" class="h-3.5 w-3.5 shrink-0"></i>
+            <span class="hidden sm:inline">Open Full Page News</span>
           </a>
-          <button onclick="app.closeNewsModal()" class="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+          <button onclick="app.closeNewsModal()" class="p-1.5 sm:p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer shrink-0">
             <i data-lucide="x" class="h-5 w-5"></i>
           </button>
         </div>
@@ -1279,25 +1367,25 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- 1. LIBRARY CATALOG VIEW (Scroll Fixed) -->
       <div id="stories-catalog-view" class="flex flex-col flex-1 overflow-hidden min-h-0">
         <!-- Header -->
-        <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
-          <div class="flex items-center gap-3">
-            <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200">
-              <i data-lucide="book-open" class="h-5 w-5 text-slate-600"></i>
+        <div class="flex items-start justify-between gap-2 sm:gap-4 pb-4 border-b border-border shrink-0">
+          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div class="p-2 sm:p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
+              <i data-lucide="book-open" class="h-4 w-4 sm:h-5 sm:w-5 text-slate-600"></i>
             </div>
-            <div>
-              <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-                <span>World Stories</span>
-                <span class="text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold">English Library</span>
+            <div class="min-w-0">
+              <h3 class="font-display text-base sm:text-2xl font-bold text-foreground flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span class="whitespace-nowrap">World Stories</span>
+                <span class="text-[10px] sm:text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold whitespace-nowrap">English Library</span>
               </h3>
-              <p class="text-xs text-muted-foreground">Folktales, myths, and fables from cultures around the globe</p>
+              <p class="text-xs text-muted-foreground line-clamp-1 sm:line-clamp-none">Folktales, myths, and fables from cultures around the globe</p>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <a href="/stories" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page stories library">
-              <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
-              <span>Open Full Page Stories</span>
+          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <a href="/stories" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-2 sm:px-3.5 sm:py-1.5 transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap" title="Open full-page stories library">
+              <i data-lucide="maximize-2" class="h-3.5 w-3.5 shrink-0"></i>
+              <span class="hidden sm:inline">Open Full Page Stories</span>
             </a>
-            <button onclick="app.closeStoriesModal()" class="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+            <button onclick="app.closeStoriesModal()" class="p-1.5 sm:p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer shrink-0">
               <i data-lucide="x" class="h-5 w-5"></i>
             </button>
           </div>
