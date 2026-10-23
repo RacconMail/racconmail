@@ -231,8 +231,8 @@ if (empty($_SESSION['current_user_id'])) {
       </span>
     </div>
 
-    <!-- Raccon Mail Global Search Bar (Responsive with min-w-0 so it never pushes or overlaps buttons) -->
-    <div class="flex-1 min-w-0 max-w-xl ml-1.5 mr-2 sm:mx-4 relative" id="global-search-container">
+    <!-- Raccon Mail Global Search Bar (Hidden on mobile app, prominent on desktop & tablet) -->
+    <div class="hidden md:block flex-1 min-w-0 max-w-xl mx-2 sm:mx-4 relative" id="global-search-container">
       <div class="relative flex items-center">
         <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-muted-foreground pointer-events-none"></i>
         <input
@@ -246,10 +246,12 @@ if (empty($_SESSION['current_user_id'])) {
           onfocus="app.onSearchClick()"
           onkeydown="app.onSearchKeyDown(event)"
         />
-        <button id="search-clear-btn" class="hidden absolute right-3 sm:right-10 text-muted-foreground hover:text-foreground text-xs" onclick="app.clearSearch()">
+        <button id="search-clear-btn" class="hidden absolute right-12 text-muted-foreground hover:text-foreground text-xs" onclick="app.clearSearch()">
           <i data-lucide="x" class="h-3.5 w-3.5"></i>
         </button>
-        <span class="absolute right-3 hidden sm:inline text-[11px] font-mono text-muted-foreground bg-card px-1.5 py-0.5 rounded border border-border">/</span>
+        <button onclick="app.openCommandPalette()" type="button" class="absolute right-3 hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono font-bold text-muted-foreground bg-card hover:bg-muted px-1.5 py-0.5 rounded border border-border cursor-pointer transition shadow-2xs" title="Open Command Palette (Ctrl+K)">
+          <span>⌘</span>K
+        </button>
       </div>
 
       <!-- Live Search Suggestions Dropdown (Loop across Inbox, Spam, Sent & Senders) -->
@@ -1485,6 +1487,45 @@ if (empty($_SESSION['current_user_id'])) {
 
     </div>
   </div>
+
+  <!-- ======================================================= -->
+  <!-- COMMAND PALETTE MODAL (K-BAR / Ctrl+K / Cmd+K)         -->
+  <!-- ======================================================= -->
+  <div id="command-palette-backdrop" onclick="app.closeCommandPalette()" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-14 sm:pt-20 px-3 sm:px-4 transition-opacity">
+    <div onclick="event.stopPropagation()" class="w-full max-w-xl bg-card rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col transform transition-all duration-200 divide-y divide-border/60">
+      
+      <!-- Command Palette Search Input Header -->
+      <div class="p-3.5 flex items-center gap-3 bg-muted/30">
+        <i data-lucide="terminal" class="h-5 w-5 text-primary shrink-0"></i>
+        <input
+          id="command-palette-input"
+          type="text"
+          placeholder="Type a command or search mail... (Esc to close)"
+          class="w-full bg-transparent text-sm sm:text-base outline-none font-medium placeholder:text-muted-foreground text-foreground"
+          oninput="app.onCommandPaletteInput(this.value)"
+          onkeydown="app.onCommandPaletteKeyDown(event)"
+          autocomplete="off"
+        />
+        <kbd class="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono font-semibold bg-muted text-muted-foreground border border-border rounded">ESC</kbd>
+      </div>
+
+      <!-- Command Palette Actions List -->
+      <div id="command-palette-results" class="max-h-[60vh] overflow-y-auto p-2 space-y-1 text-xs">
+        <!-- Rendered by app.renderCommandPaletteItems() -->
+      </div>
+
+      <!-- Command Palette Keyboard Guide Footer -->
+      <div class="px-4 py-2 bg-muted/20 text-[11px] text-muted-foreground flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↑</kbd><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↓</kbd> Navigate</span>
+          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↵</kbd> Select</span>
+        </div>
+        <span class="text-primary font-semibold flex items-center gap-1">🦝 Command Center</span>
+      </div>
+
+    </div>
+  </div>
+
   <audio id="mail-chime" preload="auto">
     <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..." type="audio/wav">
   </audio>

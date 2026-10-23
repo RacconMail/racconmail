@@ -1,0 +1,14 @@
+{
+  "name": "raccon-mail-desktop",
+  "version": "1.0.0",
+  "description": "Official Desktop Client for Raccon Mail - Nocturnal & Masked Webmail Platform",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Raccon Mail Core Team <support@racconmail.eu>",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^34.0.0"
+  }
+}

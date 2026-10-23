@@ -109,22 +109,36 @@ const app = {
     });
 
     document.addEventListener('keydown', (e) => {
+      // Global shortcut: Ctrl+K or Cmd+K
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        this.openCommandPalette();
+        return;
+      }
+
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
         if (e.key === 'Escape') {
           document.getElementById('contact-suggestions')?.classList.add('hidden');
           document.getElementById('search-suggestions-dropdown')?.classList.add('hidden');
+          this.closeCommandPalette();
         }
         return;
       }
+
       if (e.key === '/') {
         e.preventDefault();
-        const searchInput = document.getElementById('global-search');
-        if (searchInput) searchInput.focus();
+        if (window.innerWidth < 768) {
+          this.openCommandPalette();
+        } else {
+          const searchInput = document.getElementById('global-search');
+          if (searchInput) searchInput.focus();
+        }
       } else if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
         this.openCompose();
       } else if (e.key === 'Escape') {
         this.closeAllModals();
+        this.closeCommandPalette();
       }
     });
   },
@@ -133,6 +147,7 @@ const app = {
     document.getElementById('account-dropdown')?.classList.add('hidden');
     document.getElementById('new-folder-modal')?.classList.add('hidden');
     document.getElementById('contacts-modal')?.classList.add('hidden');
+    document.getElementById('command-palette-backdrop')?.classList.add('hidden');
     document.getElementById('contact-form-modal')?.classList.add('hidden');
     document.getElementById('settings-modal')?.classList.add('hidden');
     document.getElementById('postcard-print-modal')?.classList.add('hidden');
@@ -1012,6 +1027,22 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         emptyBtn.classList.add('hidden');
       }
 
+      // Offline-first instant render & skeleton loader
+      const cacheKey = `raccon_offline_${this.currentFolder}_${this.currentFilter}`;
+      if (!this.messages || this.messages.length === 0) {
+        try {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            this.messages = JSON.parse(cached);
+            this.renderMessagesList();
+          } else {
+            this.renderMessagesSkeleton();
+          }
+        } catch (_) {
+          this.renderMessagesSkeleton();
+        }
+      }
+
       // Fetch
       const params = new URLSearchParams({
         folder: this.currentFolder,
@@ -1024,11 +1055,38 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const data = await res.json();
       this.messages = data.messages || [];
 
+      // Update offline-first cache
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(this.messages));
+      } catch (_) {}
+
       folderSubEl.textContent = `${this.messages.length} message${this.messages.length === 1 ? '' : 's'}`;
       this.renderMessagesList();
     } catch (err) {
       console.error('Failed to load messages:', err);
     }
+  },
+
+  renderMessagesSkeleton() {
+    const listEl = document.getElementById('messages-list');
+    if (!listEl) return;
+    listEl.innerHTML = `
+      <div class="p-3 space-y-3 animate-pulse">
+        ${[1, 2, 3, 4, 5].map(() => `
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-muted/30 border border-border/40">
+            <div class="h-8 w-8 rounded-full bg-muted-foreground/15 shrink-0"></div>
+            <div class="flex-1 space-y-2 min-w-0">
+              <div class="flex items-center justify-between">
+                <div class="h-3 w-28 bg-muted-foreground/20 rounded"></div>
+                <div class="h-2.5 w-12 bg-muted-foreground/15 rounded"></div>
+              </div>
+              <div class="h-2.5 w-3/4 bg-muted-foreground/15 rounded"></div>
+              <div class="h-2 w-1/2 bg-muted-foreground/10 rounded"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
   },
 
   renderMessagesList() {
@@ -2252,11 +2310,192 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   focusMobileSearch() {
-    const searchInput = document.getElementById('global-search');
-    if (searchInput) {
-      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      searchInput.focus();
+    this.openCommandPalette();
+  },
+
+  // ====================================================
+  // COMMAND PALETTE (K-BAR / Ctrl+K / Cmd+K)
+  // ====================================================
+  _cmdSelectedIndex: 0,
+  _cmdItems: [],
+
+  openCommandPalette() {
+    this.closeAllModals();
+    const modal = document.getElementById('command-palette-backdrop');
+    const input = document.getElementById('command-palette-input');
+    if (!modal || !input) return;
+
+    modal.classList.remove('hidden');
+    input.value = '';
+    this._cmdSelectedIndex = 0;
+    this.renderCommandPaletteItems('');
+    setTimeout(() => input.focus(), 60);
+  },
+
+  closeCommandPalette() {
+    const modal = document.getElementById('command-palette-backdrop');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  onCommandPaletteInput(val) {
+    this._cmdSelectedIndex = 0;
+    this.renderCommandPaletteItems(val);
+  },
+
+  onCommandPaletteKeyDown(event) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeCommandPalette();
+      return;
     }
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (this._cmdItems.length > 0) {
+        this._cmdSelectedIndex = (this._cmdSelectedIndex + 1) % this._cmdItems.length;
+        this.highlightCommandPaletteItem();
+      }
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (this._cmdItems.length > 0) {
+        this._cmdSelectedIndex = (this._cmdSelectedIndex - 1 + this._cmdItems.length) % this._cmdItems.length;
+        this.highlightCommandPaletteItem();
+      }
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const item = this._cmdItems[this._cmdSelectedIndex];
+      if (item) {
+        this.executeCommandAction(item.action, item.extra);
+      }
+    }
+  },
+
+  highlightCommandPaletteItem() {
+    const container = document.getElementById('command-palette-results');
+    if (!container) return;
+    const items = container.querySelectorAll('.cmd-palette-item');
+    items.forEach((el, idx) => {
+      if (idx === this._cmdSelectedIndex) {
+        el.classList.add('bg-primary/10', 'text-primary', 'font-bold');
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.classList.remove('bg-primary/10', 'text-primary', 'font-bold');
+      }
+    });
+  },
+
+  getAvailableCommandActions() {
+    return [
+      { id: 'compose', group: 'Actions', title: 'Compose New Postcard', icon: 'pencil', shortcut: 'C' },
+      { id: 'stories', group: 'Actions', title: 'Explore World Stories (175+ Folktales)', icon: 'book-open', shortcut: 'W' },
+      { id: 'news', group: 'Actions', title: 'Open 24/7 Global News Wire', icon: 'newspaper', shortcut: 'N' },
+      { id: 'refresh', group: 'Actions', title: 'Refresh Mailbox & Sync IMAP', icon: 'refresh-cw', shortcut: 'R' },
+      { id: 'screenshot', group: 'Actions', title: 'Capture Postcard Screenshot', icon: 'camera', shortcut: 'S' },
+      
+      { id: 'nav_inbox', group: 'Navigation', title: 'Go to Inbox', icon: 'inbox', shortcut: 'G I' },
+      { id: 'nav_unread', group: 'Navigation', title: 'Go to Unread Mail', icon: 'mail-open', shortcut: 'G U' },
+      { id: 'nav_starred', group: 'Navigation', title: 'Go to Starred / Favorites', icon: 'star', shortcut: 'G S' },
+      { id: 'nav_sent', group: 'Navigation', title: 'Go to Sent Postcards', icon: 'send', shortcut: 'G E' },
+      { id: 'nav_drafts', group: 'Navigation', title: 'Go to Drafts', icon: 'file-text', shortcut: 'G D' },
+      { id: 'nav_archive', group: 'Navigation', title: 'Go to Archive', icon: 'archive', shortcut: 'G A' },
+      { id: 'nav_spam', group: 'Navigation', title: 'Go to Spam Folder', icon: 'shield-alert', shortcut: 'G X' },
+      { id: 'nav_trash', group: 'Navigation', title: 'Go to Trash', icon: 'trash-2', shortcut: 'G T' },
+      { id: 'nav_contacts', group: 'Navigation', title: 'Open Address Book & Contacts', icon: 'users', shortcut: 'G C' },
+
+      { id: 'theme_harmony', group: 'Appearance', title: 'Theme: Harmony Light', icon: 'sun', shortcut: 'T 1' },
+      { id: 'theme_dark', group: 'Appearance', title: 'Theme: Charcoal Dark', icon: 'moon', shortcut: 'T 2' },
+      { id: 'theme_midnight', group: 'Appearance', title: 'Theme: Midnight Green', icon: 'trees', shortcut: 'T 3' }
+    ];
+  },
+
+  renderCommandPaletteItems(query = '') {
+    const container = document.getElementById('command-palette-results');
+    if (!container) return;
+
+    const q = (query || '').toLowerCase().trim();
+    const actions = this.getAvailableCommandActions();
+    let filtered = actions;
+
+    if (q) {
+      filtered = actions.filter(a => 
+        a.title.toLowerCase().includes(q) || 
+        a.group.toLowerCase().includes(q) || 
+        a.shortcut.toLowerCase().includes(q)
+      );
+    }
+
+    this._cmdItems = filtered.map(a => ({ action: a.id }));
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="p-6 text-center text-muted-foreground">
+          <p class="font-medium">No commands found for "${this.escapeHtml(query)}"</p>
+          <button onclick="app.searchAllFolders('${this.escapeHtml(query)}'); app.closeCommandPalette();" class="mt-2 text-primary font-bold hover:underline cursor-pointer">
+            Search all mail for "${this.escapeHtml(query)}" ➔
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    const groups = {};
+    filtered.forEach((item, index) => {
+      if (!groups[item.group]) groups[item.group] = [];
+      groups[item.group].push({ item, originalIndex: index });
+    });
+
+    let html = '';
+    let runningIdx = 0;
+    for (const [groupName, groupList] of Object.entries(groups)) {
+      html += `
+        <div class="pt-2 pb-1 px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+          <span>${groupName}</span>
+        </div>
+      `;
+      for (const { item } of groupList) {
+        const isSelected = runningIdx === this._cmdSelectedIndex;
+        html += `
+          <div
+            onclick="app.executeCommandAction('${item.id}')"
+            class="cmd-palette-item flex items-center justify-between gap-3 p-2.5 rounded-xl cursor-pointer transition ${isSelected ? 'bg-primary/10 text-primary font-bold' : 'hover:bg-muted text-foreground'}"
+          >
+            <div class="flex items-center gap-2.5 min-w-0">
+              <i data-lucide="${item.icon}" class="h-4 w-4 shrink-0"></i>
+              <span class="truncate">${this.escapeHtml(item.title)}</span>
+            </div>
+            <kbd class="px-2 py-0.5 text-[10px] font-mono font-bold bg-card border border-border rounded text-muted-foreground shrink-0">${item.shortcut}</kbd>
+          </div>
+        `;
+        runningIdx++;
+      }
+    }
+
+    container.innerHTML = html;
+    if (window.lucide) lucide.createIcons();
+  },
+
+  executeCommandAction(actionId) {
+    this.closeCommandPalette();
+    if (actionId === 'compose') this.openCompose();
+    else if (actionId === 'stories') this.openStoriesModal();
+    else if (actionId === 'news') this.openNewsModal();
+    else if (actionId === 'refresh') this.refreshCurrentFolder();
+    else if (actionId === 'screenshot') this.takeScreenshot();
+    else if (actionId === 'nav_inbox') this.navTo('Inbox');
+    else if (actionId === 'nav_unread') this.navTo('Unread');
+    else if (actionId === 'nav_starred') this.navTo('Starred');
+    else if (actionId === 'nav_sent') this.navTo('Sent');
+    else if (actionId === 'nav_drafts') this.navTo('Drafts');
+    else if (actionId === 'nav_archive') this.navTo('Archive');
+    else if (actionId === 'nav_spam') this.navTo('Spam');
+    else if (actionId === 'nav_trash') this.navTo('Trash');
+    else if (actionId === 'nav_contacts') this.openContactsView();
+    else if (actionId === 'theme_harmony') this.switchTheme('harmony');
+    else if (actionId === 'theme_dark') this.switchTheme('dark');
+    else if (actionId === 'theme_midnight') this.switchTheme('midnight-green');
   },
 
   // Screenshot Capture tool for postcards & emails
