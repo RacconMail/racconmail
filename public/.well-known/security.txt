@@ -1,0 +1,11 @@
+# 🦝 Raccon Mail Security Policy (RFC 9116 Compliant)
+# https://racconmail.eu/.well-known/security.txt
+
+Contact: mailto:security@racconmail.eu
+Contact: mailto:admin@racconmail.eu
+Expires: 2027-10-23T06:00:00.000Z
+Preferred-Languages: en
+Canonical: https://racconmail.eu/.well-known/security.txt
+Policy: https://racconmail.eu/legal/privacy
+Acknowledgments: https://racconmail.eu/forum
+Hiring: https://racconmail.eu/forum

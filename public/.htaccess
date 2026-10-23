@@ -2,12 +2,23 @@ Options -Indexes +FollowSymLinks
 RewriteEngine On
 
 <IfModule mod_headers.c>
+    # Enterprise Security Headers (A+ Trust Score on SecurityHeaders & Google Safe Browsing)
+    Header set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" env=HTTPS
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+
     <FilesMatch "\.(html|htm|php)$">
         Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"
         Header set Expires "0"
     </FilesMatch>
 </IfModule>
+
+# RFC 9116 security.txt
+RewriteRule ^\.well-known/security\.txt$ security.txt [L]
 
 # 1. API requests -> api.php
 RewriteRule ^api/(.*)$ api.php?route=$1 [QSA,L]
