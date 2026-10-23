@@ -1360,26 +1360,58 @@ header img[src*="raccoon-logo"]:hover {
   transition: background-color 0.15s ease;
 }
 
-/* 3. Sleek Translucent Header */
-header {
-  background: rgba(8, 13, 27, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.14) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+/* 3. Pure White Top Header with Gray Text & Crisp Border */
+header,
+header.h-14 {
+  background: #FFFFFF !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+  color: #64748B !important;
 }
 
-/* 4. Minimalist Search Bar */
-#global-search-container > div {
-  background: #090F1F !important;
-  border: 1px solid rgba(56, 189, 248, 0.22) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+header span,
+header h1,
+header p {
+  color: #64748B !important;
+}
+
+header h1#current-folder-title {
+  color: #94A3B8 !important;
+}
+
+/* Header buttons: Solid black buttons with white write & icons */
+header button,
+header #btn-top-compose {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+  border: none !important;
+}
+
+header button:hover,
+header #btn-top-compose:hover {
+  background: #000000 !important;
+}
+
+header button *,
+header #btn-top-compose * {
+  color: #FFFFFF !important;
+}
+
+/* 4. Minimalist Search Bar (Clean White Bubble) */
+#global-search-container > div,
+.bubble-search-box {
+  background: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: none !important;
   transition: all 0.2s ease;
 }
-#global-search-container > div:focus-within {
-  background: #0B1224 !important;
-  border-color: #0EA5E9 !important;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 4px 18px rgba(14, 165, 233, 0.25) !important;
+#global-search-container > div:focus-within,
+.bubble-search-box:focus-within {
+  background: #FFFFFF !important;
+  border-color: #94A3B8 !important;
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.2) !important;
 }
 
 /* 5. Clean White Dropdowns & Modals */

@@ -115,19 +115,19 @@ if (empty($_SESSION['current_user_id'])) {
 <body class="bg-white text-slate-900 flex flex-col h-screen w-screen relative select-none overflow-hidden m-0 p-0">
 
   <!-- TOP APP BAR (WHITE BACKGROUND, GRAY WRITE, BLACK BUTTONS, RACCON LOGO) -->
-  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-6 shrink-0 z-20">
+  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-6 shrink-0 z-20" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
     <!-- Left: Raccon Logo + Brand Name in Gray + Sidebar Toggle (Black Button) -->
     <div class="flex items-center gap-3">
       <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
-      <span class="font-bold text-base tracking-tight text-slate-500">Raccon</span>
-      <button onclick="app.toggleMobileSidebar()" class="ml-2 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs" title="Toggle Sidebar">
-        <i data-lucide="panel-left" class="h-4 w-4 text-white"></i>
+      <span class="font-bold text-base tracking-tight text-slate-500" style="color: #64748b !important;">Raccon</span>
+      <button onclick="app.toggleMobileSidebar()" class="ml-2 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs" style="background-color: #0f172a !important; color: #ffffff !important;" title="Toggle Sidebar">
+        <i data-lucide="panel-left" class="h-4 w-4 text-white" style="color: #ffffff !important;"></i>
       </button>
     </div>
 
     <!-- Center: View Title in Gray -->
     <div class="hidden sm:flex items-center gap-2">
-      <h1 id="current-folder-title" class="text-sm font-semibold text-slate-400">All Mail</h1>
+      <h1 id="current-folder-title" class="text-sm font-semibold text-slate-400" style="color: #94a3b8 !important;">All Mail</h1>
       <p id="current-folder-subtitle" class="hidden"></p>
       <button id="empty-folder-btn" class="hidden"></button>
     </div>
@@ -138,10 +138,11 @@ if (empty($_SESSION['current_user_id'])) {
         onclick="app.openCompose()"
         id="btn-top-compose"
         class="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+        style="background-color: #0f172a !important; color: #ffffff !important;"
         title="Compose Message"
       >
-        <i data-lucide="edit-3" class="h-3.5 w-3.5 text-white"></i>
-        <span class="text-white">Compose</span>
+        <i data-lucide="edit-3" class="h-3.5 w-3.5 text-white" style="color: #ffffff !important;"></i>
+        <span class="text-white" style="color: #ffffff !important;">Compose</span>
       </button>
     </div>
   </header>
