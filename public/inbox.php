@@ -232,20 +232,21 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
 
     <!-- Raccon Mail Global Search Bar (Responsive with min-w-0 so it never pushes or overlaps buttons) -->
-    <div class="flex-1 min-w-0 max-w-xl mx-2 sm:mx-4 relative" id="global-search-container">
+    <div class="flex-1 min-w-0 max-w-xl ml-1.5 mr-2 sm:mx-4 relative" id="global-search-container">
       <div class="relative flex items-center">
         <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-muted-foreground pointer-events-none"></i>
         <input
           id="global-search"
           type="text"
           autocomplete="off"
-          placeholder="Search all mail, spam, senders..."
-          class="w-full rounded-full border border-border bg-muted/60 pl-9 pr-14 sm:pr-20 py-1.5 text-xs sm:text-sm outline-none transition focus:bg-card focus:border-primary focus:ring-1 focus:ring-primary text-foreground"
+          placeholder="Search mail..."
+          class="w-full rounded-full border border-border bg-muted/60 pl-9 pr-8 sm:pr-20 py-1.5 text-xs sm:text-sm outline-none transition focus:bg-card focus:border-primary focus:ring-1 focus:ring-primary text-foreground"
+          onclick="app.onSearchClick()"
           oninput="app.onSearchInput(this.value)"
-          onfocus="app.onSearchFocus()"
+          onfocus="app.onSearchClick()"
           onkeydown="app.onSearchKeyDown(event)"
         />
-        <button id="search-clear-btn" class="hidden absolute right-10 text-muted-foreground hover:text-foreground text-xs" onclick="app.clearSearch()">
+        <button id="search-clear-btn" class="hidden absolute right-3 sm:right-10 text-muted-foreground hover:text-foreground text-xs" onclick="app.clearSearch()">
           <i data-lucide="x" class="h-3.5 w-3.5"></i>
         </button>
         <span class="absolute right-3 hidden sm:inline text-[11px] font-mono text-muted-foreground bg-card px-1.5 py-0.5 rounded border border-border">/</span>
@@ -258,14 +259,14 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
 
     <!-- Header Actions & Account Switcher -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       <!-- World Stories Button -->
       <button
         onclick="app.openStoriesModal()"
         title="World Stories — Read global folktales & fables"
-        class="flex items-center gap-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs"
+        class="flex items-center gap-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 px-2.5 sm:px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
       >
-        <i data-lucide="book-open" class="h-3.5 w-3.5 text-primary"></i>
+        <i data-lucide="book-open" class="h-3.5 w-3.5 text-primary shrink-0"></i>
         <span class="hidden sm:inline">Stories</span>
         <span class="text-[10px] bg-primary text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
       </button>
@@ -611,9 +612,9 @@ if (empty($_SESSION['current_user_id'])) {
       <i data-lucide="search" class="h-5 w-5"></i>
       <span class="text-[10px] font-medium">Search</span>
     </button>
-    <!-- Compose Center Button -->
-    <button onclick="app.openCompose()" class="flex items-center justify-center -mt-6 h-12 w-12 rounded-full btn-orange-matte text-white shadow-xl transform active:scale-90 transition border-2 border-card cursor-pointer" title="Compose Postcard">
-      <i data-lucide="pencil" class="h-5 w-5"></i>
+    <!-- Compose Center Button (Scaled to fit seamlessly in bottom nav bar) -->
+    <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full btn-orange-matte text-white shadow-md transform active:scale-90 transition border-2 border-card cursor-pointer shrink-0" title="Compose Postcard">
+      <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
     </button>
     <button onclick="app.openStoriesModal()" class="flex flex-col items-center justify-center gap-1 text-primary py-1 px-3 rounded-xl transition cursor-pointer" title="World Stories (worldstories.org.uk)">
       <i data-lucide="book-open" class="h-5 w-5 text-primary"></i>
@@ -736,27 +737,28 @@ if (empty($_SESSION['current_user_id'])) {
       <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-border-light"></div>
     </div>
 
-    <!-- Compose Bottom Actions -->
-    <div class="px-5 py-3 border-t border-border bg-muted/40 flex items-center justify-between shrink-0">
-      <div class="flex items-center gap-2">
-        <label class="flex items-center gap-1.5 cursor-pointer rounded-full border border-border bg-card hover:bg-muted px-3 py-1.5 text-xs font-medium text-foreground transition">
+    <!-- Compose Bottom Actions (Optimized to fit all mobile viewports cleanly) -->
+    <div class="px-2.5 sm:px-5 py-2 sm:py-3 border-t border-border bg-muted/40 flex items-center justify-between shrink-0 gap-1 sm:gap-2">
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <label class="flex items-center gap-1 cursor-pointer rounded-full border border-border bg-card hover:bg-muted px-2.5 sm:px-3 py-1.5 text-xs font-medium text-foreground transition shrink-0" title="Attach Files">
           <i data-lucide="paperclip" class="h-3.5 w-3.5"></i>
-          <span>Attach</span>
+          <span class="hidden sm:inline">Attach</span>
           <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
         </label>
-        <button onclick="app.saveDraft()" class="rounded-full border border-border bg-card hover:bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition">
-          Save Draft
+        <button onclick="app.saveDraft()" class="rounded-full border border-border bg-card hover:bg-muted px-2 sm:px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition shrink-0" title="Save Draft">
+          <span class="hidden sm:inline">Save </span>Draft
         </button>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="app.discardDraft()" class="px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-red-600 transition">
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <button onclick="app.discardDraft()" class="px-1.5 sm:px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-red-600 transition shrink-0" title="Discard Draft">
           Discard
         </button>
         <button
           onclick="app.sendMessage()"
           id="send-mail-btn"
-          class="flex items-center gap-1.5 rounded-full btn-orange-matte font-display font-bold text-xs py-1.5 px-3.5 shadow-sm transition transform active:scale-95 cursor-pointer shrink-0"
+          class="flex items-center gap-1.5 rounded-full btn-orange-matte font-display font-bold text-xs py-1.5 px-3 sm:px-3.5 shadow-sm transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+          title="Send Postcard"
         >
           <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
           <span>Send Postcard</span>

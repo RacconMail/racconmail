@@ -1969,6 +1969,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.loadMessages();
   },
 
+  onSearchClick() {
+    const val = (document.getElementById('global-search')?.value || '').trim();
+    this.fetchSearchSuggestions(val);
+  },
+
+  onSearchFocus() {
+    this.onSearchClick();
+  },
+
   onSearchInput(val) {
     this.searchQuery = val;
     const clearBtn = document.getElementById('search-clear-btn');
@@ -1982,18 +1991,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }, 160);
     } else {
       clearBtn?.classList.add('hidden');
-      if (dropdown) {
-        dropdown.classList.add('hidden');
-        dropdown.innerHTML = '';
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        this.fetchSearchSuggestions('');
       }
       this.loadMessages();
-    }
-  },
-
-  onSearchFocus() {
-    const val = (document.getElementById('global-search')?.value || '').trim();
-    if (val.length > 0) {
-      this.fetchSearchSuggestions(val);
     }
   },
 
@@ -2013,14 +2014,23 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (dropdown) dropdown.classList.add('hidden');
   },
 
+  setQuickFilter(filterId) {
+    this.closeSearchSuggestions();
+    if (filterId === 'spam' || filterId === 'sent' || filterId === 'trash' || filterId === 'archive') {
+      this.navTo(filterId.charAt(0).toUpperCase() + filterId.slice(1));
+    } else {
+      this.setFilter(filterId);
+    }
+  },
+
   async fetchSearchSuggestions(query) {
     const dropdown = document.getElementById('search-suggestions-dropdown');
     if (!dropdown) return;
 
     try {
-      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query || '')}`);
       const data = await res.json();
-      this.renderSearchSuggestions(data, query);
+      this.renderSearchSuggestions(data, query || '');
     } catch (err) {
       console.error('Failed to fetch search suggestions:', err);
     }
@@ -2033,9 +2043,99 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const people = data.people || [];
     const messages = data.messages || [];
 
+    // Empty state: render quick filters, recent senders, and recent emails
+    if (data.is_empty || (!query && query.trim().length === 0)) {
+      let emptyHtml = `
+        <!-- Quick Search Filters -->
+        <div class="p-2.5 bg-muted/40 border-b border-border/60">
+          <div class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+            <span>⚡ Quick Filters</span>
+            <span class="text-[9px] text-muted-foreground">1-Tap</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-1.5 px-1">
+            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
+              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-primary"></i>
+              <span>Unread</span>
+            </button>
+            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
+              <i data-lucide="star" class="h-3.5 w-3.5 text-amber-500 fill-amber-400"></i>
+              <span>Starred</span>
+            </button>
+            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
+              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-blue-500"></i>
+              <span>Attachments</span>
+            </button>
+            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
+              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-rose-500"></i>
+              <span>Spam Box</span>
+            </button>
+            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
+              <i data-lucide="layers" class="h-3.5 w-3.5 text-emerald-500"></i>
+              <span>All Mail</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      if (people.length > 0) {
+        emptyHtml += `
+          <div class="p-2">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+              <span>Recent Senders</span>
+              <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-bold">${people.length}</span>
+            </div>
+            <div class="space-y-0.5 mt-1">
+        `;
+        for (const p of people) {
+          const initial = (p.name || p.email || 'U')[0].toUpperCase();
+          emptyHtml += `
+            <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-card cursor-pointer transition">
+              <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                ${initial}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="font-bold text-foreground text-xs truncate">${this.escapeHtml(p.name)}</p>
+                <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(p.email)}</p>
+              </div>
+              <span class="text-[10px] text-primary font-medium shrink-0">Filter ➔</span>
+            </div>
+          `;
+        }
+        emptyHtml += `</div></div>`;
+      }
+
+      if (messages.length > 0) {
+        emptyHtml += `
+          <div class="p-2 border-t border-border/50">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <span>Recent Messages</span>
+            </div>
+            <div class="space-y-0.5 mt-1">
+        `;
+        for (const m of messages) {
+          emptyHtml += `
+            <div onclick="app.selectSuggestionMessage('${m.id}')" class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-muted/60 cursor-pointer transition">
+              <div class="min-w-0 flex-1">
+                <span class="font-bold text-foreground text-xs truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
+                <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(m.subject || '(no subject)')}</p>
+              </div>
+              <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-muted-foreground shrink-0"></i>
+            </div>
+          `;
+        }
+        emptyHtml += `</div></div>`;
+      }
+
+      dropdown.innerHTML = emptyHtml;
+      dropdown.classList.remove('hidden');
+      dropdown.classList.add('flex');
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+
     if (people.length === 0 && messages.length === 0) {
       dropdown.innerHTML = `
-        <div class="p-3 text-center text-muted-foreground">
+        <div class="p-4 text-center text-muted-foreground">
           <p class="font-medium">No direct matches for "${this.escapeHtml(query)}"</p>
           <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="mt-2 text-primary font-bold hover:underline cursor-pointer">
             Search in all mail & spam anyway ➔

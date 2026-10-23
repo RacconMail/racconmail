@@ -1331,10 +1331,45 @@ try {
     }
 
     // 4b. GET /api/search/suggestions (Auto-complete suggestions for senders, contacts & emails across all folders)
+    // 4b. GET /api/search/suggestions (Auto-complete suggestions for senders, contacts & emails across all folders)
     if ($route === 'search/suggestions') {
         $q = trim($_GET['q'] ?? '');
         if ($q === '') {
-            echo json_encode(['people' => [], 'messages' => []]);
+            // When opened on click with empty query, return top recent senders and quick search suggestions
+            $stmtRecentSenders = $db->prepare('
+                SELECT DISTINCT sender_name as name, sender_email as email, "sender" as type
+                FROM messages
+                WHERE user_id = ? AND sender_email IS NOT NULL AND sender_email != ""
+                ORDER BY created_at DESC
+                LIMIT 5
+            ');
+            $stmtRecentSenders->execute([$currentUserId]);
+            $recentPeople = $stmtRecentSenders->fetchAll();
+
+            $stmtRecentMsgs = $db->prepare('
+                SELECT id, sender_name, sender_email, subject, body, created_at, is_spam, is_trashed, is_archived, folder_id,
+                CASE 
+                    WHEN is_trashed = 1 THEN "Trash"
+                    WHEN is_spam = 1 THEN "Spam"
+                    WHEN is_archived = 1 THEN "Archive"
+                    WHEN is_draft = 1 THEN "Drafts"
+                    WHEN folder_id = "sent" THEN "Sent"
+                    ELSE "Inbox"
+                END as folder_label
+                FROM messages
+                WHERE user_id = ? AND is_trashed = 0 AND is_spam = 0
+                ORDER BY created_at DESC
+                LIMIT 4
+            ');
+            $stmtRecentMsgs->execute([$currentUserId]);
+            $recentMsgs = $stmtRecentMsgs->fetchAll();
+
+            echo json_encode([
+                'query' => '',
+                'is_empty' => true,
+                'people' => $recentPeople,
+                'messages' => $recentMsgs
+            ]);
             exit;
         }
 
@@ -1382,15 +1417,16 @@ try {
                 ELSE "Inbox"
             END as folder_label
             FROM messages
-            WHERE user_id = ? AND (subject LIKE ? OR sender_name LIKE ? OR sender_email LIKE ? OR body LIKE ?)
+            WHERE user_id = ? AND (subject LIKE ? OR sender_name LIKE ? OR sender_email LIKE ? OR recipient_email LIKE ? OR body LIKE ?)
             ORDER BY created_at DESC
             LIMIT 6
         ');
-        $stmtMsgs->execute([$currentUserId, $term, $term, $term, $term]);
+        $stmtMsgs->execute([$currentUserId, $term, $term, $term, $term, $term]);
         $matchedMessages = $stmtMsgs->fetchAll();
 
         echo json_encode([
             'query' => $q,
+            'is_empty' => false,
             'people' => array_slice($people, 0, 5),
             'messages' => $matchedMessages
         ]);
