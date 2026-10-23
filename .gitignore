@@ -4,6 +4,7 @@ vendor/
 
 # Binaries & APK builds
 *.apk
+*.exe
 *.keystore
 *.jar
 *.zip

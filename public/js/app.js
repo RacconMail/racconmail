@@ -47,11 +47,11 @@ const app = {
       const meRes = await fetch('/api/auth/me');
       const meData = await meRes.json();
       if (!meData.loggedIn || !meData.user) {
-        window.location.href = '/auth?mode=register';
+        window.location.replace('/auth?mode=register');
         return;
       }
     } catch (_) {
-      window.location.href = '/auth?mode=register';
+      window.location.replace('/auth?mode=register');
       return;
     }
 
@@ -73,10 +73,105 @@ const app = {
 
     try { this.setupSSE(); } catch (_) {}
     try { this.setupKeyboardShortcuts(); } catch (_) {}
+    try { this.setupHistoryAndBackNavigation(); } catch (e) { console.error('history setup error:', e); }
     try { this.startMailPolling(); } catch (_) {}
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
     }
+  },
+
+  setupHistoryAndBackNavigation() {
+    if (!window.history || !window.history.pushState) return;
+
+    // Buffer initial state so history always has an inbox anchor
+    try {
+      window.history.replaceState({ screen: 'inbox-root' }, '', '/inbox');
+      window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+    } catch (_) {}
+
+    let lastBackPressTime = 0;
+
+    window.addEventListener('popstate', () => {
+      // 1. Check if Command Palette is open
+      const cmdPalette = document.getElementById('command-palette-backdrop');
+      if (cmdPalette && !cmdPalette.classList.contains('hidden')) {
+        this.closeCommandPalette();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 2. Check if Stories reader view is open
+      const storiesReader = document.getElementById('stories-reader-view');
+      if (storiesReader && !storiesReader.classList.contains('hidden')) {
+        this.backToStoriesCatalog();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 3. Check if Stories modal is open
+      const storiesModal = document.getElementById('stories-modal');
+      if (storiesModal && !storiesModal.classList.contains('hidden')) {
+        this.closeStoriesModal();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 4. Check if News modal is open
+      const newsModal = document.getElementById('news-modal');
+      if (newsModal && !newsModal.classList.contains('hidden')) {
+        this.closeNewsModal();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 5. Check if Privacy modal is open
+      const privacyModal = document.getElementById('privacy-modal');
+      if (privacyModal && !privacyModal.classList.contains('hidden')) {
+        this.closePrivacyModal();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 6. Check if Contacts modal is open
+      const contactsModal = document.getElementById('contacts-modal');
+      if (contactsModal && !contactsModal.classList.contains('hidden')) {
+        this.closeContactsModal();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 7. Check if Compose modal is open
+      const composeModal = document.getElementById('compose-modal');
+      if (composeModal && !composeModal.classList.contains('hidden')) {
+        this.closeCompose();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 8. Check if mobile Reader panel (single message view) is open
+      const readerPanel = document.getElementById('reader-panel');
+      if (readerPanel && !readerPanel.classList.contains('hidden') && window.innerWidth < 768) {
+        this.backToMessages();
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+        return;
+      }
+
+      // 9. Root of inbox: Never allow navigation back to /auth or logout!
+      const now = Date.now();
+      if (now - lastBackPressTime < 2200) {
+        this.showToast('Exiting Raccon Mail...', 1500);
+        setTimeout(() => {
+          if (window.navigator && window.navigator.app && window.navigator.app.exitApp) {
+            window.navigator.app.exitApp();
+          }
+        }, 150);
+      } else {
+        lastBackPressTime = now;
+        this.showToast('Press back again to exit', 2000);
+        // Lock user safely inside the inbox
+        window.history.pushState({ screen: 'inbox-root' }, '', '/inbox');
+      }
+    });
   },
 
   startMailPolling() {

@@ -6,12 +6,13 @@ if (empty($_SESSION['current_user_id'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="notranslate" translate="no">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="google" content="notranslate" />
   <title>Raccon Mail — Clever email for web & mobile</title>
   <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
   <link rel="icon" href="/favicon.png" type="image/png" />

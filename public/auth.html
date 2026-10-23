@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="notranslate" translate="no">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="google" content="notranslate" />
   <title>Sign In &amp; Register — Raccon Mail</title>
   <link rel="icon" href="/favicon.png" type="image/png" />
   
@@ -451,7 +452,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Login failed');
-        window.location.href = '/inbox';
+        window.location.replace('/inbox');
       } catch (err) {
         showError(err.message);
         btn.disabled = false;
@@ -494,7 +495,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Registration failed');
-        window.location.href = '/inbox';
+        window.location.replace('/inbox');
       } catch (err) {
         showError(err.message);
         if (btn) {
@@ -660,6 +661,17 @@
       }
 
       requestAnimationFrame(gameLoop);
+    })();
+
+    // Immediate session gate: If already logged in, redirect straight to inbox!
+    (async function checkExistingSession() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.loggedIn && data.user) {
+          window.location.replace('/inbox');
+        }
+      } catch (_) {}
     })();
 
     window.addEventListener('DOMContentLoaded', () => {

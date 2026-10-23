@@ -11,7 +11,7 @@ namespace RacconMailDesktop
     {
         private const string AppName = "Raccon Mail";
         private const string AppVersion = "1.0.0";
-        private const string AppUrl = "https://racconmail.eu/inbox";
+        private const string AppUrl = "https://racconmail.eu/";
         private const string AppPublisher = "Raccon Mail Open Source";
 
         [STAThread]
@@ -129,7 +129,7 @@ namespace RacconMailDesktop
                 string userDataDir = Path.Combine(localAppData, "RacconMail", "User Data");
 
                 string appArgs = string.Format(
-                    "--app=\"{0}\" --window-size=1280,850 --user-data-dir=\"{1}\" --enable-features=OverlayScrollbar",
+                    "--app=\"{0}\" --window-size=1280,850 --user-data-dir=\"{1}\" --enable-features=OverlayScrollbar --disable-features=Translate,TranslateUI --disable-translate --lang=en-US",
                     AppUrl,
                     userDataDir
                 );

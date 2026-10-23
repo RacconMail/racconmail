@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth notranslate" translate="no">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="google" content="notranslate" />
   <title>Raccon Mail — Clever email for web &amp; mobile</title>
   <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
   <link rel="icon" href="/favicon.png" type="image/png" />
@@ -73,9 +74,10 @@
       height: auto !important;
       overflow-x: hidden !important;
       overflow-y: auto !important;
+      max-width: 100vw !important;
     }
 
-    /* Harmony Canvas Background */
+    /* Harmony Canvas Background & Safe Area Insets */
     body {
       background-color: #EFEDE9 !important;
       color: #1E293B !important;
@@ -85,6 +87,11 @@
       overflow-x: hidden !important;
       overflow-y: visible !important;
       touch-action: auto !important;
+      max-width: 100vw !important;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
     }
 
     /* Raccoon Mascot Animation */
@@ -175,13 +182,21 @@
 <body class="bg-[#EFEDE9] text-[#1E293B] antialiased selection:bg-[#EBF5FB] flex flex-col justify-between">
 
   <div class="w-full flex flex-col justify-between">
+    <!-- ANDROID APP RUNTIME STATUS (Visible inside Android APK) -->
+    <div id="android-app-badge-bar" class="hidden bg-[#1E293B] text-white text-[11px] font-semibold py-1.5 px-3 text-center border-b border-black/20 z-50">
+      <span class="inline-flex items-center gap-1.5">
+        <i class="fab fa-android text-[#3DDC84]"></i>
+        <span>Raccon Mail for Android &bull; Installed &amp; Active</span>
+      </span>
+    </div>
+
     <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
     <header class="bg-white border-b border-[#E2E8F0] sticky top-0 z-40 shadow-xs">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-4">
         <!-- Brand Logo -->
-        <a href="/" class="flex items-center gap-2.5 font-display text-xl font-bold text-[#1E293B] hover:opacity-95 transition">
-          <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-10 w-10 raccoon-anim object-contain shrink-0"/>
-          <span class="tracking-tight text-lg sm:text-xl font-bold">Raccon Mail</span>
+        <a href="/" class="flex items-center gap-2 font-display text-base sm:text-xl font-bold text-[#1E293B] hover:opacity-95 transition shrink-0">
+          <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-8 w-8 sm:h-10 sm:w-10 raccoon-anim object-contain shrink-0"/>
+          <span class="tracking-tight">Raccon Mail</span>
         </a>
 
         <!-- Charming Animated Rolling Cookie (No Background) -->
@@ -197,84 +212,84 @@
         </div>
 
         <!-- Header Nav Links & Actions -->
-        <div class="flex items-center gap-3" id="auth-nav-container">
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0" id="auth-nav-container">
           <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
           <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
-          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-5 py-2 text-sm font-semibold transition active:scale-95 inline-flex items-center gap-1.5 cursor-pointer">
-            <i class="fas fa-sign-in-alt text-xs text-[#64748B]"></i>
+          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition active:scale-95 inline-flex items-center gap-1 cursor-pointer">
+            <i class="fas fa-sign-in-alt text-[11px] text-[#64748B]"></i>
             <span>Sign In</span>
           </a>
-          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2 text-sm font-semibold transition active:scale-95 shadow-sm inline-flex items-center gap-2 cursor-pointer">
+          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition active:scale-95 shadow-sm inline-flex items-center gap-1 cursor-pointer">
             <span>Join Free</span>
-            <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+            <i class="fas fa-chevron-right text-[8px] sm:text-[10px] bg-white/20 rounded-full w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center"></i>
           </a>
         </div>
       </div>
     </header>
 
-    <!-- HARMONY HERO SECTION (Moved UP for effortless clicking) -->
-    <section class="mx-auto grid max-w-6xl items-center gap-8 px-6 pt-6 pb-10 sm:pt-10 sm:pb-16 md:grid-cols-2 relative z-10">
+    <!-- HARMONY HERO SECTION -->
+    <section class="mx-auto grid max-w-6xl items-center gap-6 sm:gap-8 px-4 sm:px-6 pt-5 pb-8 sm:pt-10 sm:pb-16 md:grid-cols-2 relative z-10 overflow-hidden">
       <div class="relative z-20">
         <!-- Pill Badge -->
-        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#CBD5E1] px-3.5 py-1 text-xs font-semibold text-[#208ED3] shadow-xs">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#CBD5E1] px-3 sm:px-3.5 py-1 text-xs font-semibold text-[#208ED3] shadow-xs">
           <i class="fas fa-shield-alt text-[#208ED3]"></i>
           <span>Masked from spam. Always.</span>
         </span>
 
         <!-- Hero Headline -->
-        <h1 class="mt-4 font-display text-4xl sm:text-5xl md:text-6xl font-extrabold leading-[1.1] text-[#1E293B]">
-          Where Clever Email<br/>Meets True Privacy.
+        <h1 class="mt-3 sm:mt-4 font-display text-3xl sm:text-5xl md:text-6xl font-extrabold leading-[1.12] text-[#1E293B] tracking-tight">
+          Where Clever Email<br class="hidden sm:inline"/> Meets True Privacy.
         </h1>
 
         <!-- Subtitle -->
-        <p class="mt-3.5 max-w-lg text-base sm:text-lg text-[#64748B] leading-relaxed">
+        <p class="mt-3 max-w-lg text-sm sm:text-lg text-[#64748B] leading-relaxed">
           Fast, private, and beautifully simple. Sealed envelopes, zero trackers, and complete control on web and smartphone.
         </p>
 
-        <!-- Harmony Action Buttons (Moved UP, z-30, touch-friendly) -->
-        <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-3 relative z-30">
-          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-7 py-3.5 text-base font-semibold shadow-md hover:shadow-lg transition flex items-center gap-2.5 cursor-pointer relative z-30 touch-target">
+        <!-- Harmony Action Buttons (Responsive full-width on mobile, auto on desktop) -->
+        <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 relative z-30 w-full sm:w-auto">
+          <a href="/auth?tab=register" onclick="event.preventDefault(); openAuthModal('register');" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-6 py-3 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer relative z-30 touch-target w-full sm:w-auto text-center">
             <span>Create Free Account</span>
             <i class="fas fa-chevron-right text-xs bg-white/20 rounded-full w-5 h-5 flex items-center justify-center"></i>
           </a>
-          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-6 py-3.5 text-base font-semibold transition flex items-center gap-2 cursor-pointer relative z-30 touch-target">
+          <a href="/auth?tab=login" onclick="event.preventDefault(); openAuthModal('login');" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-5 py-3 sm:px-6 sm:py-3.5 text-sm sm:text-base font-semibold transition flex items-center justify-center gap-2 cursor-pointer relative z-30 touch-target w-full sm:w-auto text-center">
             <i class="fas fa-key text-xs text-[#64748B]"></i>
             <span>Sign In</span>
           </a>
         </div>
 
-        <!-- Quick Feature Badges (Harmony Line Icons) -->
-        <div class="mt-10 grid grid-cols-3 gap-4 pt-6 border-t border-[#D5D5D5]/60 text-xs text-[#64748B]">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
-              <i class="fas fa-lock text-[11px]"></i>
+        <!-- Quick Feature Badges (Fits mobile screens cleanly) -->
+        <div class="mt-6 sm:mt-10 grid grid-cols-3 gap-2 sm:gap-4 pt-4 sm:pt-6 border-t border-[#D5D5D5]/60 text-[11px] sm:text-xs text-[#64748B]">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-lock text-[10px] sm:text-[11px]"></i>
             </div>
-            <span class="font-medium text-[#1E293B]">Zero Trackers</span>
+            <span class="font-medium text-[#1E293B] leading-tight">Zero Trackers</span>
           </div>
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
-              <i class="fas fa-bolt text-[11px]"></i>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-bolt text-[10px] sm:text-[11px]"></i>
             </div>
-            <span class="font-medium text-[#1E293B]">Instant Sync</span>
+            <span class="font-medium text-[#1E293B] leading-tight">Instant Sync</span>
           </div>
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
-              <i class="fas fa-check-circle text-[11px]"></i>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+              <i class="fas fa-check-circle text-[10px] sm:text-[11px]"></i>
             </div>
-            <span class="font-medium text-[#1E293B]">Free Mailbox</span>
+            <span class="font-medium text-[#1E293B] leading-tight">Free Mailbox</span>
           </div>
         </div>
       </div>
 
-      <!-- Mascot Showcase with Speech Bubble -->
-      <div class="relative flex justify-center items-center py-6 select-none">
-        <div class="relative inline-block">
+      <!-- Mascot Showcase with Mobile-Safe Speech Bubble -->
+      <div class="relative flex flex-col justify-center items-center py-4 sm:py-6 select-none max-w-full overflow-hidden">
+        <div class="relative flex flex-col items-center">
           
-          <!-- Chat Bubble coming out of Raccoon's mouth (White background, Black text, Raccoon icon) -->
-          <div class="absolute -top-12 -left-4 sm:-top-16 sm:-left-16 md:-top-16 md:-left-20 z-30 max-w-[270px] sm:max-w-[320px] bg-white text-black px-4 py-3 sm:px-5 sm:py-3.5 rounded-3xl shadow-2xl border-2 border-[#CBD5E1] transition-transform hover:scale-105 duration-200">
-            <!-- Speech Bubble Tail pointing towards mouth -->
-            <div class="absolute -bottom-3 right-12 sm:right-16 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-white filter drop-shadow(0 2px 1px rgba(0,0,0,0.06))"></div>
-            <div class="absolute -bottom-3.5 right-12 sm:right-16 w-0 h-0 border-l-[11px] border-l-transparent border-r-[11px] border-r-transparent border-t-[13px] border-t-[#CBD5E1] -z-10"></div>
+          <!-- Chat Bubble: Cleanly centered above mascot on mobile, offset on desktop -->
+          <div class="mb-3 sm:mb-0 sm:absolute sm:-top-16 sm:-left-16 md:-top-16 md:-left-20 z-30 max-w-[280px] sm:max-w-[320px] bg-white text-black px-4 py-2.5 sm:px-5 sm:py-3.5 rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl border-2 border-[#CBD5E1] transition-transform hover:scale-105 duration-200">
+            <!-- Speech Bubble Tail -->
+            <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 sm:left-auto sm:right-16 sm:translate-x-0 w-0 h-0 border-l-[8px] sm:border-l-[10px] border-l-transparent border-r-[8px] sm:border-r-[10px] border-r-transparent border-t-[10px] sm:border-t-[12px] border-t-white filter drop-shadow(0 2px 1px rgba(0,0,0,0.06))"></div>
+            <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 sm:left-auto sm:right-16 sm:translate-x-0 w-0 h-0 border-l-[9px] sm:border-l-[11px] border-l-transparent border-r-[9px] sm:border-r-[11px] border-r-transparent border-t-[11px] sm:border-t-[13px] border-t-[#CBD5E1] -z-10"></div>
             
             <div class="flex items-start gap-2.5">
               <img src="/raccoon-logo.png" alt="Raccoon icon" class="h-6 w-6 sm:h-7 sm:w-7 object-contain shrink-0 mt-0.5" />
@@ -290,7 +305,7 @@
             </div>
           </div>
 
-          <img src="/raccoon-logo.png" alt="Raccon mascot with envelope" class="raccoon-anim relative w-64 sm:w-80 md:w-96 max-w-full object-contain pointer-events-none select-none"/>
+          <img src="/raccoon-logo.png" alt="Raccon mascot with envelope" class="raccoon-anim relative w-48 sm:w-80 md:w-96 max-w-full object-contain pointer-events-none select-none"/>
         </div>
       </div>
     </section>
@@ -314,8 +329,8 @@
       <!-- Harmony Style Mailbox Card -->
       <div class="grid overflow-hidden rounded-[20px] border border-[#D5D5D5] bg-white shadow-harmony-card md:grid-cols-[220px_320px_1fr]">
         
-        <!-- Sidebar -->
-        <aside class="bg-[#F8FAFC] border-r border-[#E2E8F0] p-5 text-[#1E293B] flex flex-col justify-between">
+        <!-- Sidebar (Visible on Desktop / Tablets) -->
+        <aside class="hidden md:flex bg-[#F8FAFC] border-r border-[#E2E8F0] p-5 text-[#1E293B] flex-col justify-between">
           <div>
             <div class="flex items-center gap-2.5 font-display font-bold text-[#1E293B] pb-4 border-b border-[#E2E8F0]">
               <img src="/raccoon-logo.png" alt="Raccon" class="h-7 w-7 raccoon-anim object-contain"/>
@@ -512,14 +527,14 @@
               </div>
 
               <!-- Android Action Row -->
-              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3">
-                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-v1.0.0.apk" class="btn-primary rounded-full bg-[#1E293B] hover:bg-[#000000] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center gap-2.5 cursor-pointer">
+              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3" id="android-apk-action-container">
+                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-v1.0.0.apk" class="btn-primary rounded-full bg-[#1E293B] hover:bg-[#000000] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
                   <i class="fab fa-android text-base text-[#3DDC84]"></i>
                   <span>Download Android APK</span>
                   <span class="text-xs opacity-70 font-mono ml-1">v1.0.0</span>
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center sm:justify-start gap-3">
                   <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-[#208ED3] font-semibold hover:underline flex items-center gap-1">
                     <i class="fab fa-github text-sm"></i>
                     <span>GitHub Releases</span>
@@ -532,7 +547,7 @@
             </div>
 
             <!-- iOS Card -->
-            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#1E293B]/30 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#1E293B]/30 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                   <div class="w-14 h-14 rounded-2xl bg-[#000000]/10 border border-[#000000]/20 flex items-center justify-center text-[#1E293B] shrink-0 text-2xl">
@@ -562,13 +577,13 @@
               </div>
 
               <!-- iOS Action Row with 3-Step Guide -->
-              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3">
-                <a href="/inbox" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#1E293B] border border-[#CBD5E1] px-6 py-3 font-semibold text-sm transition active:scale-95 inline-flex items-center gap-2.5">
+              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <a href="/inbox" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#1E293B] border border-[#CBD5E1] px-6 py-3 font-semibold text-sm transition active:scale-95 inline-flex items-center justify-center gap-2.5 w-full sm:w-auto text-center">
                   <i class="fab fa-apple text-base text-[#1E293B]"></i>
                   <span>Launch iOS Web App</span>
                   <i class="fas fa-arrow-up-right-from-square text-xs text-[#64748B]"></i>
                 </a>
-                <div class="flex items-center gap-2 text-[11px] text-[#64748B] bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0]">
+                <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-[#64748B] bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0]">
                   <span>On Safari:</span>
                   <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-arrow-up-from-bracket text-[#208ED3]"></i> Share</span>
                   <span>&rarr;</span>
@@ -578,7 +593,7 @@
             </div>
 
             <!-- Desktop Card (Windows, Mac & Linux) -->
-            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#00A4EF]/40 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#00A4EF]/40 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                   <div class="w-14 h-14 rounded-2xl bg-[#00A4EF]/15 border border-[#00A4EF]/30 flex items-center justify-center text-[#00A4EF] shrink-0 text-2xl">
@@ -608,14 +623,14 @@
               </div>
 
               <!-- Desktop Action Row with Reassuring Message -->
-              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3">
-                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-Setup.exe" class="btn-primary rounded-full bg-[#0078D4] hover:bg-[#005A9E] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center gap-2.5 cursor-pointer">
+              <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-Setup.exe" class="btn-primary rounded-full bg-[#0078D4] hover:bg-[#005A9E] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
                   <i class="fab fa-windows text-base text-white"></i>
                   <span>Download Windows App (.exe)</span>
                   <span class="text-xs opacity-80 font-mono ml-1">v1.0.0 Installer</span>
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center sm:justify-start gap-3">
                   <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-[#208ED3] font-semibold hover:underline flex items-center gap-1">
                     <i class="fab fa-github text-sm"></i>
                     <span>GitHub Releases</span>
@@ -847,7 +862,7 @@
 
   <!-- AUTH POPUP MODAL (Sign In & Join Free) -->
   <div id="auth-modal" style="display: none;" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs transition-opacity" onclick="if(event.target === this) closeAuthModal()">
-    <div class="relative w-full max-w-md rounded-[24px] bg-white p-6 sm:p-8 shadow-2xl border border-[#D5D5D5] overflow-hidden transform transition-all scale-100">
+    <div class="relative w-full max-w-md rounded-[24px] bg-white p-5 sm:p-8 shadow-2xl border border-[#D5D5D5] overflow-y-auto max-h-[92vh] transform transition-all scale-100">
       
       <!-- Close Button (X) -->
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] flex items-center justify-center transition cursor-pointer z-10" title="Close">
@@ -1148,7 +1163,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Login failed');
-        window.location.href = '/inbox';
+        window.location.replace('/inbox');
       } catch (err) {
         showModalError(err.message);
         if (btn) {
@@ -1192,7 +1207,7 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Registration failed');
-        window.location.href = '/inbox';
+        window.location.replace('/inbox');
       } catch (err) {
         showModalError(err.message);
         if (btn) {
@@ -1270,26 +1285,30 @@
       }
     }
 
-    // Android App Smart Redirect: Never show static landing page inside the installed Android app
-    (async function checkAppRedirect() {
-      const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
+    // Android & Desktop App Native Integration
+    (async function initAppLanding() {
+      const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
       if (isAndroidApp) {
-        try {
-          const res = await fetch('/api/auth/me');
-          const data = await res.json();
-          if (data.loggedIn && data.user) {
-            window.location.replace('/inbox');
-          } else {
-            window.location.replace('/auth');
-          }
-        } catch (_) {
-          window.location.replace('/auth');
+        document.documentElement.classList.add('is-android-app');
+        const badgeBar = document.getElementById('android-app-badge-bar');
+        if (badgeBar) badgeBar.classList.remove('hidden');
+
+        const apkBox = document.getElementById('android-apk-action-container');
+        if (apkBox) {
+          apkBox.innerHTML = `
+            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold">
+              <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+              <span>Official Android App Installed &amp; Active</span>
+            </div>
+            <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm">
+              <span>Open Webmail</span>
+              <i class="fas fa-chevron-right text-[9px]"></i>
+            </a>
+          `;
         }
       }
-    })();
 
-    // Check auth status for header
-    async function checkAuth() {
+      // Check auth status for header & hero
       try {
         const res = await fetch('/api/auth/me');
         const data = await res.json();
@@ -1299,18 +1318,25 @@
             container.innerHTML = `
               <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
               <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
-              <a class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] px-5 py-2 text-sm font-semibold text-white transition active:scale-95 shadow-sm inline-flex items-center gap-2" href="/inbox">
-                <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
+              <a class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shadow-sm inline-flex items-center gap-1.5" href="/inbox">
+                <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-4 w-4 sm:h-5 sm:w-5 rounded-full object-cover shrink-0" />
                 <span>Open my inbox</span>
-                <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
+                <i class="fas fa-chevron-right text-[8px] sm:text-[10px] bg-white/20 rounded-full w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center"></i>
               </a>
             `;
           }
         }
-      } catch (_) {}
-    }
-
-    document.addEventListener('DOMContentLoaded', checkAuth);
+      // Auto-popup auth modal if URL has tab=login / tab=register or hash
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab') || urlParams.get('mode');
+      if (tabParam === 'login' || tabParam === 'register') {
+        openAuthModal(tabParam);
+      } else if (window.location.hash === '#login') {
+        openAuthModal('login');
+      } else if (window.location.hash === '#register') {
+        openAuthModal('register');
+      }
+    })();
   </script>
 </body>
 </html>

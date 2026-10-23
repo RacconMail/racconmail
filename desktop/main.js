@@ -21,8 +21,8 @@ function createWindow() {
     }
   });
 
-  // Load live secure inbox
-  mainWindow.loadURL('https://racconmail.eu/inbox');
+  // Load live secure landing page
+  mainWindow.loadURL('https://racconmail.eu/');
 
   // Handle external links safely in system default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
