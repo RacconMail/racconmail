@@ -1267,6 +1267,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const nameEl = document.getElementById('active-user-name');
       if (nameEl) nameEl.textContent = data.name;
 
+      const emailEl = document.getElementById('active-user-email');
+      if (emailEl) emailEl.textContent = data.email || 'user@racconmail.eu';
+
+      const composeFrom = document.getElementById('compose-from-display');
+      if (composeFrom) composeFrom.textContent = data.email || 'user@racconmail.eu';
+
       const avEl = document.getElementById('active-user-avatar');
       if (avEl) avEl.src = avatar;
 
@@ -1538,6 +1544,22 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.checkedIds.clear();
     this.updateBatchToolbar();
 
+    // Update active highlight in modern bubble sidebar
+    document.querySelectorAll('.bubble-nav-item').forEach(el => el.classList.remove('active'));
+    const navMap = {
+      'Inbox': 'nav-item-inbox',
+      'Starred': 'nav-item-favorites',
+      'Sent': 'nav-item-sent',
+      'Drafts': 'nav-item-drafts',
+      'Archive': 'nav-item-archive',
+      'Trash': 'nav-item-trash',
+      'Spam': 'nav-item-ignored'
+    };
+    const activeNavId = navMap[folderKey];
+    if (activeNavId) {
+      document.getElementById(activeNavId)?.classList.add('active');
+    }
+
     const msgPanel = document.getElementById('messages-panel');
     const readerPanel = document.getElementById('reader-panel');
 
@@ -1781,61 +1803,57 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.updateCategoryBadges();
     const list = this.getFilteredMessagesList();
 
-    const inboxBadge = document.getElementById('sidebar-inbox-badge');
+    // Update coral badges (both on sidebar and top header)
     const unreadCount = this.messages ? this.messages.filter(m => !m.is_read).length : 0;
-    if (inboxBadge) inboxBadge.textContent = unreadCount > 0 ? unreadCount : (this.messages?.length || '413');
+    const countDisplay = unreadCount > 0 ? unreadCount : (this.messages?.length || '40');
+
+    const sidebarBadge = document.getElementById('sidebar-inbox-badge');
+    if (sidebarBadge) sidebarBadge.textContent = countDisplay;
+
+    const inboxCoralBadge = document.getElementById('inbox-coral-badge');
+    if (inboxCoralBadge) inboxCoralBadge.textContent = countDisplay;
 
     if (list.length === 0) {
       container.innerHTML = `
-        <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64 select-none">
+        <div class="flex flex-col items-center justify-center p-8 text-center text-slate-400 h-64 select-none">
           <img src="/raccoon-logo.png" class="h-12 w-12 opacity-30 mb-2 object-contain" />
-          <p class="text-sm font-semibold text-foreground">No emails in ${this.currentCategoryTab === 'other' ? 'Other' : 'Primary'}</p>
-          <p class="text-xs opacity-60 mt-1">Your mailbox is clean.</p>
+          <p class="text-sm font-semibold text-slate-700">No emails here</p>
+          <p class="text-xs text-slate-400 mt-1">Your mailbox is completely up to date.</p>
         </div>
       `;
       return;
     }
 
-    // Exact Figma Jarmel Message Item Rendering
+    // Exact Bubble White Message Card Rendering (Figma / Dribbble Spec)
     const messagesHtml = list.map(msg => {
       const isSelected = this.selectedMessage?.id === msg.id;
       const isUnread = !msg.is_read;
       const dateStr = this.formatDate(msg.created_at);
       const senderName = (msg.sender_name || (msg.sender_email ? msg.sender_email.split('@')[0] : 'Sender')).trim();
+      const initials = this.getSenderInitials(senderName);
+      const avatarBg = this.getSenderColor(senderName);
+      const avatarImg = msg.sender_avatar || null;
 
       return `
-        <div class="jarmel-msg-card group relative select-none ${isSelected ? 'active' : ''}" data-msg-id="${msg.id}" onclick="app.onEmailItemClick(event, '${msg.id}')">
-          <!-- Top Row: Unread Dot + Subject on Left, Sender Name on Right (or Inline Actions when selected) -->
-          <div class="flex items-center justify-between gap-2 leading-tight">
-            <div class="flex items-center gap-2 min-w-0 flex-1">
-              ${isUnread ? '<span class="jarmel-unread-dot"></span>' : '<span class="w-[7px] shrink-0"></span>'}
-              <span class="text-[13px] ${isUnread ? 'font-bold text-foreground' : 'font-medium opacity-90'} truncate">
-                ${this.escapeHtml(msg.subject || '(no subject)')}
-              </span>
-            </div>
-            <div class="flex items-center gap-1 shrink-0 ml-2">
-              ${isSelected ? `
-                <div class="flex items-center gap-2 text-xs text-primary opacity-90" onclick="event.stopPropagation()">
-                  <button onclick="app.toggleRead('${msg.id}', false)" title="Mark read" class="p-0.5 hover:opacity-100 transition"><i data-lucide="check" class="h-3.5 w-3.5"></i></button>
-                  <button onclick="app.openNewFolderModal()" title="Tag / Folder" class="p-0.5 hover:opacity-100 transition"><i data-lucide="tag" class="h-3.5 w-3.5"></i></button>
-                  <button onclick="app.replyToMessage()" title="Reply" class="p-0.5 hover:opacity-100 transition"><i data-lucide="reply" class="h-3.5 w-3.5"></i></button>
-                </div>
-              ` : `
-                <span class="text-[12px] opacity-75 font-normal truncate max-w-[120px]">
-                  ${this.escapeHtml(senderName)}
-                </span>
-              `}
-            </div>
+        <div class="bubble-item-card group select-none ${isSelected ? 'active' : ''}" data-msg-id="${msg.id}" onclick="app.onEmailItemClick(event, '${msg.id}')">
+          <!-- Circular Avatar -->
+          <div class="h-10 w-10 rounded-full ${avatarBg} text-white font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+            ${avatarImg ? `<img src="${avatarImg}" class="h-full w-full object-cover" />` : initials}
           </div>
 
-          <!-- Second Row: Snippet on Left, Date/Time on Right -->
-          <div class="flex items-center justify-between gap-2 mt-1 pl-[15px]">
-            <span class="text-[12px] opacity-60 truncate font-normal flex-1">
-              ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim() || 'No preview available')}
-            </span>
-            <span class="text-[11px] opacity-50 font-mono shrink-0 ml-2">
-              ${dateStr}
-            </span>
+          <!-- Middle: Sender Name + Snippet -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="text-[13px] ${isUnread ? 'font-bold text-slate-900' : 'font-semibold text-slate-800'} truncate">
+                ${this.escapeHtml(senderName)}
+              </h4>
+              <span class="text-[11px] text-slate-400 font-mono shrink-0">
+                ${dateStr}
+              </span>
+            </div>
+            <p class="text-xs ${isUnread ? 'text-slate-700 font-medium' : 'text-slate-400'} truncate mt-0.5">
+              ${this.escapeHtml(msg.subject || (msg.body || '').replace(/\s+/g, ' ').trim() || 'No preview')}
+            </p>
           </div>
         </div>
       `;
@@ -2090,105 +2108,124 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   renderMessageReader(msg) {
     const readerEl = document.getElementById('reader-content');
     const attachments = msg.attachments || [];
-    const userAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
     const dateObj = new Date(msg.created_at || Date.now());
-    const dateStrLong = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'numeric', day: 'numeric', year: 'numeric' }) + ' ' + dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    const dateStrLong = dateObj.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const senderName = (msg.sender_name || (msg.sender_email ? msg.sender_email.split('@')[0] : 'Sender')).trim();
+    const senderEmail = msg.sender_email || `${senderName.toLowerCase().replace(/\s+/g, '')}@racconmail.eu`;
+    const initials = this.getSenderInitials(senderName);
+    const avatarBg = this.getSenderColor(senderName);
 
     readerEl.innerHTML = `
-      <!-- Figma Dribbble Top Reading Header -->
-      <div class="px-5 py-3.5 border-b border-border/40 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2 min-w-0 flex-1">
-          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-lg bg-black/5 dark:bg-white/10 shrink-0 cursor-pointer">
+      <!-- Top Reading Header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1.5 px-3 rounded-xl bg-slate-100 text-slate-700 shrink-0 cursor-pointer">
             <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
             <span>Back</span>
           </button>
-          <h1 class="text-base sm:text-lg font-bold text-foreground truncate">
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 truncate">
             ${this.escapeHtml(msg.subject || '(no subject)')}
-          </h1>
+          </h2>
         </div>
 
-        <!-- Action Icons on Right: Reply, Lightbulb/Snooze, More -->
-        <div class="flex items-center gap-2 shrink-0 ml-3">
-          <button onclick="app.replyToMessage()" title="Reply" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
+        <!-- Action Icons: Reply, Star, More -->
+        <div class="flex items-center gap-1 shrink-0 ml-3 text-slate-400">
+          <button onclick="app.replyToMessage()" title="Reply" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="reply" class="h-4 w-4"></i>
           </button>
-          <button onclick="app.showToast('Email verified: clean & private.')" title="Insights / Snooze" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
-            <i data-lucide="lightbulb" class="h-4 w-4"></i>
+          <button onclick="app.toggleStarred('${msg.id}')" title="Star" class="p-2 rounded-xl hover:text-amber-500 hover:bg-amber-50 transition cursor-pointer">
+            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-500 fill-amber-500' : ''}"></i>
           </button>
-          <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 opacity-70 hover:opacity-100 transition cursor-pointer">
+          <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="more-vertical" class="h-4 w-4"></i>
           </button>
         </div>
       </div>
 
-      <!-- Scrollable Message Body -->
-      <div class="flex-1 p-5 sm:p-7 overflow-y-auto space-y-4">
-        <!-- Metadata Row (From, To, Date) -->
-        <div class="flex items-start justify-between gap-3 text-xs opacity-75 leading-relaxed">
-          <div>
-            <p>From: <span class="font-medium text-foreground">${this.escapeHtml(msg.sender_email || msg.sender_name)}</span></p>
-            <p class="mt-0.5">To: <span class="font-medium text-foreground">You</span></p>
-          </div>
-          <span class="font-mono text-[11px] opacity-70 shrink-0 pt-0.5">${dateStrLong}</span>
-        </div>
-
-        <div class="border-b border-border/40 my-3"></div>
-
-        <!-- Body Content -->
-        <div class="text-[13px] sm:text-sm leading-relaxed text-foreground opacity-90 whitespace-pre-wrap font-sans">
-          ${msg.body_html ? `
-            <div class="email-html-wrapper overflow-x-auto">${msg.body_html}</div>
-          ` : `
-            <div>${this.escapeHtml(msg.body || 'No content')}</div>
-          `}
-        </div>
-
-        <!-- Attachments Section if any -->
-        ${attachments.length > 0 ? `
-          <div class="pt-4 border-t border-border/40 space-y-2">
-            <div class="text-xs font-semibold opacity-75">
-              ${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}
+      <!-- Thread Container -->
+      <div class="flex-1 p-6 sm:p-8 overflow-y-auto space-y-6 bg-white">
+        <!-- Message Card -->
+        <div class="space-y-4">
+          <!-- Sender Metadata Header (Exact Dribbble spec) -->
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="h-10 w-10 rounded-full ${avatarBg} text-white font-bold text-xs flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                ${msg.sender_avatar ? `<img src="${msg.sender_avatar}" class="h-full w-full object-cover" />` : initials}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-slate-900 text-sm truncate">${this.escapeHtml(senderEmail)}</span>
+                </div>
+                <div class="flex items-center gap-1 text-xs text-slate-400 mt-0.5">
+                  <span>to me</span>
+                  <i data-lucide="chevron-down" class="h-3 w-3"></i>
+                </div>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-              ${attachments.map(att => `
-                <a href="/uploads/${att.filename}" download="${att.original_name}" class="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-black/5 dark:bg-white/5 px-3 py-1.5 text-xs hover:border-primary transition">
-                  <i data-lucide="paperclip" class="h-3.5 w-3.5 text-primary"></i>
-                  <span class="truncate max-w-[160px] font-medium">${this.escapeHtml(att.original_name)}</span>
-                </a>
-              `).join('')}
+            <div class="flex items-center gap-2 text-slate-400 shrink-0">
+              <span class="text-xs font-mono">${dateStrLong}</span>
+              <button onclick="app.toggleReaderMoreDropdown()" class="p-1 hover:text-slate-700">
+                <i data-lucide="more-vertical" class="h-3.5 w-3.5"></i>
+              </button>
             </div>
           </div>
-        ` : ''}
 
-        <!-- Bottom Action Buttons: Reply & Forward -->
-        <div class="mt-8 pt-4 border-t border-border/40 flex items-center gap-3 select-none">
-          <button onclick="app.replyToMessage()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-border/60 hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer">
-            <i data-lucide="reply" class="h-3.5 w-3.5"></i>
-            <span>Reply</span>
-          </button>
-          <button onclick="app.forwardMessage()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-border/60 hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer">
-            <i data-lucide="forward" class="h-3.5 w-3.5"></i>
-            <span>Forward</span>
-          </button>
-        </div>
-
-        <!-- Fast Inline Reply Section -->
-        <div class="mt-6 rounded-2xl border border-border/40 bg-black/[0.02] dark:bg-white/[0.02] p-4 space-y-2">
-          <div class="flex items-center justify-between text-xs opacity-75">
-            <span class="font-semibold">Fast Reply</span>
-            <span class="text-[11px] opacity-60">Ctrl+Enter to send</span>
+          <!-- Message Body -->
+          <div class="text-sm leading-relaxed text-slate-700 font-sans pl-[52px] pt-1">
+            ${msg.body_html ? `
+              <div class="email-html-wrapper overflow-x-auto">${msg.body_html}</div>
+            ` : `
+              <div class="whitespace-pre-wrap">${this.escapeHtml(msg.body || 'No content')}</div>
+            `}
           </div>
-          <textarea
-            id="quick-reply-body"
-            rows="2"
-            placeholder="Write a quick reply..."
-            onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
-            class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-foreground placeholder:opacity-50"
-          ></textarea>
-          <div class="flex justify-end pt-1">
-            <button onclick="app.sendQuickReply('${msg.id}')" class="px-4 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold text-xs transition hover:opacity-90 cursor-pointer">
-              Send Reply
+
+          <!-- Attachments (if any) -->
+          ${attachments.length > 0 ? `
+            <div class="pt-4 pl-[52px] border-t border-slate-100 space-y-2">
+              <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                ${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${attachments.map(att => `
+                  <a href="/uploads/${att.filename}" download="${att.original_name}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition">
+                    <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-400"></i>
+                    <span class="truncate max-w-[180px]">${this.escapeHtml(att.original_name)}</span>
+                  </a>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Bottom Action Buttons: Reply & Forward -->
+          <div class="pt-6 pl-[52px] flex items-center gap-2.5 select-none">
+            <button onclick="app.replyToMessage()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-black transition cursor-pointer shadow-xs">
+              <i data-lucide="reply" class="h-3.5 w-3.5"></i>
+              <span>Reply</span>
             </button>
+            <button onclick="app.forwardMessage()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+              <i data-lucide="forward" class="h-3.5 w-3.5"></i>
+              <span>Forward</span>
+            </button>
+          </div>
+
+          <!-- Fast Inline Reply Section -->
+          <div class="mt-6 ml-[52px] rounded-2xl border border-slate-200 bg-slate-50/60 p-4 space-y-2">
+            <div class="flex items-center justify-between text-xs text-slate-500">
+              <span class="font-semibold text-slate-700">Quick Response</span>
+              <span class="text-[11px] opacity-75">Ctrl+Enter to send</span>
+            </div>
+            <textarea
+              id="quick-reply-body"
+              rows="2"
+              placeholder="Write a quick reply..."
+              onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
+              class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-800 placeholder:text-slate-400"
+            ></textarea>
+            <div class="flex justify-end pt-1">
+              <button onclick="app.sendQuickReply('${msg.id}')" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-semibold text-xs hover:bg-black transition cursor-pointer shadow-xs">
+                Send Reply
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2586,6 +2623,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     document.getElementById('compose-cc').value = prefill.cc || '';
     document.getElementById('compose-bcc').value = prefill.bcc || '';
     document.getElementById('compose-subject').value = prefill.subject || '';
+
+    const fromDisplay = document.getElementById('compose-from-display');
+    if (fromDisplay && this.currentUser?.email) {
+      fromDisplay.textContent = this.currentUser.email;
+    }
 
     const editor = document.getElementById('compose-editor');
     editor.innerHTML = prefill.body ? this.escapeHtml(prefill.body).replace(/\n/g, '<br>') : '';

@@ -1990,11 +1990,10 @@ html:not(.dark) .jarmel-msg-card.active {
 }
 
 /* ==========================================================================
-   USER-PROVIDED LIQUID GLASS SPECIFICATIONS (APPLIED TO DARK GLASS THEME)
+   USER-PROVIDED LIQUID GLASS SPECIFICATIONS (APPLIED STRICTLY TO DARK THEME)
    ========================================================================== */
 
-/* 1. Deep Canvas Backdrop with Radiant Orbs */
-body.app,
+/* 1. Deep Canvas Backdrop with Radiant Orbs (Dark Mode Only) */
 html.dark body.app,
 html.theme-dark body.app,
 html.dark body.jarmel-body,
@@ -2006,8 +2005,9 @@ html.theme-dark body.jarmel-body {
   color: #f8fafc !important;
 }
 
-/* 2. Frosted Sidebar Layout Layer */
-.sidebar, #layout-sidebar,
+/* 2. Frosted Sidebar Layout Layer (Dark Mode Only) */
+html.dark .sidebar,
+html.dark #layout-sidebar,
 html.dark #sidebar-panel,
 html.theme-dark #sidebar-panel {
   background: rgba(255, 255, 255, 0.04) !important;
@@ -2016,8 +2016,10 @@ html.theme-dark #sidebar-panel {
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* 3. The Bubble Liquid Glass Email Panel */
-.messagelist, #layout-list, #layout-content,
+/* 3. The Bubble Liquid Glass Email Panel (Dark Mode Only) */
+html.dark .messagelist,
+html.dark #layout-list,
+html.dark #layout-content,
 html.dark #messages-panel,
 html.theme-dark #messages-panel,
 html.dark #reader-panel,
@@ -2028,15 +2030,212 @@ html.theme-dark #reader-panel {
   border-right: 1px solid rgba(255, 255, 255, 0.10) !important;
 }
 
-/* 4. Active Message Hover Selection states */
-.messagelist tr.selected, .listitem.selected,
-.jarmel-msg-card.selected, .jarmel-msg-card.active,
+/* 4. Active Message Hover Selection states (Dark Mode Only) */
+html.dark .messagelist tr.selected,
+html.dark .listitem.selected,
+html.dark .jarmel-msg-card.selected,
 html.dark .jarmel-msg-card.active,
 html.theme-dark .jarmel-msg-card.active {
   background: rgba(255, 255, 255, 0.12) !important;
   border-left: 4px solid #3b82f6 !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
+
+/* ==========================================================================
+   MODERN BUBBLE WHITE DESIGN SYSTEM (EXACT FIGMA / DRIBBBLE SPECIFICATION)
+   ========================================================================== */
+
+/* Outer Studio Background Canvas */
+body.bubble-canvas,
+body.app:not(.dark) {
+  background: #EAECEF !important;
+  color: #18181B !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Floating Bubble Window Shell */
+.bubble-window {
+  background: #FFFFFF;
+  border-radius: 28px;
+  box-shadow: 0 25px 70px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(228, 228, 231, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top App Bar */
+.bubble-top-bar {
+  height: 58px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F1F3F5;
+  background: #FFFFFF;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Sidebar Section Headers */
+.bubble-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #A1A1AA;
+  padding: 0 12px;
+  margin-top: 14px;
+  margin-bottom: 5px;
+}
+
+/* Sidebar Menu Items */
+.bubble-nav-item {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #52525B;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+}
+.bubble-nav-item:hover:not(.active) {
+  background: #F4F4F5;
+  color: #18181B;
+}
+
+/* Active Menu Item: Sleek Black Gradient Capsule / Pill */
+.bubble-nav-item.active {
+  background: linear-gradient(180deg, #18181B 0%, #09090B 100%) !important;
+  color: #FFFFFF !important;
+  border-radius: 14px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+}
+.bubble-nav-item.active i,
+.bubble-nav-item.active svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Category Checkbox / Tag Dot */
+.category-dot-pill {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  border: 1.5px solid;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Coral / Pink Count Badge */
+.bubble-count-coral {
+  background: #FF4D6D !important;
+  color: #FFFFFF !important;
+  border-radius: 9999px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 1px 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.2 !important;
+}
+
+/* Bubble Search Input */
+.bubble-search-box {
+  position: relative;
+  width: 100%;
+}
+.bubble-search-box input {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 9px 16px 9px 38px;
+  font-size: 13px;
+  color: #18181B;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.bubble-search-box input:focus {
+  border-color: #18181B;
+  box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.08);
+}
+
+/* Messages List Item Card */
+.bubble-item-card {
+  padding: 12px 14px;
+  border-radius: 16px;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 3px 6px;
+}
+.bubble-item-card:hover:not(.active) {
+  background: #F4F4F5;
+}
+/* Active Message Card: Elevated Floating White Card with Soft Shadow */
+.bubble-item-card.active {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(228, 228, 231, 0.9) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03) !important;
+  transform: translateY(-1px);
+}
+
+/* Thread Item in Reader Column */
+.bubble-thread-item {
+  border-bottom: 1px solid #F1F3F5;
+  padding: 18px 24px;
+  transition: background 0.15s ease;
+}
+
+/* Floating Compose Card Modal */
+.bubble-floating-compose {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  width: 540px;
+  max-width: calc(100vw - 32px);
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.22), 0 0 1px 1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E4E4E7;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Pill for Sender / Recipient in Compose */
+.bubble-pill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  font-size: 12px;
+  font-weight: 500;
+  color: #18181B;
+}
+
 
 
 

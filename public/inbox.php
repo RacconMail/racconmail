@@ -42,11 +42,11 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
-  <!-- Early Theme Initializer (Strictly 2 Themes: Dark Glass & Light Glass) -->
+  <!-- Early Theme Initializer (Default: Clean Modern Bubble White) -->
   <script>
     (function() {
-      const saved = localStorage.getItem('raccon_theme') || 'dark';
-      const canonical = (saved === 'light') ? 'light' : 'dark';
+      const saved = localStorage.getItem('raccon_theme') || 'light';
+      const canonical = (saved === 'dark') ? 'dark' : 'light';
       if (canonical === 'dark') {
         document.documentElement.className = 'dark theme-dark';
       } else {
@@ -76,10 +76,7 @@ if (empty($_SESSION['current_user_id'])) {
             accent: 'var(--accent)',
             'accent-foreground': 'var(--accent-foreground)',
             border: 'var(--border)',
-            'border-light': 'var(--border-light)',
-            mask: 'var(--mask)',
-            fur: 'var(--fur)',
-            cream: 'var(--cream)'
+            'border-light': 'var(--border-light)'
           },
           fontFamily: {
             sans: ['"DM Sans"', 'sans-serif'],
@@ -97,277 +94,324 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Custom Postcard Styles with Dynamic Cache Busting -->
   <link rel="stylesheet" href="/css/raccoon-mail.css?v=<?php echo time(); ?>" />
 
-  <!-- Direct Theme-Adaptive Compose Button CSS (Immune to Cache) -->
   <style>
-    /* Direct styles for the Figma Jarmel Mail Interface */
-    .jarmel-action-icon {
-      padding: 6px;
-      border-radius: 8px;
-      transition: all 0.15s ease;
-      cursor: pointer;
+    /* Direct adjustments for the Bubble White layout */
+    .bubble-compose-pill {
+      background: #18181B !important;
+      color: #FFFFFF !important;
+      border-radius: 12px !important;
+      padding: 8px 16px !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      cursor: pointer !important;
+      transition: all 0.15s ease !important;
     }
-    .jarmel-action-icon:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+    .bubble-compose-pill:hover {
+      background: #000000 !important;
+      transform: translateY(-0.5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
   </style>
 </head>
-<body class="app jarmel-body text-foreground flex flex-col h-screen relative select-none overflow-hidden">
+<body class="bubble-canvas text-slate-900 flex flex-col h-screen relative select-none overflow-hidden p-2 sm:p-3 md:p-5">
 
-  <!-- OUTER DESKTOP PADDING CONTAINER -->
-  <div class="flex-1 flex flex-col p-1 sm:p-2 md:p-4 lg:p-6 h-screen w-screen overflow-hidden relative">
+  <!-- THE FLOATING BUBBLE WINDOW SHELL -->
+  <div class="bubble-window flex-1 flex flex-col h-full w-full relative overflow-hidden">
 
-    <!-- MACOS APPLICATION / BROWSER WINDOW FRAME -->
-    <div class="jarmel-mac-window h-full flex flex-col flex-1 shadow-2xl relative overflow-hidden">
-
-      <!-- TOP MACOS TITLE / URL BAR -->
-      <div class="jarmel-top-bar">
-        <!-- Left: Traffic Lights & Navigation Controls -->
-        <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2 mr-2">
-            <span class="macos-dot macos-dot-close" title="Close" onclick="app.closeAllModals()"></span>
-            <span class="macos-dot macos-dot-minimize" title="Minimize"></span>
-            <span class="macos-dot macos-dot-zoom" title="Full Screen"></span>
-          </div>
-          <button onclick="app.toggleMobileSidebar()" class="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer" title="Toggle Sidebar">
-            <i data-lucide="panel-left" class="h-4 w-4"></i>
-          </button>
-          <button class="p-1 rounded opacity-50 hover:opacity-100 transition hidden sm:inline-block cursor-pointer" title="Back" onclick="app.backToMessages()">
-            <i data-lucide="chevron-left" class="h-4 w-4"></i>
-          </button>
-          <button class="p-1 rounded opacity-50 hover:opacity-100 transition hidden sm:inline-block cursor-pointer" title="Forward">
-            <i data-lucide="chevron-right" class="h-4 w-4"></i>
-          </button>
+    <!-- TOP APP BAR -->
+    <header class="bubble-top-bar">
+      <!-- Left: Logo & Navigation Toggle -->
+      <div class="flex items-center gap-3">
+        <div class="h-8 w-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs">
+          <img src="/raccoon-logo.png" alt="Raccon" class="h-5 w-5 object-contain invert brightness-200" />
         </div>
-
-        <!-- Center: Safari/macOS URL Pill -->
-        <div class="jarmel-url-pill">
-          <i data-lucide="lock" class="h-3 w-3 text-emerald-500"></i>
-          <span class="font-mono text-xs tracking-tight">racconmail.eu</span>
-          <button onclick="app.refreshCurrentFolder()" class="ml-1 opacity-60 hover:opacity-100 transition cursor-pointer" title="Reload Mailbox">
-            <i data-lucide="rotate-cw" class="h-3 w-3"></i>
-          </button>
-        </div>
-
-        <!-- Right: 1-Click Theme Toggle & Controls -->
-        <div class="flex items-center gap-2">
-          <!-- STRICT 2-THEME SWITCHER (Dark Glass / Light Glass) -->
-          <button onclick="app.toggleTheme()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 transition cursor-pointer text-xs font-semibold select-none" title="Switch Theme (Dark Glass / Light Glass)">
-            <i data-lucide="sun" class="app-theme-sun h-3.5 w-3.5 text-amber-400"></i>
-            <i data-lucide="moon" class="app-theme-moon h-3.5 w-3.5 text-sky-400"></i>
-            <span class="hidden md:inline text-[11px] font-medium opacity-80" id="theme-btn-label">Theme</span>
-          </button>
-          <button onclick="app.openCompose()" class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 opacity-70 hover:opacity-100 transition cursor-pointer" title="Compose New Mail">
-            <i data-lucide="plus" class="h-4 w-4"></i>
-          </button>
-        </div>
+        <span class="font-bold text-base tracking-tight text-slate-900">Raccon</span>
+        <button onclick="app.toggleMobileSidebar()" class="ml-2 p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Toggle Sidebar">
+          <i data-lucide="panel-left" class="h-4 w-4"></i>
+        </button>
       </div>
 
-      <!-- MAIN 3-COLUMN WORKSPACE (EXACT FIGMA LAYOUT) -->
-      <div class="flex-1 flex overflow-hidden min-h-0 relative">
+      <!-- Center / Left: Current View Title -->
+      <div class="hidden sm:flex items-center gap-2">
+        <h1 id="current-folder-title" class="text-lg font-bold tracking-tight text-slate-900">All Mail</h1>
+        <p id="current-folder-subtitle" class="hidden"></p>
+        <button id="empty-folder-btn" class="hidden"></button>
+      </div>
 
-        <!-- 1. NAVIGATION SIDEBAR -->
-        <aside id="sidebar-panel" class="sidebar fixed inset-y-0 left-0 z-50 w-72 bg-card transform -translate-x-full md:relative md:translate-x-0 md:w-56 lg:w-64 transition-transform duration-300 ease-in-out shrink-0 flex flex-col border-r border-border/40 p-3 overflow-y-auto select-none shadow-2xl md:shadow-none">
-          <!-- Mobile Close Header in Drawer -->
-          <div class="p-2 border-b border-border/40 flex items-center justify-between md:hidden mb-2">
-            <div class="flex items-center gap-2 font-bold text-sm">
-              <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />
-              <span>Raccon Mail</span>
+      <!-- Right: Action Buttons -->
+      <div class="flex items-center gap-2">
+        <!-- Compose Button (Black Capsule / Pill) -->
+        <button
+          onclick="app.openCompose()"
+          id="btn-top-compose"
+          class="bubble-compose-pill"
+          title="Compose Message"
+        >
+          <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+          <span>Compose</span>
+        </button>
+
+        <!-- Secondary Outline Pill: Theme Switcher -->
+        <button
+          onclick="app.toggleTheme()"
+          class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2 text-xs font-semibold transition cursor-pointer shadow-2xs"
+          title="Toggle Theme"
+        >
+          <i data-lucide="sun" class="app-theme-sun h-3.5 w-3.5 text-amber-500"></i>
+          <i data-lucide="moon" class="app-theme-moon h-3.5 w-3.5 text-sky-500 hidden"></i>
+          <span class="text-xs">Theme</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN 3-COLUMN WORKSPACE -->
+    <div class="flex-1 flex overflow-hidden min-h-0 relative">
+
+      <!-- 1. NAVIGATION SIDEBAR -->
+      <aside id="sidebar-panel" class="sidebar fixed inset-y-0 left-0 z-50 w-64 bg-white transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-200 ease-in-out shrink-0 flex flex-col border-r border-slate-100 p-3 overflow-y-auto select-none shadow-xl md:shadow-none">
+        
+        <!-- Mobile Close Header -->
+        <div class="p-2 border-b border-slate-100 flex items-center justify-between md:hidden mb-2">
+          <div class="flex items-center gap-2 font-bold text-sm text-slate-900">
+            <img src="/raccoon-logo.png" class="h-5 w-5 object-contain" />
+            <span>Raccon Mail</span>
+          </div>
+          <button onclick="app.closeMobileSidebar()" class="p-1 rounded-full hover:bg-slate-100 text-slate-500">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+
+        <!-- Section 1: MENU -->
+        <div class="bubble-section-label">Menu</div>
+        <div class="space-y-0.5">
+          <button onclick="app.navTo('Inbox')" id="nav-item-all-mail" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="layout-grid" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">All Mail</span>
             </div>
-            <button onclick="app.closeMobileSidebar()" class="p-1 rounded-full hover:bg-muted text-muted-foreground">
-              <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-          </div>
+          </button>
+          <button onclick="app.navTo('Starred')" id="nav-item-favorites" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="bookmark" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Favorites</span>
+            </div>
+            <span class="text-xs font-mono opacity-60">6</span>
+          </button>
+          <button onclick="app.navTo('Spam')" id="nav-item-ignored" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="bell-off" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Spam & Ignored</span>
+            </div>
+          </button>
+        </div>
 
-          <!-- Compose New Mail Button -->
-          <div class="mb-3">
-            <button
-              id="btn-compose"
-              onclick="app.closeMobileSidebar(); app.openCompose()"
-              class="jarmel-compose-btn"
-            >
-              <i data-lucide="edit" class="h-4 w-4"></i>
-              <span>Compose New Mail</span>
-            </button>
-          </div>
+        <!-- Section 2: MAILBOX -->
+        <div class="bubble-section-label">Mailbox</div>
+        <div class="space-y-0.5">
+          <!-- Active State: Black Capsule Pill -->
+          <button onclick="app.navTo('Inbox')" id="nav-item-inbox" class="bubble-nav-item active">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
+              <span class="truncate">Inbox</span>
+            </div>
+            <span id="sidebar-inbox-badge" class="bubble-count-coral">40</span>
+          </button>
+          <button onclick="app.navTo('Sent')" id="nav-item-sent" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="send" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Sent</span>
+            </div>
+            <span class="text-xs font-mono opacity-60">39</span>
+          </button>
+          <button onclick="app.navTo('Drafts')" id="nav-item-drafts" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="file-edit" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Drafts</span>
+            </div>
+            <span class="text-xs font-mono opacity-60">1</span>
+          </button>
+          <button onclick="app.navTo('Archive')" id="nav-item-archive" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="archive" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Archive</span>
+            </div>
+            <span class="text-xs font-mono opacity-60">2381</span>
+          </button>
+          <button onclick="app.navTo('Trash')" id="nav-item-trash" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="trash-2" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Trash</span>
+            </div>
+          </button>
+        </div>
 
-          <!-- Account Row: Avatar + Email + Chevron Down -->
-          <div class="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition cursor-pointer select-none mb-3" onclick="app.toggleAccountDropdown()">
+        <!-- Section 3: CATEGORIES -->
+        <div class="flex items-center justify-between pr-2">
+          <div class="bubble-section-label">Categories</div>
+          <button onclick="app.openNewFolderModal()" title="Add Category" class="text-slate-400 hover:text-slate-700 transition cursor-pointer">
+            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+          </button>
+        </div>
+        <div class="space-y-0.5">
+          <button onclick="app.filterByCategory('personal')" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <span class="category-dot-pill border-teal-500"></span>
+              <span class="truncate">Personal</span>
+            </div>
+          </button>
+          <button onclick="app.filterByCategory('work')" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <span class="category-dot-pill border-purple-500"></span>
+              <span class="truncate">Work</span>
+            </div>
+          </button>
+          <button onclick="app.filterByCategory('community')" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <span class="category-dot-pill border-blue-500"></span>
+              <span class="truncate">Community</span>
+            </div>
+          </button>
+          <div id="custom-folders-list" class="space-y-0.5"></div>
+        </div>
+
+        <!-- Section 4: ECOSYSTEM -->
+        <div class="bubble-section-label">Ecosystem</div>
+        <div class="space-y-0.5">
+          <button onclick="app.openStoriesModal()" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="zap" class="h-4 w-4 shrink-0 opacity-70 text-amber-500"></i>
+              <span class="truncate">World Stories</span>
+            </div>
+          </button>
+          <button onclick="window.location.href='/news'" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="newspaper" class="h-4 w-4 shrink-0 opacity-70 text-blue-500"></i>
+              <span class="truncate">News Wire</span>
+            </div>
+          </button>
+          <button onclick="window.location.href='/forum'" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="message-square" class="h-4 w-4 shrink-0 opacity-70 text-cyan-500"></i>
+              <span class="truncate">Forum</span>
+            </div>
+          </button>
+          <button onclick="app.openContactsModal()" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="contact" class="h-4 w-4 shrink-0 opacity-70 text-teal-500"></i>
+              <span class="truncate">Address Book</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Section 5: ACCOUNT & SETTINGS -->
+        <div class="bubble-section-label">Account</div>
+        <div class="space-y-0.5">
+          <button onclick="app.openSettingsModal()" class="bubble-nav-item">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="settings" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Settings & IMAP</span>
+            </div>
+          </button>
+          <button onclick="app.logout()" class="bubble-nav-item text-rose-600 hover:text-rose-700">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="log-out" class="h-4 w-4 shrink-0 opacity-70"></i>
+              <span class="truncate">Sign Out</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Bottom User Profile Row -->
+        <div class="mt-auto pt-3 border-t border-slate-100">
+          <div class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-50 transition cursor-pointer" onclick="app.toggleAccountDropdown()">
             <div class="flex items-center gap-2.5 min-w-0">
-              <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 border border-white/20">
+              <div id="active-user-avatar-badge" class="h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0">
                 <span id="active-user-badge-initial">R</span>
               </div>
-              <span id="active-user-name" class="text-xs font-semibold truncate">me@racconmail.eu</span>
-            </div>
-            <i data-lucide="chevron-down" class="h-3.5 w-3.5 opacity-60 shrink-0"></i>
-          </div>
-
-          <!-- Navigation Folders (Exact counts and names from Figma) -->
-          <nav class="flex-1 space-y-0.5 overflow-y-auto">
-            <button onclick="app.navTo('Inbox')" id="nav-item-inbox" class="jarmel-nav-item active">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="mail" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Inbox</span>
-              </div>
-              <span id="sidebar-inbox-badge" class="text-xs font-mono opacity-70">413</span>
-            </button>
-            <button onclick="app.navTo('Starred')" id="nav-item-starred" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="star" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Starred</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">6</span>
-            </button>
-            <button onclick="app.navTo('Drafts')" id="nav-item-drafts" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="file-text" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Draft</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">1</span>
-            </button>
-            <button onclick="app.navTo('Sent')" id="nav-item-sent" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="send" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Sent</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">39</span>
-            </button>
-            <button onclick="app.navTo('Spam')" id="nav-item-spam" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="shield-alert" class="h-4 w-4 shrink-0 opacity-80 text-rose-400"></i>
-                <span class="truncate">Junk</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">25</span>
-            </button>
-            <button onclick="app.navTo('Snoozed')" id="nav-item-snoozed" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="clock" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Snoozed</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">13</span>
-            </button>
-            <button onclick="app.navTo('Archive')" id="nav-item-archive" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="archive" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Archive</span>
-              </div>
-              <span class="text-xs font-mono opacity-70">2381</span>
-            </button>
-
-            <!-- Custom Folders Placeholder -->
-            <div id="custom-folders-list" class="space-y-0.5 pt-2"></div>
-          </nav>
-
-          <!-- Bottom Utility Links -->
-          <div class="pt-3 border-t border-border/40 space-y-0.5 shrink-0">
-            <button onclick="app.logout()" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="user-plus" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Sign in with different account</span>
-              </div>
-            </button>
-            <button onclick="app.showToast('All notifications are up to date.')" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="bell" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Notifications</span>
-              </div>
-            </button>
-            <button onclick="app.openSettingsModal()" class="jarmel-nav-item">
-              <div class="flex items-center gap-2.5 truncate">
-                <i data-lucide="settings" class="h-4 w-4 shrink-0 opacity-80"></i>
-                <span class="truncate">Settings</span>
-              </div>
-            </button>
-          </div>
-        </aside>
-
-        <!-- 2. MESSAGES LIST PANEL (Middle Column) -->
-        <section id="messages-panel" class="w-full md:w-80 lg:w-[410px] border-r border-border/40 flex flex-col shrink-0 overflow-hidden select-none">
-          <!-- Header: Primary / Other Tabs & Quick Actions -->
-          <div class="px-4 pt-3.5 pb-0 border-b border-border/40 shrink-0">
-            <div class="flex items-center justify-between">
-              <!-- Primary (189) | Other (214) Tabs -->
-              <div class="flex items-center">
-                <button onclick="app.setJarmelTab('primary')" id="tab-primary" class="jarmel-tab active">
-                  Primary <span id="tab-primary-count" class="opacity-70">(189)</span>
-                </button>
-                <button onclick="app.setJarmelTab('other')" id="tab-other" class="jarmel-tab ml-5">
-                  Other <span id="tab-other-count" class="opacity-70">(214)</span>
-                </button>
-              </div>
-
-              <!-- Action Icons on the right: Search, Mark Read, Filter, More -->
-              <div class="flex items-center gap-1 pb-2">
-                <button onclick="app.toggleInlineSearch()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Search (⌘K)">
-                  <i data-lucide="search" class="h-4 w-4"></i>
-                </button>
-                <button onclick="app.markAllRead()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Mark All Read">
-                  <i data-lucide="check" class="h-4 w-4"></i>
-                </button>
-                <button onclick="app.toggleAdvancedSearchDropdown()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="Filter Mail">
-                  <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
-                </button>
-                <button onclick="app.openSettingsModal()" class="jarmel-action-icon opacity-60 hover:opacity-100" title="More Options">
-                  <i data-lucide="more-vertical" class="h-4 w-4"></i>
-                </button>
+              <div class="min-w-0 flex-1">
+                <p id="active-user-name" class="text-xs font-bold text-slate-900 truncate">Raccon User</p>
+                <p id="active-user-email" class="text-[11px] text-slate-400 truncate">user@racconmail.eu</p>
               </div>
             </div>
-
-            <!-- Expandable Search Input Field -->
-            <div id="inline-search-bar" class="hidden pb-3 pt-1">
-              <div class="flex items-center rounded-lg bg-black/5 dark:bg-white/10 px-2.5 py-1 text-xs">
-                <i data-lucide="search" class="h-3.5 w-3.5 opacity-50 mr-2"></i>
-                <input id="global-search" type="text" placeholder="Search mail..." class="bg-transparent flex-1 outline-none text-xs text-foreground placeholder:text-muted-foreground" oninput="app.onSearchInput(this.value)" onkeydown="app.onSearchKeyDown(event)" />
-                <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden opacity-50 hover:opacity-100 p-0.5"><i data-lucide="x" class="h-3 w-3"></i></button>
-              </div>
-            </div>
+            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-400 shrink-0"></i>
           </div>
+        </div>
+      </aside>
 
-          <!-- Hidden Header elements preserved for JS compatibility -->
-          <div class="hidden">
-            <h1 id="current-folder-title">Inbox</h1>
-            <p id="current-folder-subtitle"></p>
-            <button id="empty-folder-btn"></button>
-          </div>
-
-          <!-- Batch Action Toolbar (Reveals when items are checked) -->
-          <div id="batch-toolbar" class="hidden bg-slate-900 text-white px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
+      <!-- 2. MESSAGES LIST PANEL -->
+      <section id="messages-panel" class="w-full md:w-80 lg:w-[380px] border-r border-slate-100 flex flex-col shrink-0 overflow-hidden bg-white">
+        
+        <!-- Header: Title + Coral Badge + Subtitle -->
+        <div class="pt-5 px-5 pb-2 shrink-0">
+          <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
-              <span id="selected-count-label" class="font-bold text-white">0 selected</span>
+              <h2 class="text-xl font-bold text-slate-900 tracking-tight">Inbox</h2>
+              <span id="inbox-coral-badge" class="bubble-count-coral">40</span>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="mail-open" class="h-4 w-4 text-white"></i></button>
-              <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="trash-2" class="h-4 w-4 text-white"></i></button>
+              <button onclick="app.refreshCurrentFolder()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Refresh">
+                <i data-lucide="rotate-cw" class="h-4 w-4"></i>
+              </button>
+              <button onclick="app.markAllRead()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Mark all read">
+                <i data-lucide="check" class="h-4 w-4"></i>
+              </button>
             </div>
           </div>
+          <p class="text-xs text-slate-400 leading-normal mt-1 font-normal">Maximizing Efficiency, and Achieving Email Zen.</p>
 
-          <!-- Messages Scrollable List -->
-          <div id="messages-list" class="flex-1 overflow-y-auto p-2 space-y-1 pb-20 md:pb-2">
-            <!-- Populated dynamically by app.renderMessagesList() -->
-          </div>
-        </section>
-
-        <!-- 3. EMAIL READER & DETAILS PANEL (Right Column) -->
-        <main class="hidden md:flex flex-1 flex-col bg-card overflow-hidden relative" id="reader-panel">
-          <div id="reader-content" class="h-full flex flex-col overflow-y-auto">
-            <!-- Default Empty State -->
-            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground select-none">
-              <div class="relative mb-6">
-                <img src="/raccoon-logo.png" alt="Raccon" class="raccoon-anim relative h-32 w-32 object-contain opacity-80" />
-              </div>
-              <h2 class="text-xl font-bold text-foreground">Select an email to read</h2>
-              <p class="mt-2 max-w-sm text-xs text-muted-foreground">
-                Ultra-fast, private and beautifully minimal mail client with Figma precision.
-              </p>
-              <div class="mt-6 flex items-center gap-3">
-                <button onclick="app.openCompose()" class="jarmel-compose-btn max-w-[180px]">
-                  <i data-lucide="edit" class="h-3.5 w-3.5"></i>
-                  <span>Compose Mail</span>
-                </button>
-              </div>
+          <!-- Search Bar -->
+          <div class="mt-3.5 mb-1">
+            <div class="bubble-search-box">
+              <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
+              <input
+                id="global-search"
+                type="text"
+                placeholder="Search"
+                oninput="app.onSearchInput(this.value)"
+                onkeydown="app.onSearchKeyDown(event)"
+              />
+              <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="h-3.5 w-3.5"></i>
+              </button>
             </div>
           </div>
-        </main>
+        </div>
+
+        <!-- Batch Action Toolbar (revealed when selected) -->
+        <div id="batch-toolbar" class="hidden bg-slate-900 text-white px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
+            <span id="selected-count-label" class="font-bold text-white">0 selected</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="mail-open" class="h-4 w-4 text-white"></i></button>
+            <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="trash-2" class="h-4 w-4 text-white"></i></button>
+          </div>
+        </div>
+
+        <!-- Messages List Container -->
+        <div id="messages-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1 pb-20 md:pb-2">
+          <!-- Dynamic bubble message cards populated by app.js -->
+        </div>
+      </section>
+
+      <!-- 3. EMAIL READER & DETAILS PANEL -->
+      <main class="hidden md:flex flex-1 flex-col bg-white overflow-hidden relative" id="reader-panel">
+        <div id="reader-content" class="h-full flex flex-col overflow-y-auto">
+          <!-- Default Empty State -->
+          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 select-none">
+            <div class="relative mb-6">
+              <img src="/raccoon-logo.png" alt="Raccon" class="raccoon-anim relative h-28 w-28 object-contain opacity-75" />
+            </div>
+            <h2 class="text-xl font-bold text-slate-900">Select an email to read</h2>
+            <p class="mt-2 max-w-sm text-xs text-slate-400">
+              Clean, private and beautifully minimal mail client with bubble zen precision.
+            </p>
+          </div>
+        </div>
+      </main>
       </div>
     </div>
   </div>
@@ -392,141 +436,107 @@ if (empty($_SESSION['current_user_id'])) {
     <i data-lucide="pencil" class="h-6 w-6 text-white"></i>
   </button>
 
-  <!-- FLOATING / FULLSCREEN RICH COMPOSE MODAL (Neon Flower Minimalist) -->
-  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-4 md:right-6 z-50 w-full md:max-w-2xl bg-[#0B1120] md:rounded-3xl border border-sky-500/25 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
-    <!-- Top subtle accent line -->
-    <div class="stripes-subtle h-[2px] w-full shrink-0"></div>
-
+  <!-- FLOATING BUBBLE WHITE COMPOSE CARD MODAL -->
+  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-6 md:right-8 z-50 w-full md:w-[520px] bg-white md:rounded-3xl border border-slate-200/90 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
     <!-- Header bar -->
-    <div class="px-4 py-3 border-b border-sky-500/20 bg-[#080D1B] flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
+    <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
       <div class="flex items-center gap-2">
-        <img src="/raccoon-logo.png" class="h-4.5 w-4.5 object-contain" />
-        <h3 id="compose-title" class="font-display font-bold text-xs sm:text-sm text-white">New Message</h3>
+        <h3 id="compose-title" class="font-bold text-sm text-slate-900">New Email</h3>
       </div>
       <div class="flex items-center gap-1 text-slate-400">
-        <span id="draft-status-pill" class="text-[11px] text-sky-300 font-mono mr-1.5"></span>
-        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer" title="Minimize">
-          <i data-lucide="minus" class="h-3.5 w-3.5 text-sky-400"></i>
+        <span id="draft-status-pill" class="text-[11px] text-slate-400 font-mono mr-1"></span>
+        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Minimize">
+          <i data-lucide="minus" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="event.stopPropagation(); app.maximizeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer hidden md:inline-flex" title="Maximize">
-          <i data-lucide="maximize-2" id="compose-maximize-icon" class="h-3.5 w-3.5 text-sky-400"></i>
-        </button>
-        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer" title="Close">
-          <i data-lucide="x" class="h-3.5 w-3.5 text-sky-400"></i>
+        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-3.5 w-3.5"></i>
         </button>
       </div>
     </div>
 
     <!-- Compose Form -->
-    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-[#080D1A] text-white">
+    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[70vh] bg-white text-slate-900">
+      <!-- From Field -->
+      <div class="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
+        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">From:</span>
+        <div class="bubble-pill-chip">
+          <img src="/raccoon-logo.png" class="h-4 w-4 rounded-full object-cover" />
+          <span id="compose-from-display" class="truncate max-w-[220px]">user@racconmail.eu</span>
+        </div>
+      </div>
+
       <!-- To Field -->
-      <div class="relative flex items-center gap-2.5 border-b border-sky-500/15 pb-2">
-        <span class="text-xs font-bold text-sky-300 w-16 shrink-0">To:</span>
+      <div class="relative flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
+        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">To:</span>
         <input
           id="compose-to"
           type="text"
-          placeholder="Recipient email address..."
-          class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none"
+          placeholder="recipient@example.com"
+          class="flex-1 bg-transparent text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none"
           oninput="app.onRecipientInput(this.value)"
         />
-        <div class="flex items-center gap-1.5 text-xs text-sky-400">
-          <button type="button" onclick="app.toggleCcBcc()" class="hover:text-white font-semibold px-2 py-0.5 rounded hover:bg-sky-950/60 transition cursor-pointer">Cc/Bcc</button>
-        </div>
+        <button type="button" onclick="app.toggleCcBcc()" class="text-xs font-semibold text-slate-400 hover:text-slate-800 transition cursor-pointer">Cc/Bcc</button>
         <!-- Contact Auto-complete Suggestions Dropdown -->
-        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-2xl border border-sky-500/25 bg-[#0B1120] p-1 shadow-2xl z-50 text-white"></div>
+        <div id="contact-suggestions" class="hidden absolute left-12 top-full mt-1 w-72 rounded-2xl border border-slate-200 bg-white p-1 shadow-2xl z-50 text-slate-900"></div>
       </div>
 
       <!-- CC / BCC Rows (Collapsible) -->
-      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-sky-500/15 pb-2">
+      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-slate-100 pb-2">
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Cc:</span>
-          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
+          <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Cc:</span>
+          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 outline-none" />
         </div>
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Bcc:</span>
-          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
+          <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Bcc:</span>
+          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 outline-none" />
         </div>
       </div>
 
       <!-- Subject Field -->
-      <div class="flex items-center gap-2.5 border-b border-sky-500/15 pb-2">
-        <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Subject:</span>
-        <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-semibold text-white placeholder:text-slate-500 outline-none" />
-      </div>
-
-      <!-- Rich Formatting Toolbar -->
-      <div class="flex flex-wrap items-center gap-1 py-1.5 border-b border-sky-500/15 text-slate-300 bg-[#080D1B]">
-        <button type="button" onclick="app.execEditorCommand('bold')" title="Bold" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="bold" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.execEditorCommand('italic')" title="Italic" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="italic" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.execEditorCommand('underline')" title="Underline" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="underline" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.execEditorCommand('strikeThrough')" title="Strikethrough" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="strikethrough" class="h-3.5 w-3.5"></i>
-        </button>
-        <span class="h-3.5 w-px bg-sky-500/20 mx-1"></span>
-        <button type="button" onclick="app.execEditorCommand('insertUnorderedList')" title="Bullet List" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="list" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.execEditorCommand('insertOrderedList')" title="Numbered List" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="list-ordered" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.execEditorCommand('formatBlock', 'blockquote')" title="Quote" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="quote" class="h-3.5 w-3.5"></i>
-        </button>
-        <span class="h-3.5 w-px bg-sky-500/20 mx-1"></span>
-        <button type="button" onclick="app.insertLinkPrompt()" title="Insert Link" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
-          <i data-lucide="link" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="app.insertSignature()" title="Insert Signature" class="flex items-center gap-1.5 p-1 px-2.5 rounded-lg hover:bg-sky-950/60 hover:text-white text-xs font-semibold text-sky-300 transition cursor-pointer">
-          <i data-lucide="pen-tool" class="h-3.5 w-3.5 text-sky-400"></i>
-          <span>Signature</span>
-        </button>
+      <div class="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
+        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Subject:</span>
+        <input id="compose-subject" type="text" placeholder="Email subject..." class="flex-1 bg-transparent text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none" />
       </div>
 
       <!-- Editable Message Body -->
       <div
         id="compose-editor"
         contenteditable="true"
-        placeholder="Write something clever..."
-        class="min-h-[160px] max-h-[300px] overflow-y-auto text-sm text-slate-100 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-500"
+        placeholder="Write your email here..."
+        class="min-h-[140px] max-h-[260px] overflow-y-auto text-xs sm:text-sm text-slate-800 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-400"
       ></div>
 
       <!-- File Attachments List -->
-      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-sky-500/15"></div>
+      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-slate-100"></div>
     </div>
 
-    <!-- Compose Bottom Actions -->
-    <div id="compose-footer-container" class="px-3 sm:px-5 py-3 border-t border-sky-500/20 bg-[#080D1B] flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <label class="flex items-center gap-1 sm:gap-1.5 cursor-pointer rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-sky-200 transition shadow-xs" title="Attach Files">
-          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
-          <span class="hidden sm:inline">Attach</span>
+    <!-- Compose Bottom Action Bar -->
+    <div id="compose-footer-container" class="px-5 py-3 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
+      <button
+        onclick="app.sendMessage()"
+        id="send-mail-btn"
+        class="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-semibold shadow-sm transition active:scale-95 cursor-pointer"
+        title="Send Email"
+      >
+        <span>Send</span>
+      </button>
+
+      <div class="flex items-center gap-1 text-slate-400">
+        <label class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Attach Files">
+          <i data-lucide="paperclip" class="h-4 w-4"></i>
           <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
         </label>
-        <button onclick="app.saveDraft()" class="rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-sky-200 transition shadow-xs cursor-pointer shrink-0" title="Save Draft">
-          <span class="hidden sm:inline">Save Draft</span>
-          <span class="sm:hidden">Save</span>
+        <button type="button" onclick="app.insertLinkPrompt()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Insert Link">
+          <i data-lucide="link" class="h-4 w-4"></i>
         </button>
-      </div>
-
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button onclick="app.discardDraft()" class="px-2 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer shrink-0" title="Discard Draft">
-          Discard
+        <button type="button" onclick="app.insertSignature()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Insert Signature">
+          <i data-lucide="pen-tool" class="h-4 w-4"></i>
         </button>
-        <button
-          onclick="app.sendMessage()"
-          id="send-mail-btn"
-          class="flex items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-display font-bold text-xs py-2 px-3.5 sm:px-5 shadow-[0_0_15px_rgba(14,165,233,0.4)] transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
-          title="Send Postcard"
-        >
-          <i data-lucide="send" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span class="hidden sm:inline">Send Postcard</span>
-          <span class="sm:hidden">Send</span>
+        <button type="button" onclick="app.saveDraft()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Save Draft">
+          <i data-lucide="save" class="h-4 w-4"></i>
+        </button>
+        <button type="button" onclick="app.discardDraft()" class="p-1.5 rounded-lg hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer" title="Discard">
+          <i data-lucide="trash-2" class="h-4 w-4"></i>
         </button>
       </div>
     </div>
