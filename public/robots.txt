@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /forum
+Allow: /news
+Allow: /auth
+Allow: /legal/terms
+Allow: /legal/privacy
+Allow: /downloads/
+
+Disallow: /api/
+Disallow: /admin
+Disallow: /uploads/
+
+Sitemap: https://racconmail.eu/sitemap.xml
