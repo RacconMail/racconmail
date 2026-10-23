@@ -52,7 +52,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v8';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v9';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
