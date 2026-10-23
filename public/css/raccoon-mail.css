@@ -1239,14 +1239,14 @@ header img[src*="raccoon-logo"]:hover {
     display: none;
   }
 
-  /* Messages list bottom clearance for mobile nav bar */
+  /* Messages list bottom clearance for floating capsule menu */
   #messages-list {
-    padding-bottom: 5rem !important;
+    padding-bottom: 7rem !important;
   }
 
   /* Reader content bottom clearance */
   #reader-content {
-    padding-bottom: 5.5rem !important;
+    padding-bottom: 7rem !important;
   }
 
   /* Modal responsive sizing */
@@ -1260,6 +1260,118 @@ header img[src*="raccoon-logo"]:hover {
     left: 0 !important;
   }
 }
+
+/* =======================================================
+   YAHOO MAIL MOBILE INBOX, SWIPE GESTURES & FLOATING CAPSULE
+   ======================================================= */
+.msg-swipe-wrapper {
+  position: relative;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.swipe-actions-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: stretch;
+  z-index: 1;
+}
+
+.swipe-actions-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: stretch;
+  z-index: 1;
+}
+
+.swipe-content {
+  position: relative;
+  z-index: 2;
+  background-color: #ffffff;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.swipe-btn-delete {
+  background-color: #DC2626;
+  color: #FFFFFF;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border: none;
+  outline: none;
+}
+.swipe-btn-delete:active {
+  background-color: #B91C1C;
+}
+
+.swipe-btn-read {
+  background-color: #0284C7;
+  color: #FFFFFF;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border: none;
+  outline: none;
+}
+.swipe-btn-read:active {
+  background-color: #0369A1;
+}
+
+.swipe-btn-planner {
+  background-color: #7C3AED;
+  color: #FFFFFF;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border: none;
+  outline: none;
+}
+.swipe-btn-planner:active {
+  background-color: #6D28D9;
+}
+
+#mobile-floating-capsule {
+  box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.4), 0 4px 12px -2px rgba(15, 23, 42, 0.2);
+}
+
+.cat-tab.active {
+  color: #0F172A !important;
+  font-weight: 800 !important;
+  border-bottom: 2.5px solid #0F172A !important;
+}
+
 
 
 

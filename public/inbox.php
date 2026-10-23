@@ -172,27 +172,33 @@ if (empty($_SESSION['current_user_id'])) {
   <div class="stripes h-1.5 w-full shrink-0"></div>
 
   <!-- TOP APP BAR -->
-  <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-sm z-20">
+  <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-xs z-20">
     <!-- Brand / Mascot / Hamburger (Fixed stationary logo so it NEVER overlaps menus or buttons) -->
     <div class="flex items-center gap-2 md:gap-3 shrink-0">
-      <!-- Mobile Sidebar Toggle -->
+      <!-- Mobile Sidebar Toggle (Yahoo Mail Hamburger) -->
       <button
         onclick="app.toggleMobileSidebar()"
-        class="md:hidden p-2 rounded-xl hover:bg-muted text-foreground transition"
+        class="md:hidden p-1.5 rounded-xl hover:bg-muted text-foreground transition cursor-pointer"
         title="Open Folders"
       >
-        <i data-lucide="menu" class="h-5 w-5"></i>
+        <i data-lucide="menu" class="h-6 w-6 text-slate-800"></i>
       </button>
 
-      <!-- Logo returns cleanly to Inbox (Never logs out) -->
-      <a href="/inbox" class="flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
+      <!-- Desktop Logo returns cleanly to Inbox (Never logs out) -->
+      <a href="/inbox" class="hidden md:flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
         <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-8 w-8 md:h-9 md:w-9 object-contain raccoon-wiggle shrink-0" />
-        <span class="text-foreground hidden sm:inline shrink-0">Raccon Mail</span>
+        <span class="text-foreground shrink-0">Raccon Mail</span>
       </a>
       <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
         <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
         Masked & Secure
       </span>
+    </div>
+
+    <!-- Mobile Center: Yahoo Mail "Inbox" + Email Address -->
+    <div class="md:hidden flex flex-col items-center justify-center flex-1 min-w-0 px-1 text-center">
+      <h1 class="font-display font-extrabold text-base text-slate-900 tracking-tight leading-none">Inbox</h1>
+      <span id="mobile-header-user-email" class="text-[11px] text-slate-500 font-medium truncate max-w-[200px] mt-0.5">me@racconmail.eu</span>
     </div>
 
     <!-- Raccon Mail Global Search Bar (Hidden on mobile app, prominent on desktop & tablet) -->
@@ -225,29 +231,38 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
 
     <!-- Header Actions & Account Switcher -->
-    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-      
+    <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+      <!-- Mobile Lightning Quick Search (Yahoo Mail Style) -->
+      <button
+        onclick="app.openCommandPalette()"
+        class="md:hidden p-1.5 text-purple-600 hover:bg-purple-50 rounded-full transition cursor-pointer"
+        title="Lightning Quick Actions"
+      >
+        <i data-lucide="zap" class="h-5 w-5 fill-purple-600 text-purple-600"></i>
+      </button>
 
-      <!-- World Stories Button -->
+      <!-- World Stories Button (Desktop/Tablet) -->
       <button
         onclick="app.openStoriesModal()"
         title="World Stories — Read global folktales & fables"
-        class="flex items-center gap-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2.5 sm:px-3 py-1.5 text-xs font-medium transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
+        class="hidden sm:flex items-center gap-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2.5 sm:px-3 py-1.5 text-xs font-medium transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
       >
         <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
         <span class="hidden sm:inline">Stories</span>
         <span class="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
       </button>
 
-      <!-- Account Switcher Dropdown -->
+      <!-- Account Switcher Dropdown (Purple Yahoo-style circle badge on mobile) -->
       <div class="relative">
         <button
           onclick="app.toggleAccountDropdown()"
-          class="flex items-center gap-2 rounded-full border border-border bg-card hover:bg-muted/50 p-1 pl-2 text-xs transition"
+          class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted/50 p-1 md:pl-2 text-xs transition cursor-pointer"
         >
           <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline">Clever Raccoon</span>
-          <img id="active-user-avatar" src="/raccoon-logo.png" class="h-7 w-7 rounded-full bg-muted object-cover aspect-square border border-border shrink-0" />
-          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1"></i>
+          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-purple-700">
+            <span id="active-user-badge-initial">Y+</span>
+          </div>
+          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1 hidden md:inline"></i>
         </button>
 
         <!-- Modern Profile Dropdown Menu (Auto-dismisses on click-outside) -->
@@ -508,6 +523,29 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
+      <!-- Yahoo Mail Style Category Tabs & Select Button (Mobile & Desktop) -->
+      <div class="px-3.5 border-b border-border bg-card shrink-0 flex items-center justify-between overflow-x-auto no-scrollbar">
+        <div class="flex items-center gap-5 text-xs font-semibold py-1">
+          <button onclick="app.setCategoryTab('all')" id="tab-cat-all" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer">
+            All
+          </button>
+          <button onclick="app.setCategoryTab('primary')" id="tab-cat-primary" class="cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer">
+            Primary
+          </button>
+          <button onclick="app.setCategoryTab('offers')" id="tab-cat-offers" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
+            <span>Offers</span>
+            <span class="text-[10px] text-slate-500 font-bold bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded-full">7</span>
+          </button>
+          <button onclick="app.setCategoryTab('other')" id="tab-cat-other" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer">
+            Other
+          </button>
+        </div>
+
+        <button onclick="app.toggleBatchSelectMode()" id="btn-toggle-select" class="text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0">
+          Select
+        </button>
+      </div>
+
       <!-- Batch Action Toolbar (Reveals when items are checked) -->
       <div id="batch-toolbar" class="hidden bg-accent/80 border-b border-border px-3 py-2 flex items-center justify-between text-xs shrink-0 transition">
         <div class="flex items-center gap-2">
@@ -567,23 +605,16 @@ if (empty($_SESSION['current_user_id'])) {
     </main>
   </div>
 
-  <!-- NATIVE MOBILE BOTTOM NAVIGATION BAR (Polished Android & iOS App Navigation) -->
-  <nav id="mobile-bottom-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border flex items-center justify-around py-2 px-1 shadow-2xl safe-area-bottom">
-    <button onclick="app.returnToInbox()" class="flex flex-col items-center justify-center gap-1 text-primary py-1 px-3 rounded-xl transition cursor-pointer" title="Inbox Mail">
-      <i data-lucide="inbox" class="h-5 w-5"></i>
-      <span class="text-[10px] font-bold">Mail</span>
+  <!-- FLOATING YAHOO-STYLE CAPSULE BOTTOM BAR (Search Loop, List Menu, Compose Pencil) -->
+  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 backdrop-blur-md text-white px-7 py-3 rounded-full shadow-2xl flex items-center gap-8 border border-slate-800 safe-area-bottom select-none">
+    <button onclick="app.focusMobileSearch()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="Search mail (Loop)">
+      <i data-lucide="search" class="h-5.5 w-5.5 text-white"></i>
     </button>
-    <button onclick="app.focusMobileSearch()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="Search all mail">
-      <i data-lucide="search" class="h-5 w-5"></i>
-      <span class="text-[10px] font-medium">Search</span>
+    <button onclick="app.toggleMobileSidebar()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="All Folders (List)">
+      <i data-lucide="list" class="h-6 w-6 text-white"></i>
     </button>
-    <!-- Compose Center Button (Scaled to fit seamlessly in bottom nav bar) -->
-    <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full bg-slate-900 hover:bg-black text-white shadow-md transform active:scale-90 transition border-2 border-white cursor-pointer shrink-0" title="Compose Postcard">
-      <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
-    </button>
-    <button onclick="app.toggleMobileSidebar()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="All Folders">
-      <i data-lucide="menu" class="h-5 w-5"></i>
-      <span class="text-[10px] font-medium">Folders</span>
+    <button onclick="app.openCompose()" class="text-white hover:text-slate-300 transition cursor-pointer flex items-center justify-center p-1 active:scale-90" title="Compose New Message (Pencil)">
+      <i data-lucide="pencil" class="h-5.5 w-5.5 text-white"></i>
     </button>
   </nav>
 
@@ -1322,6 +1353,47 @@ if (empty($_SESSION['current_user_id'])) {
         <span class="text-primary font-semibold flex items-center gap-1">🦝 Command Center</span>
       </div>
 
+    </div>
+  </div>
+
+  <!-- SPONSORED AD DETAILS MODAL -->
+  <div id="sponsored-ad-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closeSponsoredAdModal()">
+    <div onclick="event.stopPropagation()" class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="h-9 w-9 rounded-full bg-slate-900 flex items-center justify-center text-white">
+            <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+              <span>Raccon Nocturnal Cloud</span>
+              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">Ad</span>
+            </h3>
+            <p class="text-[11px] text-slate-500">Verified Sponsor &bull; racconmail.eu</p>
+          </div>
+        </div>
+        <button onclick="app.closeSponsoredAdModal()" class="p-1 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="py-4 space-y-2 text-xs text-slate-700 leading-relaxed">
+        <p class="font-semibold text-slate-900 text-sm">Nocturnal Encrypted Cloud Stash &amp; High-Speed VPN</p>
+        <p>Keep your data masked from surveillance and ISP logging. Enjoy 25GB of sealed storage, custom postal envelopes, and dedicated zero-log routing.</p>
+        <div class="rounded-2xl bg-slate-50 p-3 border border-slate-200 flex items-center justify-between mt-3">
+          <span class="font-bold text-slate-900">100% Free with Raccon Mail</span>
+          <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Included</span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+        <button onclick="app.dismissSponsoredAd(); app.closeSponsoredAdModal();" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer">
+          Hide This Ad
+        </button>
+        <button onclick="app.closeSponsoredAdModal(); app.openCompose({ to: 'sponsor@racconmail.eu', subject: 'Inquiry: Raccon Cloud & VPN' });" class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition cursor-pointer">
+          Learn More
+        </button>
+      </div>
     </div>
   </div>
 

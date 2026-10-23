@@ -76,6 +76,7 @@ const app = {
     try { this.setupHistoryAndBackNavigation(); } catch (e) { console.error('history setup error:', e); }
     try { this.setupClickOutsideDismiss(); } catch (_) {}
     try { this.startMailPolling(); } catch (_) {}
+    try { this.initSwipeGestures(); } catch (_) {}
 
     // Responsive view synchronization on window resize / orientation change
     window.addEventListener('resize', () => {
@@ -1264,6 +1265,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const dropEmailEl = document.getElementById('dropdown-user-email');
       if (dropEmailEl) dropEmailEl.textContent = data.email;
 
+      const mobileEmailEl = document.getElementById('mobile-header-user-email');
+      if (mobileEmailEl) mobileEmailEl.textContent = data.email || 'me@racconmail.eu';
+
+      const badgeInitialEl = document.getElementById('active-user-badge-initial');
+      if (badgeInitialEl) {
+        const initial = (data.name ? data.name[0] : (data.email ? data.email[0] : 'Y')).toUpperCase();
+        badgeInitialEl.textContent = initial + '+';
+      }
+
       const dropAvEl = document.getElementById('dropdown-user-avatar');
       if (dropAvEl) dropAvEl.src = avatar;
 
@@ -1615,9 +1625,121 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     `;
   },
 
+  currentCategoryTab: 'primary',
+  batchSelectionMode: false,
+  isAdDismissed: false,
+
+  setCategoryTab(tab) {
+    this.currentCategoryTab = tab;
+    ['all', 'primary', 'offers', 'other'].forEach(t => {
+      const btn = document.getElementById(`tab-cat-${t}`);
+      if (btn) {
+        if (t === tab) {
+          btn.className = 'cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer';
+        } else {
+          btn.className = 'cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer';
+        }
+      }
+    });
+    this.renderMessagesList();
+  },
+
+  toggleBatchSelectMode() {
+    this.batchSelectionMode = !this.batchSelectionMode;
+    const btn = document.getElementById('btn-toggle-select');
+    if (btn) {
+      btn.textContent = this.batchSelectionMode ? 'Cancel' : 'Select';
+      btn.className = this.batchSelectionMode
+        ? 'text-xs font-bold text-slate-700 hover:text-slate-900 px-2 py-1 transition cursor-pointer shrink-0'
+        : 'text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0';
+    }
+
+    const batchToolbar = document.getElementById('batch-toolbar');
+    if (batchToolbar) {
+      if (this.batchSelectionMode) {
+        batchToolbar.classList.remove('hidden');
+      } else {
+        this.checkedIds.clear();
+        this.updateBatchToolbar();
+      }
+    }
+
+    this.renderMessagesList();
+  },
+
+  dismissSponsoredAd() {
+    this.isAdDismissed = true;
+    const adEl = document.getElementById('inbox-sponsored-ad');
+    if (adEl) {
+      adEl.style.transition = 'all 0.2s ease-out';
+      adEl.style.maxHeight = `${adEl.offsetHeight}px`;
+      adEl.style.opacity = '0';
+      setTimeout(() => adEl.remove(), 200);
+    }
+  },
+
+  openSponsoredAd() {
+    document.getElementById('sponsored-ad-modal')?.classList.remove('hidden');
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
+  },
+
+  closeSponsoredAdModal() {
+    document.getElementById('sponsored-ad-modal')?.classList.add('hidden');
+  },
+
+  getSenderColor(sender) {
+    const colors = [
+      'bg-purple-600',
+      'bg-blue-600',
+      'bg-indigo-600',
+      'bg-emerald-600',
+      'bg-amber-600',
+      'bg-rose-600',
+      'bg-teal-600',
+      'bg-cyan-700',
+      'bg-violet-600'
+    ];
+    let hash = 0;
+    const str = sender || 'Mail';
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  },
+
+  getSenderInitials(sender) {
+    const clean = (sender || 'Mail').replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return (clean.slice(0, 2) || 'M').toUpperCase();
+  },
+
   renderMessagesList() {
     const container = document.getElementById('messages-list');
-    if (this.messages.length === 0) {
+    if (!container) return;
+
+    let list = this.messages || [];
+
+    // Filter by Yahoo Mail Category Tabs
+    if (this.currentCategoryTab === 'offers') {
+      const offerRegex = /offer|deal|discount|sale|promo|order|shipping|delivery|coupon|voucher|lei|aeroterma|market|price|save|\$|€|£/i;
+      const offersList = list.filter(m => offerRegex.test(m.subject || '') || offerRegex.test(m.sender_name || ''));
+      if (offersList.length > 0) list = offersList;
+    } else if (this.currentCategoryTab === 'other') {
+      const otherRegex = /update|digest|notification|terms|policy|security|notice|linkedin|experian|alert/i;
+      const otherList = list.filter(m => otherRegex.test(m.subject || '') || otherRegex.test(m.sender_name || ''));
+      if (otherList.length > 0) list = otherList;
+    } else if (this.currentCategoryTab === 'primary') {
+      const promoRegex = /offer|deal|discount|sale|coupon|voucher|aeroterma/i;
+      const primaryList = list.filter(m => !promoRegex.test(m.subject || ''));
+      if (primaryList.length > 0) list = primaryList;
+    }
+
+    if (list.length === 0) {
       container.innerHTML = `
         <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64">
           <img src="/raccoon-logo.png" class="h-16 w-16 opacity-40 mb-3 object-contain" />
@@ -1628,96 +1750,316 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       return;
     }
 
-    container.innerHTML = this.messages.map(msg => {
+    // Top Sponsored Ad Row (identical to Yahoo Mail)
+    const adHtml = (!this.isAdDismissed && (this.currentFolder === 'Inbox' || !this.currentFolder)) ? `
+      <div id="inbox-sponsored-ad" class="border-b border-slate-100 bg-white hover:bg-slate-50 px-3.5 py-3 flex items-center justify-between gap-3 cursor-pointer transition select-none">
+        <div class="flex items-center gap-3 min-w-0 flex-1" onclick="app.openSponsoredAd()">
+          <div class="h-10 w-10 rounded-full bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xs border border-slate-800">
+            <img src="/raccoon-logo.png" alt="Raccon Sponsor" class="h-6 w-6 object-contain" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5 leading-snug">
+              <span class="font-bold text-sm text-slate-900 truncate">Raccon Nocturnal Cloud</span>
+              <span class="text-xs text-slate-500 font-medium shrink-0">&bull; Ad</span>
+            </div>
+            <p class="text-xs text-slate-600 truncate mt-0.5">Encrypted private storage, custom domains &amp; nocturnal routing.</p>
+          </div>
+        </div>
+        <button onclick="event.stopPropagation(); app.dismissSponsoredAd()" class="text-slate-400 hover:text-slate-600 p-1 rounded-full transition cursor-pointer shrink-0" title="Hide Ad">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+    ` : '';
+
+    const messagesHtml = list.map(msg => {
       const isSelected = this.selectedMessage?.id === msg.id;
       const isChecked = this.checkedIds.has(msg.id);
       const isUnread = !msg.is_read;
       const dateStr = this.formatDate(msg.created_at);
 
-      // Distinct Sender / Category Icon
       const senderName = (msg.sender_name || msg.sender_email || 'Nocturnal Mail').trim();
       const isTeam = /raccon|team|support|system|admin/i.test(senderName) || /raccon|system/i.test(msg.sender_email || '');
-      const initial = (senderName[0] || 'M').toUpperCase();
-      
-      const colorClass = 'bg-slate-100 text-slate-800 border-slate-300';
+      const initials = this.getSenderInitials(senderName);
+      const avatarBg = this.getSenderColor(senderName);
 
       return `
-        <div
-          class="msg-card-item flex items-center gap-2.5 relative select-none cursor-pointer ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}"
-          onclick="app.selectMessage('${msg.id}')"
-        >
-          <!-- 1. Checkbox & Star (Compact) -->
-          <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
-            <input
-              type="checkbox"
-              ${isChecked ? 'checked' : ''}
-              onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-              class="rounded border-slate-300 cursor-pointer h-3.5 w-3.5 accent-slate-900"
-            />
-            <button
-              onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})"
-              class="p-0.5 rounded transition ${msg.is_starred ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'} cursor-pointer"
-              title="${msg.is_starred ? 'Starred' : 'Not starred'}"
-            >
-              <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-slate-900 text-slate-900' : ''}"></i>
+        <div class="msg-swipe-wrapper relative overflow-hidden bg-white border-b border-slate-100 select-none ${isSelected ? 'bg-slate-50' : ''}" data-msg-id="${msg.id}">
+          <!-- Revealed on Swipe Right: Read & Planner / Star -->
+          <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
+            <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
+              <i data-lucide="mail-open" class="h-5 w-5 text-white"></i>
+              <span>Read</span>
+            </button>
+            <button onclick="event.stopPropagation(); app.swipeActionStar('${msg.id}')" class="swipe-btn-planner" title="Star / Planner">
+              <i data-lucide="star" class="h-5 w-5 text-white"></i>
+              <span>Planner</span>
             </button>
           </div>
 
-          <!-- 2. Distinct Email Sender Icon / Avatar -->
-          <div class="relative shrink-0 flex items-center justify-center">
-            ${isTeam ? `
-              <div class="h-7 w-7 rounded-full bg-white dark:bg-card border border-border shadow-xs flex items-center justify-center overflow-hidden">
-                <img src="/raccoon-logo.png" alt="Raccon" class="h-5 w-5 object-contain" />
-              </div>
-            ` : `
-              <div class="h-7 w-7 rounded-full ${colorClass} border flex items-center justify-center font-bold text-xs shadow-xs">
-                ${initial}
-              </div>
-            `}
-            ${isUnread ? '<span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-slate-900 ring-2 ring-white animate-pulse"></span>' : ''}
+          <!-- Revealed on Swipe Left: Delete -->
+          <div class="swipe-actions-right absolute inset-y-0 right-0 flex items-stretch z-0">
+            <button onclick="event.stopPropagation(); app.swipeActionDelete('${msg.id}')" class="swipe-btn-delete" title="Move to Trash">
+              <i data-lucide="trash-2" class="h-5 w-5 text-white"></i>
+              <span>Delete</span>
+            </button>
           </div>
 
-          <!-- 3. Message Info (Compact 2-Line Row) -->
-          <div class="flex-1 min-w-0 pr-1">
-            <!-- Row 1: Sender Name + Timestamp -->
-            <div class="flex items-center justify-between gap-1 leading-none mb-1">
-              <span class="text-xs truncate text-foreground flex items-center gap-1.5 msg-title ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'}">
-                <i data-lucide="${isUnread ? 'mail' : 'mail-open'}" class="h-3 w-3 ${isUnread ? 'text-slate-900' : 'text-slate-400'} shrink-0"></i>
-                <span class="truncate">${this.escapeHtml(senderName)}</span>
-              </span>
-              <span class="text-[10px] font-mono text-slate-500 shrink-0 font-normal bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">${dateStr}</span>
+          <!-- Foreground Card Content (Draggable / Tap to open) -->
+          <div class="swipe-content relative z-10 bg-white hover:bg-slate-50/70 transition-transform px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
+            <!-- Unread Purple Dot -->
+            <div class="w-2.5 flex items-center justify-center shrink-0">
+              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-purple-600"></span>' : ''}
             </div>
 
-            <!-- Row 2: Subject & Snippet (Compact Inline Preview) -->
-            <div class="flex items-center gap-1.5 text-xs truncate leading-tight">
-              ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="h-3 w-3 text-slate-600 shrink-0"></i>' : ''}
-              <span class="${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'} truncate text-[11.5px]">${this.escapeHtml(msg.subject || '(no subject)')}</span>
-              <span class="text-slate-300 shrink-0">&ndash;</span>
-              <span class="text-[11px] text-slate-500 truncate font-normal">${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}</span>
+            <!-- Batch Selection Checkbox -->
+            <div class="batch-checkbox-wrap ${this.batchSelectionMode ? 'block' : 'hidden'} shrink-0" onclick="event.stopPropagation()">
+              <input
+                type="checkbox"
+                ${isChecked ? 'checked' : ''}
+                onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
+                class="rounded border-slate-300 h-4 w-4 accent-purple-600 cursor-pointer"
+              />
+            </div>
+
+            <!-- Sender Avatar with Monogram or Brand Icon -->
+            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+              ${isTeam ? '<img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />' : initials}
+            </div>
+
+            <!-- Email Text Details -->
+            <div class="flex-1 min-w-0 pr-1">
+              <div class="flex items-center justify-between gap-1 leading-snug">
+                <span class="font-bold text-sm text-slate-900 truncate">${this.escapeHtml(senderName)}</span>
+                <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
+                  <span class="text-xs text-slate-500 font-medium">${dateStr}</span>
+                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-0.5 text-slate-400 hover:text-amber-500 transition cursor-pointer" title="Star">
+                    <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'fill-amber-400 text-amber-500' : ''}"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="text-xs ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'} truncate mt-0.5">
+                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-slate-500 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
+              </div>
+              <div class="text-xs text-slate-500 truncate mt-0.5 font-normal">
+                ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}
+              </div>
             </div>
           </div>
         </div>
       `;
     }).join('');
 
+    container.innerHTML = adHtml + messagesHtml;
+
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
     }
+
+    try { this.initSwipeGestures(); } catch (_) {}
   },
 
   formatDate(isoString) {
     if (!isoString) return '';
     const date = new Date(isoString);
     const now = new Date();
-    const diffHours = (now - date) / (1000 * 60 * 60);
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffHours < 24 && date.getDate() === now.getDate()) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (diffDays === 0) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
-    if (diffHours < 48) {
-      return 'Yesterday';
+    if (diffDays > 0 && diffDays <= 6) {
+      return `${diffDays}d`;
     }
-    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    const y = String(date.getFullYear()).slice(-2);
+    return `${m}/${d}/${y}`;
+  },
+
+  async swipeActionDelete(msgId) {
+    const card = document.querySelector(`.msg-swipe-wrapper[data-msg-id="${msgId}"]`);
+    if (card) {
+      card.style.transition = 'all 0.25s ease-out';
+      card.style.maxHeight = `${card.offsetHeight}px`;
+      card.style.transform = 'translateX(-100%)';
+      card.style.opacity = '0';
+      setTimeout(() => {
+        card.style.maxHeight = '0px';
+        card.style.padding = '0px';
+        card.style.border = 'none';
+      }, 200);
+    }
+    await this.trashMessage(msgId);
+  },
+
+  async swipeActionRead(msgId) {
+    await this.toggleRead(msgId, true);
+    await this.selectMessage(msgId);
+  },
+
+  async swipeActionStar(msgId) {
+    const msg = (this.messages || []).find(m => String(m.id) === String(msgId));
+    const newStar = msg ? !msg.is_starred : true;
+    await this.toggleStar(msgId, newStar);
+    const card = document.querySelector(`.msg-swipe-wrapper[data-msg-id="${msgId}"] .swipe-content`);
+    if (card) card.style.transform = 'translateX(0px)';
+  },
+
+  initSwipeGestures() {
+    const listEl = document.getElementById('messages-list');
+    if (!listEl || listEl._swipeInitialized) return;
+    listEl._swipeInitialized = true;
+
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let activeCard = null;
+    let isSwiping = false;
+    let isHorizontal = null;
+
+    const onStart = (clientX, clientY, target) => {
+      // Don't swipe if clicking buttons, checkboxes or inputs
+      if (target.closest('button, input, a')) return;
+
+      const card = target.closest('.swipe-content');
+      if (!card) return;
+
+      // Close any other open swiped cards
+      document.querySelectorAll('.swipe-content').forEach(c => {
+        if (c !== card && c.style.transform && c.style.transform !== 'translateX(0px)') {
+          c.style.transition = 'transform 0.2s ease-out';
+          c.style.transform = 'translateX(0px)';
+        }
+      });
+
+      activeCard = card;
+      startX = clientX;
+      startY = clientY;
+      currentX = clientX;
+      isSwiping = true;
+      isHorizontal = null;
+      activeCard.style.transition = 'none';
+    };
+
+    const onMove = (clientX, clientY) => {
+      if (!isSwiping || !activeCard) return;
+
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      if (isHorizontal === null) {
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+          isHorizontal = Math.abs(dx) > Math.abs(dy);
+        }
+      }
+
+      if (!isHorizontal) return;
+
+      // Restrain swipe bounds
+      let moveX = dx;
+      if (moveX < -120) moveX = -120 - Math.pow(Math.abs(moveX + 120), 0.6);
+      if (moveX > 160) moveX = 160 + Math.pow(moveX - 160, 0.6);
+
+      activeCard.style.transform = `translateX(${moveX}px)`;
+    };
+
+    const onEnd = (clientX) => {
+      if (!isSwiping || !activeCard) return;
+      isSwiping = false;
+
+      const dx = clientX - startX;
+      const msgId = activeCard.closest('.msg-swipe-wrapper')?.dataset?.msgId;
+
+      activeCard.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+
+      if (isHorizontal) {
+        if (dx < -110) {
+          // Hard swipe left: animate and delete
+          activeCard.style.transform = 'translateX(-100%)';
+          setTimeout(() => {
+            if (msgId) app.swipeActionDelete(msgId);
+          }, 180);
+        } else if (dx < -45) {
+          // Snap open to reveal red Delete button
+          activeCard.style.transform = 'translateX(-80px)';
+          activeCard._isSwipedOpen = true;
+        } else if (dx > 120) {
+          // Hard swipe right: trigger read / open
+          activeCard.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            if (msgId) {
+              app.swipeActionRead(msgId);
+              activeCard.style.transform = 'translateX(0px)';
+            }
+          }, 180);
+        } else if (dx > 45) {
+          // Snap open to reveal blue Read + purple Planner buttons
+          activeCard.style.transform = 'translateX(140px)';
+          activeCard._isSwipedOpen = true;
+        } else {
+          activeCard.style.transform = 'translateX(0px)';
+          activeCard._isSwipedOpen = false;
+        }
+      } else {
+        activeCard.style.transform = 'translateX(0px)';
+        activeCard._isSwipedOpen = false;
+      }
+
+      activeCard = null;
+      isHorizontal = null;
+    };
+
+    // Touch events for mobile phones
+    listEl.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        onStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+      }
+    }, { passive: true });
+
+    listEl.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isSwiping) {
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    listEl.addEventListener('touchend', (e) => {
+      const endX = e.changedTouches?.[0]?.clientX ?? currentX;
+      onEnd(endX);
+    });
+
+    // Mouse drag events for web / desktop testing
+    let isMouseDown = false;
+    listEl.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      isMouseDown = true;
+      onStart(e.clientX, e.clientY, e.target);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isMouseDown && isSwiping) {
+        currentX = e.clientX;
+        onMove(e.clientX, e.clientY);
+      }
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (isMouseDown) {
+        isMouseDown = false;
+        onEnd(e.clientX);
+      }
+    });
+  },
+
+  onEmailItemClick(event, msgId) {
+    const card = event.currentTarget;
+    if (card && card._isSwipedOpen) {
+      card.style.transition = 'transform 0.2s ease-out';
+      card.style.transform = 'translateX(0px)';
+      card._isSwipedOpen = false;
+      return;
+    }
+    this.selectMessage(msgId);
   },
 
   // Select single message & view in reader
