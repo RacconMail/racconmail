@@ -3,24 +3,37 @@
 > **Clever, Masked & Nocturnal Webmail Platform**  
 > *Official Open Source Codebase for [racconmail.eu](https://racconmail.eu)*
 
-[![Website](https://img.shields.io/badge/Live-racconmail.eu-ff6b35?style=flat-square&logo=firefox)](https://racconmail.eu)
-[![Android APK](https://img.shields.io/badge/Android-APK%20Ready-green?style=flat-square&logo=android)](https://racconmail.eu/downloads/RacconMail.apk)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Website](https://img.shields.io/badge/Live%20Webmail-racconmail.eu-ff6b35?style=for-the-badge&logo=firefox)](https://racconmail.eu)
+[![Community Wall](https://img.shields.io/badge/Community%20Forum-racconmail.eu%2Fforum-10b981?style=for-the-badge&logo=discourse)](https://racconmail.eu/forum)
+[![Android APK](https://img.shields.io/badge/Android-APK%20Ready-green?style=for-the-badge&logo=android)](https://racconmail.eu/downloads/RacconMail.apk)
+[![Windows App](https://img.shields.io/badge/Windows-Setup.exe-0078d7?style=for-the-badge&logo=windows)](https://racconmail.eu/downloads/RacconMail-Setup.exe)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 ---
 
 ## 🌟 Overview
 
-Raccon Mail is a modern, lightweight, privacy-focused email and postcard communication platform. Built with native responsive design, smooth theme transitions, live search indexing, offline resilience, and integrated cultural folk stories.
+Raccon Mail is a modern, lightweight, privacy-focused email and postcard communication platform. Built with native responsive design, smooth theme transitions, live search indexing, offline resilience, and an integrated developer community wall.
 
 ### ✨ Key Features
 
-- 💌 **Clever Postcards & Mail**: Clean, distraction-free composer with rich attachments, drafts, and custom typography.
+- 💌 **Clever Postcards & Mail**: Clean, distraction-free composer with rich attachments, drafts, fast replies, and custom typography.
+- 💬 **Developer & Designer Wall**: Built-in modern community forum at [racconmail.eu/forum](https://racconmail.eu/forum) with syntax code highlighting, tag filters, discussion threads, and paws 🐾 across Tech, Coding, Web Design, Sharing, Help, and Explaining.
+- 🗞️ **News Wire with Pictures**: Curated international news syndicated across Tech, Sport, Games, Music, and Weather at [racconmail.eu/news](https://racconmail.eu/news).
 - 🌙 **Adaptive Themes**: Beautiful Light (Harmony), Dark (Charcoal), and Midnight Green themes tailored for night owls.
-- 📚 **World Stories Integration**: 175+ traditional folktales from `worldstories.org.uk` directly accessible inside the webmail client.
-- 📱 **Native Android Experience**: Integrated responsive UI with bottom navigation bar, safe-area support, and lightweight signed APK.
+- 📱 **Native Android & Windows Apps**: Integrated responsive UI with bottom navigation bar, safe-area support, signed APK, and standalone Windows desktop client.
 - ⚡ **Lightning Fast Backend**: Optimized PHP backend with WAL-mode SQLite database, IMAP sync, and anti-spam bypass protection.
-- 🛡️ **Privacy by Design**: End-to-end encrypted postcard headers, no tracking scripts, zero surveillance.
+- 🛡️ **Privacy by Design**: End-to-end encrypted postcard headers, zero tracking scripts, sealed envelopes.
+
+---
+
+## 🌐 Live Webmail & Ecosystem
+
+- **Main Webmail**: [https://racconmail.eu/](https://racconmail.eu/)
+- **Community Forum & Wall**: [https://racconmail.eu/forum](https://racconmail.eu/forum)
+- **News Wire**: [https://racconmail.eu/news](https://racconmail.eu/news)
+- **Android APK**: [Download APK](https://racconmail.eu/downloads/RacconMail.apk)
+- **Windows Client**: [Download Windows Setup](https://racconmail.eu/downloads/RacconMail-Setup.exe)
 
 ---
 
