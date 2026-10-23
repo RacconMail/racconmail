@@ -279,18 +279,11 @@ if (empty($_SESSION['current_user_id'])) {
               <i data-lucide="settings" class="h-4 w-4 text-slate-700 shrink-0"></i>
               <span>Profile &amp; Mail Settings</span>
             </button>
-            <a href="/" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-medium transition text-slate-800 whitespace-nowrap">
-              <i data-lucide="home" class="h-4 w-4 text-slate-600 shrink-0"></i>
-              <span>Landing Page</span>
-            </a>
             <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 text-slate-800 font-medium transition whitespace-nowrap cursor-pointer">
               <i data-lucide="log-out" class="h-4 w-4 text-slate-600 shrink-0"></i>
               <span>Sign Out</span>
             </button>
           </div>
-
-          <!-- Switchable accounts container -->
-          <div id="accounts-list" class="p-2 border-t border-slate-200 space-y-1 bg-slate-50"></div>
         </div>
       </div>
 

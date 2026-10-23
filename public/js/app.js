@@ -1361,9 +1361,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const el = document.getElementById('account-dropdown');
     if (!el) return;
     el.classList.toggle('hidden');
-    if (!el.classList.contains('hidden')) {
-      this.startMenuAutoDismissTimer();
-    }
   },
 
   // Folders
@@ -3643,24 +3640,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const backdrop = document.getElementById('mobile-sidebar-backdrop');
     sidebar?.classList.add('-translate-x-full');
     backdrop?.classList.add('hidden');
-  },
-
-  // Auto-Dismiss for Dropdown menus only
-  menuDismissTimer: null,
-
-  startMenuAutoDismissTimer() {
-    if (this.menuDismissTimer) clearTimeout(this.menuDismissTimer);
-    this.menuDismissTimer = setTimeout(() => {
-      const dropdown = document.getElementById('account-dropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-    }, 7000);
-  },
-
-  resetMenuAutoDismissTimer() {
-    if (this.menuDismissTimer) {
-      clearTimeout(this.menuDismissTimer);
-      this.startMenuAutoDismissTimer();
-    }
   },
 
   // Return to clean Inbox view on logo click (Never logs out)
