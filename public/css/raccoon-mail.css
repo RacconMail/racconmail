@@ -7,39 +7,41 @@
 
 :root, html, body,
 html.dark, body.dark,
+html.theme-neon-flower, body.theme-neon-flower,
 html.theme-light, body.theme-light,
 html.theme-dark, body.theme-dark,
 html.theme-harmony, body.theme-harmony,
 html.theme-raccon, body.theme-raccon,
 html.theme-midnight, body.theme-midnight,
 html.theme-midnight-green, body.theme-midnight-green {
-  --background: #F3F5F8; /* Sleek White & Gray Contrast Canvas */
-  --foreground: #0F172A; /* Deep Slate Headline & Text */
-  --card: #FFFFFF; /* Pure White Card */
-  --card-alt: #F8FAFC; /* Subtle Elevated Surface */
-  --card-foreground: #0F172A;
-  --primary: #0F172A; /* Modern Black Button & Accent */
-  --primary-hover: #1E293B;
+  --background: #070A14; /* Deep Velvety Midnight Canvas */
+  --foreground: #F8FAFC; /* Crisp Pure Silver-White Text */
+  --card: #0B1120; /* Deep Sapphire Obsidian Surface */
+  --card-alt: #0F172A; /* Elevated Surface */
+  --card-foreground: #F8FAFC;
+  --primary: #0EA5E9; /* Electric Cyan Petal Accent */
+  --primary-hover: #38BDF8;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(15, 23, 42, 0.15);
-  --secondary: #F1F5F9;
-  --secondary-foreground: #0F172A;
-  --secondary-hover: #E2E8F0;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #EEF2F6;
-  --accent-foreground: #0F172A;
-  --border: #E2E8F0;
-  --border-light: #F1F5F9;
-  --mask: #0F172A;
-  --fur: #334155;
-  --cream: #FFFFFF;
+  --primary-glow: rgba(14, 165, 233, 0.35);
+  --secondary: #0F172A;
+  --secondary-foreground: #F8FAFC;
+  --secondary-hover: #1E293B;
+  --muted: #0E162B;
+  --muted-foreground: #94A3B8;
+  --accent: #131E35;
+  --accent-foreground: #38BDF8;
+  --accent-pink: #EC4899; /* Radiant Peony Magenta Accent */
+  --border: rgba(56, 189, 248, 0.16);
+  --border-light: rgba(56, 189, 248, 0.08);
+  --mask: #070A14;
+  --fur: #0EA5E9;
+  --cream: #0B1120;
   --themewidget-radius: 16px;
   --btn-radius: 50px;
-  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
-  --stamp-red: #0F172A;
-  --stamp-blue: #0F172A;
+  --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(14, 165, 233, 0.05);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --stamp-red: #EC4899;
+  --stamp-blue: #0EA5E9;
 }
 
 * {
@@ -91,33 +93,15 @@ html, body {
   font-family: 'Caveat', cursive;
 }
 
-/* Postcard airmail border stripes - Monochrome Slate Minimalist */
+/* Postcard airmail border stripes - Electric Flower Neon Horizon */
 .stripes {
-  background: repeating-linear-gradient(
-    135deg,
-    #64748B,
-    #64748B 14px,
-    transparent 14px,
-    transparent 24px,
-    #94A3B8 24px,
-    #94A3B8 38px,
-    transparent 38px,
-    transparent 48px
-  );
+  background: linear-gradient(90deg, #0ea5e9 0%, #2563eb 35%, #9333ea 70%, #ec4899 100%) !important;
+  height: 2px !important;
 }
 
 .stripes-subtle {
-  background: repeating-linear-gradient(
-    135deg,
-    rgba(100, 116, 139, 0.18),
-    rgba(100, 116, 139, 0.18) 14px,
-    transparent 14px,
-    transparent 24px,
-    rgba(148, 163, 184, 0.18) 24px,
-    rgba(148, 163, 184, 0.18) 38px,
-    transparent 38px,
-    transparent 48px
-  );
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.4) 0%, rgba(37, 99, 235, 0.4) 35%, rgba(147, 51, 234, 0.4) 70%, rgba(236, 72, 153, 0.4) 100%) !important;
+  height: 1.5px !important;
 }
 
 /* Raccoon Mascot Animation */
@@ -294,40 +278,46 @@ button.hover\:bg-muted:active {
   transform: translateY(0.5px) scale(0.97);
 }
 
-/* Sidebar Menu Folders - Clean White & Gray with Solid Black Active Pill */
+/* Sidebar Menu Folders - Minimalist Electric Blue Glow */
 .nav-folder-btn {
   position: relative;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  border-radius: 16px !important;
-  color: #334155;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border-radius: 14px !important;
+  color: #94A3B8 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
 }
 .nav-folder-btn i,
 .nav-folder-btn svg {
-  color: #64748B !important;
-  transition: transform 0.2s ease, color 0.2s ease;
+  color: #38BDF8 !important;
+  stroke: #38BDF8 !important;
+  transition: transform 0.18s ease, color 0.18s ease;
+  opacity: 0.85;
 }
 .nav-folder-btn:hover {
-  background-color: #F1F5F9 !important;
-  color: #0F172A !important;
-  transform: translateX(3px);
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(56, 189, 248, 0.15) !important;
+  transform: translateX(2px);
 }
 .nav-folder-btn:hover i,
 .nav-folder-btn:hover svg {
-  color: #0F172A !important;
-  transform: scale(1.08);
+  color: #38BDF8 !important;
+  opacity: 1;
+  transform: scale(1.06);
 }
 .nav-folder-btn.active {
-  background: #0F172A !important;
-  background-color: #0F172A !important;
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.22) 0%, rgba(37, 99, 235, 0.08) 100%) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  border-left: 3px solid #0EA5E9 !important;
+  box-shadow: inset 0 0 12px rgba(14, 165, 233, 0.12) !important;
   font-weight: 700;
 }
 .nav-folder-btn.active i,
 .nav-folder-btn.active svg {
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
-  filter: none !important;
+  color: #38BDF8 !important;
+  stroke: #38BDF8 !important;
+  opacity: 1;
 }
 
 /* Modern Chat Modal Centered Overlay */
@@ -1267,219 +1257,113 @@ header img[src*="raccoon-logo"]:hover {
    ======================================================= */
 
 /* 1. Ambient Light-Harvesting Canvas */
-#originos-light-harvesting-canvas {
-  filter: saturate(160%);
-  pointer-events: none;
+/* ==========================================================================
+   NEON FLOWER MINIMALIST SURFACES, CARDS & SLEEK BUTTON CONTROLS
+   Harmonized with Electric Cyan, Sapphire & Magenta Petal Accents
+   ========================================================================== */
+
+/* 1. Sleek Minimalist Action Buttons */
+.btn-primary, button.btn-primary {
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 2px 14px rgba(14, 165, 233, 0.3) !important;
+  border-radius: 9999px;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.glass-orb-1 {
-  background: radial-gradient(circle, rgba(148, 163, 184, 0.45) 0%, rgba(203, 213, 225, 0.2) 50%, transparent 70%);
-  animation: orbDrift1 18s ease-in-out infinite alternate;
+.btn-primary:hover, button.btn-primary:hover {
+  background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.45) !important;
+  transform: translateY(-1px);
 }
-.glass-orb-2 {
-  background: radial-gradient(circle, rgba(226, 232, 240, 0.5) 0%, rgba(148, 163, 184, 0.25) 50%, transparent 70%);
-  animation: orbDrift2 22s ease-in-out infinite alternate;
+.btn-obsidian {
+  background: #0D1529 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
 }
-.glass-orb-3 {
-  background: radial-gradient(circle, rgba(203, 213, 225, 0.4) 0%, rgba(100, 116, 139, 0.18) 50%, transparent 70%);
-  animation: orbDrift3 26s ease-in-out infinite alternate;
+.btn-obsidian:hover {
+  background: #14203D !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.25) !important;
 }
 
-@keyframes orbDrift1 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, 40px) scale(1.1); }
-  100% { transform: translate(-30px, 80px) scale(0.95); }
-}
-@keyframes orbDrift2 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-50px, -40px) scale(1.15); }
-  100% { transform: translate(40px, 30px) scale(0.9); }
-}
-@keyframes orbDrift3 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-40px, -50px) scale(1.08); }
-  100% { transform: translate(50px, -20px) scale(0.92); }
-}
-
-/* 2. Visual Glass Styles: [Realistic], [Natural], [Soft] */
-
-/* Realistic (Default): High refraction, sharp specular rim highlights, deep blur */
-body[data-glass-style="realistic"] .originos-liquid-card,
-body[data-glass-style="realistic"] .originos-glass-surface,
-.originos-glass-realistic {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.52) 50%, rgba(255, 255, 255, 0.78) 100%) !important;
-  backdrop-filter: blur(28px) saturate(210%) contrast(108%);
-  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(108%);
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 2px 0 rgba(15, 23, 42, 0.08),
-    0 10px 28px -4px rgba(15, 23, 42, 0.08) !important;
-}
-
-/* Natural: Balanced frosted transparency, medium blur, organic light catch */
-body[data-glass-style="natural"] .originos-liquid-card,
-body[data-glass-style="natural"] .originos-glass-surface,
-.originos-glass-natural {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0.65) 100%) !important;
-  backdrop-filter: blur(18px) saturate(170%);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
-  border: 1px solid rgba(255, 255, 255, 0.7) !important;
-  box-shadow: 
-    inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1px 1px 0 rgba(15, 23, 42, 0.05),
-    0 8px 22px -3px rgba(15, 23, 42, 0.06) !important;
-}
-
-/* Soft: Milky diffuse frosted glow, gentle diffusion, subtle refraction */
-body[data-glass-style="soft"] .originos-liquid-card,
-body[data-glass-style="soft"] .originos-glass-surface,
-.originos-glass-soft {
-  background: rgba(255, 255, 255, 0.88) !important;
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.92) !important;
-  box-shadow: 
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.75),
-    0 4px 16px -2px rgba(15, 23, 42, 0.04) !important;
-}
-
-/* 3. Liquid Glass Message Cards (Oval Bubble / Squircle Aesthetic) */
+/* 2. Message Cards (Minimalist Rounded Floating Cards) */
 .msg-swipe-wrapper.originos-liquid-card {
   position: relative;
   overflow: hidden;
-  margin: 7px 10px;
-  border-radius: 24px !important;
+  margin: 4px 8px;
+  border-radius: 16px !important;
+  background: rgba(13, 21, 41, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
 }
 .msg-swipe-wrapper.originos-liquid-card:hover {
-  transform: translateY(-1.5px) scale(1.003);
-  border-color: rgba(255, 255, 255, 1) !important;
-  box-shadow: 
-    inset 0 2px 2.5px 0 rgba(255, 255, 255, 1),
-    0 14px 34px -4px rgba(15, 23, 42, 0.12) !important;
+  background: rgba(17, 28, 54, 0.96);
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -2px rgba(14, 165, 233, 0.18);
 }
 .msg-swipe-wrapper.originos-liquid-card.is-selected {
-  border-color: #0F172A !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.9),
-    0 0 0 2px #0F172A,
-    0 12px 30px -4px rgba(15, 23, 42, 0.2) !important;
+  background: #132244;
+  border-color: #0EA5E9 !important;
+  box-shadow: 0 0 0 1px #0EA5E9, 0 6px 24px -2px rgba(14, 165, 233, 0.32) !important;
 }
 
 .originos-glass-inner {
   position: relative;
   z-index: 2;
   background: transparent !important;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
-  will-change: transform;
-}
-.originos-liquid-card:hover .originos-glass-inner {
-  background: rgba(255, 255, 255, 0.25) !important;
+  transition: background-color 0.15s ease;
 }
 
-/* 4. Obsidian Liquid Glass Buttons (Black Background, White Write + Liquid Glass Rim) */
-button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill),
-.btn,
-a.btn,
-input[type="button"],
-input[type="submit"] {
-  background: linear-gradient(150deg, #1e293b 0%, #0f172a 60%, #020617 100%) !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 
-    inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.32),
-    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5),
-    0 4px 14px -2px rgba(15, 23, 42, 0.25) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 9999px !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill):hover,
-.btn:hover,
-a.btn:hover,
-input[type="button"]:hover,
-input[type="submit"]:hover {
-  background: linear-gradient(150deg, #334155 0%, #0f172a 60%, #000000 100%) !important;
-  color: #FFFFFF !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  transform: translateY(-1.5px) !important;
-  box-shadow: 
-    inset 0 1.8px 2px 0 rgba(255, 255, 255, 0.45),
-    0 8px 24px -3px rgba(15, 23, 42, 0.35) !important;
-}
-
-button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill):active,
-.btn:active,
-a.btn:active,
-input[type="button"]:active,
-input[type="submit"]:active {
-  transform: translateY(0.5px) scale(0.97) !important;
-  background: #000000 !important;
-}
-
-button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill) i,
-button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill) svg,
-.btn i,
-.btn svg {
-  color: #FFFFFF !important;
-  stroke: #FFFFFF !important;
-}
-
-/* 5. Translucent Liquid Glass Header & Floating Capsule Nav */
+/* 3. Sleek Translucent Header */
 header {
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(24px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
+  background: rgba(8, 13, 27, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.14) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
-#mobile-floating-capsule {
-  background: linear-gradient(150deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 60%, rgba(2, 6, 23, 0.98) 100%) !important;
-  backdrop-filter: blur(28px) saturate(210%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.35),
-    0 16px 42px -4px rgba(15, 23, 42, 0.45) !important;
-}
-
-/* 6. Liquid Glass Search Bar */
+/* 4. Minimalist Search Bar */
 #global-search-container > div {
-  background: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.9),
-    0 4px 18px -2px rgba(15, 23, 42, 0.06) !important;
+  background: #090F1F !important;
+  border: 1px solid rgba(56, 189, 248, 0.22) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.2s ease;
 }
 #global-search-container > div:focus-within {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(15, 23, 42, 0.8) !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 1),
-    0 8px 28px -4px rgba(15, 23, 42, 0.12) !important;
+  background: #0B1224 !important;
+  border-color: #0EA5E9 !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 4px 18px rgba(14, 165, 233, 0.25) !important;
 }
 
-/* 7. Liquid Glass Dropdowns & Modals */
+/* 5. Minimalist Dark Dropdowns & Modals */
 #search-suggestions-dropdown,
 #advanced-search-dropdown,
 #account-dropdown,
 #reader-more-dropdown,
 .unique-email-card {
-  background: rgba(255, 255, 255, 0.85) !important;
-  backdrop-filter: blur(28px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
-    0 20px 48px -6px rgba(15, 23, 42, 0.14) !important;
+  background: #0B1120 !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(14, 165, 233, 0.15) !important;
+  color: #F8FAFC !important;
+}
+
+/* 6. Mobile Floating Capsule Bar */
+#mobile-floating-capsule {
+  background: rgba(8, 13, 28, 0.95) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 16px 42px -4px rgba(0, 0, 0, 0.7), 0 0 24px rgba(14, 165, 233, 0.25) !important;
 }
 
 /* =======================================================
@@ -1621,14 +1505,16 @@ header {
 
 /* High-contrast Sidebar Active Folder Indicator */
 .nav-folder-btn.active {
-  background-color: #E2E8F0 !important;
-  color: #0F172A !important;
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.22) 0%, rgba(37, 99, 235, 0.08) 100%) !important;
+  color: #FFFFFF !important;
   font-weight: 800 !important;
-  border-left: 3px solid #0F172A !important;
+  border-left: 3px solid #0EA5E9 !important;
+  box-shadow: inset 0 0 12px rgba(14, 165, 233, 0.12) !important;
 }
 .nav-folder-btn.active svg,
 .nav-folder-btn.active i {
-  color: #0F172A !important;
+  color: #38BDF8 !important;
+  stroke: #38BDF8 !important;
 }
 
 /* iOS Safe Area Insets for Mobile App & Web */

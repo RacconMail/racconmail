@@ -42,32 +42,36 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
+  <!-- Early Theme Initializer (Neon Flower Minimalist Palette) -->
   <script>
     (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark', 'theme-midnight');
+      localStorage.setItem('raccon_theme', 'neon_flower');
+      document.documentElement.className = 'dark theme-neon-flower';
       const themeVars = {
-        '--background': '#F3F5F8',
-        '--foreground': '#0F172A',
-        '--card': '#FFFFFF',
-        '--card-alt': '#F8FAFC',
-        '--card-foreground': '#0F172A',
-        '--primary': '#0F172A',
-        '--primary-hover': '#1E293B',
+        '--background': '#070A14',
+        '--foreground': '#F8FAFC',
+        '--card': '#0B1120',
+        '--card-alt': '#0F172A',
+        '--card-foreground': '#F8FAFC',
+        '--primary': '#0EA5E9',
+        '--primary-hover': '#38BDF8',
         '--primary-foreground': '#FFFFFF',
-        '--secondary': '#F1F5F9',
-        '--secondary-foreground': '#0F172A',
-        '--muted': '#F1F5F9',
-        '--muted-foreground': '#64748B',
-        '--accent': '#EEF2F6',
-        '--accent-foreground': '#0F172A',
-        '--border': '#E2E8F0',
-        '--border-light': '#F1F5F9',
-        '--mask': '#0F172A',
-        '--fur': '#334155',
-        '--cream': '#FFFFFF'
+        '--primary-glow': 'rgba(14, 165, 233, 0.35)',
+        '--secondary': '#0F172A',
+        '--secondary-foreground': '#F8FAFC',
+        '--secondary-hover': '#1E293B',
+        '--muted': '#0E162B',
+        '--muted-foreground': '#94A3B8',
+        '--accent': '#131E35',
+        '--accent-foreground': '#38BDF8',
+        '--accent-pink': '#EC4899',
+        '--border': 'rgba(56, 189, 248, 0.16)',
+        '--border-light': 'rgba(56, 189, 248, 0.08)',
+        '--mask': '#070A14',
+        '--fur': '#0EA5E9',
+        '--cream': '#0B1120',
+        '--stamp-red': '#EC4899',
+        '--stamp-blue': '#0EA5E9'
       };
       for (const [k, v] of Object.entries(themeVars)) {
         document.documentElement.style.setProperty(k, v);
@@ -134,27 +138,27 @@ if (empty($_SESSION['current_user_id'])) {
       text-decoration: none !important;
     }
 
-    /* Clean Modern Black Compose Button with White Text & White Icon */
+    /* Clean Neon Flower Minimalist Compose Button */
     #btn-compose,
     html #btn-compose,
     body #btn-compose {
-      background-color: #0F172A !important;
-      border: 1.5px solid #0F172A !important;
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 60%, #1d4ed8 100%) !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
       color: #FFFFFF !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35), 0 0 12px rgba(14, 165, 233, 0.2) !important;
     }
     #btn-compose:hover,
     html #btn-compose:hover,
     body #btn-compose:hover {
-      background-color: #1E293B !important;
-      border-color: #1E293B !important;
+      background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%) !important;
+      border-color: rgba(56, 189, 248, 0.7) !important;
       color: #FFFFFF !important;
       transform: translateY(-1.5px) !important;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.5) !important;
     }
     #btn-compose .compose-pencil-badge {
-      background-color: rgba(255, 255, 255, 0.18) !important;
-      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      background-color: rgba(255, 255, 255, 0.22) !important;
+      border: 1px solid rgba(255, 255, 255, 0.35) !important;
     }
     #btn-compose svg,
     #btn-compose i {
@@ -164,21 +168,15 @@ if (empty($_SESSION['current_user_id'])) {
     #btn-compose .compose-btn-text {
       color: #FFFFFF !important;
     }
-
-    
   </style>
 </head>
-<body class="bg-background text-foreground flex flex-col h-screen relative selection:bg-slate-900 selection:text-white overflow-hidden" data-glass-style="realistic">
+<body class="bg-background text-foreground flex flex-col h-screen relative selection:bg-sky-500 selection:text-white overflow-hidden">
 
-  <!-- ORIGINOS 7 LIQUID GLASS AMBIENT LIGHT-HARVESTING ENGINE LAYER -->
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" id="originos-light-harvesting-canvas">
-    <div class="glass-light-orb glass-orb-1 absolute -top-32 left-1/4 w-[420px] h-[420px] rounded-full blur-3xl opacity-40"></div>
-    <div class="glass-light-orb glass-orb-2 absolute top-1/3 -right-24 w-[380px] h-[380px] rounded-full blur-3xl opacity-35"></div>
-    <div class="glass-light-orb glass-orb-3 absolute -bottom-24 left-1/3 w-[480px] h-[480px] rounded-full blur-3xl opacity-30"></div>
-  </div>
+  <!-- AMBIENT LUMINESCENT CORNER AURA (Static & Minimalist) -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" style="background: radial-gradient(ellipse 55% 45% at 95% 95%, rgba(236, 72, 153, 0.08) 0%, transparent 70%), radial-gradient(ellipse 45% 35% at 5% 5%, rgba(14, 165, 233, 0.08) 0%, transparent 70%);"></div>
 
   <!-- TOP POSTAL STRIPE ACCENT -->
-  <div class="stripes h-1.5 w-full shrink-0"></div>
+  <div class="stripes h-[2px] w-full shrink-0"></div>
 
   <!-- TOP APP BAR -->
   <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-xs z-20">
@@ -199,23 +197,23 @@ if (empty($_SESSION['current_user_id'])) {
         <span class="text-foreground shrink-0 font-display font-bold">Raccon Mail</span>
       </a>
       <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
-        <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
+        <span class="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse"></span>
         Masked & Secure
       </span>
     </div>
 
-    <!-- Global Search Bar with Integrated Search Loop Button (Solid Black Button, White Text) -->
+    <!-- Global Search Bar with Integrated Search Loop Button (Neon Flower Minimalist) -->
     <div class="hidden md:block flex-1 min-w-0 max-w-2xl mx-3 lg:mx-6 relative" id="global-search-container">
-      <div class="relative flex items-center rounded-full border border-slate-300 bg-white shadow-2xs hover:border-slate-400 focus-within:border-slate-900 focus-within:ring-2 focus-within:ring-slate-900/15 transition overflow-hidden">
+      <div class="relative flex items-center rounded-full border border-sky-500/25 bg-[#090F1F] shadow-2xs hover:border-sky-500/40 focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/20 transition overflow-hidden">
         <!-- Advanced Search Filter Dropdown Toggle Button on Left -->
         <button
           type="button"
           onclick="app.toggleAdvancedSearchDropdown()"
-          class="pl-3.5 pr-2 py-2 text-slate-500 hover:text-slate-900 transition cursor-pointer flex items-center gap-1 shrink-0"
+          class="pl-3.5 pr-2 py-2 text-sky-400 hover:text-white transition cursor-pointer flex items-center gap-1 shrink-0"
           title="Search options & filters"
         >
-          <i data-lucide="sliders-horizontal" class="h-4 w-4 text-slate-600"></i>
-          <i data-lucide="chevron-down" class="h-3 w-3 text-slate-500"></i>
+          <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
+          <i data-lucide="chevron-down" class="h-3 w-3"></i>
         </button>
 
         <!-- Search Input Field -->
@@ -224,7 +222,7 @@ if (empty($_SESSION['current_user_id'])) {
           type="text"
           autocomplete="off"
           placeholder="Find messages, documents, photos or people..."
-          class="flex-1 min-w-0 bg-transparent py-2 px-1 text-xs sm:text-sm outline-none text-slate-900 placeholder:text-slate-400"
+          class="flex-1 min-w-0 bg-transparent py-2 px-1 text-xs sm:text-sm outline-none text-white placeholder:text-slate-400"
           onclick="app.onSearchClick()"
           oninput="app.onSearchInput(this.value)"
           onfocus="app.onSearchClick()"
@@ -235,7 +233,7 @@ if (empty($_SESSION['current_user_id'])) {
         <button
           id="search-clear-btn"
           type="button"
-          class="hidden px-2 text-slate-400 hover:text-slate-700 text-xs cursor-pointer shrink-0"
+          class="hidden px-2 text-slate-400 hover:text-white text-xs cursor-pointer shrink-0"
           onclick="app.clearSearch()"
           title="Clear search"
         >
@@ -243,15 +241,15 @@ if (empty($_SESSION['current_user_id'])) {
         </button>
 
         <!-- Keyboard Shortcut Badge (Ctrl+K) -->
-        <span class="hidden lg:inline-flex items-center text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded mr-2 pointer-events-none shrink-0">
+        <span class="hidden lg:inline-flex items-center text-[10px] font-mono font-bold text-sky-300/80 bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.5 rounded mr-2 pointer-events-none shrink-0">
           ⌘K
         </span>
 
-        <!-- Dedicated Search Loop Action Button (Solid Black Background, White Write) -->
+        <!-- Dedicated Search Loop Action Button -->
         <button
           type="button"
           onclick="app.triggerSearchSubmit()"
-          class="bg-slate-900 hover:bg-black active:bg-black text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-xs border-l border-slate-900"
+          class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-[0_0_12px_rgba(14,165,233,0.35)] border-l border-sky-600/40"
           title="Search"
         >
           <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.5]"></i>
@@ -259,27 +257,27 @@ if (empty($_SESSION['current_user_id'])) {
       </div>
 
       <!-- Advanced Search Filters Dropdown -->
-      <div id="advanced-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 text-xs text-slate-800 space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-          <span class="font-bold text-sm text-slate-900">Advanced Search</span>
-          <button type="button" onclick="app.closeAdvancedSearchDropdown()" class="text-slate-400 hover:text-slate-700 p-1 rounded-full cursor-pointer"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>
+      <div id="advanced-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-[#0B1120] rounded-2xl border border-sky-500/25 shadow-2xl p-4 text-xs text-slate-200 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-sky-500/15">
+          <span class="font-bold text-sm text-white">Advanced Search</span>
+          <button type="button" onclick="app.closeAdvancedSearchDropdown()" class="text-slate-400 hover:text-white p-1 rounded-full cursor-pointer"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">From</label>
-            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
+            <label class="block text-[11px] font-bold text-sky-300 mb-1">From</label>
+            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">To</label>
-            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
+            <label class="block text-[11px] font-bold text-sky-300 mb-1">To</label>
+            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">Subject</label>
-            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
+            <label class="block text-[11px] font-bold text-sky-300 mb-1">Subject</label>
+            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-sky-500/20 bg-[#080D1A] px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400" />
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">In Folder</label>
-            <select id="adv-search-folder" class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900 bg-white">
+            <label class="block text-[11px] font-bold text-sky-300 mb-1">In Folder</label>
+            <select id="adv-search-folder" class="w-full rounded-lg border border-sky-500/20 px-2.5 py-1.5 text-xs text-white outline-none focus:border-sky-400 bg-[#080D1A]">
               <option value="all">All Folders</option>
               <option value="Inbox">Inbox</option>
               <option value="Sent">Sent</option>
@@ -290,36 +288,30 @@ if (empty($_SESSION['current_user_id'])) {
             </select>
           </div>
         </div>
-        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-          <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-slate-300 accent-slate-900 cursor-pointer" />
+        <div class="flex items-center justify-between pt-2 border-t border-sky-500/15">
+          <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-300">
+            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-sky-500/30 accent-sky-500 cursor-pointer" />
             <span>Has attachment</span>
           </label>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-black text-white font-semibold cursor-pointer transition">Reset</button>
-            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold cursor-pointer shadow-xs transition">Search</button>
+            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1.5 rounded-full bg-[#0D152A] hover:bg-[#14203D] text-slate-300 border border-sky-500/20 font-semibold cursor-pointer transition">Reset</button>
+            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)] transition">Search</button>
           </div>
         </div>
       </div>
 
-      <!-- Live Search Suggestions Dropdown (Loop across Inbox, Spam, Sent & Senders) -->
-      <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden max-h-96 flex-col text-xs divide-y divide-slate-100">
+      <!-- Live Search Suggestions Dropdown -->
+      <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-[#0B1120] rounded-2xl border border-sky-500/25 shadow-2xl overflow-hidden max-h-96 flex-col text-xs divide-y divide-sky-500/15">
         <!-- Populated dynamically by app.renderSearchSuggestions -->
       </div>
     </div>
 
-    <!-- Header Actions & Account Switcher (All Black Buttons, White Write + Liquid Glass Style Switcher) -->
+    <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- OriginOS 7 Liquid Glass Rendering Switcher (Realistic / Natural / Soft) -->
-      <div class="hidden xl:flex items-center gap-1 rounded-full p-1 bg-slate-900 text-white shadow-xs border border-slate-800 text-[11px] font-bold shrink-0" id="liquid-glass-selector" title="OriginOS 7 Liquid Glass Engine">
-        <button type="button" onclick="app.setGlassStyle('realistic')" id="glass-btn-realistic" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Realistic</button>
-        <button type="button" onclick="app.setGlassStyle('natural')" id="glass-btn-natural" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Natural</button>
-        <button type="button" onclick="app.setGlassStyle('soft')" id="glass-btn-soft" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Soft</button>
-      </div>
       <!-- Mobile Quick Search Loop Button -->
       <button
         onclick="app.focusMobileSearch()"
-        class="md:hidden p-2 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs"
+        class="md:hidden p-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white transition cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)]"
         title="Search Mail"
       >
         <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.2]"></i>
@@ -329,44 +321,44 @@ if (empty($_SESSION['current_user_id'])) {
       <button
         onclick="app.openStoriesModal()"
         title="World Stories — Read global folktales & fables"
-        class="hidden sm:flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
+        class="hidden sm:flex items-center gap-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
       >
-        <i data-lucide="book-open" class="h-3.5 w-3.5 text-white shrink-0"></i>
+        <i data-lucide="book-open" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
         <span class="hidden sm:inline">Stories</span>
-        <span class="text-[10px] bg-white text-slate-900 px-1.5 py-0.2 rounded-full font-extrabold hidden md:inline">175+</span>
+        <span class="text-[10px] bg-gradient-to-r from-pink-500 to-rose-600 text-white px-1.5 py-0.2 rounded-full font-extrabold hidden md:inline shadow-[0_0_8px_rgba(236,72,153,0.4)]">175+</span>
       </button>
 
-      <!-- Account Switcher Dropdown (Solid Black Background, White Write) -->
+      <!-- Account Switcher Dropdown -->
       <div class="relative">
         <button
           onclick="app.toggleAccountDropdown()"
-          class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 p-1 md:pl-2.5 md:pr-2 text-xs transition cursor-pointer shadow-xs"
+          class="flex items-center gap-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-white border border-sky-500/25 p-1 md:pl-2.5 md:pr-2 text-xs transition cursor-pointer shadow-xs"
         >
           <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline text-white">Clever Raccoon</span>
-          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-700">
+          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-gradient-to-tr from-sky-600 to-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-sky-400/40">
             <span id="active-user-badge-initial">R</span>
           </div>
-          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-white mr-1 hidden md:inline"></i>
+          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-sky-400 mr-1 hidden md:inline"></i>
         </button>
 
         <!-- Modern Profile Dropdown Menu (Auto-dismisses on click-outside) -->
-        <div id="account-dropdown" class="hidden absolute right-0 mt-2 rounded-3xl border border-slate-200 bg-white overflow-hidden shadow-2xl z-50 text-slate-900 w-72 max-w-[calc(100vw-20px)] animate-in fade-in-50 duration-150">
+        <div id="account-dropdown" class="hidden absolute right-0 mt-2 rounded-3xl border border-sky-500/25 bg-[#0B1120] overflow-hidden shadow-2xl z-50 text-white w-72 max-w-[calc(100vw-20px)] animate-in fade-in-50 duration-150">
           <!-- Cover Photo Header -->
-          <div id="dropdown-user-cover" class="h-20 w-full bg-slate-900 relative bg-cover bg-center"></div>
+          <div id="dropdown-user-cover" class="h-20 w-full bg-gradient-to-r from-sky-900 via-blue-900 to-pink-900 relative bg-cover bg-center"></div>
 
           <!-- User Info with overlapping Avatar & Registration Date -->
-          <div class="px-4 pb-3 pt-0 relative border-b border-slate-100">
+          <div class="px-4 pb-3 pt-0 relative border-b border-sky-500/15">
             <div class="flex items-end justify-between -mt-8 mb-2">
-              <img id="dropdown-user-avatar" src="/raccoon-logo.png" class="h-14 w-14 rounded-full bg-white object-cover aspect-square border-4 border-white shadow-md shrink-0" />
+              <img id="dropdown-user-avatar" src="/raccoon-logo.png" class="h-14 w-14 rounded-full bg-[#0B1120] object-cover aspect-square border-4 border-[#0B1120] shadow-md shrink-0" />
             </div>
             
-            <p id="dropdown-user-name" class="text-sm font-bold truncate text-slate-900">Clever Raccoon</p>
-            <p id="dropdown-user-email" class="text-xs text-slate-500 truncate font-mono">me@racconmail.eu</p>
+            <p id="dropdown-user-name" class="text-sm font-bold truncate text-white">Clever Raccoon</p>
+            <p id="dropdown-user-email" class="text-xs text-sky-300 truncate font-mono">me@racconmail.eu</p>
             
             <!-- Registration Date Badges -->
             <div class="mt-2 flex flex-wrap items-center gap-1.5 text-[10.5px]">
-              <span id="dropdown-user-joined" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-semibold">
-                <i data-lucide="calendar" class="h-3 w-3 text-slate-500"></i>
+              <span id="dropdown-user-joined" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-950/60 border border-sky-500/25 text-sky-300 font-semibold">
+                <i data-lucide="calendar" class="h-3 w-3 text-sky-400"></i>
                 <span>Member since Oct 2026</span>
               </span>
             </div>
@@ -374,25 +366,25 @@ if (empty($_SESSION['current_user_id'])) {
 
           <!-- Quick Navigation Links -->
           <div class="p-2 space-y-0.5 text-xs">
-            <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 font-semibold transition text-slate-900 whitespace-nowrap cursor-pointer">
-              <i data-lucide="settings" class="h-4 w-4 text-slate-700 shrink-0"></i>
+            <button onclick="app.openSettingsModal()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-[#132040] font-semibold transition text-slate-200 hover:text-white whitespace-nowrap cursor-pointer">
+              <i data-lucide="settings" class="h-4 w-4 text-sky-400 shrink-0"></i>
               <span>Profile &amp; Mail Settings</span>
             </button>
-            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-slate-100 text-slate-800 font-medium transition whitespace-nowrap cursor-pointer">
-              <i data-lucide="log-out" class="h-4 w-4 text-slate-600 shrink-0"></i>
+            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 hover:bg-[#132040] text-slate-300 hover:text-white font-medium transition whitespace-nowrap cursor-pointer">
+              <i data-lucide="log-out" class="h-4 w-4 text-rose-400 shrink-0"></i>
               <span>Sign Out</span>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Header Sign Out Button (Desktop only; on mobile access via avatar dropdown to avoid mis-taps) -->
+      <!-- Header Sign Out Button (Desktop only) -->
       <button
         onclick="app.logout()"
         title="Sign Out of Raccon Mail"
-        class="hidden md:flex items-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 px-3 py-1.5 text-xs font-semibold transition"
+        class="hidden md:flex items-center gap-1.5 rounded-full border border-sky-500/20 bg-[#0D152A] hover:bg-[#132040] text-slate-300 hover:text-white px-3 py-1.5 text-xs font-semibold transition cursor-pointer"
       >
-        <i data-lucide="log-out" class="h-3.5 w-3.5 text-slate-600"></i>
+        <i data-lucide="log-out" class="h-3.5 w-3.5 text-sky-400"></i>
         <span>Sign Out</span>
       </button>
     </div>
@@ -555,61 +547,61 @@ if (empty($_SESSION['current_user_id'])) {
         </button>
       </div>
 
-      <!-- Storage Quota Meter (Webmail Standard Storage Feature) -->
-      <div class="px-3.5 py-3 border-t border-slate-200 bg-slate-50/70 shrink-0">
-        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 mb-1.5">
-          <span class="flex items-center gap-1.5"><i data-lucide="hard-drive" class="h-3.5 w-3.5 text-slate-500"></i>Storage</span>
-          <span id="sidebar-storage-text" class="font-mono text-[10.5px] text-slate-500">24.8 MB / 15 GB (0.2%)</span>
+      <!-- Storage Quota Meter -->
+      <div class="px-3.5 py-3 border-t border-sky-500/15 bg-[#080D1A] shrink-0">
+        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-300 mb-1.5">
+          <span class="flex items-center gap-1.5"><i data-lucide="hard-drive" class="h-3.5 w-3.5 text-sky-400"></i>Storage</span>
+          <span id="sidebar-storage-text" class="font-mono text-[10.5px] text-sky-300">24.8 MB / 15 GB (0.2%)</span>
         </div>
-        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-          <div id="sidebar-storage-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
+        <div class="w-full bg-[#0E162B] rounded-full h-1.5 overflow-hidden border border-sky-500/20">
+          <div id="sidebar-storage-bar" class="bg-gradient-to-r from-sky-400 to-pink-500 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
         </div>
       </div>
     </aside>
 
     <!-- 2. MESSAGES LIST PANEL (Full width on mobile until email opened, Middle Panel on Desktop) -->
-    <section id="messages-panel" class="w-full md:w-96 border-r border-border bg-card flex flex-col shrink-0 overflow-hidden">
+    <section id="messages-panel" class="w-full md:w-96 border-r border-sky-500/15 bg-[#0B1122] flex flex-col shrink-0 overflow-hidden">
       <!-- Folder Header & Filter Toolbar -->
-      <div class="p-3 border-b border-border/80 bg-card/70 backdrop-blur-md shrink-0 space-y-2">
+      <div class="p-3 border-b border-sky-500/15 bg-[#080D1B]/90 backdrop-blur-md shrink-0 space-y-2">
         <div class="flex items-center justify-between gap-2">
           <div class="min-w-0 flex-1 truncate">
-            <h1 id="current-folder-title" class="font-display text-lg font-extrabold truncate text-slate-900">Inbox</h1>
-            <p id="current-folder-subtitle" class="text-xs text-slate-500 font-medium truncate">Loading emails...</p>
+            <h1 id="current-folder-title" class="font-display text-lg font-extrabold truncate text-white">Inbox</h1>
+            <p id="current-folder-subtitle" class="text-xs text-sky-200/60 font-medium truncate">Loading emails...</p>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
-            <a href="/forum" title="Raccon Forum" class="px-3 py-1 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
+            <a href="/forum" title="Raccon Forum" class="px-3 py-1 rounded-full text-white bg-[#0F1A33] hover:bg-[#16274D] border border-sky-500/25 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
+              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
               <span class="hidden sm:inline">Forum</span>
             </a>
-            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-3 py-1 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-white shrink-0"></i>
+            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-3 py-1 rounded-full text-white bg-[#0F1A33] hover:bg-[#16274D] border border-sky-500/25 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
+              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-pink-400 shrink-0"></i>
               <span class="hidden sm:inline">News</span>
             </button>
-            <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition cursor-pointer shrink-0 shadow-xs">
-              <i data-lucide="refresh-cw" class="h-4 w-4 text-white"></i>
+            <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-full text-sky-300 hover:text-white hover:bg-sky-950/60 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-xs">
+              <i data-lucide="refresh-cw" class="h-4 w-4"></i>
             </button>
-            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition cursor-pointer shrink-0 shadow-xs">
-              <i data-lucide="check-check" class="h-4 w-4 text-white"></i>
+            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-full text-sky-300 hover:text-white hover:bg-sky-950/60 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-xs">
+              <i data-lucide="check-check" class="h-4 w-4"></i>
             </button>
-            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-white bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 rounded-full transition font-bold shrink-0 shadow-xs">
+            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-white bg-rose-900/80 hover:bg-rose-800 border border-rose-500/40 px-3 py-1 rounded-full transition font-bold shrink-0 shadow-xs">
               Empty
             </button>
           </div>
         </div>
 
-        <!-- Filter Pills & Sorting (Solid Black Buttons, White Write) -->
+        <!-- Filter Pills & Sorting -->
         <div class="flex items-center justify-between gap-1 pt-1 overflow-x-auto no-scrollbar">
           <div class="flex items-center gap-1.5 text-xs shrink-0">
-            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-slate-900 hover:bg-black text-white transition shadow-xs whitespace-nowrap shrink-0 border border-slate-900">All</button>
-            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 whitespace-nowrap shrink-0">Unread</button>
-            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 whitespace-nowrap shrink-0">Starred</button>
-            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 flex items-center gap-1 whitespace-nowrap shrink-0">
-              <i data-lucide="paperclip" class="h-3 w-3 text-white"></i> Files
+            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-gradient-to-r from-sky-500 to-blue-600 text-white transition shadow-[0_0_12px_rgba(14,165,233,0.35)] whitespace-nowrap shrink-0 border border-sky-400/40">All</button>
+            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 whitespace-nowrap shrink-0">Unread</button>
+            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 whitespace-nowrap shrink-0">Starred</button>
+            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition border border-sky-500/20 flex items-center gap-1 whitespace-nowrap shrink-0">
+              <i data-lucide="paperclip" class="h-3 w-3 text-sky-400"></i> Files
             </button>
           </div>
 
           <!-- Sort menu -->
-          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-white/80 backdrop-blur-sm border border-slate-300 rounded-full px-2.5 py-1 outline-none text-slate-800 font-medium cursor-pointer shrink-0 ml-2 shadow-2xs">
+          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-[#090F1F] border border-sky-500/25 rounded-full px-2.5 py-1 outline-none text-slate-200 font-medium cursor-pointer shrink-0 ml-2 shadow-2xs">
             <option value="date_desc">Newest</option>
             <option value="date_asc">Oldest</option>
             <option value="sender">Sender</option>
@@ -643,10 +635,8 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- Messages Scrollable List (Modern Floating Oval / Liquid Glass Cards) -->
+      <!-- Messages Scrollable List -->
       <div id="messages-list" class="flex-1 overflow-y-auto py-2 space-y-1.5 pb-20 md:pb-2">
-        <!-- Rendered by JS -->
-      </div>
         <!-- Rendered by JS -->
       </div>
     </section>
@@ -697,103 +687,103 @@ if (empty($_SESSION['current_user_id'])) {
     id="desktop-compose-fab"
     onclick="app.openCompose()"
     title="Compose New Message"
-    class="hidden fixed bottom-6 right-6 z-30 h-14 w-14 rounded-full bg-slate-900 hover:bg-black text-white shadow-2xl items-center justify-center transform active:scale-90 transition border-2 border-white cursor-pointer"
+    class="hidden fixed bottom-6 right-6 z-30 h-14 w-14 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(14,165,233,0.45)] items-center justify-center transform active:scale-90 transition border-2 border-sky-400/40 cursor-pointer"
   >
     <i data-lucide="pencil" class="h-6 w-6 text-white"></i>
   </button>
 
-  <!-- FLOATING / FULLSCREEN RICH COMPOSE MODAL (Pure White Canvas, Slate Gray & Solid Black Buttons) -->
-  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-4 md:right-6 z-50 w-full md:max-w-2xl bg-white md:rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
+  <!-- FLOATING / FULLSCREEN RICH COMPOSE MODAL (Neon Flower Minimalist) -->
+  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-4 md:right-6 z-50 w-full md:max-w-2xl bg-[#0B1120] md:rounded-3xl border border-sky-500/25 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
     <!-- Top subtle accent line -->
-    <div class="stripes-subtle h-1.5 w-full shrink-0"></div>
+    <div class="stripes-subtle h-[2px] w-full shrink-0"></div>
 
     <!-- Header bar -->
-    <div class="px-4 py-3 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
+    <div class="px-4 py-3 border-b border-sky-500/20 bg-[#080D1B] flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
       <div class="flex items-center gap-2">
         <img src="/raccoon-logo.png" class="h-4.5 w-4.5 object-contain" />
-        <h3 id="compose-title" class="font-display font-bold text-xs sm:text-sm text-slate-900">New Message</h3>
+        <h3 id="compose-title" class="font-display font-bold text-xs sm:text-sm text-white">New Message</h3>
       </div>
-      <div class="flex items-center gap-1 text-slate-500">
-        <span id="draft-status-pill" class="text-[11px] text-slate-500 font-mono mr-1.5"></span>
-        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer" title="Minimize">
-          <i data-lucide="minus" class="h-3.5 w-3.5 text-slate-600"></i>
+      <div class="flex items-center gap-1 text-slate-400">
+        <span id="draft-status-pill" class="text-[11px] text-sky-300 font-mono mr-1.5"></span>
+        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer" title="Minimize">
+          <i data-lucide="minus" class="h-3.5 w-3.5 text-sky-400"></i>
         </button>
-        <button type="button" onclick="event.stopPropagation(); app.maximizeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer hidden md:inline-flex" title="Maximize">
-          <i data-lucide="maximize-2" id="compose-maximize-icon" class="h-3.5 w-3.5 text-slate-600"></i>
+        <button type="button" onclick="event.stopPropagation(); app.maximizeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer hidden md:inline-flex" title="Maximize">
+          <i data-lucide="maximize-2" id="compose-maximize-icon" class="h-3.5 w-3.5 text-sky-400"></i>
         </button>
-        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-slate-900 rounded-md hover:bg-slate-200/60 transition cursor-pointer" title="Close">
-          <i data-lucide="x" class="h-3.5 w-3.5 text-slate-600"></i>
+        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-white rounded-md hover:bg-sky-950/60 transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-3.5 w-3.5 text-sky-400"></i>
         </button>
       </div>
     </div>
 
     <!-- Compose Form -->
-    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-white text-slate-900">
+    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-[#080D1A] text-white">
       <!-- To Field -->
-      <div class="relative flex items-center gap-2.5 border-b border-slate-200 pb-2">
-        <span class="text-xs font-bold text-slate-600 w-16 shrink-0">To:</span>
+      <div class="relative flex items-center gap-2.5 border-b border-sky-500/15 pb-2">
+        <span class="text-xs font-bold text-sky-300 w-16 shrink-0">To:</span>
         <input
           id="compose-to"
           type="text"
           placeholder="Recipient email address..."
-          class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none"
+          class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none"
           oninput="app.onRecipientInput(this.value)"
         />
-        <div class="flex items-center gap-1.5 text-xs text-slate-500">
-          <button type="button" onclick="app.toggleCcBcc()" class="hover:text-slate-900 font-semibold px-2 py-0.5 rounded hover:bg-slate-100 transition cursor-pointer">Cc/Bcc</button>
+        <div class="flex items-center gap-1.5 text-xs text-sky-400">
+          <button type="button" onclick="app.toggleCcBcc()" class="hover:text-white font-semibold px-2 py-0.5 rounded hover:bg-sky-950/60 transition cursor-pointer">Cc/Bcc</button>
         </div>
         <!-- Contact Auto-complete Suggestions Dropdown -->
-        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-2xl border border-slate-200 bg-white p-1 shadow-xl z-50"></div>
+        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-2xl border border-sky-500/25 bg-[#0B1120] p-1 shadow-2xl z-50 text-white"></div>
       </div>
 
       <!-- CC / BCC Rows (Collapsible) -->
-      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-slate-200 pb-2">
+      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-sky-500/15 pb-2">
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Cc:</span>
-          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none" />
+          <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Cc:</span>
+          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
         </div>
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Bcc:</span>
-          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none" />
+          <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Bcc:</span>
+          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
         </div>
       </div>
 
       <!-- Subject Field -->
-      <div class="flex items-center gap-2.5 border-b border-slate-200 pb-2">
-        <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Subject:</span>
-        <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none" />
+      <div class="flex items-center gap-2.5 border-b border-sky-500/15 pb-2">
+        <span class="text-xs font-bold text-sky-300 w-16 shrink-0">Subject:</span>
+        <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-semibold text-white placeholder:text-slate-500 outline-none" />
       </div>
 
       <!-- Rich Formatting Toolbar -->
-      <div class="flex flex-wrap items-center gap-1 py-1.5 border-b border-slate-200 text-slate-600 bg-white">
-        <button type="button" onclick="app.execEditorCommand('bold')" title="Bold" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+      <div class="flex flex-wrap items-center gap-1 py-1.5 border-b border-sky-500/15 text-slate-300 bg-[#080D1B]">
+        <button type="button" onclick="app.execEditorCommand('bold')" title="Bold" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="bold" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('italic')" title="Italic" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <button type="button" onclick="app.execEditorCommand('italic')" title="Italic" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="italic" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('underline')" title="Underline" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <button type="button" onclick="app.execEditorCommand('underline')" title="Underline" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="underline" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('strikeThrough')" title="Strikethrough" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <button type="button" onclick="app.execEditorCommand('strikeThrough')" title="Strikethrough" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="strikethrough" class="h-3.5 w-3.5"></i>
         </button>
-        <span class="h-3.5 w-px bg-slate-200 mx-1"></span>
-        <button type="button" onclick="app.execEditorCommand('insertUnorderedList')" title="Bullet List" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <span class="h-3.5 w-px bg-sky-500/20 mx-1"></span>
+        <button type="button" onclick="app.execEditorCommand('insertUnorderedList')" title="Bullet List" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="list" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('insertOrderedList')" title="Numbered List" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <button type="button" onclick="app.execEditorCommand('insertOrderedList')" title="Numbered List" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="list-ordered" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('formatBlock', 'blockquote')" title="Quote" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <button type="button" onclick="app.execEditorCommand('formatBlock', 'blockquote')" title="Quote" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="quote" class="h-3.5 w-3.5"></i>
         </button>
-        <span class="h-3.5 w-px bg-slate-200 mx-1"></span>
-        <button type="button" onclick="app.insertLinkPrompt()" title="Insert Link" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
+        <span class="h-3.5 w-px bg-sky-500/20 mx-1"></span>
+        <button type="button" onclick="app.insertLinkPrompt()" title="Insert Link" class="p-1.5 rounded-lg hover:bg-sky-950/60 hover:text-white transition cursor-pointer">
           <i data-lucide="link" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.insertSignature()" title="Insert Signature" class="flex items-center gap-1.5 p-1 px-2.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 text-xs font-semibold text-slate-700 transition cursor-pointer">
-          <i data-lucide="pen-tool" class="h-3.5 w-3.5 text-slate-600"></i>
+        <button type="button" onclick="app.insertSignature()" title="Insert Signature" class="flex items-center gap-1.5 p-1 px-2.5 rounded-lg hover:bg-sky-950/60 hover:text-white text-xs font-semibold text-sky-300 transition cursor-pointer">
+          <i data-lucide="pen-tool" class="h-3.5 w-3.5 text-sky-400"></i>
           <span>Signature</span>
         </button>
       </div>
@@ -803,35 +793,35 @@ if (empty($_SESSION['current_user_id'])) {
         id="compose-editor"
         contenteditable="true"
         placeholder="Write something clever..."
-        class="min-h-[160px] max-h-[300px] overflow-y-auto text-sm text-slate-900 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-400"
+        class="min-h-[160px] max-h-[300px] overflow-y-auto text-sm text-slate-100 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-500"
       ></div>
 
       <!-- File Attachments List -->
-      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-slate-200"></div>
+      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-sky-500/15"></div>
     </div>
 
-    <!-- Compose Bottom Actions (Pure White Canvas, Slate Gray & Solid Black Button) -->
-    <div id="compose-footer-container" class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
+    <!-- Compose Bottom Actions -->
+    <div id="compose-footer-container" class="px-3 sm:px-5 py-3 border-t border-sky-500/20 bg-[#080D1B] flex items-center justify-between shrink-0 gap-1.5 sm:gap-2">
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <label class="flex items-center gap-1 sm:gap-1.5 cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs" title="Attach Files">
-          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+        <label class="flex items-center gap-1 sm:gap-1.5 cursor-pointer rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-sky-200 transition shadow-xs" title="Attach Files">
+          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-sky-400 shrink-0"></i>
           <span class="hidden sm:inline">Attach</span>
           <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
         </label>
-        <button onclick="app.saveDraft()" class="rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs cursor-pointer shrink-0" title="Save Draft">
+        <button onclick="app.saveDraft()" class="rounded-full border border-sky-500/25 bg-[#0D152A] hover:bg-[#132040] px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold text-sky-200 transition shadow-xs cursor-pointer shrink-0" title="Save Draft">
           <span class="hidden sm:inline">Save Draft</span>
           <span class="sm:hidden">Save</span>
         </button>
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button onclick="app.discardDraft()" class="px-2 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0" title="Discard Draft">
+        <button onclick="app.discardDraft()" class="px-2 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer shrink-0" title="Discard Draft">
           Discard
         </button>
         <button
           onclick="app.sendMessage()"
           id="send-mail-btn"
-          class="flex items-center gap-1.5 sm:gap-2 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-2 px-3.5 sm:px-5 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+          class="flex items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-display font-bold text-xs py-2 px-3.5 sm:px-5 shadow-[0_0_15px_rgba(14,165,233,0.4)] transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
           title="Send Postcard"
         >
           <i data-lucide="send" class="h-3.5 w-3.5 text-white shrink-0"></i>

@@ -1738,15 +1738,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   getSenderColor(sender) {
     const colors = [
+      'bg-sky-600',
       'bg-blue-600',
-      'bg-slate-800',
-      'bg-emerald-600',
-      'bg-amber-600',
+      'bg-indigo-600',
+      'bg-pink-600',
       'bg-rose-600',
-      'bg-teal-600',
-      'bg-cyan-700',
-      'bg-stone-700',
-      'bg-sky-600'
+      'bg-fuchsia-600',
+      'bg-cyan-600',
+      'bg-blue-700',
+      'bg-sky-500'
     ];
     let hash = 0;
     const str = sender || 'Mail';
@@ -1786,16 +1786,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         emptySubtitle = 'Important and personal messages will appear here.';
       }
       container.innerHTML = `
-        <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground h-64">
+        <div class="flex flex-col items-center justify-center p-8 text-center text-slate-400 h-64">
           <img src="/raccoon-logo.png" class="h-16 w-16 opacity-40 mb-3 object-contain" />
-          <p class="text-sm font-semibold">${emptyTitle}</p>
-          <p class="text-xs text-muted-foreground mt-1">${emptySubtitle}</p>
+          <p class="text-sm font-semibold text-white">${emptyTitle}</p>
+          <p class="text-xs text-slate-400 mt-1">${emptySubtitle}</p>
         </div>
       `;
       return;
     }
 
-    // Render OriginOS 7 Liquid Glass oval floating cards (No ad banner with duplicate logo)
+    // Render Neon Flower Minimalist Floating Cards
     const messagesHtml = list.map(msg => {
       const isSelected = this.selectedMessage?.id === msg.id;
       const isChecked = this.checkedIds.has(msg.id);
@@ -1808,7 +1808,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const avatarBg = this.getSenderColor(senderName);
 
       return `
-        <div class="msg-swipe-wrapper originos-liquid-card group relative select-none rounded-[24px] mx-2.5 my-1.5 transition-all duration-200 overflow-hidden ${isSelected ? 'is-selected ring-2 ring-slate-900 border-slate-900 shadow-md' : 'shadow-2xs hover:shadow-xs'}" data-msg-id="${msg.id}">
+        <div class="msg-swipe-wrapper originos-liquid-card group relative select-none rounded-2xl mx-2 my-1.5 transition-all duration-200 overflow-hidden border ${isSelected ? 'is-selected border-sky-400 ring-1 ring-sky-400/80 shadow-[0_0_20px_-2px_rgba(14,165,233,0.3)] bg-[#132244]' : 'border-sky-500/15 bg-[#0D1529]/90 hover:bg-[#111C36] hover:border-sky-500/35 shadow-2xs hover:shadow-[0_4px_20px_-2px_rgba(14,165,233,0.15)]'}" data-msg-id="${msg.id}">
           <!-- Revealed on Swipe Right: Read & Planner / Star -->
           <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
             <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
@@ -1829,11 +1829,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             </button>
           </div>
 
-          <!-- Foreground Liquid Glass Content -->
-          <div class="swipe-content originos-glass-inner relative z-10 ${isUnread ? 'font-semibold' : ''} px-4 py-3.5 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
-            <!-- Unread Dot (Liquid Obsidian Pill) -->
+          <!-- Foreground Content -->
+          <div class="swipe-content originos-glass-inner relative z-10 px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
+            <!-- Unread Dot (Glowing Electric Cyan) -->
             <div class="w-2.5 flex items-center justify-center shrink-0">
-              ${isUnread ? '<span class="h-2.5 w-2.5 rounded-full bg-slate-900 shadow-2xs"></span>' : ''}
+              ${isUnread ? '<span class="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>' : ''}
             </div>
 
             <!-- Batch Selection Checkbox -->
@@ -1842,42 +1842,42 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 type="checkbox"
                 ${isChecked ? 'checked' : ''}
                 onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-                class="rounded border-slate-400 h-4 w-4 accent-slate-900 cursor-pointer"
+                class="rounded border-sky-500/40 h-4 w-4 accent-sky-500 cursor-pointer"
               />
             </div>
 
             <!-- Sender Avatar with Monogram or Brand Icon -->
-            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs border border-white/40">
+            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs border border-white/20">
               ${isTeam ? '<img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />' : initials}
             </div>
 
             <!-- Email Text Details -->
             <div class="flex-1 min-w-0 pr-1">
               <div class="flex items-center justify-between gap-1 leading-snug">
-                <span class="font-bold text-sm text-slate-900 truncate">${this.escapeHtml(senderName)}</span>
+                <span class="font-bold text-sm text-white truncate">${this.escapeHtml(senderName)}</span>
                 <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-                  <!-- Desktop Quick Action Hover Icons (Solid Black Buttons, White Write) -->
+                  <!-- Desktop Quick Action Hover Icons -->
                   <div class="hidden md:group-hover:flex items-center gap-1">
-                    <button onclick="app.trashMessage('${msg.id}')" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Delete">
-                      <i data-lucide="trash-2" class="h-3.5 w-3.5 text-white"></i>
+                    <button onclick="app.trashMessage('${msg.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-sky-950/50 transition cursor-pointer" title="Delete">
+                      <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
                     </button>
-                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="${isUnread ? 'Mark read' : 'Mark unread'}">
-                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5 text-white"></i>
+                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1.5 rounded-lg text-slate-400 hover:text-sky-300 hover:bg-sky-950/50 transition cursor-pointer" title="${isUnread ? 'Mark read' : 'Mark unread'}">
+                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5"></i>
                     </button>
-                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Archive">
-                      <i data-lucide="archive" class="h-3.5 w-3.5 text-white"></i>
+                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-sky-300 hover:bg-sky-950/50 transition cursor-pointer" title="Archive">
+                      <i data-lucide="archive" class="h-3.5 w-3.5"></i>
                     </button>
                   </div>
-                  <span class="text-xs text-slate-500 font-medium md:group-hover:hidden">${dateStr}</span>
-                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-1 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Star">
-                    <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-amber-400 text-amber-400' : 'text-white'}"></i>
+                  <span class="text-xs text-sky-200/50 font-medium md:group-hover:hidden">${dateStr}</span>
+                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-1 rounded-full hover:bg-sky-950/60 transition cursor-pointer" title="Star">
+                    <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]' : 'text-slate-500 hover:text-amber-400'}"></i>
                   </button>
                 </div>
               </div>
-              <div class="text-xs ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'} truncate mt-0.5">
-                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-slate-600 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
+              <div class="text-xs ${isUnread ? 'font-bold text-slate-100' : 'font-medium text-slate-300'} truncate mt-0.5">
+                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-sky-400 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
               </div>
-              <div class="text-xs text-slate-500 truncate mt-0.5 font-normal">
+              <div class="text-xs text-slate-400 truncate mt-0.5 font-normal">
                 ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}
               </div>
             </div>
@@ -2142,90 +2142,90 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     readerEl.innerHTML = `
       <!-- Action Toolbar (Smart Responsive, Zero Overlap on Mobile) -->
-      <div class="h-11 sm:h-12 border-b border-slate-200 bg-white px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
+      <div class="h-11 sm:h-12 border-b border-sky-500/15 bg-[#080D1B] px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
         <div class="flex items-center gap-1.5 shrink-0">
           <!-- Mobile Back Button -->
-          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-slate-900 hover:bg-black text-white shrink-0 cursor-pointer border border-slate-800 shadow-2xs">
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shrink-0 cursor-pointer shadow-[0_0_10px_rgba(14,165,233,0.3)]">
             <i data-lucide="arrow-left" class="h-3.5 w-3.5 text-white"></i>
             <span>Back</span>
           </button>
           <button onclick="app.replyToMessage()"
-            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95 shrink-0 border border-slate-800">
+            class="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-[0_0_12px_rgba(14,165,233,0.35)] cursor-pointer active:scale-95 shrink-0 border border-sky-400/40">
             <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
             <span>Reply</span>
           </button>
           <button onclick="app.replyAllMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
-            <i data-lucide="reply-all" class="h-3 w-3 text-white"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
+            <i data-lucide="reply-all" class="h-3 w-3 text-sky-400"></i>
             <span>Reply All</span>
           </button>
           <button onclick="app.forwardMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
-            <i data-lucide="forward" class="h-3 w-3 text-white"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
+            <i data-lucide="forward" class="h-3 w-3 text-sky-400"></i>
             <span>Forward</span>
           </button>
         </div>
 
         <div class="flex items-center gap-1 shrink-0">
-          <!-- Desktop Only Direct Actions (Solid Black Buttons, White Write) -->
-          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shadow-2xs">
-            <i data-lucide="printer" class="h-4 w-4 text-white"></i>
+          <!-- Desktop Only Direct Actions -->
+          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shadow-2xs">
+            <i data-lucide="printer" class="h-4 w-4"></i>
           </button>
-          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shadow-2xs">
-            <i data-lucide="download" class="h-4 w-4 text-white"></i>
+          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shadow-2xs">
+            <i data-lucide="download" class="h-4 w-4"></i>
           </button>
-          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs">
-            <i data-lucide="mail" class="h-3 w-3 text-white"></i>
+          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/25 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs">
+            <i data-lucide="mail" class="h-3 w-3 text-sky-400"></i>
             <span>Postcard View</span>
           </button>
           
           <!-- Star Action (Both Mobile & Desktop) -->
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-400 fill-amber-400' : 'text-white'}"></i>
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-200 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-400 fill-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]' : 'text-slate-400'}"></i>
           </button>
 
           <!-- Archive Action (Both Mobile & Desktop) -->
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="archive" class="h-4 w-4 text-white"></i>
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="archive" class="h-4 w-4"></i>
           </button>
 
           <!-- Trash Action (Both Mobile & Desktop) -->
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
-            <i data-lucide="trash-2" class="h-4 w-4 text-white"></i>
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-rose-400 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="trash-2" class="h-4 w-4"></i>
           </button>
 
           <!-- Mobile Overflow 'More' Menu Button -->
           <div class="relative sm:hidden">
-            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
-              <i data-lucide="more-vertical" class="h-4 w-4 text-white"></i>
+            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full bg-[#0D152A] hover:bg-[#132040] text-sky-300 border border-sky-500/20 transition cursor-pointer shrink-0 shadow-2xs">
+              <i data-lucide="more-vertical" class="h-4 w-4"></i>
             </button>
-            <div id="reader-more-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-2xl z-50 text-xs text-slate-800">
-              <button onclick="app.closeReaderMoreDropdown(); app.openPostcardModal();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i>
+            <div id="reader-more-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl border border-sky-500/25 bg-[#0B1120] py-1.5 shadow-2xl z-50 text-xs text-white">
+              <button onclick="app.closeReaderMoreDropdown(); app.openPostcardModal();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="mail" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Postcard View</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.printMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="printer" class="h-3.5 w-3.5 text-slate-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.printMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="printer" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Print or PDF</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.downloadMessageEml('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="download" class="h-3.5 w-3.5 text-slate-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.downloadMessageEml('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="download" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Export .EML</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.replyAllMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="reply-all" class="h-3.5 w-3.5 text-slate-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.replyAllMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="reply-all" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Reply All</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.forwardMessage();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="forward" class="h-3.5 w-3.5 text-slate-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.forwardMessage();" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="forward" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Forward</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.toggleRead('${msg.id}', false);" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
-                <i data-lucide="mail-open" class="h-3.5 w-3.5 text-slate-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.toggleRead('${msg.id}', false);" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 cursor-pointer">
+                <i data-lucide="mail-open" class="h-3.5 w-3.5 text-sky-400"></i>
                 <span>Mark Unread</span>
               </button>
-              <button onclick="app.closeReaderMoreDropdown(); app.spamMessage('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 text-red-600 cursor-pointer">
-                <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-red-600"></i>
+              <button onclick="app.closeReaderMoreDropdown(); app.spamMessage('${msg.id}');" class="w-full text-left px-3.5 py-2 hover:bg-[#132040] flex items-center gap-2 text-rose-400 cursor-pointer">
+                <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-rose-400"></i>
                 <span>Report Spam</span>
               </button>
             </div>
@@ -2236,63 +2236,63 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       <!-- Scrollable Message Body (Streamlined Compact Density) -->
       <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 pb-24 md:pb-5">
         
-        <!-- Authentic Email Reader Stationery -->
-        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs bg-white border border-slate-200">
+        <!-- Authentic Email Reader Stationery (Neon Flower Dark Surface) -->
+        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs bg-[#0B1120] border border-sky-500/20 text-white">
           <!-- Top subtle accent line -->
-          <div class="stripes-subtle h-1.5 w-full"></div>
+          <div class="stripes-subtle h-[2px] w-full"></div>
 
           <div class="p-4 sm:p-5 space-y-3">
             <!-- Verified Courier Badge (Compact) -->
             <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-slate-100 border border-slate-200 text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="shield-check" class="h-3 w-3 text-slate-600 shrink-0"></i>
+              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-sky-950/60 border border-sky-500/25 text-sky-300 flex items-center gap-1.5 rounded-full">
+                <i data-lucide="shield-check" class="h-3 w-3 text-sky-400 shrink-0"></i>
                 <span>Verified Postcard &bull; Masked 10/10</span>
               </div>
-              <span class="text-[10px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
+              <span class="text-[10px] font-mono text-sky-300 bg-sky-950/60 border border-sky-500/25 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
             </div>
 
             <!-- Header Row: Sender Icon/Avatar & Details (Compact) -->
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 ${isTeam ? `
-                  <div class="h-10 w-10 rounded-full bg-slate-900 border border-slate-800 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                  <div class="h-10 w-10 rounded-full bg-[#0D152A] border border-sky-500/30 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
                     <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
                   </div>
                 ` : `
-                  <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+                  <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 border border-white/20">
                     ${initials}
                   </div>
                 `}
                 <div class="min-w-0">
-                  <h2 class="font-display text-base sm:text-lg font-bold text-slate-900 leading-tight truncate">
+                  <h2 class="font-display text-base sm:text-lg font-bold text-white leading-tight truncate">
                     ${this.escapeHtml(msg.subject || '(no subject)')}
                   </h2>
-                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
-                    <span class="font-bold text-slate-900">${this.escapeHtml(msg.sender_name)}</span>
-                    <span class="text-slate-700 font-mono text-[11px] bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
+                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
+                    <span class="font-bold text-white">${this.escapeHtml(msg.sender_name)}</span>
+                    <span class="text-sky-300 font-mono text-[11px] bg-sky-950/60 border border-sky-500/20 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
                     <span>&bull;</span>
-                    <span>to <span class="font-medium text-slate-700">${this.escapeHtml(msg.recipient_email)}</span></span>
+                    <span>to <span class="font-medium text-slate-300">${this.escapeHtml(msg.recipient_email)}</span></span>
                     <span>&bull;</span>
-                    <span class="font-mono text-[10.5px]">${new Date(msg.created_at).toLocaleString()}</span>
+                    <span class="font-mono text-[10.5px] text-sky-300/80">${new Date(msg.created_at).toLocaleString()}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Email Content / Letter Body (High Visibility Pure White Card) -->
-            <div class="pt-4 border-t border-slate-200 text-slate-900 text-sm leading-relaxed font-sans selection:bg-slate-900 selection:text-white bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-2xs">
+            <!-- Email Content / Letter Body -->
+            <div class="pt-4 border-t border-sky-500/15 text-slate-100 text-sm leading-relaxed font-sans bg-[#080D1A] rounded-xl p-4 sm:p-5 border border-sky-500/15 shadow-2xs">
               ${msg.body_html ? `
-                <div class="email-html-wrapper overflow-x-auto text-slate-900 leading-normal">${msg.body_html}</div>
+                <div class="email-html-wrapper overflow-x-auto text-slate-100 leading-normal">${msg.body_html}</div>
               ` : `
-                <div class="whitespace-pre-wrap text-slate-800 font-normal leading-relaxed">${this.escapeHtml(msg.body)}</div>
+                <div class="whitespace-pre-wrap text-slate-200 font-normal leading-relaxed">${this.escapeHtml(msg.body)}</div>
               `}
             </div>
 
             <!-- Attachments Section (Compact horizontal pills) -->
             ${attachments.length > 0 ? `
-              <div class="pt-3 border-t border-slate-200 space-y-1.5">
-                <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                  <i data-lucide="paperclip" class="h-3 w-3 text-slate-600"></i>
+              <div class="pt-3 border-t border-sky-500/15 space-y-1.5">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-sky-300">
+                  <i data-lucide="paperclip" class="h-3 w-3 text-sky-400"></i>
                   <span>${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}</span>
                 </div>
                 <div class="flex flex-wrap gap-2 pt-0.5">
@@ -2300,22 +2300,22 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                     const isImg = att.mime_type.startsWith('image/');
                     const sizeKB = Math.round(att.size_bytes / 1024);
                     return `
-                      <div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 pr-2.5 hover:border-slate-400 transition text-xs shadow-xs">
-                        <div class="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+                      <div class="inline-flex items-center gap-2 rounded-xl border border-sky-500/20 bg-[#0E162B] p-1.5 pr-2.5 hover:border-sky-400 transition text-xs shadow-xs text-white">
+                        <div class="h-8 w-8 rounded-lg bg-sky-950/80 flex items-center justify-center overflow-hidden shrink-0 border border-sky-500/20">
                           ${isImg ? `
                             <img src="/uploads/${att.filename}" class="h-full w-full object-cover" />
                           ` : `
-                            <i data-lucide="file-text" class="h-4 w-4 text-slate-600"></i>
+                            <i data-lucide="file-text" class="h-4 w-4 text-sky-400"></i>
                           `}
                         </div>
                         <div class="min-w-0 pr-1">
-                          <p class="font-bold truncate text-slate-900 text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
-                          <p class="text-[9.5px] text-slate-500 font-mono">${sizeKB} KB</p>
+                          <p class="font-bold truncate text-white text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
+                          <p class="text-[9.5px] text-sky-300/80 font-mono">${sizeKB} KB</p>
                         </div>
                         <a
                           href="/uploads/${att.filename}"
                           download="${att.original_name}"
-                          class="p-1 rounded-full hover:bg-slate-100 text-slate-700 transition"
+                          class="p-1 rounded-full hover:bg-sky-950 text-sky-300 hover:text-white transition"
                           title="Download"
                         >
                           <i data-lucide="download" class="h-3.5 w-3.5"></i>
@@ -2328,77 +2328,76 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             ` : ''}
 
             <!-- Postcard Footer Watermark (Compact) -->
-            <div class="pt-2 border-t border-border-light flex items-center justify-between text-[10px] text-muted-foreground">
+            <div class="pt-2 border-t border-sky-500/15 flex items-center justify-between text-[10px] text-slate-400">
               <span class="flex items-center gap-1">
                 <span class="text-xs">🦝</span>
                 <span>Clever &amp; Masked Nocturnal Envelope</span>
               </span>
-              <span class="font-mono">End-to-End Encrypted</span>
+              <span class="font-mono text-sky-400">End-to-End Encrypted</span>
             </div>
           </div>
         </div>
 
         <!-- FAST REPLY SECTION -->
-        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+        <div class="rounded-3xl border border-sky-500/20 bg-[#0B1120] p-5 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-900">
-              <i data-lucide="zap" class="h-4 w-4 text-slate-600"></i>
+            <div class="flex items-center gap-2 text-xs font-bold text-white">
+              <i data-lucide="zap" class="h-4 w-4 text-sky-400"></i>
               <span>Fast Reply to ${this.escapeHtml(msg.sender_name)}</span>
             </div>
-            <span class="text-[11px] text-slate-500 hidden sm:inline">Press Ctrl+Enter to send fast</span>
+            <span class="text-[11px] text-slate-400 hidden sm:inline">Press Ctrl+Enter to send fast</span>
           </div>
 
-          <!-- 1-Tap Fast Reply Chips (Solid Black Buttons, White Write) -->
+          <!-- 1-Tap Fast Reply Chips -->
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
-            <span class="text-[11px] font-bold text-slate-600 mr-1">1-Tap:</span>
-            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Got it!</button>
-            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Sounds great!</button>
-            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Will review shortly.</button>
-            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Thanks for the postcard!</button>
-            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">On my way!</button>
+            <span class="text-[11px] font-bold text-sky-300 mr-1">1-Tap:</span>
+            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Got it!</button>
+            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Sounds great!</button>
+            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Will review shortly.</button>
+            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">Thanks for the postcard!</button>
+            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-[#0E162B] hover:bg-[#14203D] border border-sky-500/25 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-sky-200 flex items-center gap-1 cursor-pointer shadow-2xs">On my way!</button>
           </div>
 
           <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
           <div class="flex items-start gap-3 pt-2">
-            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-slate-200 shrink-0 mt-1 shadow-sm" />
+            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-sky-500/30 shrink-0 mt-1 shadow-sm" />
             <div class="flex-1">
               <!-- Postcard Styled Inner Box -->
-              <div class="rounded-2xl border-2 border-slate-200 bg-slate-50 focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 p-3.5 shadow-sm transition">
+              <div class="rounded-2xl border border-sky-500/25 bg-[#080D1A] focus-within:border-sky-400 focus-within:ring-2 focus-within:ring-sky-500/20 p-3.5 shadow-sm transition">
                 <textarea
                   id="quick-reply-body"
                   rows="3"
                   placeholder="Type a fast reply or select a chip above... (Ctrl+Enter to send)"
                   onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
-                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-900 placeholder:text-slate-400 pb-2"
+                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-100 placeholder:text-slate-500 pb-2"
                 ></textarea>
 
                 <!-- High-Visibility Bottom Action Bar INSIDE the Box -->
-                <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1 flex-wrap gap-2">
-                  <div class="flex items-center gap-2 text-[11px] text-slate-500">
-                    <span class="inline-flex items-center gap-1 font-semibold text-slate-700">
-                      <i data-lucide="zap" class="h-3.5 w-3.5 text-slate-600"></i>
+                <div class="flex items-center justify-between pt-2.5 border-t border-sky-500/15 mt-1 flex-wrap gap-2">
+                  <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                    <span class="inline-flex items-center gap-1 font-semibold text-sky-300">
+                      <i data-lucide="zap" class="h-3.5 w-3.5 text-sky-400"></i>
                       <span>Instant Express Dispatch</span>
                     </span>
                     <span class="hidden sm:inline opacity-60">&bull; Press Ctrl+Enter</span>
                   </div>
 
-                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX (Black Button, White Text) -->
+                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX -->
                   <button
                     id="btn-fast-reply-send"
                     type="button"
                     onclick="app.sendQuickReply('${msg.id}')"
-                    class="flex items-center gap-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs sm:text-sm py-2.5 px-6 transition shadow-md hover:shadow-xl active:scale-95 cursor-pointer group border border-slate-900"
+                    class="flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-display font-bold text-xs sm:text-sm py-2 px-5 transition shadow-[0_0_15px_rgba(14,165,233,0.4)] active:scale-95 cursor-pointer group border border-sky-400/30"
                     title="Send Fast Reply immediately"
                   >
-                    <i data-lucide="send" class="h-4 w-4 group-hover:translate-x-0.5 transition transform text-white"></i>
-                    <span>Send Fast Reply</span>
+                    <span>Send Fast</span>
+                    <i data-lucide="send" class="h-3.5 w-3.5 text-white transition transform group-hover:translate-x-0.5"></i>
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     `;
 
@@ -3050,16 +3049,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     document.getElementById('compose-subject').focus();
   },
 
-  // Filters & Sorting (Solid Black Buttons, White Write)
+  // Filters & Sorting (Neon Flower Minimalist)
   setFilter(filter) {
     this.currentFilter = filter;
     ['all', 'unread', 'starred', 'has_attachments'].forEach(f => {
       const btn = document.getElementById(`filter-${f}`);
       if (btn) {
         if (f === filter) {
-          btn.className = 'px-3 py-1 rounded-full font-bold bg-slate-900 hover:bg-black text-white transition text-xs shadow-xs shrink-0 whitespace-nowrap border border-slate-900';
+          btn.className = 'px-3 py-1 rounded-full font-bold bg-gradient-to-r from-sky-500 to-blue-600 text-white transition text-xs shadow-[0_0_12px_rgba(14,165,233,0.35)] shrink-0 whitespace-nowrap border border-sky-400/40';
         } else {
-          btn.className = 'px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition text-xs border border-slate-700 shrink-0 whitespace-nowrap';
+          btn.className = 'px-3 py-1 rounded-full font-medium bg-[#0E162B] hover:bg-[#14203D] text-slate-300 transition text-xs border border-sky-500/20 shrink-0 whitespace-nowrap';
         }
       }
     });

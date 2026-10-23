@@ -46,25 +46,24 @@
   <!-- AdSense script removed from auth screen to comply with Google Anti-Phishing policy -->
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
+  <!-- Early Theme Initializer (Neon Flower Minimalist Palette) -->
   <script>
     (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
+      localStorage.setItem('raccon_theme', 'neon_flower');
+      document.documentElement.className = 'dark theme-neon-flower';
       const themeVars = {
-        '--background': '#FFFFFF',
-        '--foreground': '#0F172A',
-        '--card': '#FFFFFF',
-        '--card-foreground': '#0F172A',
-        '--primary': '#0F172A',
-        '--primary-hover': '#1E293B',
+        '--background': '#070A14',
+        '--foreground': '#F8FAFC',
+        '--card': '#0B1120',
+        '--card-foreground': '#F8FAFC',
+        '--primary': '#0EA5E9',
+        '--primary-hover': '#38BDF8',
         '--primary-foreground': '#FFFFFF',
-        '--secondary': '#F1F5F9',
-        '--muted': '#F1F5F9',
-        '--muted-foreground': '#64748B',
-        '--border': '#E2E8F0',
-        '--border-light': '#F1F5F9'
+        '--secondary': '#0F172A',
+        '--muted': '#0E162B',
+        '--muted-foreground': '#94A3B8',
+        '--border': 'rgba(56, 189, 248, 0.16)',
+        '--border-light': 'rgba(56, 189, 248, 0.08)'
       };
       for (const [k, v] of Object.entries(themeVars)) {
         document.documentElement.style.setProperty(k, v);
