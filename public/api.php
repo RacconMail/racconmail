@@ -155,7 +155,7 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
 // Session management (Require registration & login with top-tier cookie flags)
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
-        'lifetime' => 0,
+        'lifetime' => 86400 * 30, // 30 days persistent session
         'path' => '/',
         'domain' => '',
         'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
@@ -1241,7 +1241,9 @@ $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || ($route === 'news' && $method === 'GET')
     || ($route === 'engine/status' && $method === 'GET')
     || ($route === 'engine/update')
-    || ($route === 'story' && $method === 'GET');
+    || ($route === 'story' && $method === 'GET')
+    || ($route === 'marketplace/items' && $method === 'GET')
+    || (preg_match('#^marketplace/items/([^/]+)$#', $route) && $method === 'GET');
 
 // Enforce login for private mailbox endpoints
 if (!$currentUserId && !$isPublicRoute) {
@@ -2556,6 +2558,471 @@ try {
 
         echo json_encode(['success' => true, 'message' => 'Post removed successfully']);
         exit;
+    }
+
+    // ==========================================
+    // 12. RACCON MARKETPLACE & ARTICLES (SECOND-HAND & NEW GOODS)
+    // ==========================================
+
+    // Ensure marketplace table exists
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS marketplace_items (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            category TEXT NOT NULL DEFAULT 'other',
+            condition TEXT NOT NULL DEFAULT 'good',
+            price REAL DEFAULT 0,
+            currency TEXT DEFAULT 'EUR',
+            is_free INTEGER DEFAULT 0,
+            location TEXT DEFAULT '',
+            image_url TEXT DEFAULT '',
+            status TEXT DEFAULT 'active',
+            views_count INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_category ON marketplace_items(category, created_at)");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_status ON marketplace_items(status, created_at)");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_mkt_user ON marketplace_items(user_id)");
+    } catch (Throwable $e) {}
+
+    // Auto-seed initial marketplace listings if table is empty
+    $mktCount = 0;
+    try {
+        $stmtMktCount = $db->query("SELECT COUNT(*) FROM marketplace_items");
+        if ($stmtMktCount) {
+            $mktCount = (int)$stmtMktCount->fetchColumn();
+        }
+    } catch (Throwable $e) {}
+
+    if ($mktCount === 0) {
+        $seedUserId = $currentUserId ?: 'usr_admin_master';
+        $seedItems = [
+            [
+                'id' => 'mkt_seed_1',
+                'title' => 'ThinkPad X1 Carbon Gen 10 (16GB RAM, 512GB SSD, Intel i7)',
+                'description' => 'Super clean premium business ultrabook used for software development. Battery health 96%, original 65W USB-C fast charger included. Ships worldwide or local pickup.',
+                'category' => 'electronics',
+                'condition' => 'like_new',
+                'price' => 680,
+                'currency' => 'EUR',
+                'is_free' => 0,
+                'location' => 'Bucharest, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80'
+            ],
+            [
+                'id' => 'mkt_seed_2',
+                'title' => 'Sony WH-1000XM4 Noise-Canceling Wireless Headphones',
+                'description' => 'Superb acoustic fidelity and industry-leading active noise cancellation. Clean earpads, includes hard travel carrying case, flight adapter, and audio cable.',
+                'category' => 'electronics',
+                'condition' => 'good',
+                'price' => 145,
+                'currency' => 'EUR',
+                'is_free' => 0,
+                'location' => 'Cluj-Napoca, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80'
+            ],
+            [
+                'id' => 'mkt_seed_3',
+                'title' => 'Keychron K2 Wireless Mechanical Keyboard (Gateron Brown Switches)',
+                'description' => 'Brand new in original retail packaging, factory sealed. Bluetooth 5.1 and wired USB-C mode, compatible with macOS and Windows. White LED edition.',
+                'category' => 'electronics',
+                'condition' => 'new',
+                'price' => 75,
+                'currency' => 'EUR',
+                'is_free' => 0,
+                'location' => 'Timisoara, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80'
+            ],
+            [
+                'id' => 'mkt_seed_4',
+                'title' => 'Vintage Canon AE-1 Program 35mm SLR Camera + FD 50mm f/1.8 Lens',
+                'description' => 'Fully tested and functioning legendary 35mm film camera. Shutter squeak serviced, fresh light seals installed last month. Crisp glass with no fungus.',
+                'category' => 'other',
+                'condition' => 'good',
+                'price' => 180,
+                'currency' => 'EUR',
+                'is_free' => 0,
+                'location' => 'Iasi, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&auto=format&fit=crop&q=80'
+            ],
+            [
+                'id' => 'mkt_seed_5',
+                'title' => 'Herman Miller Aeron Ergonomic Task Chair (Graphite, Size B)',
+                'description' => 'Equipped with PostureFit SL lumbar support, fully adjustable armrests, forward tilt limiter. Excellent ergonomic condition from a smoke-free home studio.',
+                'category' => 'home',
+                'condition' => 'like_new',
+                'price' => 590,
+                'currency' => 'EUR',
+                'is_free' => 0,
+                'location' => 'Bucharest, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1580481077195-c3a821a58875?w=800&auto=format&fit=crop&q=80'
+            ],
+            [
+                'id' => 'mkt_seed_6',
+                'title' => 'Hardcover Illustrated World Folktales & Nocturnal Legends',
+                'description' => 'Generously giving away this stunning collector illustrated hardcover book to a fellow reading enthusiast. Pick up in Brasov or cover standard parcel postage.',
+                'category' => 'books',
+                'condition' => 'new',
+                'price' => 0,
+                'currency' => 'EUR',
+                'is_free' => 1,
+                'location' => 'Brasov, Romania',
+                'image_url' => 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80'
+            ]
+        ];
+
+        foreach ($seedItems as $si) {
+            try {
+                $db->prepare("INSERT INTO marketplace_items (id, user_id, title, description, category, condition, price, currency, is_free, location, image_url, status, views_count)
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?)")
+                   ->execute([$si['id'], $seedUserId, $si['title'], $si['description'], $si['category'], $si['condition'], $si['price'], $si['currency'], $si['is_free'], $si['location'], $si['image_url'], rand(12, 85)]);
+            } catch (Throwable $e) {}
+        }
+    }
+
+    // 12.1 GET /api/marketplace/items (List Marketplace Listings)
+    if ($route === 'marketplace/items' && $method === 'GET') {
+        $category = $_GET['category'] ?? 'all';
+        $condition = $_GET['condition'] ?? 'all';
+        $status = $_GET['status'] ?? 'active';
+        $search = trim($_GET['q'] ?? '');
+        $filter = $_GET['filter'] ?? '';
+        $sort = $_GET['sort'] ?? 'newest';
+        $limit = min(100, max(1, (int)($_GET['limit'] ?? 50)));
+        $offset = max(0, (int)($_GET['offset'] ?? 0));
+
+        $sql = "SELECT m.*, u.name as seller_name, u.email as seller_email, u.avatar as seller_avatar
+                FROM marketplace_items m
+                LEFT JOIN users u ON m.user_id = u.id
+                WHERE 1=1";
+        $params = [];
+
+        if ($filter === 'my' && $currentUserId) {
+            $sql .= " AND m.user_id = ?";
+            $params[] = $currentUserId;
+        } elseif ($status !== 'all') {
+            $sql .= " AND m.status = ?";
+            $params[] = $status;
+        }
+
+        if ($category !== 'all' && $category !== '') {
+            $sql .= " AND m.category = ?";
+            $params[] = $category;
+        }
+
+        if ($condition !== 'all' && $condition !== '') {
+            $sql .= " AND m.condition = ?";
+            $params[] = $condition;
+        }
+
+        if ($search !== '') {
+            $sql .= " AND (m.title LIKE ? OR m.description LIKE ? OR m.location LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+
+        switch ($sort) {
+            case 'price_asc':
+                $sql .= " ORDER BY m.price ASC, m.created_at DESC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY m.price DESC, m.created_at DESC";
+                break;
+            case 'views':
+                $sql .= " ORDER BY m.views_count DESC, m.created_at DESC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY m.created_at DESC";
+                break;
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params[] = $limit;
+        $params[] = $offset;
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll();
+
+        $items = [];
+        foreach ($rows as $r) {
+            $r['is_owner'] = ($currentUserId && $r['user_id'] === $currentUserId);
+            $r['price'] = (float)$r['price'];
+            $r['is_free'] = (int)$r['is_free'];
+            $r['views_count'] = (int)$r['views_count'];
+            $items[] = $r;
+        }
+
+        // Total count
+        $cntSql = "SELECT COUNT(*) FROM marketplace_items m WHERE 1=1";
+        $cntParams = [];
+        if ($filter === 'my' && $currentUserId) {
+            $cntSql .= " AND m.user_id = ?";
+            $cntParams[] = $currentUserId;
+        } elseif ($status !== 'all') {
+            $cntSql .= " AND m.status = ?";
+            $cntParams[] = $status;
+        }
+        if ($category !== 'all' && $category !== '') {
+            $cntSql .= " AND m.category = ?";
+            $cntParams[] = $category;
+        }
+        if ($condition !== 'all' && $condition !== '') {
+            $cntSql .= " AND m.condition = ?";
+            $cntParams[] = $condition;
+        }
+        if ($search !== '') {
+            $cntSql .= " AND (m.title LIKE ? OR m.description LIKE ? OR m.location LIKE ?)";
+            $cntParams[] = "%$search%";
+            $cntParams[] = "%$search%";
+            $cntParams[] = "%$search%";
+        }
+        $stmtCnt = $db->prepare($cntSql);
+        $stmtCnt->execute($cntParams);
+        $total = (int)$stmtCnt->fetchColumn();
+
+        echo json_encode([
+            'items' => $items,
+            'total' => $total,
+            'limit' => $limit,
+            'offset' => $offset
+        ]);
+        exit;
+    }
+
+    // 12.2 GET /api/marketplace/items/:id (Single Item Details)
+    if (preg_match('#^marketplace/items/([^/]+)$#', $route, $m) && $method === 'GET') {
+        $itemId = $m[1];
+        // Increment views
+        $db->prepare("UPDATE marketplace_items SET views_count = views_count + 1 WHERE id = ?")->execute([$itemId]);
+
+        $stmt = $db->prepare("
+            SELECT m.*, u.name as seller_name, u.email as seller_email, u.avatar as seller_avatar
+            FROM marketplace_items m
+            LEFT JOIN users u ON m.user_id = u.id
+            WHERE m.id = ?
+        ");
+        $stmt->execute([$itemId]);
+        $item = $stmt->fetch();
+
+        if (!$item) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Marketplace item not found']);
+            exit;
+        }
+
+        $item['is_owner'] = ($currentUserId && $item['user_id'] === $currentUserId);
+        $item['price'] = (float)$item['price'];
+        $item['is_free'] = (int)$item['is_free'];
+        $item['views_count'] = (int)$item['views_count'];
+
+        echo json_encode(['item' => $item]);
+        exit;
+    }
+
+    // 12.3 POST /api/marketplace/items (Create New Listing - Members Only)
+    if ($route === 'marketplace/items' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Access restricted: Only registered Raccon Mail members can post items for sale. Please sign in or join free.']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $title = trim($input['title'] ?? '');
+        $description = trim($input['description'] ?? '');
+        $category = trim($input['category'] ?? 'other');
+        $condition = trim($input['condition'] ?? 'good');
+        $price = max(0, (float)($input['price'] ?? 0));
+        $currency = in_array(strtoupper($input['currency'] ?? 'EUR'), ['EUR', 'RON', 'USD']) ? strtoupper($input['currency']) : 'EUR';
+        $isFree = !empty($input['is_free']) ? 1 : 0;
+        if ($isFree) $price = 0;
+        $location = trim($input['location'] ?? 'Bucharest, Romania');
+        $imageUrl = trim($input['image_url'] ?? '');
+
+        if (mb_strlen($title) < 3) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Please provide an item title of at least 3 characters.']);
+            exit;
+        }
+
+        if (mb_strlen($description) < 5) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Please provide a description of at least 5 characters.']);
+            exit;
+        }
+
+        $allowedCats = ['electronics', 'home', 'fashion', 'books', 'vehicles', 'sports', 'other'];
+        if (!in_array($category, $allowedCats)) {
+            $category = 'other';
+        }
+
+        $allowedConds = ['new', 'like_new', 'good', 'fair'];
+        if (!in_array($condition, $allowedConds)) {
+            $condition = 'good';
+        }
+
+        $itemId = 'mkt_' . bin2hex(random_bytes(6));
+        $stmt = $db->prepare("
+            INSERT INTO marketplace_items (id, user_id, title, description, category, condition, price, currency, is_free, location, image_url, status, views_count)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 1)
+        ");
+        $stmt->execute([$itemId, $currentUserId, $title, $description, $category, $condition, $price, $currency, $isFree, $location, $imageUrl]);
+
+        echo json_encode([
+            'success' => true,
+            'id' => $itemId,
+            'message' => 'Your item has been listed on Raccon Marketplace!'
+        ]);
+        exit;
+    }
+
+    // 12.4 PUT /api/marketplace/items/:id (Update Listing or Mark as Sold - Owner or Admin)
+    if (preg_match('#^marketplace/items/([^/]+)$#', $route, $m) && $method === 'PUT') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        $itemId = $m[1];
+        $stmtItem = $db->prepare("SELECT user_id, status FROM marketplace_items WHERE id = ?");
+        $stmtItem->execute([$itemId]);
+        $row = $stmtItem->fetch();
+
+        if (!$row) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Listing not found']);
+            exit;
+        }
+
+        $stmtUser = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmtUser->execute([$currentUserId]);
+        $isAdmin = (bool)$stmtUser->fetchColumn();
+
+        if ($row['user_id'] !== $currentUserId && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'You can only edit your own listings.']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+
+        $updates = [];
+        $params = [];
+
+        if (isset($input['status']) && in_array($input['status'], ['active', 'sold', 'archived'])) {
+            $updates[] = "status = ?";
+            $params[] = $input['status'];
+        }
+        if (isset($input['title']) && mb_strlen(trim($input['title'])) >= 3) {
+            $updates[] = "title = ?";
+            $params[] = trim($input['title']);
+        }
+        if (isset($input['description']) && mb_strlen(trim($input['description'])) >= 5) {
+            $updates[] = "description = ?";
+            $params[] = trim($input['description']);
+        }
+        if (isset($input['price'])) {
+            $updates[] = "price = ?";
+            $params[] = max(0, (float)$input['price']);
+        }
+        if (isset($input['condition']) && in_array($input['condition'], ['new', 'like_new', 'good', 'fair'])) {
+            $updates[] = "condition = ?";
+            $params[] = $input['condition'];
+        }
+        if (isset($input['image_url'])) {
+            $updates[] = "image_url = ?";
+            $params[] = trim($input['image_url']);
+        }
+
+        $updates[] = "updated_at = CURRENT_TIMESTAMP";
+
+        if (!empty($updates)) {
+            $params[] = $itemId;
+            $db->prepare("UPDATE marketplace_items SET " . implode(', ', $updates) . " WHERE id = ?")->execute($params);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Listing updated successfully']);
+        exit;
+    }
+
+    // 12.5 DELETE /api/marketplace/items/:id (Delete Listing - Owner or Admin)
+    if (preg_match('#^marketplace/items/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        $itemId = $m[1];
+        $stmtItem = $db->prepare("SELECT user_id FROM marketplace_items WHERE id = ?");
+        $stmtItem->execute([$itemId]);
+        $itemAuthorId = $stmtItem->fetchColumn();
+
+        if (!$itemAuthorId) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Listing not found']);
+            exit;
+        }
+
+        $stmtUser = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmtUser->execute([$currentUserId]);
+        $isAdmin = (bool)$stmtUser->fetchColumn();
+
+        if ($itemAuthorId !== $currentUserId && !$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'You can only delete your own listings.']);
+            exit;
+        }
+
+        $db->prepare("DELETE FROM marketplace_items WHERE id = ?")->execute([$itemId]);
+
+        echo json_encode(['success' => true, 'message' => 'Listing removed successfully']);
+        exit;
+    }
+
+    // 12.6 POST /api/marketplace/upload (Upload Item Photo - Members Only)
+    if ($route === 'marketplace/upload' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        if (empty($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No image file uploaded or upload error.']);
+            exit;
+        }
+
+        $file = $_FILES['image'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid image format. Allowed: JPG, PNG, WEBP, GIF.']);
+            exit;
+        }
+
+        $destFilename = 'mkt_' . time() . '_' . substr(md5(uniqid()), 0, 8) . '.' . $ext;
+        $targetPath = $uploadsDir . '/' . $destFilename;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            echo json_encode([
+                'success' => true,
+                'image_url' => '/uploads/' . $destFilename
+            ]);
+            exit;
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to save uploaded image.']);
+            exit;
+        }
     }
 
     // Default 404

@@ -187,7 +187,7 @@ const app = {
             await this.loadMessages();
           }
           this.playNotificationSound();
-          this.showToast(`🐾 Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
+          this.showToast(`Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
         }
       } catch (_) {}
     }, 15000);
@@ -1090,7 +1090,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <button onclick="app.sendStoryAsPostcard()" class="py-2 px-5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition cursor-pointer shrink-0">
               <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
               <span>Send Postcard</span>
-              <span class="paw-bounce text-xs">🐾</span>
             </button>
           </div>
         </div>
@@ -1155,7 +1154,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         <p style="margin-top: 15px; font-size: 11px; color: #888;">Sent with love via <a href="https://racconmail.eu">Raccon Mail</a></p>
       `;
     }
-    this.showToast(`Loaded "${s.title}" into Postcard Compose! 🐾`);
+    this.showToast(`Loaded "${s.title}" into Postcard Compose!`);
   },
 
   // SSE real-time connection
@@ -1659,7 +1658,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95">
             <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
             <span>Reply</span>
-            <span class="paw-bounce text-xs">🐾</span>
           </button>
           <button onclick="app.replyAllMessage()"
             class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
@@ -1717,8 +1715,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           <div class="p-4 sm:p-5 space-y-3">
             <!-- Verified Courier Badge (Compact) -->
             <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-slate-100 border border-slate-200 text-slate-700">
-                <span class="paw-step-1">🐾</span>
+              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-slate-100 border border-slate-200 text-slate-700 flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="h-3 w-3 text-slate-600 shrink-0"></i>
                 <span>Verified Nocturnal Postcard &bull; Masked 10/10</span>
               </div>
               <span class="text-[10px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
@@ -1824,11 +1822,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           <!-- 1-Tap Fast Reply Chips -->
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             <span class="text-[11px] font-semibold text-slate-500 mr-1">1-Tap:</span>
-            <button type="button" onclick="app.fillQuickReply('Got it! 🦝')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Got it! 🦝</button>
-            <button type="button" onclick="app.fillQuickReply('Sounds great! 🐾')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Sounds great! 🐾</button>
-            <button type="button" onclick="app.fillQuickReply('Midnight snack at 2am? 🥐')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Midnight snack at 2am? 🥐</button>
-            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard! 💌')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Thanks for the postcard! 💌</button>
-            <button type="button" onclick="app.fillQuickReply('On my way! 🌲')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">On my way! 🌲</button>
+            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Got it!</button>
+            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Sounds great!</button>
+            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Will review shortly.</button>
+            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Thanks for the postcard!</button>
+            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">On my way!</button>
           </div>
 
           <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
@@ -1865,7 +1863,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                   >
                     <i data-lucide="send" class="h-4 w-4 group-hover:translate-x-0.5 transition transform text-white"></i>
                     <span>Send Fast Reply</span>
-                    <span class="paw-bounce text-sm">🐾</span>
                   </button>
                 </div>
               </div>
@@ -1952,7 +1949,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     } finally {
       if (btn) {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="send" class="h-4 w-4 text-white"></i><span>Send Fast Reply</span><span class="paw-bounce text-sm">🐾</span>`;
+        btn.innerHTML = `<i data-lucide="send" class="h-4 w-4 text-white"></i><span>Send Fast Reply</span>`;
         if (window.lucide) {
           try { lucide.createIcons(); } catch (_) {}
         }
@@ -2410,7 +2407,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       alert('Send error: ' + err.message);
     } finally {
       sendBtn.disabled = false;
-      sendBtn.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5 text-white"></i><span>Send Postcard</span><span class="paw-bounce text-xs">🐾</span>';
+      sendBtn.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5 text-white"></i><span>Send Postcard</span>';
       lucide.createIcons();
     }
   },
@@ -3299,6 +3296,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   },
 
   async logout() {
+    if (!confirm('Are you sure you want to sign out of Raccon Mail?')) return;
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       window.location.href = '/';
@@ -3477,7 +3475,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       await this.fetchUser();
       this.closeProfileModal();
-      this.showToast('Profile updated successfully! ✨');
+      this.showToast('Profile updated successfully!');
     } catch (err) {
       alert('Save profile error: ' + err.message);
     } finally {
@@ -3528,13 +3526,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  // Return to clean Inbox view on logo click
+  // Return to clean Inbox view on logo click (Never logs out)
   returnToInbox() {
-    this.closeChat();
-    this.closeAllModals();
-    this.closeMobileSidebar();
+    try { this.closeChatBubblePopup?.(); } catch (_) {}
+    try { this.closeAllModals(); } catch (_) {}
+    try { this.closeMobileSidebar?.(); } catch (_) {}
     const dropdown = document.getElementById('account-dropdown');
     if (dropdown) dropdown.classList.add('hidden');
+    this.selectedMessage = null;
     this.navTo('Inbox');
   },
 

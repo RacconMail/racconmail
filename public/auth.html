@@ -408,6 +408,13 @@
   </footer>
 
   <script>
+    // If user is already authenticated, direct them straight to their inbox
+    fetch('/api/auth/me').then(r => r.json()).then(d => {
+      if (d.loggedIn && d.user) {
+        window.location.replace('/inbox');
+      }
+    }).catch(() => {});
+
     let pendingReg = null;
 
     function togglePass(inputId, iconId) {

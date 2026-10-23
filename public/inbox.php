@@ -1,5 +1,15 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 86400 * 30, // 30 days persistent session
+        'path' => '/',
+        'domain' => '',
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
 if (empty($_SESSION['current_user_id'])) {
     header("Location: /auth?mode=register");
     exit;
@@ -174,11 +184,11 @@ if (empty($_SESSION['current_user_id'])) {
         <i data-lucide="menu" class="h-5 w-5"></i>
       </button>
 
-      <!-- Logo returns cleanly to Inbox -->
-      <div class="flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group" onclick="app.returnToInbox()" title="Return to Inbox">
+      <!-- Logo returns cleanly to Inbox (Never logs out) -->
+      <a href="/inbox" class="flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
         <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-8 w-8 md:h-9 md:w-9 object-contain raccoon-wiggle shrink-0" />
         <span class="text-foreground hidden sm:inline shrink-0">Raccon Mail</span>
-      </div>
+      </a>
       <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
         <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
         Masked & Secure
@@ -294,14 +304,14 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- Prominent Header Sign Out Button -->
+      <!-- Header Sign Out Button (Desktop only; on mobile access via avatar dropdown to avoid mis-taps) -->
       <button
         onclick="app.logout()"
         title="Sign Out of Raccon Mail"
-        class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground px-3 py-1.5 text-xs font-semibold transition"
+        class="hidden md:flex items-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 px-3 py-1.5 text-xs font-semibold transition"
       >
-        <i data-lucide="log-out" class="h-3.5 w-3.5 text-muted-foreground"></i>
-        <span class="hidden md:inline">Sign Out</span>
+        <i data-lucide="log-out" class="h-3.5 w-3.5 text-slate-600"></i>
+        <span>Sign Out</span>
       </button>
     </div>
   </header>
@@ -339,7 +349,6 @@ if (empty($_SESSION['current_user_id'])) {
             </svg>
           </span>
           <span class="compose-btn-text font-bold text-white">Compose Postcard</span>
-          <span class="paw-bounce">🐾</span>
         </button>
       </div>
 
@@ -437,6 +446,12 @@ if (empty($_SESSION['current_user_id'])) {
             <span class="truncate">World Stories</span>
           </div>
         </a>
+        <a href="/marketplace" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="shopping-bag" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Raccon Marketplace</span>
+          </div>
+        </a>
         <button onclick="app.openContactsView()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="users" class="h-4 w-4 shrink-0"></i>
@@ -478,6 +493,10 @@ if (empty($_SESSION['current_user_id'])) {
             <a href="/forum" title="Raccon Forum" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
               <i data-lucide="messages-square" class="h-3.5 w-3.5 text-foreground"></i>
               <span class="hidden sm:inline">Forum</span>
+            </a>
+            <a href="/marketplace" title="Raccon Marketplace" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+              <i data-lucide="shopping-bag" class="h-3.5 w-3.5 text-foreground"></i>
+              <span class="hidden sm:inline">Market</span>
             </a>
             <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
               <i data-lucide="newspaper" class="h-3.5 w-3.5 text-foreground"></i>
@@ -610,92 +629,93 @@ if (empty($_SESSION['current_user_id'])) {
     <i data-lucide="pencil" class="h-6 w-6 text-white"></i>
   </button>
 
-  <!-- FLOATING / FULLSCREEN RICH COMPOSE MODAL (Mobile friendly) -->
-  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-4 md:right-6 z-50 w-full md:max-w-2xl bg-card md:rounded-3xl border border-border shadow-soft flex flex-col overflow-hidden transition-all duration-200">
-    <!-- Postcard top strip -->
-    <div class="stripes-subtle h-2 w-full shrink-0"></div>
+  <!-- FLOATING / FULLSCREEN RICH COMPOSE MODAL (Pure White Canvas, Slate Gray & Solid Black Buttons) -->
+  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-4 md:right-6 z-50 w-full md:max-w-2xl bg-white md:rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
+    <!-- Top subtle accent line -->
+    <div class="stripes-subtle h-1.5 w-full shrink-0"></div>
 
     <!-- Header bar -->
-    <div class="px-5 py-3 border-b border-border bg-card flex items-center justify-between shrink-0">
+    <div class="px-5 py-3.5 border-b border-slate-200 bg-white flex items-center justify-between shrink-0">
       <div class="flex items-center gap-2">
         <img src="/raccoon-logo.png" class="h-5 w-5 object-contain" />
-        <h3 id="compose-title" class="font-display font-bold text-sm">New Clever Postcard</h3>
+        <h3 id="compose-title" class="font-display font-bold text-sm text-slate-900">New Clever Postcard</h3>
       </div>
-      <div class="flex items-center gap-2 text-muted-foreground">
-        <span id="draft-status-pill" class="text-[11px] text-muted-foreground"></span>
-        <button onclick="app.closeCompose()" class="p-1 hover:text-foreground rounded-full hover:bg-muted transition">
-          <i data-lucide="x" class="h-4 w-4"></i>
+      <div class="flex items-center gap-2 text-slate-500">
+        <span id="draft-status-pill" class="text-[11px] text-slate-500 font-mono"></span>
+        <button onclick="app.closeCompose()" class="p-1.5 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-4 w-4 text-slate-500"></i>
         </button>
       </div>
     </div>
 
     <!-- Compose Form -->
-    <div class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh]">
+    <div class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh] bg-white text-slate-900">
       <!-- To Field -->
-      <div class="relative flex items-center gap-2.5 border-b border-border pb-1.5">
-        <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">To:</span>
+      <div class="relative flex items-center gap-2.5 border-b border-slate-200 pb-2">
+        <span class="text-xs font-bold text-slate-600 w-16 shrink-0">To:</span>
         <input
           id="compose-to"
           type="text"
           placeholder="Recipient email address..."
-          class="flex-1 bg-transparent text-sm outline-none"
+          class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none"
           oninput="app.onRecipientInput(this.value)"
         />
-        <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <button type="button" onclick="app.toggleCcBcc()" class="hover:text-foreground">Cc/Bcc</button>
+        <div class="flex items-center gap-1.5 text-xs text-slate-500">
+          <button type="button" onclick="app.toggleCcBcc()" class="hover:text-slate-900 font-semibold px-2 py-0.5 rounded hover:bg-slate-100 transition cursor-pointer">Cc/Bcc</button>
         </div>
         <!-- Contact Auto-complete Suggestions Dropdown -->
-        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-xl border border-border bg-card p-1 shadow-soft z-50"></div>
+        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-2xl border border-slate-200 bg-white p-1 shadow-xl z-50"></div>
       </div>
 
       <!-- CC / BCC Rows (Collapsible) -->
-      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-border pb-2">
+      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-slate-200 pb-2">
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Cc:</span>
-          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm outline-none" />
+          <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Cc:</span>
+          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none" />
         </div>
         <div class="flex items-center gap-2.5">
-          <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Bcc:</span>
-          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm outline-none" />
+          <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Bcc:</span>
+          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none" />
         </div>
       </div>
 
       <!-- Subject Field -->
-      <div class="flex items-center gap-2.5 border-b border-border pb-1.5">
-        <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Subject:</span>
-        <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-medium outline-none" />
+      <div class="flex items-center gap-2.5 border-b border-slate-200 pb-2">
+        <span class="text-xs font-bold text-slate-600 w-16 shrink-0">Subject:</span>
+        <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none" />
       </div>
 
-      <!-- Rich Formatting Toolbar (Raccon Mail style) -->
-      <div class="flex flex-wrap items-center gap-1 py-1 border-b border-border text-muted-foreground">
-        <button type="button" onclick="app.execEditorCommand('bold')" title="Bold" class="p-1 rounded hover:bg-muted hover:text-foreground">
+      <!-- Rich Formatting Toolbar -->
+      <div class="flex flex-wrap items-center gap-1 py-1.5 border-b border-slate-200 text-slate-600 bg-white">
+        <button type="button" onclick="app.execEditorCommand('bold')" title="Bold" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="bold" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('italic')" title="Italic" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <button type="button" onclick="app.execEditorCommand('italic')" title="Italic" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="italic" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('underline')" title="Underline" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <button type="button" onclick="app.execEditorCommand('underline')" title="Underline" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="underline" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('strikeThrough')" title="Strikethrough" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <button type="button" onclick="app.execEditorCommand('strikeThrough')" title="Strikethrough" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="strikethrough" class="h-3.5 w-3.5"></i>
         </button>
-        <span class="h-3 w-px bg-border mx-1"></span>
-        <button type="button" onclick="app.execEditorCommand('insertUnorderedList')" title="Bullet List" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <span class="h-3.5 w-px bg-slate-200 mx-1"></span>
+        <button type="button" onclick="app.execEditorCommand('insertUnorderedList')" title="Bullet List" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="list" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('insertOrderedList')" title="Numbered List" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <button type="button" onclick="app.execEditorCommand('insertOrderedList')" title="Numbered List" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="list-ordered" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.execEditorCommand('formatBlock', 'blockquote')" title="Quote" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <button type="button" onclick="app.execEditorCommand('formatBlock', 'blockquote')" title="Quote" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="quote" class="h-3.5 w-3.5"></i>
         </button>
-        <span class="h-3 w-px bg-border mx-1"></span>
-        <button type="button" onclick="app.insertLinkPrompt()" title="Insert Link" class="p-1 rounded hover:bg-muted hover:text-foreground">
+        <span class="h-3.5 w-px bg-slate-200 mx-1"></span>
+        <button type="button" onclick="app.insertLinkPrompt()" title="Insert Link" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition cursor-pointer">
           <i data-lucide="link" class="h-3.5 w-3.5"></i>
         </button>
-        <button type="button" onclick="app.insertSignature()" title="Insert Postcard Signature" class="p-1 rounded hover:bg-muted hover:text-foreground text-xs font-semibold px-2">
-          ✍️ Signature
+        <button type="button" onclick="app.insertSignature()" title="Insert Signature" class="flex items-center gap-1.5 p-1 px-2.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 text-xs font-semibold text-slate-700 transition cursor-pointer">
+          <i data-lucide="pen-tool" class="h-3.5 w-3.5 text-slate-600"></i>
+          <span>Signature</span>
         </button>
       </div>
 
@@ -704,39 +724,38 @@ if (empty($_SESSION['current_user_id'])) {
         id="compose-editor"
         contenteditable="true"
         placeholder="Write something clever..."
-        class="min-h-[160px] max-h-[300px] overflow-y-auto text-sm outline-none leading-relaxed py-2 bg-transparent"
+        class="min-h-[160px] max-h-[300px] overflow-y-auto text-sm text-slate-900 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-400"
       ></div>
 
       <!-- File Attachments List -->
-      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-border-light"></div>
+      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-slate-200"></div>
     </div>
 
-    <!-- Compose Bottom Actions (Optimized to fit all mobile viewports cleanly) -->
-    <div class="px-2.5 sm:px-5 py-2 sm:py-3 border-t border-border bg-muted/40 flex items-center justify-between shrink-0 gap-1 sm:gap-2">
-      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-        <label class="flex items-center gap-1 cursor-pointer rounded-full border border-border bg-card hover:bg-muted px-2.5 sm:px-3 py-1.5 text-xs font-medium text-foreground transition shrink-0" title="Attach Files">
-          <i data-lucide="paperclip" class="h-3.5 w-3.5"></i>
-          <span class="hidden sm:inline">Attach</span>
+    <!-- Compose Bottom Actions (Pure White Canvas, Slate Gray & Solid Black Button) -->
+    <div class="px-3 sm:px-5 py-3 border-t border-slate-200 bg-white flex items-center justify-between shrink-0 gap-2">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <label class="flex items-center gap-1.5 cursor-pointer rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs" title="Attach Files">
+          <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600"></i>
+          <span>Attach</span>
           <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
         </label>
-        <button onclick="app.saveDraft()" class="rounded-full border border-border bg-card hover:bg-muted px-2 sm:px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition shrink-0" title="Save Draft">
-          <span class="hidden sm:inline">Save </span>Draft
+        <button onclick="app.saveDraft()" class="rounded-full border border-slate-300 bg-white hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-700 transition shadow-xs cursor-pointer" title="Save Draft">
+          Save Draft
         </button>
       </div>
 
-      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-        <button onclick="app.discardDraft()" class="px-1.5 sm:px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition shrink-0" title="Discard Draft">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button onclick="app.discardDraft()" class="px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer" title="Discard Draft">
           Discard
         </button>
         <button
           onclick="app.sendMessage()"
           id="send-mail-btn"
-          class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-1.5 px-3 sm:px-3.5 shadow-sm transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
+          class="flex items-center gap-2 rounded-full bg-slate-900 hover:bg-black text-white font-display font-bold text-xs py-2 px-5 shadow-sm hover:shadow-md transition transform active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
           title="Send Postcard"
         >
           <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
           <span>Send Postcard</span>
-          <span class="paw-bounce text-xs">🐾</span>
         </button>
       </div>
     </div>
