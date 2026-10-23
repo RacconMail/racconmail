@@ -1261,10 +1261,5 @@ header img[src*="raccoon-logo"]:hover {
   }
 }
 
-/* Modern Profile Wall Post & Poll Styling */
-.wall-poll-bar {
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 
 
