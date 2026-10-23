@@ -102,7 +102,7 @@ const app = {
     return false;
   },
 
-  showNotification({ title, body, icon = '/bubble.png', tag = 'raccon-mail', onClick = null }) {
+  showNotification({ title, body, icon = '/raccoon-logo.png', tag = 'raccon-mail', onClick = null }) {
     // 1. In-app toast banner
     this.showToast(title + ': ' + body);
 
@@ -112,7 +112,7 @@ const app = {
         const notif = new Notification(title, {
           body,
           icon,
-          badge: '/bubble.png',
+          badge: '/raccoon-logo.png',
           tag,
           renotify: true
         });
@@ -399,7 +399,7 @@ const app = {
           this.showNotification({
             title,
             body,
-            icon: '/bubble.png',
+            icon: '/raccoon-logo.png',
             onClick: () => {
               if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
             }
@@ -4198,7 +4198,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         this.showNotification({
           title: isReply ? ('💬 Reply from ' + sender) : ('📬 New Email from ' + sender),
           body: subj || ('Received ' + data.synced + ' new incoming email' + (data.synced > 1 ? 's' : '') + '!'),
-          icon: '/bubble.png',
+          icon: '/raccoon-logo.png',
           onClick: () => {
             if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
           }

@@ -95,9 +95,9 @@
         "name": "Raccon Mail",
         "url": "https://racconmail.eu/",
         "applicationCategory": "BusinessApplication, CommunicationApplication, EmailApplication",
-        "operatingSystem": "Web, Windows, Android, iOS, Linux, macOS",
+        "operatingSystem": "Web, Windows, Android, Linux, macOS",
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
-        "downloadUrl": "https://racconmail.eu/downloads/RacconMail.apk",
+        "downloadUrl": "https://racconmail.eu/downloads/RacconMail-v2.0.apk",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -707,32 +707,16 @@
             </div>
           </div>
 
-          <!-- Actions & Quick Response Box -->
-          <div class="mt-8 pt-4 border-t border-slate-100">
-            <div class="flex items-center gap-3">
-              <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-semibold transition active:scale-95 inline-flex items-center gap-2 shadow-xs">
-                <i class="fas fa-reply text-xs"></i>
-                <span>Reply</span>
-              </a>
-              <a href="/inbox" class="btn-secondary rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 px-4 py-2 text-xs font-semibold transition inline-flex items-center gap-2 shadow-xs">
-                <i class="fas fa-share text-xs"></i>
-                <span>Forward</span>
-              </a>
-            </div>
-
-            <!-- Inline Quick Response (Matching inbox.php) -->
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Write a quick encrypted response..."
-                class="flex-1 rounded-full border border-slate-200/80 bg-white px-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 shadow-2xs"
-                style="border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
-              />
-              <a href="/inbox" class="rounded-full bg-slate-900 hover:bg-black text-white px-4 py-2 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition active:scale-95">
-                <i class="fas fa-paper-plane text-[10px]"></i>
-                <span>Send</span>
-              </a>
-            </div>
+          <!-- Actions -->
+          <div class="mt-8 pt-4 border-t border-slate-100 flex items-center gap-3">
+            <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-semibold transition active:scale-95 inline-flex items-center gap-2 shadow-xs">
+              <i class="fas fa-reply text-xs"></i>
+              <span>Reply</span>
+            </a>
+            <a href="/inbox" class="btn-secondary rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 px-4 py-2 text-xs font-semibold transition inline-flex items-center gap-2 shadow-xs">
+              <i class="fas fa-share text-xs"></i>
+              <span>Forward</span>
+            </a>
           </div>
         </article>
 
@@ -763,7 +747,7 @@
         <!-- 2 Modern OS Platform Cards + Dual Mobile Device Showcase -->
         <div class="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          <!-- Left Column: Android, iOS & Desktop Modern Cards (7 Cols) -->
+          <!-- Left Column: Android & Desktop Modern Cards (7 Cols) -->
           <div class="lg:col-span-7 space-y-6">
             
             <!-- Android Card (v2.0) -->
@@ -805,60 +789,14 @@
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
-                    <i class="fab fa-github text-sm"></i>
-                    <span>GitHub Releases v2.0</span>
+                  <a href="/downloads/RacconMail-v2.0.apk" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
+                    <i class="fas fa-download text-xs text-slate-500"></i>
+                    <span>Direct APK Mirror</span>
                   </a>
-                  <span class="text-xs text-slate-500 flex items-center gap-1.5">
-                    <i class="fas fa-shield-check text-slate-600"></i> VirusTotal Clean &bull; v2.0 Verified
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- iOS Card (v2.0) -->
-            <div class="rounded-3xl border border-slate-200/80 bg-white hover:border-slate-300 p-5 sm:p-7 shadow-xl shadow-slate-900/5 transition-all duration-300">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0 text-2xl">
-                    <i class="fab fa-apple"></i>
-                  </div>
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <h3 class="font-display text-lg font-bold text-slate-900">Raccon Mail for iOS &amp; iPadOS</h3>
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-700 uppercase tracking-wide">PWA Native v2.0</span>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">Zero App Store tracking • 1-Tap Home Screen installation • Standalone fullscreen v2.0 app</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- iOS Features Pills -->
-              <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 font-medium shadow-2xs">
-                  <i class="fas fa-fingerprint text-slate-900 text-[11px]"></i> FaceID / TouchID
-                </span>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 font-medium shadow-2xs">
-                  <i class="fas fa-expand text-slate-900 text-[11px]"></i> Immersive Fullscreen
-                </span>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 font-medium shadow-2xs">
-                  <i class="fas fa-lock text-slate-500 text-[11px]"></i> Zero Telemetry
-                </span>
-              </div>
-
-              <!-- iOS Action Row with 3-Step Guide -->
-              <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
-                  <i class="fab fa-apple text-base text-white"></i>
-                  <span>Launch iOS Web App</span>
-                  <span class="text-xs opacity-70 font-mono ml-1">v2.0</span>
-                  <i class="fas fa-arrow-up-right-from-square text-xs text-slate-300"></i>
-                </a>
-                <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-slate-500 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-2xs">
-                  <span>On Safari:</span>
-                  <span class="font-bold text-slate-900 flex items-center gap-1"><i class="fas fa-arrow-up-from-bracket text-slate-900"></i> Share</span>
-                  <span>&rarr;</span>
-                  <span class="font-bold text-slate-900 flex items-center gap-1"><i class="fas fa-plus-square text-slate-900"></i> Add to Home Screen</span>
+                  <a href="https://github.com/RacconMail/racconmail/releases/tag/v2.0" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
+                    <i class="fab fa-github text-sm"></i>
+                    <span>GitHub Release v2.0</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -902,13 +840,14 @@
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
-                    <i class="fab fa-github text-sm"></i>
-                    <span>GitHub Releases v2.0</span>
+                  <a href="/downloads/RacconMail-Setup.exe" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
+                    <i class="fas fa-download text-xs text-slate-500"></i>
+                    <span>Direct Setup Mirror</span>
                   </a>
-                  <span class="text-xs text-slate-500 flex items-center gap-1.5">
-                    <i class="fas fa-shield-check text-slate-600"></i> VirusTotal Clean (0/70) &bull; Open Source Audit
-                  </span>
+                  <a href="https://github.com/RacconMail/racconmail/releases/tag/v2.0" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
+                    <i class="fab fa-github text-sm"></i>
+                    <span>GitHub Release v2.0</span>
+                  </a>
                 </div>
               </div>
 

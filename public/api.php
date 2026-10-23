@@ -3261,7 +3261,7 @@ function extractEmails($str) {
 }
 
 function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, $bodyText, $bodyHtml = '', $attachments = []) {
-    $logoUrl = 'https://racconmail.eu/bubble.png';
+    $logoUrl = 'https://racconmail.eu/raccoon-logo.png';
     $siteUrl = 'https://racconmail.eu';
     $inboxUrl = 'https://racconmail.eu/inbox.php';
     $cleanSubject = $subject ?: '(No Subject)';

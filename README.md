@@ -43,9 +43,9 @@ All official binary releases hosted on [GitHub Releases](https://github.com/Racc
 
 | Release Artifact | Version | SHA-256 Hash | VirusTotal Status |
 | :--- | :---: | :--- | :---: |
-| `RacconMail-v1.0.0.apk` | v1.0.0 | `664e869fa2e90e2ac516ec0117a07ea23d2cf0088cb18b5d6c2c86754820e6bb` | **Clean (0/70)** |
-| `RacconMail-Setup.exe` | v1.0.0 | `5b35a794f029d706945d3c82d46270823b67879ce56064ba477c4a7d2ca69eac` | **Clean (0/70)** |
-| `RacconMail-Desktop-Windows.zip` | v1.0.0 | `a0787176034d6cc42abf837e39a5dff788a00240f1e03b48aa726c44b8b95eaa` | **Clean (0/70)** |
+| `RacconMail-v2.0.apk` | v2.0 | `664e869fa2e90e2ac516ec0117a07ea23d2cf0088cb18b5d6c2c86754820e6bb` | **Clean (0/70)** |
+| `RacconMail-Setup.exe` | v2.0 | `5f28c6145a4d958638a97b64f6893a2b56337bab698d63f4a4bed8c5f6072fd9` | **Clean (0/70)** |
+| `RacconMail-Desktop-v2.0-Windows.zip` | v2.0 | `fa94f790cd3fe7f5530f0fd620fa15d715b3edef9b381a5565d885bdaafa5296` | **Clean (0/70)** |
 
 To verify any downloaded binary locally:
 ```bash
@@ -53,7 +53,7 @@ To verify any downloaded binary locally:
 Get-FileHash ./RacconMail-Setup.exe -Algorithm SHA256
 
 # Linux / macOS
-sha256sum ./RacconMail-v1.0.0.apk
+sha256sum ./RacconMail-v2.0.apk
 ```
 
 ---
