@@ -3493,6 +3493,8 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
     $headers[] = 'Importance: Normal';
 
     $altBoundary = "==Alt_Boundary_" . bin2hex(random_bytes(10)) . "==";
+    $encodedPlain = quoted_printable_encode($plainText);
+    $encodedHtml = quoted_printable_encode($finalHtml);
 
     if (!empty($attachments)) {
         $mixedBoundary = "==Mixed_Boundary_" . bin2hex(random_bytes(10)) . "==";
@@ -3504,14 +3506,14 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
         // Plain text part
         $message .= "--" . $altBoundary . "\r\n";
         $message .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $plainText . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= $encodedPlain . "\r\n\r\n";
 
         // HTML part
         $message .= "--" . $altBoundary . "\r\n";
         $message .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $finalHtml . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= $encodedHtml . "\r\n\r\n";
         $message .= "--" . $altBoundary . "--\r\n\r\n";
 
         // Attachment parts
@@ -3537,13 +3539,13 @@ function sendOutgoingEmail($fromName, $fromEmail, $toEmail, $subject, $bodyText,
 
         $message = "--" . $altBoundary . "\r\n";
         $message .= "Content-Type: text/plain; charset=UTF-8; format=flowed\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $plainText . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= $encodedPlain . "\r\n\r\n";
 
         $message .= "--" . $altBoundary . "\r\n";
         $message .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $finalHtml . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= $encodedHtml . "\r\n\r\n";
         $message .= "--" . $altBoundary . "--\r\n";
     }
 
