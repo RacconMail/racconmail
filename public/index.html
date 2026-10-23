@@ -168,14 +168,14 @@
             foreground: '#1E293B', /* Harmony headline / body slate */
             card: '#FFFFFF',
             'card-alt': '#F5F5F5',
-            primary: '#208ED3', /* Harmony signature sky azure blue */
-            'primary-hover': '#1A7BB8',
+            primary: '#0F172A', /* Harmony signature sky azure blue */
+            'primary-hover': '#1E293B',
             'primary-foreground': '#FFFFFF',
             secondary: '#F2F2F2', /* Harmony secondary button */
             'secondary-foreground': '#212529',
             muted: '#F6F6F6', /* Harmony search & mini menu pill */
             'muted-foreground': '#64748B',
-            accent: '#EBF5FB', /* Harmony active badge soft blue */
+            accent: '#F1F5F9', /* Harmony active badge soft blue */
             border: '#D5D5D5', /* Harmony border */
             'border-light': '#E2E8F0',
             mask: '#1E293B',
@@ -322,7 +322,7 @@
     .stripes {
       background: repeating-linear-gradient(
         90deg,
-        #208ED3 0 28px,
+        #0F172A 0 28px,
         #EFEDE9 28px 42px,
         #E11D48 42px 70px,
         #EFEDE9 70px 84px
@@ -345,7 +345,7 @@
   </script>
 
 </head>
-<body class="bg-[#F8FAFC] text-slate-900 antialiased selection:bg-[#208ED3]/20 flex flex-col justify-between transition-colors duration-200">
+<body class="bg-white text-slate-900 antialiased selection:bg-slate-900 selection:text-white flex flex-col justify-between transition-colors duration-200">
 
   <div class="w-full flex flex-col justify-between">
     <!-- ANDROID APP RUNTIME STATUS (Visible inside Android APK) -->
@@ -372,26 +372,26 @@
             <div class="cookie-roller flex items-center gap-2 top-1/2 -translate-y-1/2">
               <span class="cookie-actor text-2xl inline-block leading-none filter drop-shadow-xs transition transform group-hover:scale-125">🍪</span>
               <span class="text-xs opacity-60 leading-none">🐾</span>
-              <span class="cookie-status-text text-[11px] font-bold text-amber-900/70 tracking-tight whitespace-nowrap">fresh & warm!</span>
+              <span class="cookie-status-text text-[11px] font-bold text-slate-600 tracking-tight whitespace-nowrap">fresh & warm!</span>
             </div>
           </div>
         </div>
 
         <!-- Header Nav Links & Actions (Desktop Only - Completely Hidden on Mobile) -->
         <div class="hidden md:flex items-center gap-2 shrink-0 top-menu-auth-group" id="auth-nav-container">
-          <a href="/news" class="text-xs font-bold text-[#333333] hover:text-[#208ED3] transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-newspaper text-xs text-amber-500"></i>
+          <a href="/news" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
+            <i class="fas fa-newspaper text-xs text-slate-600"></i>
             <span>News Wire</span>
           </a>
-          <a href="/stories" class="text-xs font-bold text-[#333333] hover:text-[#208ED3] transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-book-open text-xs text-purple-500"></i>
+          <a href="/stories" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
+            <i class="fas fa-book-open text-xs text-slate-600"></i>
             <span>Stories</span>
           </a>
-          <a href="/forum" class="text-xs font-bold text-[#333333] hover:text-[#208ED3] transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-comments text-xs text-emerald-500"></i>
+          <a href="/forum" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
+            <i class="fas fa-comments text-xs text-slate-600"></i>
             <span>Community Wall</span>
           </a>
-          <a href="#app" class="text-xs font-bold text-[#333333] hover:text-[#208ED3] transition px-2.5 py-1.5">Apps</a>
+          <a href="#app" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5">Apps</a>
 
           <!-- Sign In Button (Desktop Only) -->
           <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#212529] border border-[#E4E6EB] px-4 py-1.5 text-xs font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shrink-0">
@@ -404,7 +404,7 @@
           </a>
 
           <!-- Join Free Button (Desktop Only) -->
-          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-4 py-1.5 text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-1 cursor-pointer shrink-0">
+          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-white px-4 py-1.5 text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-1 cursor-pointer shrink-0">
             <span>Join Free</span>
             <svg class="w-2.5 h-2.5 text-white/80 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"/>
@@ -418,8 +418,8 @@
     <section class="mx-auto grid max-w-6xl items-center gap-8 px-4 sm:px-6 pt-8 sm:pt-12 pb-10 sm:pb-16 md:grid-cols-2 relative z-10">
       <div class="relative z-20">
         <!-- Pill Badge -->
-        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#CBD5E1] px-3 sm:px-3.5 py-1 text-xs font-semibold text-[#208ED3] shadow-xs">
-          <i class="fas fa-shield-alt text-[#208ED3]"></i>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#CBD5E1] px-3 sm:px-3.5 py-1 text-xs font-semibold text-slate-900 shadow-xs">
+          <i class="fas fa-shield-alt text-slate-900"></i>
           <span>Masked from spam. Always.</span>
         </span>
 
@@ -435,7 +435,7 @@
 
         <!-- Harmony Action Buttons (Responsive & compact on mobile) -->
         <div class="mt-5 sm:mt-6 flex flex-row items-center gap-2 sm:gap-3 relative z-30 w-full sm:w-auto">
-          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-4 py-2.5 sm:px-7 sm:py-3.5 text-xs sm:text-base font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-1.5 sm:gap-2.5 cursor-pointer relative z-30 touch-target flex-1 sm:flex-none text-center">
+          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-white px-4 py-2.5 sm:px-7 sm:py-3.5 text-xs sm:text-base font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-1.5 sm:gap-2.5 cursor-pointer relative z-30 touch-target flex-1 sm:flex-none text-center">
             <span>Create Free Account</span>
             <i class="fas fa-chevron-right text-[10px] sm:text-xs bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"></i>
           </a>
@@ -448,19 +448,19 @@
         <!-- Quick Feature Badges (Fits mobile screens cleanly) -->
         <div class="mt-6 sm:mt-10 grid grid-cols-3 gap-2 sm:gap-4 pt-4 sm:pt-6 border-t border-[#D5D5D5]/60 text-[11px] sm:text-xs text-[#64748B]">
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center shrink-0">
               <i class="fas fa-lock text-[10px] sm:text-[11px]"></i>
             </div>
             <span class="font-medium text-[#1E293B] leading-tight">Zero Trackers</span>
           </div>
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center shrink-0">
               <i class="fas fa-bolt text-[10px] sm:text-[11px]"></i>
             </div>
             <span class="font-medium text-[#1E293B] leading-tight">Instant Sync</span>
           </div>
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EBF5FB] text-[#208ED3] flex items-center justify-center shrink-0">
+            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center shrink-0">
               <i class="fas fa-check-circle text-[10px] sm:text-[11px]"></i>
             </div>
             <span class="font-medium text-[#1E293B] leading-tight">Free Mailbox</span>
@@ -484,7 +484,7 @@
                 "Psst! Mask your inbox from spam &bull; your emails are 100% private with me! 🐾"
               </p>
               <div class="mt-1 flex items-center gap-1.5 text-[10px] text-[#64748B] font-semibold">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-1000 animate-pulse"></span>
                 <span>Nocturnal Courier &bull; Zero Trackers</span>
               </div>
             </div>
@@ -503,10 +503,10 @@
     <section id="web" class="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 w-full">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-          <span class="text-xs font-bold text-[#208ED3] uppercase tracking-wider">Interactive Experience</span>
+          <span class="text-xs font-bold text-slate-900 uppercase tracking-wider">Interactive Experience</span>
           <h2 class="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] mt-1">Your inbox, on the web</h2>
         </div>
-        <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2.5 text-sm font-semibold transition inline-flex items-center gap-2 self-start sm:self-auto shadow-sm">
+        <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-white px-5 py-2.5 text-sm font-semibold transition inline-flex items-center gap-2 self-start sm:self-auto shadow-sm">
           <span>Launch Full Webmail</span>
           <i class="fas fa-external-link-alt text-xs"></i>
         </a>
@@ -516,23 +516,23 @@
       <div class="grid overflow-hidden rounded-[20px] border border-[#D5D5D5] bg-white shadow-harmony-card md:grid-cols-[220px_320px_1fr]">
         
         <!-- Sidebar (Visible on Desktop / Tablets) -->
-        <aside class="hidden md:flex bg-[#F8FAFC] border-r border-[#E2E8F0] p-5 text-[#1E293B] flex-col justify-between">
+        <aside class="hidden md:flex bg-white border-r border-[#E2E8F0] p-5 text-[#1E293B] flex-col justify-between">
           <div>
             <div class="flex items-center gap-2.5 font-display font-bold text-[#1E293B] pb-4 border-b border-[#E2E8F0]">
               <img src="/raccoon-logo.png" alt="Raccon" class="h-7 w-7 raccoon-anim object-contain"/>
               <span>Raccon Mail</span>
             </div>
 
-            <button onclick="window.location.href='/inbox'" class="mt-5 w-full rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] py-2.5 px-4 font-semibold text-white transition active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-2 text-sm">
+            <button onclick="window.location.href='/inbox'" class="mt-5 w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 py-2.5 px-4 font-semibold text-white transition active:scale-95 cursor-pointer shadow-sm flex items-center justify-center gap-2 text-sm">
               <i class="fas fa-pen text-xs"></i>
               <span>Compose</span>
             </button>
 
             <ul class="mt-6 space-y-1.5 text-xs font-medium text-[#64748B]">
               <li>
-                <div class="px-3 py-2 rounded-xl bg-[#EBF5FB] text-[#208ED3] font-bold flex items-center justify-between cursor-pointer">
+                <div class="px-3 py-2 rounded-xl bg-slate-100 text-slate-900 font-bold flex items-center justify-between cursor-pointer">
                   <span class="flex items-center gap-2.5"><i class="fas fa-inbox text-sm"></i> Inbox</span>
-                  <span class="bg-[#208ED3] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+                  <span class="bg-slate-900 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
                 </div>
               </li>
               <li>
@@ -559,7 +559,7 @@
           </div>
 
           <div class="pt-4 border-t border-[#E2E8F0] text-[11px] text-[#64748B]">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>
+            <span class="inline-block w-2 h-2 rounded-full bg-slate-1000 mr-1.5"></span>
             <span>Zero-Knowledge Relay</span>
           </div>
         </aside>
@@ -567,9 +567,9 @@
         <!-- Message List -->
         <ul class="border-r border-[#E2E8F0] divide-y divide-[#E2E8F0] overflow-y-auto max-h-[480px] bg-white">
           <li>
-            <button onclick="selectDemoMail(0)" id="demo-mail-0" class="w-full p-4 text-left bg-[#EBF5FB] border-l-4 border-[#208ED3] transition cursor-pointer">
+            <button onclick="selectDemoMail(0)" id="demo-mail-0" class="w-full p-4 text-left bg-slate-100 border-l-4 border-slate-900 transition cursor-pointer">
               <div class="flex justify-between text-xs font-bold text-[#1E293B]">
-                <span class="flex items-center gap-1.5"><i class="fas fa-user-circle text-[#208ED3]"></i> Rocky Raccoon</span>
+                <span class="flex items-center gap-1.5"><i class="fas fa-user-circle text-slate-900"></i> Rocky Raccoon</span>
                 <span class="font-normal text-[#64748B]">23:41</span>
               </div>
               <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Midnight snack plans 🍪</div>
@@ -577,9 +577,9 @@
             </button>
           </li>
           <li>
-            <button onclick="selectDemoMail(1)" id="demo-mail-1" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+            <button onclick="selectDemoMail(1)" id="demo-mail-1" class="w-full p-4 text-left hover:bg-white border-l-4 border-transparent transition cursor-pointer">
               <div class="flex justify-between text-xs font-bold text-[#1E293B]">
-                <span class="flex items-center gap-1.5"><i class="fas fa-shield-alt text-[#208ED3]"></i> Raccon Team</span>
+                <span class="flex items-center gap-1.5"><i class="fas fa-shield-alt text-slate-900"></i> Raccon Team</span>
                 <span class="font-normal text-[#64748B]">21:10</span>
               </div>
               <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Welcome to Raccon Mail</div>
@@ -587,7 +587,7 @@
             </button>
           </li>
           <li>
-            <button onclick="selectDemoMail(2)" id="demo-mail-2" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+            <button onclick="selectDemoMail(2)" id="demo-mail-2" class="w-full p-4 text-left hover:bg-white border-l-4 border-transparent transition cursor-pointer">
               <div class="flex justify-between text-xs font-bold text-[#1E293B]">
                 <span class="flex items-center gap-1.5"><i class="fas fa-university text-[#64748B]"></i> Forest Bank</span>
                 <span class="font-normal text-[#64748B]">Yesterday</span>
@@ -597,9 +597,9 @@
             </button>
           </li>
           <li>
-            <button onclick="selectDemoMail(3)" id="demo-mail-3" class="w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer">
+            <button onclick="selectDemoMail(3)" id="demo-mail-3" class="w-full p-4 text-left hover:bg-white border-l-4 border-transparent transition cursor-pointer">
               <div class="flex justify-between text-xs font-bold text-[#1E293B]">
-                <span class="flex items-center gap-1.5"><i class="fas fa-moon text-[#208ED3]"></i> Luna</span>
+                <span class="flex items-center gap-1.5"><i class="fas fa-moon text-slate-900"></i> Luna</span>
                 <span class="font-normal text-[#64748B]">Mon</span>
               </div>
               <div class="truncate text-xs font-semibold text-[#1E293B] mt-1">Photos from camping trip</div>
@@ -618,7 +618,7 @@
                   <span class="font-semibold text-[#1E293B]">from Rocky Raccoon</span>
                   <span>&bull;</span>
                   <span>23:41</span>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[10px] font-bold">
                     <i class="fas fa-lock text-[8px]"></i> Encrypted
                   </span>
                 </p>
@@ -641,7 +641,7 @@
           </div>
 
           <div class="mt-8 pt-4 border-t border-[#E2E8F0] flex items-center gap-3">
-            <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2.5 text-xs font-semibold transition active:scale-95 inline-flex items-center gap-2 shadow-sm">
+            <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-white px-5 py-2.5 text-xs font-semibold transition active:scale-95 inline-flex items-center gap-2 shadow-sm">
               <i class="fas fa-reply text-xs"></i>
               <span>Reply</span>
             </a>
@@ -658,18 +658,18 @@
     <!-- ULTRA-MODERN MOBILE APPS SECTION (Android & iOS) -->
     <section id="app" class="relative overflow-hidden bg-white border-y border-[#D5D5D5] py-20 sm:py-24 text-[#1E293B]">
       <!-- Background subtle decorative aura -->
-      <div class="pointer-events-none absolute -top-40 right-0 h-96 w-96 rounded-full bg-[#208ED3]/5 blur-3xl"></div>
+      <div class="pointer-events-none absolute -top-40 right-0 h-96 w-96 rounded-full bg-slate-900/5 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-40 left-0 h-96 w-96 rounded-full bg-[#00B392]/5 blur-3xl"></div>
 
       <div class="mx-auto max-w-6xl px-6 relative z-10">
         <!-- Section Header -->
         <div class="text-center max-w-3xl mx-auto">
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#EBF5FB] text-[#208ED3] border border-[#208ED3]/20 shadow-xs mb-3">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-900 border border-slate-200 shadow-xs mb-3">
             <i class="fas fa-mobile-screen-button text-xs"></i>
             <span>MULTI-PLATFORM NOCTURNAL SYNC</span>
           </div>
           <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1E293B] tracking-tight">
-            Your clever mailbox on <span class="text-[#208ED3]">Android</span>, <span class="text-[#00A4EF]">Windows</span> &amp; <span class="text-[#1E293B]">Desktop</span>
+            Your clever mailbox on <span class="text-slate-900">Android</span>, <span class="text-[#00A4EF]">Windows</span> &amp; <span class="text-[#1E293B]">Desktop</span>
           </h2>
           <p class="mt-4 text-[#64748B] text-base sm:text-lg leading-relaxed">
             Experience ultra-smooth mailbox interactions, instant push notifications, hardware-backed encryption, and native desktop keyboard efficiency (<kbd class="px-1.5 py-0.5 font-mono text-xs bg-slate-100 border border-slate-300 rounded">Ctrl+K</kbd>) with zero trackers and zero ads.
@@ -683,7 +683,7 @@
           <div class="lg:col-span-7 space-y-6">
             
             <!-- Android Card -->
-            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#208ED3]/40 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-slate-300 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                   <div class="w-14 h-14 rounded-2xl bg-[#3DDC84]/15 border border-[#3DDC84]/30 flex items-center justify-center text-[#3DDC84] shrink-0 text-2xl">
@@ -705,7 +705,7 @@
                   <i class="fas fa-bell text-[#3DDC84] text-[11px]"></i> Push Postcard Chimes
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-hand-pointer text-[#208ED3] text-[11px]"></i> Swipe to Archive
+                  <i class="fas fa-hand-pointer text-slate-900 text-[11px]"></i> Swipe to Archive
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
                   <i class="fas fa-database text-[#64748B] text-[11px]"></i> Offline Storage
@@ -721,12 +721,12 @@
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-[#208ED3] font-semibold hover:underline flex items-center gap-1">
+                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
                     <i class="fab fa-github text-sm"></i>
                     <span>GitHub Releases</span>
                   </a>
                   <span class="text-xs text-[#64748B] flex items-center gap-1.5" title="SHA-256: 664E869FA2E90E2AC516EC0117A07EA23D2CF0088CB18B5D6C2C86754820E6BB">
-                    <i class="fas fa-shield-check text-emerald-600"></i> VirusTotal Clean (0/70) &bull; SHA-256 Verified
+                    <i class="fas fa-shield-check text-slate-600"></i> VirusTotal Clean (0/70) &bull; SHA-256 Verified
                   </span>
                 </div>
               </div>
@@ -752,13 +752,13 @@
               <!-- iOS Features Pills -->
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-fingerprint text-[#208ED3] text-[11px]"></i> FaceID / TouchID
+                  <i class="fas fa-fingerprint text-slate-900 text-[11px]"></i> FaceID / TouchID
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
                   <i class="fas fa-expand text-[#1E293B] text-[11px]"></i> Immersive Fullscreen
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-lock text-emerald-600 text-[11px]"></i> Zero Telemetry
+                  <i class="fas fa-lock text-slate-600 text-[11px]"></i> Zero Telemetry
                 </span>
               </div>
 
@@ -771,7 +771,7 @@
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-[#64748B] bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0]">
                   <span>On Safari:</span>
-                  <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-arrow-up-from-bracket text-[#208ED3]"></i> Share</span>
+                  <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-arrow-up-from-bracket text-slate-900"></i> Share</span>
                   <span>&rarr;</span>
                   <span class="font-bold text-[#1E293B] flex items-center gap-1"><i class="fas fa-plus-square text-[#1E293B]"></i> Add to Home Screen</span>
                 </div>
@@ -801,10 +801,10 @@
                   <i class="fas fa-terminal text-[#00A4EF] text-[11px]"></i> Command Palette (Ctrl+K)
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-window-restore text-[#208ED3] text-[11px]"></i> Native System Tray
+                  <i class="fas fa-window-restore text-slate-900 text-[11px]"></i> Native System Tray
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-database text-emerald-600 text-[11px]"></i> SQLite Offline Cache
+                  <i class="fas fa-database text-slate-600 text-[11px]"></i> SQLite Offline Cache
                 </span>
               </div>
 
@@ -817,23 +817,23 @@
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-[#208ED3] font-semibold hover:underline flex items-center gap-1">
+                  <a href="https://github.com/RacconMail/racconmail/releases/latest" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-900 font-semibold hover:underline flex items-center gap-1">
                     <i class="fab fa-github text-sm"></i>
                     <span>GitHub Releases</span>
                   </a>
                   <span class="text-xs text-[#64748B] flex items-center gap-1.5" title="SHA-256: 5B35A794F029D706945D3C82D46270823B67879CE56064BA477C4A7D2CA69EAC">
-                    <i class="fas fa-shield-check text-emerald-600"></i> VirusTotal Clean (0/70) &bull; Open Source Audit
+                    <i class="fas fa-shield-check text-slate-600"></i> VirusTotal Clean (0/70) &bull; Open Source Audit
                   </span>
                 </div>
               </div>
 
               <!-- Reassuring Message Box -->
-              <div class="mt-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-xs text-[#1E293B] flex items-start gap-2.5">
-                <i class="fas fa-shield-check text-base text-emerald-600 shrink-0 mt-0.5"></i>
+              <div class="mt-4 p-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs text-[#1E293B] flex items-start gap-2.5">
+                <i class="fas fa-shield-check text-base text-slate-600 shrink-0 mt-0.5"></i>
                 <div class="leading-relaxed">
-                  <strong class="font-bold text-emerald-950">1-Click Windows Setup (.exe):</strong>
-                  <p class="text-emerald-800 mt-0.5">
-                    Double-click <code class="bg-emerald-100/80 px-1 py-0.2 rounded font-mono font-bold text-emerald-900">RacconMail-Setup.exe</code> to automatically set up Raccon Mail on your computer. Creates Desktop and Start Menu shortcuts with zero administrator prompts and zero adware. 100% open-source and hosted on GitHub Releases.
+                  <strong class="font-bold text-slate-900">1-Click Windows Setup (.exe):</strong>
+                  <p class="text-slate-700 mt-0.5">
+                    Double-click <code class="bg-slate-100 px-1 py-0.2 rounded font-mono font-bold text-slate-900">RacconMail-Setup.exe</code> to automatically set up Raccon Mail on your computer. Creates Desktop and Start Menu shortcuts with zero administrator prompts and zero adware. 100% open-source and hosted on GitHub Releases.
                   </p>
                 </div>
               </div>
@@ -846,7 +846,7 @@
             <div class="relative w-full max-w-[320px]">
               
               <!-- Floating Notification Toast Pill (Top Left) -->
-              <div class="absolute -top-5 -left-6 z-20 hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-[#208ED3]/30 animate-bounce duration-1000">
+              <div class="absolute -top-5 -left-6 z-20 hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-slate-200 animate-bounce duration-1000">
                 <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" alt="Luna" />
                 <div class="text-left text-xs">
                   <div class="font-bold text-[#1E293B] flex items-center gap-1">Luna 🐾 <span class="text-[10px] text-[#64748B] font-normal">Just now</span></div>
@@ -856,7 +856,7 @@
 
               <!-- Floating Battery / Encryption Badge (Bottom Right) -->
               <div class="absolute -bottom-4 -right-4 z-20 hidden sm:flex items-center gap-2 bg-[#1E293B] text-white px-3.5 py-2 rounded-2xl shadow-xl border border-white/10 text-xs">
-                <i class="fas fa-shield-heart text-emerald-400"></i>
+                <i class="fas fa-shield-heart text-slate-600"></i>
                 <span class="font-semibold text-[11px]">100% Private</span>
               </div>
 
@@ -872,7 +872,7 @@
                     <div class="flex items-center gap-1.5 text-xs text-[#1E293B]">
                       <i class="fas fa-signal text-[10px]"></i>
                       <i class="fas fa-wifi text-[10px]"></i>
-                      <i class="fas fa-battery-full text-xs text-emerald-600"></i>
+                      <i class="fas fa-battery-full text-xs text-slate-600"></i>
                     </div>
                   </div>
 
@@ -883,18 +883,18 @@
                       <span class="font-display font-extrabold text-xs text-[#1E293B]">Raccon Mail</span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                      <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Live</span>
+                      <span class="w-2 h-2 rounded-full bg-slate-1000 animate-ping"></span>
+                      <span class="text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">Live</span>
                     </div>
                   </div>
 
                   <!-- Mock Messages List -->
                   <div class="p-3 space-y-2 text-left">
                     <!-- Message 1 -->
-                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-[#E2E8F0] hover:border-[#208ED3] transition">
+                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-[#E2E8F0] hover:border-slate-900 transition">
                       <div class="flex justify-between items-center text-xs font-bold text-[#1E293B]">
                         <span class="flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full bg-[#208ED3]"></span>
+                          <span class="w-2 h-2 rounded-full bg-slate-900"></span>
                           Rocky Raccoon
                         </span>
                         <span class="text-[10px] text-[#64748B] font-mono">02:14</span>
@@ -933,7 +933,7 @@
                   <!-- Mock Compose Floating Bar -->
                   <div class="mt-auto p-3 bg-white border-t border-[#E2E8F0] flex items-center justify-between">
                     <span class="text-[11px] font-bold text-[#64748B]">3 Clever Postcards</span>
-                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#208ED3] text-white text-xs font-bold shadow-xs">
+                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold shadow-xs">
                       <i class="fas fa-pencil text-[10px]"></i>
                       <span>Compose</span>
                     </div>
@@ -961,47 +961,47 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-10 border-b border-[#E2E8F0]">
           
           <!-- 1. Terms of Service -->
-          <a href="/legal/terms" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+          <a href="/legal/terms" class="group p-5 rounded-2xl bg-white hover:bg-white border border-[#E2E8F0] hover:border-slate-300 shadow-xs hover:shadow transition flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between text-xs font-bold text-[#208ED3] mb-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-900 mb-2">
                 <span class="flex items-center gap-1.5"><i class="fas fa-file-contract text-sm"></i> Legal Framework</span>
                 <i class="fas fa-arrow-right text-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition"></i>
               </div>
-              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-[#208ED3] transition">Terms of Service</h3>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-slate-900 transition">Terms of Service</h3>
               <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
                 Clear, transparent user agreements. No hidden subscription traps, no commercial lock-in, and ethical service standards.
               </p>
             </div>
-            <div class="mt-4 text-[11px] font-semibold text-[#208ED3] flex items-center gap-1">
+            <div class="mt-4 text-[11px] font-semibold text-slate-900 flex items-center gap-1">
               <span>Read Agreement</span> &rarr;
             </div>
           </a>
 
           <!-- 2. Privacy Policy -->
-          <a href="https://github.com/RacconMail/racconmail#privacy-by-design" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+          <a href="https://github.com/RacconMail/racconmail#privacy-by-design" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white hover:bg-white border border-[#E2E8F0] hover:border-slate-300 shadow-xs hover:shadow transition flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between text-xs font-bold text-emerald-600 mb-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-600 mb-2">
                 <span class="flex items-center gap-1.5"><i class="fas fa-shield-halved text-sm"></i> Zero-Knowledge</span>
-                <i class="fas fa-external-link-alt text-[10px] text-[#64748B] group-hover:text-emerald-600 transition"></i>
+                <i class="fas fa-external-link-alt text-[10px] text-[#64748B] group-hover:text-slate-600 transition"></i>
               </div>
-              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-emerald-600 transition">Privacy Policy</h3>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-slate-600 transition">Privacy Policy</h3>
               <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
                 Zero third-party telemetry, zero ad profiling, client-side encryption, and total GDPR &amp; Swiss privacy compliance.
               </p>
             </div>
-            <div class="mt-4 text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+            <div class="mt-4 text-[11px] font-semibold text-slate-600 flex items-center gap-1">
               <span>View Privacy Rights</span> &rarr;
             </div>
           </a>
 
           <!-- 3. Open Source -->
-          <a href="https://github.com/RacconMail/racconmail" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+          <a href="https://github.com/RacconMail/racconmail" target="_blank" rel="noopener noreferrer" class="group p-5 rounded-2xl bg-white hover:bg-white border border-[#E2E8F0] hover:border-slate-300 shadow-xs hover:shadow transition flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-xs font-bold text-[#1E293B] mb-2">
                 <span class="flex items-center gap-1.5"><i class="fab fa-github text-sm"></i> Public Codebase</span>
                 <i class="fas fa-external-link-alt text-[10px] text-[#64748B] group-hover:text-[#1E293B] transition"></i>
               </div>
-              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-[#208ED3] transition">Open Source</h3>
+              <h3 class="font-display font-bold text-sm text-[#1E293B] group-hover:text-slate-900 transition">Open Source</h3>
               <p class="text-xs text-[#64748B] mt-1.5 leading-relaxed">
                 Audited cryptographic protocols, verifiable server architectures, and open developer contributions on GitHub.
               </p>
@@ -1012,7 +1012,7 @@
           </a>
 
           <!-- 4. Security & Contact -->
-          <a href="mailto:support@racconmail.eu" class="group p-5 rounded-2xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#208ED3]/40 shadow-xs hover:shadow transition flex flex-col justify-between">
+          <a href="mailto:support@racconmail.eu" class="group p-5 rounded-2xl bg-white hover:bg-white border border-[#E2E8F0] hover:border-slate-300 shadow-xs hover:shadow transition flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-xs font-bold text-orange-600 mb-2">
                 <span class="flex items-center gap-1.5"><i class="fas fa-headset text-sm"></i> Direct Support</span>
@@ -1034,10 +1034,10 @@
         <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748B]">
           <div class="flex items-center gap-2.5 font-medium text-[#1E293B]">
             <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-6 w-6 object-contain" />
-            <span>&copy; 2026 Raccon Mail. 100% Independent Open-Source Project. Audited on <a href="https://github.com/RacconMail/racconmail" target="_blank" rel="noopener noreferrer" class="underline hover:text-[#208ED3]">GitHub</a>. Zero Trackers &bull; Anti-Phishing Protected.</span>
+            <span>&copy; 2026 Raccon Mail. 100% Independent Open-Source Project. Audited on <a href="https://github.com/RacconMail/racconmail" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-900">GitHub</a>. Zero Trackers &bull; Anti-Phishing Protected.</span>
           </div>
           <div class="flex items-center gap-2 text-xs text-[#64748B]">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="w-2 h-2 rounded-full bg-slate-1000"></span>
             <span>All systems encrypted &bull; Zero trackers</span>
           </div>
         </div>
@@ -1068,7 +1068,7 @@
           id="modal-tab-login"
           type="button"
           onclick="setModalTab('login')"
-          class="flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+          class="flex-1 py-2 rounded-full transition bg-white shadow-xs text-slate-900 font-bold flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <i class="fas fa-key text-xs"></i>
           <span>Sign In</span>
@@ -1094,7 +1094,7 @@
       <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Email or Username</label>
-          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
             <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-user text-xs"></i></div>
             <input
               id="m-l-email"
@@ -1109,7 +1109,7 @@
 
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Password</label>
-          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
             <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-lock text-xs"></i></div>
             <input
               id="m-l-pass"
@@ -1133,7 +1133,7 @@
         <button
           type="submit"
           id="m-btn-login"
-          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-2.5 transition shadow-md touch-target flex items-center justify-center gap-2 cursor-pointer mt-1 text-white"
+          class="w-full rounded-full btn-primary bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 font-semibold text-sm py-2.5 transition shadow-md touch-target flex items-center justify-center gap-2 cursor-pointer mt-1 text-white"
         >
           <span>Sign In to Raccon Mail</span>
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
@@ -1141,7 +1141,7 @@
 
         <div class="pt-2 text-center text-xs text-[#64748B]">
           Don't have an account yet? 
-          <button type="button" onclick="setModalTab('register')" class="font-bold text-[#208ED3] hover:underline ml-1 cursor-pointer">
+          <button type="button" onclick="setModalTab('register')" class="font-bold text-slate-900 hover:underline ml-1 cursor-pointer">
             Create an account
           </button>
         </div>
@@ -1151,7 +1151,7 @@
       <form id="modal-form-register" onsubmit="handleModalRegister(event)" class="hidden space-y-2.5">
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Your Name</label>
-          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
             <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-user text-xs"></i></div>
             <input
               id="m-r-name"
@@ -1166,7 +1166,7 @@
 
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Choose Username</label>
-          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
             <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-at text-xs"></i></div>
             <input
               id="m-r-email"
@@ -1184,7 +1184,7 @@
 
         <div>
           <label class="block text-xs font-bold text-[#1E293B] mb-1">Password</label>
-          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-[#208ED3] focus-within:ring-2 focus-within:ring-[#208ED3]/20 overflow-hidden transition">
+          <div class="flex items-center rounded-full border border-[#CBD5E1] bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
             <div class="pl-4 pr-2 text-[#64748B] shrink-0"><i class="fas fa-lock text-xs"></i></div>
             <input
               id="m-r-pass"
@@ -1207,11 +1207,11 @@
         </div>
 
         <!-- Anti-bot indicator -->
-        <div class="p-2 bg-[#EBF5FB] rounded-xl border border-[#208ED3]/20 flex items-center justify-between text-xs">
+        <div class="p-2 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
           <span class="font-bold text-[#1E293B] flex items-center gap-1.5 text-[11px]">
-            <i class="fas fa-shield-alt text-[#208ED3]"></i> Anti-Bot Verification
+            <i class="fas fa-shield-alt text-slate-900"></i> Anti-Bot Verification
           </span>
-          <span class="text-[10px] font-bold text-[#208ED3] bg-white px-2 py-0.5 rounded-full border border-[#208ED3]/30">
+          <span class="text-[10px] font-bold text-slate-900 bg-white px-2 py-0.5 rounded-full border border-slate-200">
             ✓ 100% PRIVATE
           </span>
         </div>
@@ -1219,7 +1219,7 @@
         <button
           type="submit"
           id="m-btn-reg"
-          class="w-full rounded-full btn-primary bg-[#208ED3] hover:bg-[#1A7BB8] font-semibold text-sm py-2.5 transition shadow-md mt-1 touch-target flex items-center justify-center gap-2 cursor-pointer text-white"
+          class="w-full rounded-full btn-primary bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 font-semibold text-sm py-2.5 transition shadow-md mt-1 touch-target flex items-center justify-center gap-2 cursor-pointer text-white"
         >
           <span>Create Free Account</span>
           <i class="fas fa-chevron-right text-[10px] bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
@@ -1227,7 +1227,7 @@
 
         <div class="pt-2 text-center text-xs text-[#64748B]">
           Already have an account? 
-          <button type="button" onclick="setModalTab('login')" class="font-bold text-[#208ED3] hover:underline ml-1 cursor-pointer">
+          <button type="button" onclick="setModalTab('login')" class="font-bold text-slate-900 hover:underline ml-1 cursor-pointer">
             Sign In here
           </button>
         </div>
@@ -1273,12 +1273,12 @@
       
       if (tabLogin) {
         tabLogin.className = isLogin
-          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer'
+          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-slate-900 font-bold flex items-center justify-center gap-1.5 cursor-pointer'
           : 'flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
       }
       if (tabReg) {
         tabReg.className = !isLogin
-          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-[#208ED3] font-bold flex items-center justify-center gap-1.5 cursor-pointer'
+          ? 'flex-1 py-2 rounded-full transition bg-white shadow-xs text-slate-900 font-bold flex items-center justify-center gap-1.5 cursor-pointer'
           : 'flex-1 py-2 rounded-full transition text-[#64748B] hover:text-[#1E293B] font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
       }
 
@@ -1441,7 +1441,7 @@
         <span class="font-semibold text-[#1E293B]">from ${m.sender}</span>
         <span>&bull;</span>
         <span>${m.time}</span>
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[10px] font-bold">
           <i class="fas fa-lock text-[8px]"></i> Encrypted
         </span>
       `;
@@ -1450,9 +1450,9 @@
         const btn = document.getElementById('demo-mail-' + i);
         if (btn) {
           if (i === index) {
-            btn.className = 'w-full p-4 text-left bg-[#EBF5FB] border-l-4 border-[#208ED3] transition cursor-pointer';
+            btn.className = 'w-full p-4 text-left bg-slate-100 border-l-4 border-slate-900 transition cursor-pointer';
           } else {
-            btn.className = 'w-full p-4 text-left hover:bg-[#F8FAFC] border-l-4 border-transparent transition cursor-pointer';
+            btn.className = 'w-full p-4 text-left hover:bg-white border-l-4 border-transparent transition cursor-pointer';
           }
         }
       }
@@ -1481,11 +1481,11 @@
         const apkBox = document.getElementById('android-apk-action-container');
         if (apkBox) {
           apkBox.innerHTML = `
-            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold">
-              <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+              <i class="fas fa-check-circle text-slate-600 text-sm"></i>
               <span>Official Android App Installed &amp; Active</span>
             </div>
-            <a href="/inbox" class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] text-white px-5 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm">
+            <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 text-white px-5 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm">
               <span>Open Webmail</span>
               <i class="fas fa-chevron-right text-[9px]"></i>
             </a>
@@ -1501,9 +1501,9 @@
           const container = document.getElementById('auth-nav-container');
           if (container) {
             container.innerHTML = `
-              <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Webmail</a>
-              <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-[#208ED3] transition px-3 py-1.5">Apps</a>
-              <a class="btn-primary rounded-full bg-[#208ED3] hover:bg-[#1A7BB8] px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shadow-sm inline-flex items-center gap-1.5" href="/inbox">
+              <a href="#web" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-slate-900 transition px-3 py-1.5">Webmail</a>
+              <a href="#app" class="hidden sm:inline-flex text-sm font-semibold text-[#333333] hover:text-slate-900 transition px-3 py-1.5">Apps</a>
+              <a class="btn-primary rounded-full bg-slate-900 hover:bg-slate-800 text-white border border-slate-900 px-3.5 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white transition active:scale-95 shadow-sm inline-flex items-center gap-1.5" href="/inbox">
                 <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-4 w-4 sm:h-5 sm:w-5 rounded-full object-cover shrink-0" />
                 <span>Open my inbox</span>
                 <i class="fas fa-chevron-right text-[8px] sm:text-[10px] bg-white/20 rounded-full w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center"></i>

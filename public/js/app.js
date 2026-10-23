@@ -516,9 +516,9 @@ const app = {
               </span>
             </div>
             <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] text-white/90">
-              <span class="font-mono bg-emerald-500/80 text-obsidian font-bold px-1.5 py-0.2 rounded">${sec.tag}</span>
-              <span class="flex items-center gap-1 font-bold text-emerald-400">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="font-mono bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded border border-slate-700">${sec.tag}</span>
+              <span class="flex items-center gap-1 font-bold text-slate-200">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-400 animate-pulse"></span>
                 <span>LIVE</span>
               </span>
             </div>
@@ -1014,7 +1014,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       editor.innerHTML = `
         <p><strong>📖 ${s.title}</strong></p>
         <p><em>A traditional tale from ${s.country}</em></p>
-        <blockquote style="border-left: 3px solid #208ED3; padding-left: 10px; margin: 10px 0; color: #555;">
+        <blockquote style="border-left: 3px solid #0F172A; padding-left: 10px; margin: 10px 0; color: #475569;">
           💡 <strong>Moral:</strong> ${s.moral}
         </blockquote>
         <p>${(s.content || s.synopsis || '').replace(/\n\n/g, '</p><p>')}</p>
@@ -1031,7 +1031,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   showToast(message) {
     const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 z-50 rounded-2xl bg-primary text-primary-foreground px-4 py-3 text-xs shadow-soft flex items-center gap-2 border border-border animate-bounce';
+    toast.className = 'fixed top-4 right-4 z-50 rounded-2xl bg-slate-900 text-white px-4 py-3 text-xs shadow-soft flex items-center gap-2 border border-slate-900 animate-bounce';
     toast.innerHTML = `<span>${message}</span>`;
     document.body.appendChild(toast);
     setTimeout(() => {
@@ -1136,7 +1136,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 <p class="text-[10px] text-muted-foreground truncate">${acc.email}</p>
               </div>
             </div>
-            ${acc.id === data.activeId ? '<span class="h-2 w-2 rounded-full bg-emerald-500"></span>' : ''}
+            ${acc.id === data.activeId ? '<span class="h-2 w-2 rounded-full bg-slate-900"></span>' : ''}
           </button>
         `).join('');
       }
@@ -1401,14 +1401,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const isTeam = /raccon|team|support|system|admin/i.test(senderName) || /raccon|system/i.test(msg.sender_email || '');
       const initial = (senderName[0] || 'M').toUpperCase();
       
-      const colors = [
-        'bg-[#208ED3]/15 text-[#208ED3] border-[#208ED3]/30',
-        'bg-emerald-500/15 text-emerald-600 border-emerald-500/30',
-        'bg-amber-500/15 text-amber-600 border-amber-500/30',
-        'bg-purple-500/15 text-purple-600 border-purple-500/30',
-        'bg-rose-500/15 text-rose-600 border-rose-500/30'
-      ];
-      const colorClass = colors[initial.charCodeAt(0) % colors.length];
+      const colorClass = 'bg-slate-100 text-slate-800 border-slate-300';
 
       return `
         <div
@@ -1421,14 +1414,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               type="checkbox"
               ${isChecked ? 'checked' : ''}
               onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-              class="rounded border-border cursor-pointer h-3.5 w-3.5 accent-[#208ED3]"
+              class="rounded border-slate-300 cursor-pointer h-3.5 w-3.5 accent-slate-900"
             />
             <button
               onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})"
-              class="p-0.5 rounded transition ${msg.is_starred ? 'text-amber-500' : 'text-muted-foreground/30 hover:text-amber-500'} cursor-pointer"
+              class="p-0.5 rounded transition ${msg.is_starred ? 'text-slate-900' : 'text-slate-400 hover:text-slate-700'} cursor-pointer"
               title="${msg.is_starred ? 'Starred' : 'Not starred'}"
             >
-              <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-amber-400 text-amber-500' : ''}"></i>
+              <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-slate-900 text-slate-900' : ''}"></i>
             </button>
           </div>
 
@@ -1443,26 +1436,26 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 ${initial}
               </div>
             `}
-            ${isUnread ? '<span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#208ED3] ring-2 ring-card animate-pulse"></span>' : ''}
+            ${isUnread ? '<span class="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-slate-900 ring-2 ring-white animate-pulse"></span>' : ''}
           </div>
 
           <!-- 3. Message Info (Compact 2-Line Row) -->
           <div class="flex-1 min-w-0 pr-1">
             <!-- Row 1: Sender Name + Timestamp -->
             <div class="flex items-center justify-between gap-1 leading-none mb-1">
-              <span class="text-xs truncate text-foreground flex items-center gap-1.5 msg-title ${isUnread ? 'font-bold' : 'font-medium'}">
-                <i data-lucide="${isUnread ? 'mail' : 'mail-open'}" class="h-3 w-3 ${isUnread ? 'text-[#208ED3]' : 'text-muted-foreground/60'} shrink-0"></i>
+              <span class="text-xs truncate text-foreground flex items-center gap-1.5 msg-title ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'}">
+                <i data-lucide="${isUnread ? 'mail' : 'mail-open'}" class="h-3 w-3 ${isUnread ? 'text-slate-900' : 'text-slate-400'} shrink-0"></i>
                 <span class="truncate">${this.escapeHtml(senderName)}</span>
               </span>
-              <span class="text-[10px] font-mono text-muted-foreground shrink-0 font-normal bg-muted/60 px-1.5 py-0.5 rounded">${dateStr}</span>
+              <span class="text-[10px] font-mono text-slate-500 shrink-0 font-normal bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">${dateStr}</span>
             </div>
 
             <!-- Row 2: Subject & Snippet (Compact Inline Preview) -->
             <div class="flex items-center gap-1.5 text-xs truncate leading-tight">
-              ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="h-3 w-3 text-[#208ED3] shrink-0"></i>' : ''}
-              <span class="${isUnread ? 'font-bold text-foreground' : 'font-medium text-foreground/90'} truncate text-[11.5px]">${this.escapeHtml(msg.subject || '(no subject)')}</span>
-              <span class="text-muted-foreground/40 shrink-0">&ndash;</span>
-              <span class="text-[11px] text-muted-foreground truncate font-normal">${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}</span>
+              ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="h-3 w-3 text-slate-600 shrink-0"></i>' : ''}
+              <span class="${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'} truncate text-[11.5px]">${this.escapeHtml(msg.subject || '(no subject)')}</span>
+              <span class="text-slate-300 shrink-0">&ndash;</span>
+              <span class="text-[11px] text-slate-500 truncate font-normal">${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}</span>
             </div>
           </div>
         </div>
@@ -1547,28 +1540,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         </div>
 
         <div class="flex items-center gap-1">
-          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="flex items-center gap-1 rounded-full bg-muted/80 hover:bg-muted text-foreground px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-border">
-            <i data-lucide="camera" class="h-3.5 w-3.5 text-orange-500"></i>
+          <button onclick="app.takeScreenshot()" id="reader-screenshot-btn" title="Capture Screenshot & Save as Image" class="flex items-center gap-1 rounded-full bg-white hover:bg-slate-100 text-slate-700 px-2.5 py-1 text-xs font-semibold transition cursor-pointer active:scale-95 border border-slate-200">
+            <i data-lucide="camera" class="h-3.5 w-3.5 text-slate-600"></i>
             <span class="hidden sm:inline">Screenshot</span>
           </button>
           <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="flex items-center gap-1 rounded-full btn-orange-matte-subtle px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
-            <i data-lucide="mail" class="h-3 w-3"></i>
+            <i data-lucide="mail" class="h-3 w-3 text-slate-600"></i>
             <span class="hidden sm:inline">Postcard View</span>
           </button>
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-amber-500 transition cursor-pointer">
-            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-500 fill-amber-400' : ''}"></i>
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-slate-900 fill-slate-900' : ''}"></i>
           </button>
-          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-            <i data-lucide="mail" class="h-4 w-4"></i>
+          <button onclick="app.toggleRead('${msg.id}', false)" title="Mark as unread" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="mail" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-            <i data-lucide="archive" class="h-4 w-4"></i>
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="archive" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.spamMessage('${msg.id}')" title="Report Spam" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-            <i data-lucide="shield-alert" class="h-4 w-4"></i>
+          <button onclick="app.spamMessage('${msg.id}')" title="Report Spam" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
+            <i data-lucide="shield-alert" class="h-4 w-4 text-slate-600"></i>
           </button>
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-muted text-red-600 transition cursor-pointer">
-            <i data-lucide="trash-2" class="h-4 w-4"></i>
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-red-600 transition cursor-pointer">
+            <i data-lucide="trash-2" class="h-4 w-4 text-slate-600"></i>
           </button>
         </div>
       </div>
@@ -1577,41 +1570,41 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 pb-24 md:pb-5">
         
         <!-- Authentic Raccon Postcard Stationery (Compact) -->
-        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs">
+        <div id="message-reader-card" class="unique-email-card rounded-2xl overflow-hidden relative shadow-xs bg-white border border-slate-200">
           <!-- Top Airmail Ribbon -->
           <div class="stripes-subtle h-1.5 w-full"></div>
 
           <div class="p-4 sm:p-5 space-y-3">
             <!-- Verified Courier Badge (Compact) -->
             <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-              <div class="email-postmark-badge py-0.5 px-2 text-[11px]">
+              <div class="email-postmark-badge py-0.5 px-2 text-[11px] bg-slate-100 border border-slate-200 text-slate-700">
                 <span class="paw-step-1">🐾</span>
                 <span>Verified Nocturnal Postcard &bull; Masked 10/10</span>
               </div>
-              <span class="text-[10px] font-mono text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
+              <span class="text-[10px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">ID: ${this.escapeHtml(msg.id)}</span>
             </div>
 
             <!-- Header Row: Sender Icon/Avatar & Details (Compact) -->
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 ${isTeam ? `
-                  <div class="h-9 w-9 rounded-full bg-white dark:bg-card border border-[#208ED3]/40 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                  <div class="h-9 w-9 rounded-full bg-white dark:bg-card border border-slate-200 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
                     <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
                   </div>
                 ` : `
-                  <div class="h-9 w-9 rounded-full bg-[#208ED3]/15 text-[#208ED3] border border-[#208ED3]/30 flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                  <div class="h-9 w-9 rounded-full bg-slate-100 text-slate-800 border border-slate-200 flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
                     ${initial}
                   </div>
                 `}
                 <div class="min-w-0">
-                  <h2 class="font-display text-base sm:text-lg font-bold text-foreground leading-tight truncate">
+                  <h2 class="font-display text-base sm:text-lg font-bold text-slate-900 leading-tight truncate">
                     ${this.escapeHtml(msg.subject || '(no subject)')}
                   </h2>
-                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-                    <span class="font-bold text-foreground">${this.escapeHtml(msg.sender_name)}</span>
-                    <span class="text-orange-600 font-mono text-[11px] bg-orange-500/10 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
+                  <div class="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+                    <span class="font-bold text-slate-900">${this.escapeHtml(msg.sender_name)}</span>
+                    <span class="text-slate-700 font-mono text-[11px] bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded">&lt;${this.escapeHtml(msg.sender_email)}&gt;</span>
                     <span>&bull;</span>
-                    <span>to <span class="font-medium text-foreground">${this.escapeHtml(msg.recipient_email)}</span></span>
+                    <span>to <span class="font-medium text-slate-700">${this.escapeHtml(msg.recipient_email)}</span></span>
                     <span>&bull;</span>
                     <span class="font-mono text-[10.5px]">${new Date(msg.created_at).toLocaleString()}</span>
                   </div>
@@ -1620,7 +1613,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             </div>
 
             <!-- Email Content / Letter Body (Compact Stationery) -->
-            <div class="pt-3 border-t border-border-light text-foreground text-xs sm:text-sm leading-relaxed font-sans selection:bg-[#208ED3]/20 bg-slate-50/80 dark:bg-slate-900/40 rounded-xl p-3.5 sm:p-4 border border-border">
+            <div class="pt-3 border-t border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed font-sans selection:bg-slate-900 selection:text-white bg-slate-50 rounded-xl p-3.5 sm:p-4 border border-slate-200">
               ${msg.body_html ? `
                 <div class="email-html-wrapper overflow-x-auto rounded-lg">${msg.body_html}</div>
               ` : `
@@ -1630,9 +1623,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
             <!-- Attachments Section (Compact horizontal pills) -->
             ${attachments.length > 0 ? `
-              <div class="pt-3 border-t border-border-light space-y-1.5">
-                <div class="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
-                  <i data-lucide="paperclip" class="h-3 w-3 text-[#208ED3]"></i>
+              <div class="pt-3 border-t border-slate-200 space-y-1.5">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                  <i data-lucide="paperclip" class="h-3 w-3 text-slate-600"></i>
                   <span>${attachments.length} Attachment${attachments.length === 1 ? '' : 's'}</span>
                 </div>
                 <div class="flex flex-wrap gap-2 pt-0.5">
@@ -1640,22 +1633,22 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                     const isImg = att.mime_type.startsWith('image/');
                     const sizeKB = Math.round(att.size_bytes / 1024);
                     return `
-                      <div class="inline-flex items-center gap-2 rounded-xl border border-border bg-card p-1.5 pr-2.5 hover:border-[#208ED3] transition text-xs shadow-xs">
-                        <div class="h-8 w-8 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
+                      <div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 pr-2.5 hover:border-slate-400 transition text-xs shadow-xs">
+                        <div class="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
                           ${isImg ? `
                             <img src="/uploads/${att.filename}" class="h-full w-full object-cover" />
                           ` : `
-                            <i data-lucide="file-text" class="h-4 w-4 text-muted-foreground"></i>
+                            <i data-lucide="file-text" class="h-4 w-4 text-slate-600"></i>
                           `}
                         </div>
                         <div class="min-w-0 pr-1">
-                          <p class="font-bold truncate text-foreground text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
-                          <p class="text-[9.5px] text-muted-foreground font-mono">${sizeKB} KB</p>
+                          <p class="font-bold truncate text-slate-900 text-[11px] max-w-[140px]">${this.escapeHtml(att.original_name)}</p>
+                          <p class="text-[9.5px] text-slate-500 font-mono">${sizeKB} KB</p>
                         </div>
                         <a
                           href="/uploads/${att.filename}"
                           download="${att.original_name}"
-                          class="p-1 rounded-full hover:bg-muted text-[#208ED3] transition"
+                          class="p-1 rounded-full hover:bg-slate-100 text-slate-700 transition"
                           title="Download"
                         >
                           <i data-lucide="download" class="h-3.5 w-3.5"></i>
@@ -1679,55 +1672,55 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         </div>
 
         <!-- FAST REPLY SECTION -->
-        <div class="rounded-3xl border border-border bg-card p-5 shadow-sm space-y-3">
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-bold text-foreground">
-              <i data-lucide="zap" class="h-4 w-4 text-orange-500"></i>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-900">
+              <i data-lucide="zap" class="h-4 w-4 text-slate-600"></i>
               <span>Fast Reply to ${this.escapeHtml(msg.sender_name)}</span>
             </div>
-            <span class="text-[11px] text-muted-foreground hidden sm:inline">Press Ctrl+Enter to send fast</span>
+            <span class="text-[11px] text-slate-500 hidden sm:inline">Press Ctrl+Enter to send fast</span>
           </div>
 
           <!-- 1-Tap Fast Reply Chips -->
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
-            <span class="text-[11px] font-semibold text-muted-foreground mr-1">1-Tap:</span>
-            <button type="button" onclick="app.fillQuickReply('Got it! 🦝')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Got it! 🦝</button>
-            <button type="button" onclick="app.fillQuickReply('Sounds great! 🐾')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Sounds great! 🐾</button>
-            <button type="button" onclick="app.fillQuickReply('Midnight snack at 2am? 🥐')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Midnight snack at 2am? 🥐</button>
-            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard! 💌')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">Thanks for the postcard! 💌</button>
-            <button type="button" onclick="app.fillQuickReply('On my way! 🌲')" class="rounded-full bg-muted/60 hover:bg-muted border border-border px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-foreground flex items-center gap-1">On my way! 🌲</button>
+            <span class="text-[11px] font-semibold text-slate-500 mr-1">1-Tap:</span>
+            <button type="button" onclick="app.fillQuickReply('Got it! 🦝')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Got it! 🦝</button>
+            <button type="button" onclick="app.fillQuickReply('Sounds great! 🐾')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Sounds great! 🐾</button>
+            <button type="button" onclick="app.fillQuickReply('Midnight snack at 2am? 🥐')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Midnight snack at 2am? 🥐</button>
+            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard! 💌')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">Thanks for the postcard! 💌</button>
+            <button type="button" onclick="app.fillQuickReply('On my way! 🌲')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1">On my way! 🌲</button>
           </div>
 
           <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
           <div class="flex items-start gap-3 pt-2">
-            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-border/80 shrink-0 mt-1 shadow-sm" />
+            <img src="${userAvatar}" class="h-9 w-9 rounded-full object-cover aspect-square border-2 border-slate-200 shrink-0 mt-1 shadow-sm" />
             <div class="flex-1">
               <!-- Postcard Styled Inner Box -->
-              <div class="rounded-2xl border-2 border-border/90 bg-muted/20 hover:border-primary/40 focus-within:border-primary focus-within:bg-card focus-within:ring-2 focus-within:ring-orange-500/25 p-3.5 shadow-sm transition">
+              <div class="rounded-2xl border-2 border-slate-200 bg-slate-50 focus-within:border-slate-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-slate-900/10 p-3.5 shadow-sm transition">
                 <textarea
                   id="quick-reply-body"
                   rows="3"
                   placeholder="Type a fast reply or select a chip above... (Ctrl+Enter to send)"
                   onkeydown="if((event.ctrlKey || event.metaKey) && event.key === 'Enter') { app.sendQuickReply('${msg.id}'); }"
-                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-foreground placeholder:text-muted-foreground pb-2"
+                  class="w-full bg-transparent text-xs sm:text-sm outline-none resize-none leading-relaxed text-slate-900 placeholder:text-slate-400 pb-2"
                 ></textarea>
 
                 <!-- High-Visibility Bottom Action Bar INSIDE the Box -->
-                <div class="flex items-center justify-between pt-2.5 border-t border-border/70 mt-1 flex-wrap gap-2">
-                  <div class="flex items-center gap-2 text-[11px] text-muted-foreground">
-                    <span class="inline-flex items-center gap-1 font-semibold text-emerald-700">
-                      <i data-lucide="zap" class="h-3.5 w-3.5 text-orange-500 fill-orange-500"></i>
+                <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1 flex-wrap gap-2">
+                  <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                    <span class="inline-flex items-center gap-1 font-semibold text-slate-700">
+                      <i data-lucide="zap" class="h-3.5 w-3.5 text-slate-600"></i>
                       <span>Instant Express Dispatch</span>
                     </span>
                     <span class="hidden sm:inline opacity-60">&bull; Press Ctrl+Enter</span>
                   </div>
 
-                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX (Orange Matte 2026) -->
+                  <!-- PROMINENT HIGH-CONTRAST FAST REPLY BUTTON INSIDE BOX (Black Button, White Text) -->
                   <button
                     id="btn-fast-reply-send"
                     type="button"
                     onclick="app.sendQuickReply('${msg.id}')"
-                    class="flex items-center gap-2 rounded-full btn-orange-matte font-display font-bold text-xs sm:text-sm py-2.5 px-6 transition shadow-md hover:shadow-xl active:scale-95 cursor-pointer group"
+                    class="flex items-center gap-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs sm:text-sm py-2.5 px-6 transition shadow-md hover:shadow-xl active:scale-95 cursor-pointer group border border-slate-900"
                     title="Send Fast Reply immediately"
                   >
                     <i data-lucide="send" class="h-4 w-4 group-hover:translate-x-0.5 transition transform text-white"></i>
@@ -2426,24 +2419,24 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <span class="text-[9px] text-muted-foreground">1-Tap</span>
           </div>
           <div class="flex flex-wrap gap-1.5 mt-1.5 px-1">
-            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
-              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-primary"></i>
+            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
+              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Unread</span>
             </button>
-            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
-              <i data-lucide="star" class="h-3.5 w-3.5 text-amber-500 fill-amber-400"></i>
+            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
+              <i data-lucide="star" class="h-3.5 w-3.5 text-slate-700 fill-slate-700"></i>
               <span>Starred</span>
             </button>
-            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
-              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-blue-500"></i>
+            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
+              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Attachments</span>
             </button>
-            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
-              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-rose-500"></i>
+            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
+              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Spam Box</span>
             </button>
-            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-card border border-border hover:bg-muted text-foreground transition cursor-pointer active:scale-95">
-              <i data-lucide="layers" class="h-3.5 w-3.5 text-emerald-500"></i>
+            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
+              <i data-lucide="layers" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>All Mail</span>
             </button>
           </div>
@@ -2562,11 +2555,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       `;
       for (const m of messages) {
         const folder = m.folder_label || 'Inbox';
-        let folderBadgeColor = 'bg-primary/10 text-primary';
-        if (folder === 'Spam') folderBadgeColor = 'bg-rose-500/15 text-rose-600 dark:text-rose-400';
-        else if (folder === 'Trash') folderBadgeColor = 'bg-red-500/15 text-red-600';
-        else if (folder === 'Sent') folderBadgeColor = 'bg-emerald-500/15 text-emerald-600';
-        else if (folder === 'Archive') folderBadgeColor = 'bg-amber-500/15 text-amber-600';
+        let folderBadgeColor = 'bg-slate-100 text-slate-700 border border-slate-200';
 
         html += `
           <div onclick="app.selectSuggestionMessage('${m.id}')" class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-muted/60 cursor-pointer transition">
@@ -3158,7 +3147,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const data = await res.json();
       if (data.success) {
         statusEl.textContent = 'Connected successfully!';
-        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+        statusEl.className = 'text-[11px] text-slate-800 font-bold';
       } else {
         statusEl.textContent = 'Failed: ' + (data.error || 'Check credentials');
         statusEl.className = 'text-[11px] text-red-600 font-semibold';
@@ -3416,28 +3405,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     light: {
       name: '☀️ Clean Modern Light',
       vars: {
-        '--background': '#F8FAFC',
+        '--background': '#FFFFFF',
         '--foreground': '#0F172A',
         '--card': '#FFFFFF',
-        '--card-alt': '#F1F5F9',
+        '--card-alt': '#F8FAFC',
         '--card-foreground': '#0F172A',
-        '--primary': '#208ED3',
-        '--primary-hover': '#1A7BB8',
+        '--primary': '#0F172A',
+        '--primary-hover': '#1E293B',
         '--primary-foreground': '#FFFFFF',
-        '--primary-glow': 'rgba(32, 142, 211, 0.35)',
+        '--primary-glow': 'rgba(15, 23, 42, 0.15)',
         '--secondary': '#F1F5F9',
         '--secondary-foreground': '#0F172A',
         '--muted': '#F1F5F9',
         '--muted-foreground': '#64748B',
-        '--accent': '#E0F2FE',
-        '--accent-foreground': '#0284C7',
+        '--accent': '#F1F5F9',
+        '--accent-foreground': '#0F172A',
         '--border': '#E2E8F0',
         '--border-light': '#F1F5F9',
         '--mask': '#0F172A',
         '--fur': '#334155',
         '--cream': '#F8FAFC'
       },
-      cover: 'linear-gradient(135deg, #208ED3 0%, #1A7BB8 50%, #0F5E97 100%)',
+      cover: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%)',
       colorScheme: 'light'
     },
     dark: {
@@ -3824,12 +3813,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       return `
         <div
           onclick="app.openConversation('${c.email}')"
-          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-emerald-500' : ''}"
+          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-slate-900' : ''}"
         >
           <div class="flex items-center gap-2.5 truncate">
             <div class="relative shrink-0">
               <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
-              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border border-card"></span>
+              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-slate-500 border border-card"></span>
             </div>
             <div class="truncate">
               <p class="text-xs font-bold text-foreground truncate">${c.name}</p>
@@ -3839,7 +3828,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
           <div class="text-right shrink-0 ml-2">
             <span class="text-[10px] text-muted-foreground block font-mono">${timeStr}</span>
-            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-emerald-600 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
+            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-slate-900 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
           </div>
         </div>
       `;
@@ -3873,12 +3862,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       return `
         <div
           onclick="app.showChatPopupThread('${c.email}')"
-          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-emerald-500' : ''}"
+          class="p-3 flex items-center justify-between hover:bg-muted/60 transition cursor-pointer ${isActive ? 'bg-accent/40 font-bold border-l-4 border-slate-900' : ''}"
         >
           <div class="flex items-center gap-2.5 truncate">
             <div class="relative shrink-0">
               <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
-              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 border border-card"></span>
+              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-slate-500 border border-card"></span>
             </div>
             <div class="truncate">
               <p class="text-xs font-bold text-foreground truncate">${c.name}</p>
@@ -3888,7 +3877,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
           <div class="text-right shrink-0 ml-2">
             <span class="text-[10px] text-muted-foreground block font-mono">${timeStr}</span>
-            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-red-500 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
+            ${c.unread > 0 ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded-full bg-slate-900 text-white text-[10px] font-bold font-mono">${c.unread}</span>` : ''}
           </div>
         </div>
       `;
@@ -4002,7 +3991,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 ${contentHtml}
                 <div class="text-[9px] text-muted-foreground font-mono mt-0.5 flex items-center gap-1">
                   <span>${timeStr}</span>
-                  ${isMe ? '<span class="text-emerald-500 font-bold">✓✓</span>' : ''}
+                  ${isMe ? '<span class="text-slate-700 font-bold">✓✓</span>' : ''}
                 </div>
               </div>
             </div>

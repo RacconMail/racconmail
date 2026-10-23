@@ -13,22 +13,22 @@ html.theme-harmony, body.theme-harmony,
 html.theme-raccon, body.theme-raccon,
 html.theme-midnight, body.theme-midnight,
 html.theme-midnight-green, body.theme-midnight-green {
-  --background: #F8FAFC; /* Crisp Clean Slate Canvas */
+  --background: #FFFFFF; /* Pure Clean White Canvas */
   --foreground: #0F172A; /* Deep Slate Headline & Text */
-  --card: #FFFFFF; /* Pure White Elevated Card */
-  --card-alt: #F1F5F9; /* Subtle Elevated Surface */
+  --card: #FFFFFF; /* Pure White Card */
+  --card-alt: #F8FAFC; /* Subtle Elevated Surface */
   --card-foreground: #0F172A;
-  --primary: #208ED3; /* Modern Signature Azure */
-  --primary-hover: #1A7BB8;
+  --primary: #0F172A; /* Modern Black Button & Accent */
+  --primary-hover: #1E293B;
   --primary-foreground: #FFFFFF;
-  --primary-glow: rgba(32, 142, 211, 0.25);
+  --primary-glow: rgba(15, 23, 42, 0.15);
   --secondary: #F1F5F9;
   --secondary-foreground: #0F172A;
   --secondary-hover: #E2E8F0;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
-  --accent: #E0F2FE;
-  --accent-foreground: #0284C7;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
   --border: #E2E8F0;
   --border-light: #F1F5F9;
   --mask: #0F172A;
@@ -39,7 +39,7 @@ html.theme-midnight-green, body.theme-midnight-green {
   --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
   --stamp-red: #E11D48;
-  --stamp-blue: #208ED3;
+  --stamp-blue: #0F172A;
 }
 
 * {
@@ -277,31 +277,40 @@ button.hover\:bg-muted:active {
   transform: translateY(0.5px) scale(0.97);
 }
 
-/* Sidebar Menu Folders - Sleek Modern Pill with Subtle Orange Hover Indicator */
+/* Sidebar Menu Folders - Clean White & Gray with Solid Black Active Pill */
 .nav-folder-btn {
   position: relative;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   border-radius: 16px !important;
+  color: #334155;
 }
-.nav-folder-btn:hover {
-  background-color: var(--muted) !important;
-  transform: translateX(3px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-}
-.nav-folder-btn:hover i {
-  color: #ea580c !important;
-  transform: scale(1.12);
+.nav-folder-btn i,
+.nav-folder-btn svg {
+  color: #64748B !important;
   transition: transform 0.2s ease, color 0.2s ease;
 }
+.nav-folder-btn:hover {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+  transform: translateX(3px);
+}
+.nav-folder-btn:hover i,
+.nav-folder-btn:hover svg {
+  color: #0F172A !important;
+  transform: scale(1.08);
+}
 .nav-folder-btn.active {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--mask, #181c1f) 100%) !important;
-  color: var(--primary-foreground) !important;
-  box-shadow: 0 6px 18px -4px rgba(24, 28, 31, 0.3) !important;
+  background: #0F172A !important;
+  background-color: #0F172A !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
   font-weight: 700;
 }
-.nav-folder-btn.active i {
-  color: #f59e0b !important;
-  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
+.nav-folder-btn.active i,
+.nav-folder-btn.active svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  filter: none !important;
 }
 
 /* Modern Chat Modal Centered Overlay */
@@ -335,10 +344,10 @@ button.hover\:bg-muted:active {
 
 /* Chat Message Bubbles */
 .chat-bubble-outgoing {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #ffffff;
+  background: #0F172A !important;
+  color: #ffffff !important;
   border-radius: 20px 20px 4px 20px;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 .chat-bubble-incoming {
   background: var(--card);
@@ -586,54 +595,81 @@ html, body {
 }
 
 /* ==========================================
-   2026 MODERN ORANGE MATTE DESIGN SYSTEM
+   2026 CLEAN WHITE & BLACK BUTTON SYSTEM
+   Buttons with solid black background and white text
    ========================================== */
 
-.btn-orange-matte {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(194, 65, 12, 0.6) !important;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+.btn-orange-matte,
+.btn-black-primary {
+  background: #0F172A !important;
+  background-color: #0F172A !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  border: 1px solid #0F172A !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
   font-weight: 700 !important;
   border-radius: 9999px !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   cursor: pointer !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  text-shadow: none !important;
 }
 
-.btn-orange-matte:hover {
-  background: linear-gradient(135deg, #fb923c 0%, #c2410c 100%) !important;
-  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-  transform: translateY(-1.5px) scale(1.02) !important;
+.btn-orange-matte i,
+.btn-orange-matte svg,
+.btn-black-primary i,
+.btn-black-primary svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
 }
 
-.btn-orange-matte:active {
-  background: #c2410c !important;
-  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-  transform: translateY(1px) scale(0.96) !important;
-  filter: brightness(0.92) !important;
+.btn-orange-matte:hover,
+.btn-black-primary:hover {
+  background: #1E293B !important;
+  background-color: #1E293B !important;
+  border-color: #1E293B !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-1.5px) !important;
 }
 
-/* Secondary Matte Orange Button (Subtle & Clean) */
-.btn-orange-matte-subtle {
-  background: rgba(249, 115, 22, 0.12) !important;
-  color: #c2410c !important;
-  border: 1.5px solid rgba(249, 115, 22, 0.35) !important;
+.btn-orange-matte:active,
+.btn-black-primary:active {
+  background: #000000 !important;
+  transform: translateY(1px) scale(0.97) !important;
+}
+
+/* Secondary Matte Gray Button (Clean & Crisp) */
+.btn-orange-matte-subtle,
+.btn-gray-secondary {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #E2E8F0 !important;
   font-weight: 700 !important;
   border-radius: 9999px !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   cursor: pointer !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 
-.btn-orange-matte-subtle:hover {
-  background: rgba(249, 115, 22, 0.22) !important;
-  border-color: rgba(234, 88, 12, 0.6) !important;
-  transform: translateY(-1px) scale(1.02) !important;
+.btn-orange-matte-subtle i,
+.btn-orange-matte-subtle svg,
+.btn-gray-secondary i,
+.btn-gray-secondary svg {
+  color: #64748B !important;
 }
 
-.btn-orange-matte-subtle:active {
-  transform: translateY(1px) scale(0.96) !important;
-  background: rgba(249, 115, 22, 0.3) !important;
+.btn-orange-matte-subtle:hover,
+.btn-gray-secondary:hover {
+  background: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-orange-matte-subtle:active,
+.btn-gray-secondary:active {
+  transform: translateY(1px) scale(0.97) !important;
+  background: #F1F5F9 !important;
 }
 
 /* 2026 Unique Email Reader Stationery Styling */
@@ -823,11 +859,11 @@ h3, .heading-card, [data-heading="card"] {
 }
 
 /* ==========================================================================
-   HARMONY BUTTON SYSTEM: Exact styling from https://harmony.socialengine.com/
-   Pill border-radius (50px), #208ED3 Azure Sky Blue, #F2F2F2 Secondary, icon pills
+   BUTTON SYSTEM: Clean White & Slate Gray Palette
+   Pill border-radius (50px), Solid Black (#0F172A) Buttons with White Text
    ========================================================================== */
 
-/* Primary Button: Harmony Sky Azure Blue (#208ED3) */
+/* Primary Button: Solid Black Background (#0F172A) with White Text */
 .btn-primary,
 .btn-harmony,
 .btn-cyber-teal,
@@ -841,32 +877,33 @@ h3, .heading-card, [data-heading="card"] {
 #login-submit-btn,
 #btn-login,
 #btn-reg {
-  background-color: #208ED3 !important;
+  background-color: #0F172A !important;
   background-image: none !important;
   color: #FFFFFF !important;
-  border: 1px solid #208ED3 !important;
-  border-radius: 50px !important; /* Harmony signature pill */
+  border: 1px solid #0F172A !important;
+  border-radius: 50px !important;
   padding: 12px 24px !important;
   font-family: inherit !important;
   font-size: 0.95rem !important;
-  font-weight: 600 !important;
-  filter: drop-shadow(0px 4px 10px rgba(32, 142, 211, 0.35)) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
   text-decoration: none !important;
   cursor: pointer !important;
-  transition: all 0.25s ease-in-out !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
-.btn-turquoise-glow i,
-.btn-turquoise-glow svg,
+.btn-primary i,
+.btn-primary svg,
 .btn-harmony i,
-.btn-harmony svg {
+.btn-harmony svg,
+.btn-turquoise-glow i,
+.btn-turquoise-glow svg {
   color: #FFFFFF !important;
   stroke: #FFFFFF !important;
-  fill: none !important;
 }
 
 .btn-primary:hover,
@@ -882,11 +919,11 @@ h3, .heading-card, [data-heading="card"] {
 #login-submit-btn:hover,
 #btn-login:hover,
 #btn-reg:hover {
-  background-color: #1A7BB8 !important;
-  border-color: #1A7BB8 !important;
+  background-color: #1E293B !important;
+  border-color: #1E293B !important;
   color: #FFFFFF !important;
   transform: translateY(-2px) !important;
-  filter: drop-shadow(0px 6px 16px rgba(32, 142, 211, 0.45)) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
 }
 
 .btn-primary:active,
@@ -897,11 +934,11 @@ h3, .heading-card, [data-heading="card"] {
 #btn-login:active,
 #btn-reg:active {
   transform: translateY(0px) scale(0.98) !important;
-  filter: drop-shadow(0px 2px 6px rgba(32, 142, 211, 0.3)) !important;
+  background-color: #000000 !important;
 }
 
 /* ==========================================================================
-   THEME-ADAPTIVE COMPOSE BUTTON (#btn-compose) - 2 CLEAN THEMES
+   THEME-ADAPTIVE COMPOSE BUTTON (#btn-compose) - SOLID BLACK WITH WHITE TEXT
    ========================================================================== */
 #btn-compose {
   position: relative !important;
@@ -918,35 +955,39 @@ h3, .heading-card, [data-heading="card"] {
   cursor: pointer !important;
   user-select: none !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  background-color: #0F172A !important;
+  border: 1.5px solid #0F172A !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Clean Modern Compose Button */
-#btn-compose {
-  background-color: #FFFFFF !important;
-  border: 1.5px solid #CBD5E1 !important;
-  color: #0F172A !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-}
 #btn-compose:hover {
-  background-color: #F8FAFC !important;
-  border-color: #208ED3 !important;
+  background-color: #1E293B !important;
+  border-color: #1E293B !important;
+  color: #FFFFFF !important;
   transform: translateY(-1.5px) !important;
-  box-shadow: 0 6px 18px rgba(32, 142, 211, 0.18) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
 }
+
 #btn-compose .compose-pencil-badge {
-  background-color: #EBF5FB !important;
-  border: 1px solid #BAE6FD !important;
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
-#btn-compose svg {
-  stroke: #208ED3 !important;
-  color: #208ED3 !important;
+
+#btn-compose svg,
+#btn-compose i {
+  stroke: #FFFFFF !important;
+  color: #FFFFFF !important;
 }
+
 #btn-compose .compose-btn-text {
-  color: #0F172A !important;
+  color: #FFFFFF !important;
 }
 
 #btn-compose:active {
   transform: translateY(0px) scale(0.97) !important;
+  background-color: #000000 !important;
+}
 }
 
 /* Primary Button Icon Circle (Harmony signature chevron / arrow pill) */
@@ -1026,11 +1067,11 @@ h3, .heading-card, [data-heading="card"] {
 .btn-hero-apps:hover,
 .btn-outline:hover,
 .btn-solid-light:hover {
-  border-color: #208ED3 !important;
-  color: #208ED3 !important;
+  border-color: #0F172A !important;
+  color: #0F172A !important;
   background-color: #F8FAFC !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(32, 142, 211, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* ==========================================================================
@@ -1071,8 +1112,8 @@ h3, .heading-card, [data-heading="card"] {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background-color: #EBF5FB;
-  color: #208ED3;
+  background-color: #F1F5F9;
+  color: #0F172A;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1081,7 +1122,7 @@ h3, .heading-card, [data-heading="card"] {
 }
 
 .harmony-icon-badge:hover {
-  background-color: #208ED3;
+  background-color: #0F172A;
   color: #FFFFFF;
   transform: scale(1.05);
 }

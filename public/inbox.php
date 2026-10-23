@@ -37,20 +37,20 @@ if (empty($_SESSION['current_user_id'])) {
       document.documentElement.className = 'theme-light';
       document.documentElement.classList.remove('dark', 'theme-dark', 'theme-midnight');
       const themeVars = {
-        '--background': '#F8FAFC',
+        '--background': '#FFFFFF',
         '--foreground': '#0F172A',
         '--card': '#FFFFFF',
-        '--card-alt': '#F1F5F9',
+        '--card-alt': '#F8FAFC',
         '--card-foreground': '#0F172A',
-        '--primary': '#208ED3',
-        '--primary-hover': '#1A7BB8',
+        '--primary': '#0F172A',
+        '--primary-hover': '#1E293B',
         '--primary-foreground': '#FFFFFF',
         '--secondary': '#F1F5F9',
         '--secondary-foreground': '#0F172A',
         '--muted': '#F1F5F9',
         '--muted-foreground': '#64748B',
-        '--accent': '#EBF5FB',
-        '--accent-foreground': '#0284C7',
+        '--accent': '#F1F5F9',
+        '--accent-foreground': '#0F172A',
         '--border': '#E2E8F0',
         '--border-light': '#F1F5F9',
         '--mask': '#0F172A',
@@ -122,72 +122,34 @@ if (empty($_SESSION['current_user_id'])) {
       text-decoration: none !important;
     }
 
-    /* 1. Light / Harmony Theme: White Card Pill, Bold Slate Text, Vibrant Azure Pencil */
-    html.theme-harmony #btn-compose,
-    body.theme-harmony #btn-compose,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose {
-      background-color: #FFFFFF !important;
-      border: 1.5px solid #CBD5E1 !important;
-      color: #1E293B !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-    }
-    html.theme-harmony #btn-compose:hover,
-    body.theme-harmony #btn-compose:hover,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose:hover {
-      background-color: #F8FAFC !important;
-      border-color: #208ED3 !important;
-      transform: translateY(-1.5px) !important;
-      box-shadow: 0 6px 18px rgba(32, 142, 211, 0.2) !important;
-    }
-    html.theme-harmony #btn-compose .compose-pencil-badge,
-    body.theme-harmony #btn-compose .compose-pencil-badge,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-pencil-badge {
-      background-color: #EBF5FB !important;
-      border: 1px solid #BAE6FD !important;
-    }
-    html.theme-harmony #btn-compose svg,
-    html.theme-harmony #btn-compose i,
-    body.theme-harmony #btn-compose svg,
-    body.theme-harmony #btn-compose i,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose svg,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose i {
-      stroke: #208ED3 !important;
-      color: #208ED3 !important;
-    }
-    html.theme-harmony #btn-compose .compose-btn-text,
-    body.theme-harmony #btn-compose .compose-btn-text,
-    html:not(.theme-dark):not(.theme-midnight-green) #btn-compose .compose-btn-text {
-      color: #1E293B !important;
-    }
-
-    /* 2. Dark Theme: Charcoal Card Pill, White Text, White Pencil */
-    html.theme-dark #btn-compose,
-    body.theme-dark #btn-compose {
-      background-color: #2B2C2E !important;
-      border: 1.5px solid #404245 !important;
+    /* Clean Modern Black Compose Button with White Text & White Icon */
+    #btn-compose,
+    html #btn-compose,
+    body #btn-compose {
+      background-color: #0F172A !important;
+      border: 1.5px solid #0F172A !important;
       color: #FFFFFF !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     }
-    html.theme-dark #btn-compose:hover,
-    body.theme-dark #btn-compose:hover {
-      background-color: #353638 !important;
-      border-color: #208ED3 !important;
+    #btn-compose:hover,
+    html #btn-compose:hover,
+    body #btn-compose:hover {
+      background-color: #1E293B !important;
+      border-color: #1E293B !important;
+      color: #FFFFFF !important;
       transform: translateY(-1.5px) !important;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
     }
-    html.theme-dark #btn-compose .compose-pencil-badge,
-    body.theme-dark #btn-compose .compose-pencil-badge {
-      background-color: rgba(255, 255, 255, 0.16) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    #btn-compose .compose-pencil-badge {
+      background-color: rgba(255, 255, 255, 0.18) !important;
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
     }
-    html.theme-dark #btn-compose svg,
-    html.theme-dark #btn-compose i,
-    body.theme-dark #btn-compose svg,
-    body.theme-dark #btn-compose i {
+    #btn-compose svg,
+    #btn-compose i {
       stroke: #FFFFFF !important;
       color: #FFFFFF !important;
     }
-    html.theme-dark #btn-compose .compose-btn-text,
-    body.theme-dark #btn-compose .compose-btn-text {
+    #btn-compose .compose-btn-text {
       color: #FFFFFF !important;
     }
 
@@ -217,8 +179,8 @@ if (empty($_SESSION['current_user_id'])) {
         <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-8 w-8 md:h-9 md:w-9 object-contain raccoon-wiggle shrink-0" />
         <span class="text-foreground hidden sm:inline shrink-0">Raccon Mail</span>
       </div>
-      <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-accent/70 px-2.5 py-0.5 text-xs font-medium text-foreground/80 shrink-0">
-        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
+        <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
         Masked & Secure
       </span>
     </div>
@@ -321,8 +283,8 @@ if (empty($_SESSION['current_user_id'])) {
               <i data-lucide="home" class="h-4 w-4"></i>
               Landing Page
             </a>
-            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-red-50 text-red-600 font-bold transition">
-              <i data-lucide="log-out" class="h-4 w-4"></i>
+            <button onclick="app.logout()" class="w-full text-left flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs hover:bg-muted text-foreground font-medium transition">
+              <i data-lucide="log-out" class="h-4 w-4 text-muted-foreground"></i>
               Sign Out
             </button>
           </div>
@@ -336,9 +298,9 @@ if (empty($_SESSION['current_user_id'])) {
       <button
         onclick="app.logout()"
         title="Sign Out of Raccon Mail"
-        class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-red-50 hover:border-red-200 text-muted-foreground hover:text-red-600 px-3 py-1.5 text-xs font-semibold transition"
+        class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground px-3 py-1.5 text-xs font-semibold transition"
       >
-        <i data-lucide="log-out" class="h-3.5 w-3.5"></i>
+        <i data-lucide="log-out" class="h-3.5 w-3.5 text-muted-foreground"></i>
         <span class="hidden md:inline">Sign Out</span>
       </button>
     </div>
@@ -368,15 +330,15 @@ if (empty($_SESSION['current_user_id'])) {
         <button
           id="btn-compose"
           onclick="app.closeMobileSidebar(); app.openCompose()"
-          class="w-full flex items-center justify-center gap-2.5 rounded-full font-display font-bold text-sm py-3 px-4 shadow-md transition transform active:scale-95 cursor-pointer bg-card border border-border"
+          class="w-full flex items-center justify-center gap-2.5 rounded-full font-display font-bold text-sm py-3 px-4 shadow-md transition transform active:scale-95 cursor-pointer bg-slate-900 hover:bg-slate-800 text-white border border-slate-900"
         >
-          <span class="compose-pencil-badge w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition bg-accent border border-primary/25">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 shrink-0 text-primary">
+          <span class="compose-pencil-badge w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition bg-white/20 border border-white/30">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 shrink-0 text-white">
               <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
               <path d="m15 5 4 4"/>
             </svg>
           </span>
-          <span class="compose-btn-text font-bold text-foreground">Compose Postcard</span>
+          <span class="compose-btn-text font-bold text-white">Compose Postcard</span>
           <span class="paw-bounce">🐾</span>
         </button>
       </div>
@@ -494,9 +456,9 @@ if (empty($_SESSION['current_user_id'])) {
             <span class="truncate">Privacy &amp; Policy</span>
           </div>
         </button>
-        <button onclick="app.logout()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-red-600 hover:bg-red-500/10">
+        <button onclick="app.logout()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
-            <i data-lucide="log-out" class="h-4 w-4 shrink-0 text-red-600"></i>
+            <i data-lucide="log-out" class="h-4 w-4 shrink-0 text-muted-foreground"></i>
             <span class="truncate font-semibold">Sign Out</span>
           </div>
         </button>
@@ -524,7 +486,7 @@ if (empty($_SESSION['current_user_id'])) {
             <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer">
               <i data-lucide="refresh-cw" class="h-4 w-4"></i>
             </button>
-            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded-md transition font-medium">
+            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-muted-foreground hover:text-foreground hover:bg-muted px-2 py-1 rounded-md transition font-medium">
               Empty
             </button>
           </div>
@@ -564,13 +526,13 @@ if (empty($_SESSION['current_user_id'])) {
           <button onclick="app.batchAction('mark_unread')" title="Mark as unread" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
             <i data-lucide="mail" class="h-4 w-4"></i>
           </button>
-          <button onclick="app.batchAction('star')" title="Star" class="p-1 rounded hover:bg-card text-amber-500">
+          <button onclick="app.batchAction('star')" title="Star" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
             <i data-lucide="star" class="h-4 w-4"></i>
           </button>
           <button onclick="app.batchAction('archive')" title="Archive" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
             <i data-lucide="archive" class="h-4 w-4"></i>
           </button>
-          <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded hover:bg-card text-red-600">
+          <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
             <i data-lucide="trash-2" class="h-4 w-4"></i>
           </button>
         </div>
@@ -760,7 +722,7 @@ if (empty($_SESSION['current_user_id'])) {
       </div>
 
       <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-        <button onclick="app.discardDraft()" class="px-1.5 sm:px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-red-600 transition shrink-0" title="Discard Draft">
+        <button onclick="app.discardDraft()" class="px-1.5 sm:px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition shrink-0" title="Discard Draft">
           Discard
         </button>
         <button
@@ -1066,7 +1028,7 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
           <div class="flex items-center justify-between pt-1">
             <button onclick="app.testSmtpConnection()" class="flex items-center gap-1.5 rounded-full border border-border bg-muted hover:bg-card px-3 py-1.5 text-xs font-medium transition">
-              <i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600"></i>
+              <i data-lucide="check-circle" class="h-3.5 w-3.5 text-muted-foreground"></i>
               <span>Test Connection</span>
             </button>
             <span id="smtp-test-status" class="text-[11px]"></span>
@@ -1166,7 +1128,7 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Header -->
       <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+          <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-800 border border-slate-200">
             <i data-lucide="shield-check" class="h-6 w-6"></i>
           </div>
           <div>
@@ -1183,7 +1145,7 @@ if (empty($_SESSION['current_user_id'])) {
       <div class="overflow-y-auto py-4 space-y-4 text-xs sm:text-sm text-foreground/90 leading-relaxed pr-2">
         <div class="rounded-2xl bg-muted/40 p-4 border border-border">
           <p class="font-semibold text-foreground flex items-center gap-1.5">
-            <i data-lucide="lock" class="h-4 w-4 text-emerald-600"></i>
+            <i data-lucide="lock" class="h-4 w-4 text-slate-700"></i>
             <span>Our Nocturnal Guarantee:</span>
           </p>
           <p class="text-xs text-muted-foreground mt-1">
@@ -1193,7 +1155,7 @@ if (empty($_SESSION['current_user_id'])) {
 
         <div>
           <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
             1. Zero Tracker Policy &amp; No Device Fingerprinting
           </h4>
           <p class="mt-1 text-xs text-muted-foreground">
@@ -1203,7 +1165,7 @@ if (empty($_SESSION['current_user_id'])) {
 
         <div>
           <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
             2. Nocturnal Postcard Masking &amp; Mail Transmission
           </h4>
           <p class="mt-1 text-xs text-muted-foreground">
@@ -1213,7 +1175,7 @@ if (empty($_SESSION['current_user_id'])) {
 
         <div>
           <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
             3. Isolated Encrypted Mailboxes &amp; Server Storage
           </h4>
           <p class="mt-1 text-xs text-muted-foreground">
@@ -1223,7 +1185,7 @@ if (empty($_SESSION['current_user_id'])) {
 
         <div>
           <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
             4. Absolute Data Ownership &amp; Right to Erasure (GDPR)
           </h4>
           <p class="mt-1 text-xs text-muted-foreground">
@@ -1233,11 +1195,11 @@ if (empty($_SESSION['current_user_id'])) {
 
         <div>
           <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
             5. Security Contacts &amp; Inquiries
           </h4>
           <p class="mt-1 text-xs text-muted-foreground">
-            For security disclosures or compliance inquiries, contact our postmaster directly at <code class="text-primary font-bold">postmaster@racconmail.eu</code>.
+            For security disclosures or compliance inquiries, contact our postmaster directly at <code class="text-foreground font-bold">postmaster@racconmail.eu</code>.
           </p>
         </div>
       </div>
@@ -1245,7 +1207,7 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Footer -->
       <div class="pt-4 border-t border-border flex items-center justify-between shrink-0">
         <span class="text-xs text-muted-foreground flex items-center gap-1.5">
-          <i data-lucide="lock" class="h-3.5 w-3.5 text-emerald-600"></i>
+          <i data-lucide="lock" class="h-3.5 w-3.5 text-muted-foreground"></i>
           <span>100% Masked Nocturnal Privacy Guaranteed</span>
         </span>
         <button onclick="app.closePrivacyModal()" class="rounded-full bg-primary hover:bg-black text-primary-foreground font-semibold px-5 py-2 text-xs transition cursor-pointer">

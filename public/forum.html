@@ -32,7 +32,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#208ED3" />
+  <meta name="theme-color" content="#0F172A" />
 
   <!-- Early Theme Initializer (Strict Clean Modern White) -->
   <script>
@@ -66,11 +66,7 @@
               borderLight: 'rgba(255, 255, 255, 0.16)'
             },
             raccoon: {
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              sky: '#38bdf8',
-              violet: '#a855f7',
-              rose: '#f43f5e'
+              slate: '#64748b'
             }
           }
         }
@@ -93,18 +89,18 @@
       touch-action: pan-y;
     }
     body {
-      background-color: var(--background, #F8FAFC);
-      color: var(--foreground, #0F172A);
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
     .glass-nav {
-      background: var(--card, #FFFFFF);
+      background: #FFFFFF !important;
       border-bottom: 1px solid var(--border, #E2E8F0);
     }
     .glass-card {
-      background: var(--card, #FFFFFF);
+      background: #FFFFFF !important;
       border: 1px solid var(--border, #E2E8F0);
-      color: var(--foreground, #0F172A);
+      color: #0F172A !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
     pre code {
@@ -112,7 +108,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-background text-foreground flex flex-col antialiased transition-colors duration-200 selection:bg-[#208ED3] selection:text-white">
+<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white">
 
   <!-- TOP NAVIGATION HEADER -->
   <header class="w-full glass-nav sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
@@ -159,6 +155,10 @@
           <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Stories</span>
         </a>
+        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Community Wall">
+          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
+          <span class="hidden sm:inline">Wall</span>
+        </a>
         <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
           <!-- Populated by JS -->
         </div>
@@ -199,7 +199,7 @@
 
       <!-- CATEGORY PILL FILTER BAR -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-2xs transition shrink-0 cursor-pointer">
+        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
           All Wall Posts
         </button>
         <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
@@ -221,51 +221,47 @@
           <span>📖</span><span>Explaining</span>
         </button>
       </div>
-        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>📖</span><span>Explaining</span>
-        </button>
-      </div>
 
       <!-- INTERACTIVE POST COMPOSER (Members Only) -->
-      <div id="post-composer-card" class="rounded-3xl p-5 border border-border bg-card shadow-sm space-y-3.5">
+      <div id="post-composer-card" class="rounded-3xl p-5 border border-slate-200 bg-white shadow-xs space-y-3.5">
         <div class="flex items-center gap-3">
-          <img id="composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-border shrink-0" />
+          <img id="composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" />
           <div class="flex-1">
             <input
               id="c-post-title"
               type="text"
               placeholder="What tech, coding or webdesign topic are you working on?"
-              class="w-full bg-muted/40 border border-border rounded-2xl px-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card transition"
+              class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
             />
           </div>
         </div>
 
         <!-- Category Selector Chips -->
         <div class="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
-          <span class="text-muted-foreground text-[11px] font-semibold mr-1">Topic:</span>
+          <span class="text-slate-500 text-[11px] font-semibold mr-1">Topic:</span>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="tech" checked class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-sky-500 peer-checked:text-white peer-checked:border-sky-500 font-semibold transition text-[11px]">💻 Tech</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">💻 Tech</span>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="coding" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 font-semibold transition text-[11px]">⚡ Coding</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">⚡ Coding</span>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="webdesign" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-purple-600 peer-checked:text-white peer-checked:border-purple-600 font-semibold transition text-[11px]">🎨 Web Design</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">🎨 Web Design</span>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="sharing" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-amber-500 peer-checked:text-white peer-checked:border-amber-500 font-semibold transition text-[11px]">🎁 Sharing</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">🎁 Sharing</span>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="help" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-rose-500 peer-checked:text-white peer-checked:border-rose-500 font-semibold transition text-[11px]">❓ Help</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">❓ Help</span>
           </label>
           <label class="cursor-pointer">
             <input type="radio" name="post-cat" value="explaining" class="peer sr-only" />
-            <span class="px-2.5 py-1 rounded-full border border-border bg-muted/30 text-muted-foreground peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 font-semibold transition text-[11px]">📖 Explaining</span>
+            <span class="px-2.5 py-1 rounded-full border border-slate-200 bg-slate-100 text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-[11px]">📖 Explaining</span>
           </label>
         </div>
 
@@ -274,17 +270,17 @@
           id="c-post-content"
           rows="3"
           placeholder="Explain your idea, share your technique, or ask for guidance..."
-          class="w-full bg-muted/40 border border-border rounded-2xl p-3.5 text-xs sm:text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card transition resize-none leading-relaxed"
+          class="w-full bg-white border border-slate-200 rounded-2xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition resize-none leading-relaxed"
         ></textarea>
 
         <!-- Optional Expandable Code Block Container -->
         <div id="composer-code-box" class="hidden space-y-2 pt-1">
-          <div class="flex items-center justify-between text-xs text-muted-foreground">
+          <div class="flex items-center justify-between text-xs text-slate-500">
             <span class="flex items-center gap-1 font-mono text-[11px]">
-              <i data-lucide="code-2" class="h-3.5 w-3.5 text-primary"></i>
+              <i data-lucide="code-2" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Code Snippet</span>
             </span>
-            <select id="c-post-lang" class="bg-card border border-border rounded-lg px-2 py-0.5 text-[11px] text-foreground focus:outline-none focus:border-primary">
+            <select id="c-post-lang" class="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] text-slate-900 focus:outline-none focus:border-slate-400">
               <option value="javascript">JavaScript / TypeScript</option>
               <option value="php">PHP</option>
               <option value="python">Python</option>
@@ -298,26 +294,26 @@
             id="c-post-code"
             rows="4"
             placeholder="// Paste your code snippet here..."
-            class="w-full bg-slate-900 font-mono text-xs text-emerald-400 border border-border rounded-2xl p-3 focus:outline-none focus:border-primary transition leading-relaxed resize-y"
+            class="w-full bg-slate-900 font-mono text-xs text-slate-100 border border-slate-700 rounded-2xl p-3 focus:outline-none focus:border-slate-500 transition leading-relaxed resize-y"
           ></textarea>
         </div>
 
         <!-- Bottom Action Row of Composer -->
-        <div class="flex items-center justify-between pt-2 border-t border-border flex-wrap gap-2 text-xs">
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 flex-wrap gap-2 text-xs">
           <div class="flex items-center gap-2">
             <button
               type="button"
               onclick="toggleCodeBox()"
-              class="px-2.5 py-1.5 rounded-full bg-muted/60 hover:bg-muted text-foreground border border-border font-medium transition flex items-center gap-1 cursor-pointer text-[11px]"
+              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px]"
             >
-              <i data-lucide="code-2" class="h-3.5 w-3.5 text-primary"></i>
+              <i data-lucide="code-2" class="h-3.5 w-3.5 text-slate-600"></i>
               <span>Add Code</span>
             </button>
             <input
               id="c-post-tags"
               type="text"
               placeholder="Tags (e.g. #sqlite, #css)"
-              class="bg-muted/40 border border-border rounded-full px-3 py-1 text-[11px] text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card w-36 sm:w-48"
+              class="bg-white border border-slate-200 rounded-full px-3 py-1 text-[11px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-36 sm:w-48"
             />
           </div>
 
@@ -325,7 +321,7 @@
             type="button"
             id="btn-publish-post"
             onclick="publishForumPost()"
-            class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
+            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer border border-slate-900"
           >
             <i data-lucide="send" class="h-3.5 w-3.5"></i>
             <span>Publish to Wall</span>
@@ -339,11 +335,11 @@
       </div>
 
       <!-- Empty state -->
-      <div id="forum-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-border bg-card space-y-3">
-        <div class="h-16 w-16 mx-auto rounded-full bg-muted/60 flex items-center justify-center text-3xl">🦝</div>
-        <h3 class="font-display text-lg font-bold text-foreground">No discussions found</h3>
-        <p class="text-xs text-muted-foreground max-w-sm mx-auto">Be the first nocturnal owl to post in this category!</p>
-        <button onclick="focusComposer()" class="rounded-full bg-primary text-white text-xs font-bold px-4 py-2 mt-2">Create First Post</button>
+      <div id="forum-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-slate-200 bg-white space-y-3">
+        <div class="h-16 w-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">🦝</div>
+        <h3 class="font-display text-lg font-bold text-slate-900">No discussions found</h3>
+        <p class="text-xs text-slate-500 max-w-sm mx-auto">Be the first nocturnal owl to post in this category!</p>
+        <button onclick="focusComposer()" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 mt-2">Create First Post</button>
       </div>
 
     </main>
@@ -401,8 +397,27 @@
           <li>Help beginners understand technical concepts.</li>
         </ul>
       </div>
-          <li>Help beginners understand technical concepts.</li>
-        </ul>
+
+      <!-- Quick Navigation Card -->
+      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
+        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
+          <i data-lucide="compass" class="h-4 w-4 text-slate-600"></i>
+          <span>Raccon Hub Navigation</span>
+        </h3>
+        <div class="space-y-1.5 pt-1">
+          <a href="/news" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
+            <span class="flex items-center gap-2"><i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600"></i> Raccon News Wire</span>
+            <span class="text-[10px] text-slate-500">&rarr;</span>
+          </a>
+          <a href="/stories" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
+            <span class="flex items-center gap-2"><i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600"></i> World Stories Library</span>
+            <span class="text-[10px] text-slate-500">&rarr;</span>
+          </a>
+          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
+            <span class="flex items-center gap-2"><i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i> Private Webmail</span>
+            <span class="text-[10px] text-slate-500">&rarr;</span>
+          </a>
+        </div>
       </div>
 
     </aside>
@@ -411,26 +426,26 @@
 
   <!-- AUTH REQUIRED MODAL (For Unregistered Visitors) -->
   <div id="forum-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-    <div class="w-full max-w-md rounded-3xl bg-card p-6 sm:p-7 relative border border-border text-center space-y-4 shadow-2xl">
-      <button onclick="closeForumAuthModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 sm:p-7 relative border border-slate-200 text-center space-y-4 shadow-2xl">
+      <button onclick="closeForumAuthModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
         <i data-lucide="x" class="h-5 w-5"></i>
       </button>
 
       <img src="/raccoon-logo.png" alt="Raccon" class="h-16 w-16 mx-auto object-contain drop-shadow" />
 
       <div>
-        <h2 class="font-display text-xl font-bold text-foreground">Registered Burrow Members Only</h2>
-        <p class="text-xs text-muted-foreground mt-1 leading-relaxed">
+        <h2 class="font-display text-xl font-bold text-slate-900">Registered Burrow Members Only</h2>
+        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
           To publish discussions, share code, leave paws 🐾, and reply to fellow tech owls, please sign in or create your free encrypted account!
         </p>
       </div>
 
       <div class="space-y-2 pt-2">
-        <a href="/auth?tab=register" class="w-full rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-2 shadow-md shadow-primary/25 cursor-pointer">
+        <a href="/auth?tab=register" class="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-2 shadow-xs cursor-pointer border border-slate-900">
           <span>Create Free Burrow Account</span>
           <i data-lucide="arrow-right" class="h-4 w-4"></i>
         </a>
-        <a href="/auth?tab=login" class="w-full rounded-full bg-muted/60 hover:bg-muted text-foreground border border-border font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-1.5 cursor-pointer">
+        <a href="/auth?tab=login" class="w-full rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-1.5 cursor-pointer">
           <span>Sign In to Existing Mailbox</span>
         </a>
       </div>
@@ -439,8 +454,8 @@
 
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="forum-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-card rounded-2xl px-4 py-3 border border-border text-foreground text-xs font-semibold shadow-2xl flex items-center gap-2">
-      <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+    <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 text-slate-800 text-xs font-semibold shadow-2xl flex items-center gap-2">
+      <i data-lucide="check-circle" class="h-4 w-4 text-slate-600"></i>
       <span id="forum-toast-text">Message</span>
     </div>
   </div>
@@ -501,9 +516,9 @@
       currentCategory = cat;
       document.querySelectorAll('.cat-filter-btn').forEach(btn => {
         if (btn.dataset.cat === cat) {
-          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-primary text-white shadow-2xs transition shrink-0 cursor-pointer';
+          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer';
         } else {
-          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-card hover:bg-muted text-muted-foreground border border-border transition shrink-0 cursor-pointer flex items-center gap-1.5';
+          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
         }
       });
       loadForumPosts();
@@ -753,14 +768,14 @@
         }
 
         list.innerHTML = comments.map(c => `
-          <div class="p-2.5 rounded-2xl bg-muted/40 border border-border flex gap-2.5 items-start">
-            <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover shrink-0 mt-0.5 border border-border" />
+          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex gap-2.5 items-start">
+            <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover shrink-0 mt-0.5 border border-slate-200" />
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-1 text-[11px] mb-0.5">
-                <span class="font-bold text-foreground">${escapeHtml(c.author_name || 'Owl')}</span>
-                <span class="text-[10px] text-muted-foreground font-mono">${formatTime(c.created_at)}</span>
+                <span class="font-bold text-slate-900">${escapeHtml(c.author_name || 'Owl')}</span>
+                <span class="text-[10px] text-slate-500 font-mono">${formatTime(c.created_at)}</span>
               </div>
-              <p class="text-xs text-foreground/80 leading-relaxed">${escapeHtml(c.content)}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(c.content)}</p>
             </div>
           </div>
         `).join('');
@@ -891,7 +906,7 @@
       if (navigator.clipboard) {
         navigator.clipboard.writeText(code);
         const originalText = btn.innerHTML;
-        btn.innerHTML = `<span class="text-emerald-400 font-bold">✓ Copied!</span>`;
+        btn.innerHTML = `<span class="text-slate-900 font-bold">✓ Copied!</span>`;
         setTimeout(() => btn.innerHTML = originalText, 1500);
       }
     }
