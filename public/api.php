@@ -3081,7 +3081,7 @@ try {
     if (preg_match('#^marketplace/items/([^/]+)/reveal-contact$#', $route, $m) && $method === 'POST') {
         if (!$currentUserId) {
             http_response_code(401);
-            echo json_encode(['error' => 'Trebuie să fii autentificat pentru a confirma intenția de cumpărare în persoană și a dezvălui emailul vânzătorului.']);
+            echo json_encode(['error' => 'You must be signed in to confirm in-person purchase intent and reveal the seller\'s contact.']);
             exit;
         }
 
@@ -3097,7 +3097,7 @@ try {
 
         if (!$item) {
             http_response_code(404);
-            echo json_encode(['error' => 'Articolul nu a fost găsit.']);
+            echo json_encode(['error' => 'Item not found.']);
             exit;
         }
 
@@ -3113,7 +3113,7 @@ try {
             'seller_name' => $item['seller_name'],
             'item_title' => $item['title'],
             'location' => $item['location'],
-            'message' => 'Intenția fermă de cumpărare în persoană a fost confirmată. Adresa de email a vânzătorului este acum vizibilă!'
+            'message' => 'In-person purchase intent confirmed! The seller\'s contact is now available.'
         ]);
         exit;
     }
