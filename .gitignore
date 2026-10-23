@@ -7,12 +7,15 @@ vendor/
 *.keystore
 *.jar
 *.zip
+*.webp
+*.xml
 apk_build/
 apk_extracted/
 apk_out/
 template_extracted/
 test_sign_out/
 uploads/
+generated_icons/
 
 # Databases & local state
 *.db
@@ -25,7 +28,22 @@ uploads/
 # Tokens & temp files
 gh_*.html
 gh_*.txt
+gh_release_urls.json
 *.tmp
 *.log
 .DS_Store
 Thumbs.db
+
+# Scratch runner scripts in root
+/*.js
+/*.html
+/*.css
+/*.ps1
+/query*
+
+# Explicitly keep scripts/ and src/
+!scripts/*.js
+!src/
+!config/
+!docs/
+!public/

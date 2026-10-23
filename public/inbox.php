@@ -658,8 +658,8 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- Compose Form -->
     <div class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[75vh]">
       <!-- To Field -->
-      <div class="relative flex items-center border-b border-border pb-1.5">
-        <span class="text-xs font-semibold text-muted-foreground w-12">To:</span>
+      <div class="relative flex items-center gap-2.5 border-b border-border pb-1.5">
+        <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">To:</span>
         <input
           id="compose-to"
           type="text"
@@ -671,24 +671,24 @@ if (empty($_SESSION['current_user_id'])) {
           <button type="button" onclick="app.toggleCcBcc()" class="hover:text-foreground">Cc/Bcc</button>
         </div>
         <!-- Contact Auto-complete Suggestions Dropdown -->
-        <div id="contact-suggestions" class="hidden absolute left-12 top-full mt-1 w-72 rounded-xl border border-border bg-card p-1 shadow-soft z-50"></div>
+        <div id="contact-suggestions" class="hidden absolute left-16 top-full mt-1 w-72 rounded-xl border border-border bg-card p-1 shadow-soft z-50"></div>
       </div>
 
       <!-- CC / BCC Rows (Collapsible) -->
       <div id="cc-bcc-row" class="hidden space-y-2 border-b border-border pb-2">
-        <div class="flex items-center">
-          <span class="text-xs font-semibold text-muted-foreground w-12">Cc:</span>
+        <div class="flex items-center gap-2.5">
+          <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Cc:</span>
           <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-sm outline-none" />
         </div>
-        <div class="flex items-center">
-          <span class="text-xs font-semibold text-muted-foreground w-12">Bcc:</span>
+        <div class="flex items-center gap-2.5">
+          <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Bcc:</span>
           <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-sm outline-none" />
         </div>
       </div>
 
       <!-- Subject Field -->
-      <div class="flex items-center border-b border-border pb-1.5">
-        <span class="text-xs font-semibold text-muted-foreground w-12">Subject:</span>
+      <div class="flex items-center gap-2.5 border-b border-border pb-1.5">
+        <span class="text-xs font-semibold text-muted-foreground w-16 shrink-0">Subject:</span>
         <input id="compose-subject" type="text" placeholder="Postcard subject..." class="flex-1 bg-transparent text-sm font-medium outline-none" />
       </div>
 

@@ -52,8 +52,36 @@ Raccon Mail is a modern, lightweight, privacy-focused email and postcard communi
 
 The official Raccon Mail Android application connects seamlessly to your mailbox with full offline caching and native bottom bar navigation.
 
-Download the latest signed release:
-👉 [Download RacconMail.apk](https://racconmail.eu/downloads/RacconMail.apk)
+Download the latest cryptographically signed release from GitHub Releases (avoids unknown-publisher warnings):
+👉 **[Download RacconMail-v1.0.0.apk (GitHub Releases)](https://github.com/RacconMail/racconmail/releases/latest)**
+
+---
+
+## 🏗️ Repository Structure
+
+```
+├── public/                 # Web application & frontend assets
+│   ├── api.php             # Unified JSON REST backend
+│   ├── inbox.php           # Reactive authenticated webmail interface
+│   ├── index.html          # Privacy-first landing page
+│   ├── news.html           # 24/7 International news wire
+│   ├── js/app.js           # Single-page client reactive application
+│   └── css/raccoon-mail.css # Responsive design system & theme variables
+├── src/                    # Core PHP Modules
+│   ├── Database.php        # SQLite PDO connection pool (WAL mode & busy timeout)
+│   ├── IMAPSync.php        # Inbound c-client mail poller with anti-spam bypass
+│   ├── PostcardEngine.php  # Postal stationery & digital card generator
+│   ├── StoryEngine.php     # 175+ World folktales reader integration
+│   └── Security.php        # Phone verification & zero-knowledge sanitization
+├── config/                 # Server environment configurations
+│   └── config.sample.php   # Configuration template
+├── docs/                   # Architectural & Audit Specifications
+│   ├── ARCHITECTURE.md     # System design & concurrency guarantees
+│   └── SECURITY.md         # Vulnerability reporting & zero-telemetry policy
+└── scripts/                # Packaging & build automation
+    ├── build_apk.js        # Android APK signer & alignment utility
+    └── sync_stories.js     # Folklore database synchronizer
+```
 
 ---
 
