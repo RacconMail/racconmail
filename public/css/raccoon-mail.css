@@ -1343,7 +1343,7 @@ header img[src*="raccoon-logo"]:hover {
 }
 
 .swipe-btn-planner {
-  background-color: #7C3AED;
+  background-color: #0F172A;
   color: #FFFFFF;
   width: 70px;
   display: flex;
@@ -1359,7 +1359,7 @@ header img[src*="raccoon-logo"]:hover {
   outline: none;
 }
 .swipe-btn-planner:active {
-  background-color: #6D28D9;
+  background-color: #1E293B;
 }
 
 #mobile-floating-capsule {
@@ -1403,14 +1403,14 @@ header img[src*="raccoon-logo"]:hover {
 
 /* High-contrast Sidebar Active Folder Indicator */
 .nav-folder-btn.active {
-  background-color: #EDE9FE !important;
-  color: #4F46E5 !important;
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
   font-weight: 800 !important;
-  border-left: 3px solid #4F46E5 !important;
+  border-left: 3px solid #0F172A !important;
 }
 .nav-folder-btn.active svg,
 .nav-folder-btn.active i {
-  color: #4F46E5 !important;
+  color: #0F172A !important;
 }
 
 /* iOS Safe Area Insets for Mobile App & Web */

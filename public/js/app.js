@@ -132,6 +132,15 @@ const app = {
           searchDropdown.classList.add('hidden');
         }
       }
+
+      // 4. Advanced search dropdown auto dismiss on click outside
+      const advSearchDropdown = document.getElementById('advanced-search-dropdown');
+      if (advSearchDropdown && !advSearchDropdown.classList.contains('hidden')) {
+        const searchContainer = document.getElementById('global-search-container');
+        if (searchContainer && !searchContainer.contains(e.target)) {
+          advSearchDropdown.classList.add('hidden');
+        }
+      }
     });
 
     // Escape key closes open dropdowns & profile modal
@@ -140,6 +149,7 @@ const app = {
         document.getElementById('account-dropdown')?.classList.add('hidden');
         document.getElementById('reader-more-dropdown')?.classList.add('hidden');
         document.getElementById('search-suggestions-dropdown')?.classList.add('hidden');
+        document.getElementById('advanced-search-dropdown')?.classList.add('hidden');
         document.getElementById('profile-modal')?.classList.add('hidden');
       }
     });
@@ -1719,7 +1729,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       btn.textContent = this.batchSelectionMode ? 'Cancel' : 'Select';
       btn.className = this.batchSelectionMode
         ? 'text-xs font-bold text-slate-700 hover:text-slate-900 px-2 py-1 transition cursor-pointer shrink-0'
-        : 'text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0';
+        : 'text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 transition cursor-pointer shrink-0';
     }
 
     if (!this.batchSelectionMode) {
@@ -1753,15 +1763,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
   getSenderColor(sender) {
     const colors = [
-      'bg-purple-600',
       'bg-blue-600',
-      'bg-indigo-600',
+      'bg-slate-800',
       'bg-emerald-600',
       'bg-amber-600',
       'bg-rose-600',
       'bg-teal-600',
       'bg-cyan-700',
-      'bg-violet-600'
+      'bg-stone-700',
+      'bg-sky-600'
     ];
     let hash = 0;
     const str = sender || 'Mail';
@@ -1843,7 +1853,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const avatarBg = this.getSenderColor(senderName);
 
       return `
-        <div class="msg-swipe-wrapper group relative overflow-hidden bg-white border-b border-slate-200/80 select-none ${isSelected ? 'bg-indigo-50/60 border-l-4 border-indigo-600' : ''}" data-msg-id="${msg.id}">
+        <div class="msg-swipe-wrapper group relative overflow-hidden bg-white border-b border-slate-200/80 select-none ${isSelected ? 'bg-blue-50/60 border-l-4 border-blue-600' : ''}" data-msg-id="${msg.id}">
           <!-- Revealed on Swipe Right: Read & Planner / Star -->
           <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
             <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
@@ -1866,9 +1876,9 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
           <!-- Foreground Card Content (Draggable / Tap to open) -->
           <div class="swipe-content relative z-10 ${isUnread ? 'bg-slate-50/60 font-semibold' : 'bg-white'} hover:bg-slate-100/70 transition-colors px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
-            <!-- Unread Purple Dot -->
+            <!-- Unread Blue Dot -->
             <div class="w-2.5 flex items-center justify-center shrink-0">
-              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-indigo-600"></span>' : ''}
+              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-blue-600"></span>' : ''}
             </div>
 
             <!-- Batch Selection Checkbox -->
@@ -1877,7 +1887,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 type="checkbox"
                 ${isChecked ? 'checked' : ''}
                 onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-                class="rounded border-slate-300 h-4 w-4 accent-indigo-600 cursor-pointer"
+                class="rounded border-slate-300 h-4 w-4 accent-blue-600 cursor-pointer"
               />
             </div>
 
@@ -2066,7 +2076,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             }
           }, 180);
         } else if (dx > 45) {
-          // Snap open to reveal blue Read + purple Planner buttons
+          // Snap open to reveal Read + Star buttons
           activeCard.style.transform = 'translateX(140px)';
           activeCard._isSwipedOpen = true;
         } else {
@@ -2673,7 +2683,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const btn = document.getElementById('btn-toggle-select');
       if (btn) {
         btn.textContent = 'Select';
-        btn.className = 'text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0';
+        btn.className = 'text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 transition cursor-pointer shrink-0';
       }
       this.updateBatchToolbar();
       await this.loadMessages();
@@ -3143,6 +3153,90 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }
     } else if (event.key === 'Escape') {
       this.closeSearchSuggestions();
+      this.closeAdvancedSearchDropdown();
+    }
+  },
+
+  triggerSearchSubmit() {
+    const val = (document.getElementById('global-search')?.value || '').trim();
+    this.closeSearchSuggestions();
+    this.closeAdvancedSearchDropdown();
+    if (val.length > 0) {
+      this.searchAllFolders(val);
+    } else {
+      this.searchQuery = '';
+      this.loadMessages();
+    }
+  },
+
+  toggleAdvancedSearchDropdown() {
+    const dropdown = document.getElementById('advanced-search-dropdown');
+    if (!dropdown) return;
+    const isHidden = dropdown.classList.contains('hidden');
+    if (isHidden) {
+      this.closeSearchSuggestions();
+      dropdown.classList.remove('hidden');
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch (_) {}
+      }
+    } else {
+      dropdown.classList.add('hidden');
+    }
+  },
+
+  closeAdvancedSearchDropdown() {
+    const dropdown = document.getElementById('advanced-search-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  },
+
+  resetAdvancedSearch() {
+    const fromEl = document.getElementById('adv-search-from');
+    const toEl = document.getElementById('adv-search-to');
+    const subEl = document.getElementById('adv-search-subject');
+    const folderEl = document.getElementById('adv-search-folder');
+    const attEl = document.getElementById('adv-search-has-attachment');
+    if (fromEl) fromEl.value = '';
+    if (toEl) toEl.value = '';
+    if (subEl) subEl.value = '';
+    if (folderEl) folderEl.value = 'all';
+    if (attEl) attEl.checked = false;
+  },
+
+  submitAdvancedSearch() {
+    const fromVal = (document.getElementById('adv-search-from')?.value || '').trim();
+    const toVal = (document.getElementById('adv-search-to')?.value || '').trim();
+    const subVal = (document.getElementById('adv-search-subject')?.value || '').trim();
+    const folderVal = document.getElementById('adv-search-folder')?.value || 'all';
+    const hasAtt = document.getElementById('adv-search-has-attachment')?.checked;
+
+    const parts = [];
+    if (fromVal) parts.push(fromVal);
+    if (toVal) parts.push(toVal);
+    if (subVal) parts.push(subVal);
+    const combinedQuery = parts.join(' ').trim();
+
+    this.closeAdvancedSearchDropdown();
+    this.closeSearchSuggestions();
+
+    const searchInput = document.getElementById('global-search');
+    if (searchInput) searchInput.value = combinedQuery;
+    this.searchQuery = combinedQuery;
+
+    if (folderVal !== 'all') {
+      this.currentFolder = folderVal;
+    }
+    if (hasAtt) {
+      this.currentFilter = 'has_attachments';
+    }
+
+    if (combinedQuery.length > 0) {
+      if (folderVal === 'all') {
+        this.searchAllFolders(combinedQuery);
+      } else {
+        this.loadMessages();
+      }
+    } else {
+      this.loadMessages();
     }
   },
 

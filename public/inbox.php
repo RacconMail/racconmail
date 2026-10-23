@@ -203,44 +203,119 @@ if (empty($_SESSION['current_user_id'])) {
       <span id="mobile-header-user-email" class="text-[11px] text-slate-500 font-medium truncate max-w-[200px] mt-0.5">me@racconmail.eu</span>
     </div>
 
-    <!-- Raccon Mail Global Search Bar (Hidden on mobile app, prominent on desktop & tablet) -->
-    <div class="hidden md:block flex-1 min-w-0 max-w-xl mx-2 sm:mx-4 relative" id="global-search-container">
-      <div class="relative flex items-center">
-        <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none"></i>
+    <!-- Global Search Bar with Integrated Search Loop Button (Clean White & Slate) -->
+    <div class="hidden md:block flex-1 min-w-0 max-w-2xl mx-3 lg:mx-6 relative" id="global-search-container">
+      <div class="relative flex items-center rounded-full border border-slate-300 bg-white shadow-2xs hover:border-slate-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/15 transition overflow-hidden">
+        <!-- Advanced Search Filter Dropdown Toggle Button on Left -->
+        <button
+          type="button"
+          onclick="app.toggleAdvancedSearchDropdown()"
+          class="pl-3.5 pr-2 py-2 text-slate-500 hover:text-slate-800 transition cursor-pointer flex items-center gap-1 shrink-0"
+          title="Search options & filters"
+        >
+          <i data-lucide="sliders-horizontal" class="h-4 w-4 text-slate-500"></i>
+          <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
+        </button>
+
+        <!-- Search Input Field -->
         <input
           id="global-search"
           type="text"
           autocomplete="off"
-          placeholder="Search mail, senders, subjects or files..."
-          class="w-full rounded-full border border-slate-300 bg-slate-50/80 hover:bg-slate-100/60 focus:bg-white focus:border-slate-800 focus:ring-2 focus:ring-slate-900/10 pl-10 pr-8 sm:pr-20 py-2 text-xs sm:text-sm outline-none transition text-slate-900 placeholder:text-slate-400 shadow-2xs"
+          placeholder="Find messages, documents, photos or people..."
+          class="flex-1 min-w-0 bg-transparent py-2 px-1 text-xs sm:text-sm outline-none text-slate-900 placeholder:text-slate-400"
           onclick="app.onSearchClick()"
           oninput="app.onSearchInput(this.value)"
           onfocus="app.onSearchClick()"
           onkeydown="app.onSearchKeyDown(event)"
         />
-        <button id="search-clear-btn" class="hidden absolute right-12 text-slate-400 hover:text-slate-700 text-xs cursor-pointer" onclick="app.clearSearch()">
-          <i data-lucide="x" class="h-3.5 w-3.5"></i>
+
+        <!-- Clear 'X' Button (visible when typing) -->
+        <button
+          id="search-clear-btn"
+          type="button"
+          class="hidden px-2 text-slate-400 hover:text-slate-700 text-xs cursor-pointer shrink-0"
+          onclick="app.clearSearch()"
+          title="Clear search"
+        >
+          <i data-lucide="x" class="h-4 w-4"></i>
         </button>
-        <button onclick="app.openCommandPalette()" type="button" class="absolute right-3 hidden sm:inline-flex items-center gap-0.5 text-[10px] font-mono font-bold text-slate-600 bg-white hover:bg-slate-100 px-2 py-0.5 rounded-full border border-slate-300 cursor-pointer transition shadow-2xs" title="Open Command Palette (Ctrl+K)">
-          <span>⌘</span>K
+
+        <!-- Keyboard Shortcut Badge (Ctrl+K) -->
+        <span class="hidden lg:inline-flex items-center text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded mr-2 pointer-events-none shrink-0">
+          ⌘K
+        </span>
+
+        <!-- Dedicated Search Loop Action Button (Iconic attached loop button) -->
+        <button
+          type="button"
+          onclick="app.triggerSearchSubmit()"
+          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-xs"
+          title="Search"
+        >
+          <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.5]"></i>
         </button>
       </div>
 
+      <!-- Advanced Search Filters Dropdown -->
+      <div id="advanced-search-dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 text-xs text-slate-800 space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <span class="font-bold text-sm text-slate-900">Advanced Search</span>
+          <button type="button" onclick="app.closeAdvancedSearchDropdown()" class="text-slate-400 hover:text-slate-700 p-1 rounded-full cursor-pointer"><i data-lucide="x" class="h-3.5 w-3.5"></i></button>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">From</label>
+            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">To</label>
+            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Subject</label>
+            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">In Folder</label>
+            <select id="adv-search-folder" class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600 bg-white">
+              <option value="all">All Folders</option>
+              <option value="Inbox">Inbox</option>
+              <option value="Sent">Sent</option>
+              <option value="Drafts">Drafts</option>
+              <option value="Archive">Archive</option>
+              <option value="Spam">Spam</option>
+              <option value="Trash">Trash</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-slate-300 accent-blue-600 cursor-pointer" />
+            <span>Has attachment</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3 py-1.5 rounded-full hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer">Reset</button>
+            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer shadow-xs">Search</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Live Search Suggestions Dropdown (Loop across Inbox, Spam, Sent & Senders) -->
-      <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-card rounded-2xl border border-border shadow-2xl overflow-hidden max-h-96 flex-col text-xs divide-y divide-border/60">
+      <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-50 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden max-h-96 flex-col text-xs divide-y divide-slate-100">
         <!-- Populated dynamically by app.renderSearchSuggestions -->
       </div>
     </div>
 
     <!-- Header Actions & Account Switcher -->
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- Mobile Lightning Quick Search (Modern Instant Filter) -->
+      <!-- Mobile Quick Search Loop -->
       <button
-        onclick="app.openCommandPalette()"
-        class="md:hidden p-1.5 text-purple-600 hover:bg-purple-50 rounded-full transition cursor-pointer"
-        title="Lightning Quick Actions"
+        onclick="app.focusMobileSearch()"
+        class="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full transition cursor-pointer"
+        title="Search Mail"
       >
-        <i data-lucide="zap" class="h-5 w-5 fill-purple-600 text-purple-600"></i>
+        <i data-lucide="search" class="h-5 w-5 text-slate-700 stroke-[2.2]"></i>
       </button>
 
       <!-- World Stories Button (Desktop/Tablet) -->
@@ -254,14 +329,14 @@ if (empty($_SESSION['current_user_id'])) {
         <span class="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
       </button>
 
-      <!-- Account Switcher Dropdown (Purple monogram circle badge on mobile) -->
+      <!-- Account Switcher Dropdown (Monogram circle badge on mobile) -->
       <div class="relative">
         <button
           onclick="app.toggleAccountDropdown()"
           class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted/50 p-1 md:pl-2 text-xs transition cursor-pointer"
         >
           <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline">Clever Raccoon</span>
-          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-purple-700">
+          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-800">
             <span id="active-user-badge-initial">R</span>
           </div>
           <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1 hidden md:inline"></i>
@@ -480,7 +555,7 @@ if (empty($_SESSION['current_user_id'])) {
           <span id="sidebar-storage-text" class="font-mono text-[10.5px] text-slate-500">24.8 MB / 15 GB (0.2%)</span>
         </div>
         <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-          <div id="sidebar-storage-bar" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
+          <div id="sidebar-storage-bar" class="bg-blue-600 h-1.5 rounded-full transition-all duration-300" style="width: 1.5%"></div>
         </div>
       </div>
     </aside>
@@ -554,7 +629,7 @@ if (empty($_SESSION['current_user_id'])) {
           </button>
         </div>
 
-        <button onclick="app.toggleBatchSelectMode()" id="btn-toggle-select" class="text-xs font-bold text-purple-600 hover:text-purple-800 px-2 py-1 transition cursor-pointer shrink-0">
+        <button onclick="app.toggleBatchSelectMode()" id="btn-toggle-select" class="text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 transition cursor-pointer shrink-0">
           Select
         </button>
       </div>
