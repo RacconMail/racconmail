@@ -1,18 +1,20 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using Microsoft.Win32;
 
 namespace RacconMailDesktop
 {
     static class Program
     {
-        private const string AppName = "Raccon Mail";
-        private const string AppVersion = "1.0.0";
-        private const string AppUrl = "https://racconmail.eu/";
-        private const string AppPublisher = "Raccon Mail Open Source";
+        public const string AppName = "Raccon Mail";
+        public const string AppVersion = "2.0";
+        public const string AppUrl = "https://racconmail.eu/inbox";
+        public const string AppPublisher = "Raccon Mail Open Source";
 
         [STAThread]
         static void Main(string[] args)
@@ -38,8 +40,8 @@ namespace RacconMailDesktop
 
             if (isSetup)
             {
-                // Run Installation Flow
-                RunInstaller(currentExe, installDir, targetExe, targetIco);
+                // Run Modern Installation GUI Flow
+                Application.Run(new ModernInstallerForm(currentExe, installDir, targetExe, targetIco));
             }
             else
             {
@@ -48,75 +50,66 @@ namespace RacconMailDesktop
             }
         }
 
-        static void RunInstaller(string sourceExe, string installDir, string targetExe, string targetIco)
+        public static void ExtractEmbeddedResources(string targetIco)
         {
             try
             {
-                if (!Directory.Exists(installDir))
+                Assembly asm = Assembly.GetExecutingAssembly();
+                using (Stream stream = asm.GetManifestResourceStream("RacconIcon"))
                 {
-                    Directory.CreateDirectory(installDir);
+                    if (stream != null)
+                    {
+                        byte[] buffer = new byte[stream.Length];
+                        stream.Read(buffer, 0, buffer.Length);
+                        File.WriteAllBytes(targetIco, buffer);
+                        return;
+                    }
                 }
-
-                // Copy executable to installation directory
-                File.Copy(sourceExe, targetExe, true);
-
-                // Copy or extract icon
-                string sourceIco = Path.Combine(Path.GetDirectoryName(sourceExe), "raccoon.ico");
-                if (File.Exists(sourceIco))
-                {
-                    File.Copy(sourceIco, targetIco, true);
-                }
-
-                // Create Desktop Shortcut
-                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string desktopShortcut = Path.Combine(desktopPath, AppName + ".lnk");
-                CreateShortcut(desktopShortcut, targetExe, targetIco, "Fast, Nocturnal & Masked Webmail");
-
-                // Create Start Menu Shortcut
-                string startMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
-                string startMenuShortcut = Path.Combine(startMenuPath, AppName + ".lnk");
-                CreateShortcut(startMenuShortcut, targetExe, targetIco, "Fast, Nocturnal & Masked Webmail");
-
-                // Register in Windows Add/Remove Programs (Registry)
-                RegisterUninstall(installDir, targetExe, targetIco);
-
-                // Show success prompt and launch
-                MessageBox.Show(
-                    "🦝 Raccon Mail Desktop has been installed successfully!\n\n" +
-                    "• Desktop shortcut created\n" +
-                    "• Start Menu shortcut added\n\n" +
-                    "Launching Raccon Mail now...",
-                    "Raccon Mail Setup",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-
-                // Launch installed application
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = targetExe,
-                    UseShellExecute = true
-                });
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Error during installation: " + ex.Message,
-                    "Raccon Mail Setup Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
+            catch { }
         }
 
-        static void LaunchApp()
+        public static Image GetEmbeddedLogo()
+        {
+            try
+            {
+                Assembly asm = Assembly.GetExecutingAssembly();
+                using (Stream stream = asm.GetManifestResourceStream("RacconLogo"))
+                {
+                    if (stream != null)
+                    {
+                        return Image.FromStream(stream);
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        public static Icon GetEmbeddedIcon()
+        {
+            try
+            {
+                Assembly asm = Assembly.GetExecutingAssembly();
+                using (Stream stream = asm.GetManifestResourceStream("RacconIcon"))
+                {
+                    if (stream != null)
+                    {
+                        return new Icon(stream);
+                    }
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        public static void LaunchApp()
         {
             try
             {
                 string browserPath = FindChromiumBrowser();
                 if (string.IsNullOrEmpty(browserPath))
                 {
-                    // Fallback to default browser if neither Edge nor Chrome found
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = AppUrl,
@@ -183,7 +176,7 @@ namespace RacconMailDesktop
             return null;
         }
 
-        static void CreateShortcut(string shortcutPath, string targetPath, string iconPath, string description)
+        public static void CreateShortcut(string shortcutPath, string targetPath, string iconPath, string description)
         {
             try
             {
@@ -207,7 +200,7 @@ namespace RacconMailDesktop
             catch { }
         }
 
-        static void RegisterUninstall(string installDir, string targetExe, string iconPath)
+        public static void RegisterUninstall(string installDir, string targetExe, string iconPath)
         {
             try
             {
@@ -216,7 +209,7 @@ namespace RacconMailDesktop
                 {
                     if (key != null)
                     {
-                        key.SetValue("DisplayName", AppName);
+                        key.SetValue("DisplayName", AppName + " Desktop v2.0");
                         key.SetValue("DisplayVersion", AppVersion);
                         key.SetValue("Publisher", AppPublisher);
                         key.SetValue("InstallLocation", installDir);
@@ -233,8 +226,8 @@ namespace RacconMailDesktop
         static void Uninstall(string installDir)
         {
             DialogResult res = MessageBox.Show(
-                "Are you sure you want to uninstall Raccon Mail Desktop from your computer?",
-                "Uninstall Raccon Mail",
+                "Are you sure you want to uninstall Raccon Mail Desktop v2.0 from your computer?",
+                "Uninstall Raccon Mail v2.0",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             );
@@ -254,7 +247,7 @@ namespace RacconMailDesktop
                 Registry.CurrentUser.DeleteSubKeyTree(@"Software\Microsoft\Windows\CurrentVersion\Uninstall\RacconMail", false);
 
                 MessageBox.Show(
-                    "Raccon Mail Desktop has been uninstalled successfully.",
+                    "Raccon Mail Desktop v2.0 has been uninstalled successfully.",
                     "Uninstall Complete",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
@@ -263,6 +256,219 @@ namespace RacconMailDesktop
             catch (Exception ex)
             {
                 MessageBox.Show("Uninstall error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+
+    // Modern White Clean Installer Dialog
+    public class ModernInstallerForm : Form
+    {
+        private string sourceExe;
+        private string installDir;
+        private string targetExe;
+        private string targetIco;
+
+        private Label lblStatus;
+        private ProgressBar progressBar;
+        private Button btnLaunch;
+        private Timer installTimer;
+        private int step = 0;
+
+        public ModernInstallerForm(string src, string dir, string tgtExe, string tgtIco)
+        {
+            this.sourceExe = src;
+            this.installDir = dir;
+            this.targetExe = tgtExe;
+            this.targetIco = tgtIco;
+
+            this.Text = "Raccon Mail Setup — v2.0";
+            this.Size = new Size(460, 480);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = true;
+            this.BackColor = Color.White;
+
+            Icon ico = Program.GetEmbeddedIcon();
+            if (ico != null) this.Icon = ico;
+
+            InitializeModernUI();
+        }
+
+        private void InitializeModernUI()
+        {
+            // Panel container with clean padding
+            Panel mainPanel = new Panel();
+            mainPanel.Dock = DockStyle.Fill;
+            mainPanel.BackColor = Color.White;
+            mainPanel.Padding = new Padding(25, 20, 25, 20);
+            this.Controls.Add(mainPanel);
+
+            // 1. Logo PictureBox
+            PictureBox pbLogo = new PictureBox();
+            pbLogo.Size = new Size(84, 84);
+            pbLogo.Location = new Point((460 - 84) / 2 - 10, 20);
+            pbLogo.SizeMode = PictureBoxSizeMode.Zoom;
+            Image logoImg = Program.GetEmbeddedLogo();
+            if (logoImg != null) pbLogo.Image = logoImg;
+            mainPanel.Controls.Add(pbLogo);
+
+            // 2. Title Label
+            Label lblTitle = new Label();
+            lblTitle.Text = "Raccon Mail Desktop";
+            lblTitle.Font = new Font("Segoe UI", 16, FontStyle.Bold);
+            lblTitle.ForeColor = Color.FromArgb(15, 23, 42); // slate-900
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
+            lblTitle.Size = new Size(400, 32);
+            lblTitle.Location = new Point(5, 112);
+            mainPanel.Controls.Add(lblTitle);
+
+            // 3. Version Capsule Pill Label
+            Label lblPill = new Label();
+            lblPill.Text = "  Official Desktop Client v2.0  ";
+            lblPill.Font = new Font("Segoe UI", 8.5f, FontStyle.Bold);
+            lblPill.BackColor = Color.FromArgb(241, 245, 249); // slate-100
+            lblPill.ForeColor = Color.FromArgb(71, 85, 105);   // slate-600
+            lblPill.TextAlign = ContentAlignment.MiddleCenter;
+            lblPill.Size = new Size(180, 24);
+            lblPill.Location = new Point((460 - 180) / 2 - 10, 148);
+            mainPanel.Controls.Add(lblPill);
+
+            // 4. Subtitle Label
+            Label lblSub = new Label();
+            lblSub.Text = "Fast, Nocturnal & Sealed Webmail Platform\nZero trackers &bull; Hardware acceleration &bull; Local vault";
+            lblSub.Font = new Font("Segoe UI", 9f, FontStyle.Regular);
+            lblSub.ForeColor = Color.FromArgb(100, 116, 139); // slate-500
+            lblSub.TextAlign = ContentAlignment.MiddleCenter;
+            lblSub.Size = new Size(400, 38);
+            lblSub.Location = new Point(5, 180);
+            mainPanel.Controls.Add(lblSub);
+
+            // 5. Card Container for Installation Progress
+            Panel cardPanel = new Panel();
+            cardPanel.Size = new Size(390, 110);
+            cardPanel.Location = new Point(10, 226);
+            cardPanel.BackColor = Color.FromArgb(250, 250, 250);
+            cardPanel.BorderStyle = BorderStyle.FixedSingle;
+            mainPanel.Controls.Add(cardPanel);
+
+            lblStatus = new Label();
+            lblStatus.Text = "Preparing installation...";
+            lblStatus.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            lblStatus.ForeColor = Color.FromArgb(30, 41, 59);
+            lblStatus.Location = new Point(15, 16);
+            lblStatus.Size = new Size(360, 22);
+            cardPanel.Controls.Add(lblStatus);
+
+            progressBar = new ProgressBar();
+            progressBar.Location = new Point(15, 46);
+            progressBar.Size = new Size(358, 14);
+            progressBar.Style = ProgressBarStyle.Continuous;
+            progressBar.Value = 15;
+            cardPanel.Controls.Add(progressBar);
+
+            Label lblDetails = new Label();
+            lblDetails.Text = "✓ Desktop shortcut   ✓ Start Menu   ✓ System Tray";
+            lblDetails.Font = new Font("Segoe UI", 8.5f, FontStyle.Regular);
+            lblDetails.ForeColor = Color.FromArgb(100, 116, 139);
+            lblDetails.Location = new Point(15, 72);
+            lblDetails.Size = new Size(360, 20);
+            cardPanel.Controls.Add(lblDetails);
+
+            // 6. Action Button (Solid Black with Rounded Pill look)
+            btnLaunch = new Button();
+            btnLaunch.Text = "Installing...";
+            btnLaunch.Font = new Font("Segoe UI", 10.5f, FontStyle.Bold);
+            btnLaunch.BackColor = Color.FromArgb(15, 23, 42); // slate-900
+            btnLaunch.ForeColor = Color.White;
+            btnLaunch.FlatStyle = FlatStyle.Flat;
+            btnLaunch.FlatAppearance.BorderSize = 0;
+            btnLaunch.Size = new Size(390, 44);
+            btnLaunch.Location = new Point(10, 350);
+            btnLaunch.Cursor = Cursors.Hand;
+            btnLaunch.Enabled = false;
+            btnLaunch.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = targetExe,
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
+                Application.Exit();
+            };
+            mainPanel.Controls.Add(btnLaunch);
+
+            // Start installation steps with smooth timer
+            installTimer = new Timer();
+            installTimer.Interval = 250;
+            installTimer.Tick += InstallTimer_Tick;
+            installTimer.Start();
+        }
+
+        private void InstallTimer_Tick(object sender, EventArgs e)
+        {
+            step++;
+            if (step == 1)
+            {
+                lblStatus.Text = "Creating installation directory...";
+                progressBar.Value = 30;
+                try
+                {
+                    if (!Directory.Exists(installDir))
+                    {
+                        Directory.CreateDirectory(installDir);
+                    }
+                }
+                catch { }
+            }
+            else if (step == 2)
+            {
+                lblStatus.Text = "Extracting Raccon Mail logo & binaries...";
+                progressBar.Value = 55;
+                try
+                {
+                    File.Copy(sourceExe, targetExe, true);
+                    Program.ExtractEmbeddedResources(targetIco);
+
+                    // Fallback to local raccoon.ico if stream failed
+                    if (!File.Exists(targetIco))
+                    {
+                        string localIco = Path.Combine(Path.GetDirectoryName(sourceExe), "raccoon.ico");
+                        if (File.Exists(localIco)) File.Copy(localIco, targetIco, true);
+                    }
+                }
+                catch { }
+            }
+            else if (step == 3)
+            {
+                lblStatus.Text = "Creating Desktop & Start Menu shortcuts...";
+                progressBar.Value = 85;
+                try
+                {
+                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                    string desktopShortcut = Path.Combine(desktopPath, Program.AppName + ".lnk");
+                    Program.CreateShortcut(desktopShortcut, targetExe, targetIco, "Raccon Mail - Fast, Nocturnal & Sealed Webmail v2.0");
+
+                    string startMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+                    string startMenuShortcut = Path.Combine(startMenuPath, Program.AppName + ".lnk");
+                    Program.CreateShortcut(startMenuShortcut, targetExe, targetIco, "Raccon Mail - Fast, Nocturnal & Sealed Webmail v2.0");
+
+                    Program.RegisterUninstall(installDir, targetExe, targetIco);
+                }
+                catch { }
+            }
+            else if (step >= 4)
+            {
+                installTimer.Stop();
+                progressBar.Value = 100;
+                lblStatus.Text = "✓ Ready! Raccon Mail v2.0 installed successfully.";
+                lblStatus.ForeColor = Color.FromArgb(16, 149, 128); // teal-600
+                btnLaunch.Text = "Launch Raccon Mail v2.0  →";
+                btnLaunch.Enabled = true;
             }
         }
     }

@@ -266,7 +266,15 @@ const app = {
           this.showToast(`Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
         }
       } catch (_) {}
-    }, 15000);
+    }, 4000);
+
+    // Fast reactive sync: when user switches back to the tab/window, trigger instant sync
+    if (!this._windowFocusListenerAttached) {
+      this._windowFocusListenerAttached = true;
+      window.addEventListener('focus', () => {
+        this.refreshCurrentFolder();
+      });
+    }
   },
 
   // Keyboard shortcuts
@@ -3918,9 +3926,17 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (searchInput) searchInput.focus();
   },
 
-  refreshCurrentFolder() {
-    this.loadMessages();
-    this.fetchFolders();
+  async refreshCurrentFolder() {
+    try {
+      const res = await fetch('/api/messages/sync');
+      const data = await res.json();
+      if (data && data.synced > 0) {
+        this.playNotificationSound();
+        this.showToast(`Received ${data.synced} new incoming email${data.synced > 1 ? 's' : ''}!`);
+      }
+    } catch (_) {}
+    await this.loadMessages();
+    await this.fetchFolders();
   },
 
   // Incoming Mail Simulator

@@ -110,19 +110,19 @@
 </head>
 <body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white">
 
-  <!-- TOP NAVIGATION HEADER -->
-  <header class="w-full glass-nav sticky top-0 z-40 bg-white border-b border-slate-200 shadow-2xs">
+  <!-- TOP NAVIGATION HEADER (Matching Inbox Bubble White Design) -->
+  <header class="w-full sticky top-0 z-40 bg-white border-b border-slate-200/80 shadow-xs" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
       <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
       <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
         <a href="/inbox" class="flex items-center gap-2 group shrink-0" title="Return to Raccon Mail Inbox">
           <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
           <div class="leading-none shrink-0">
-            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
+            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-500 tracking-tight flex items-center gap-1.5" style="color: #64748b !important;">
               <span>Raccon Forum</span>
-              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Members</span>
+              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Members</span>
             </span>
-            <span class="text-[10px] text-slate-500 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
           </div>
         </a>
       </div>
@@ -130,32 +130,33 @@
       <!-- Live Forum Search -->
       <div class="flex-1 max-w-md mx-2 hidden md:block">
         <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3 h-4 w-4 text-slate-500"></i>
+          <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none"></i>
           <input
             id="forum-search-input"
             type="text"
             oninput="handleForumSearch(this.value)"
             placeholder="Search discussions, code snippets, tags..."
             class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
+            style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
           />
         </div>
       </div>
 
       <!-- Action Navigation & Auth Status (Compact, No-Overlap Mobile Sizing) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="forum-auth-bar">
-        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
+          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
           <span class="hidden sm:inline">Webmail</span>
         </a>
-        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
+          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
           <span class="hidden sm:inline">News</span>
         </a>
-        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
+          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
           <span class="hidden sm:inline">Stories</span>
         </a>
-        <a href="/forum" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
+        <a href="/forum" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-semibold transition items-center justify-center gap-1.5 shrink-0 shadow-xs" title="Raccon Forum">
           <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
           <span>Forum</span>
         </a>
@@ -173,23 +174,23 @@
     <main class="lg:col-span-8 space-y-5">
 
       <!-- WELCOME HERO BANNER -->
-      <div class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200 bg-white shadow-xs">
+      <div class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="space-y-2 flex-1">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
               <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
               <span>NOCTURNAL DEVELOPER BURROW</span>
             </div>
-            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Share Code, Web Design &amp; Tech Insights
             </h1>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
+            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xl">
               An exclusive nocturnal forum for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
             </p>
           </div>
           <button
             onclick="focusComposer()"
-            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
+            class="rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
           >
             <i data-lucide="plus" class="h-4 w-4"></i>
             <span>Start Discussion</span>
@@ -197,33 +198,33 @@
         </div>
       </div>
 
-      <!-- CATEGORY PILL FILTER BAR -->
+      <!-- CATEGORY PILL FILTER BAR (Bubble Capsule Design) -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
         <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
           All Forum Posts
         </button>
-        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>💻</span><span>Tech &amp; AI</span>
         </button>
-        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>⚡</span><span>Coding</span>
         </button>
-        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎨</span><span>Web Design</span>
         </button>
-        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>🎁</span><span>Sharing</span>
         </button>
-        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>❓</span><span>Help</span>
         </button>
-        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>📖</span><span>Explaining</span>
         </button>
       </div>
 
       <!-- INTERACTIVE POST COMPOSER (Members Only) -->
-      <div id="post-composer-card" class="rounded-3xl p-5 border border-slate-200 bg-white shadow-xs space-y-3.5">
+      <div id="post-composer-card" class="rounded-3xl p-5 sm:p-6 border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5 space-y-4">
         <div class="flex items-center gap-3">
           <img id="composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" />
           <div class="flex-1">
@@ -676,23 +677,23 @@
       const formattedDate = formatTime(p.created_at);
 
       return `
-        <article class="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition p-4 sm:p-5 space-y-3.5 group shadow-xs max-w-full overflow-hidden">
+        <article class="rounded-3xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-md transition p-5 sm:p-6 space-y-4 group shadow-xl shadow-slate-900/5 max-w-full overflow-hidden">
           <!-- Post Author Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 flex-wrap gap-2">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
               <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" onerror="this.src='/raccoon-logo.png';" />
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5 leading-none flex-wrap">
                   <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
-                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded shrink-0">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-1 py-0.2 rounded shrink-0">MEMBER</span>'}
+                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded-full shrink-0">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-2 py-0.2 rounded-full shrink-0">MEMBER</span>'}
                   ${p.location ? `
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shrink-0" title="Posted from ${escapeHtml(p.location)}">
-                      <i data-lucide="map-pin" class="h-2.5 w-2.5 text-slate-500 shrink-0"></i>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shrink-0" title="Posted from ${escapeHtml(p.location)}">
+                      <i data-lucide="map-pin" class="h-2.5 w-2.5 text-slate-400 shrink-0"></i>
                       <span class="truncate max-w-[120px] sm:max-w-[200px]">${escapeHtml(p.location)}</span>
                     </span>
                   ` : ''}
                 </div>
-                <div class="text-[10px] text-slate-500 mt-1 font-mono">${formattedDate}</div>
+                <div class="text-[10px] text-slate-400 mt-1 font-mono">${formattedDate}</div>
               </div>
             </div>
 
@@ -736,17 +737,17 @@
           <!-- Tags -->
           ${p.tags ? `
             <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono text-slate-500">
-              ${p.tags.split(',').map(t => `<span class="bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">${escapeHtml(t.trim())}</span>`).join('')}
+              ${p.tags.split(',').map(t => `<span class="bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">${escapeHtml(t.trim())}</span>`).join('')}
             </div>
           ` : ''}
 
           <!-- Bottom Action Buttons: Like, Comment, Share -->
-          <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
             <div class="flex items-center gap-3">
               <!-- Paw / Like Button -->
               <button
                 onclick="togglePostLike('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border ${p.has_liked ? 'bg-slate-200 text-slate-900 border-slate-300 font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border shadow-2xs ${p.has_liked ? 'bg-slate-200 text-slate-900 border-slate-300 font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/80'}"
               >
                 <span>🐾</span>
                 <span id="like-cnt-${p.id}">${p.likes_count || 0}</span>
@@ -756,7 +757,8 @@
               <!-- Comment Drawer Toggle -->
               <button
                 onclick="toggleCommentsDrawer('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition cursor-pointer"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition cursor-pointer shadow-2xs"
+              >
               >
                 <i data-lucide="message-square" class="h-3.5 w-3.5 text-slate-600"></i>
                 <span id="comment-cnt-${p.id}">${p.comments_count || 0}</span>
