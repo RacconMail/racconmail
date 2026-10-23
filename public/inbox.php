@@ -422,7 +422,7 @@ if (empty($_SESSION['current_user_id'])) {
         <a href="/forum" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
           <div class="flex items-center gap-2.5 truncate pointer-events-none">
             <i data-lucide="messages-square" class="h-4 w-4 shrink-0"></i>
-            <span class="truncate">Community Wall</span>
+            <span class="truncate">Raccon Forum</span>
           </div>
         </a>
         <a href="/news" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
@@ -475,9 +475,9 @@ if (empty($_SESSION['current_user_id'])) {
             <p id="current-folder-subtitle" class="text-xs text-muted-foreground">Loading emails...</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <a href="/forum" title="Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+            <a href="/forum" title="Raccon Forum" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
               <i data-lucide="messages-square" class="h-3.5 w-3.5 text-foreground"></i>
-              <span class="hidden sm:inline">Wall</span>
+              <span class="hidden sm:inline">Forum</span>
             </a>
             <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
               <i data-lucide="newspaper" class="h-3.5 w-3.5 text-foreground"></i>

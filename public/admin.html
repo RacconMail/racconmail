@@ -131,9 +131,9 @@
           <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Mailbox</span>
         </a>
-        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Community Wall">
+        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
           <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
-          <span class="hidden sm:inline">Wall</span>
+          <span class="hidden sm:inline">Forum</span>
         </a>
         <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
           <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
@@ -204,7 +204,7 @@
           <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
             <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Community Posts</span>
             <p id="stat-forum" class="font-display text-2xl sm:text-3xl font-bold mt-1">--</p>
-            <span class="text-[11px] text-slate-600 font-semibold mt-1 inline-block">Public Wall Discussions</span>
+            <span class="text-[11px] text-slate-600 font-semibold mt-1 inline-block">Forum Discussions</span>
           </div>
           <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
             <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Database Size</span>
@@ -225,7 +225,7 @@
             </button>
             <button onclick="adminApp.setTab('forum')" class="p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted text-left transition cursor-pointer">
               <span class="font-bold text-sm block flex items-center gap-1.5 text-slate-900">
-                <i data-lucide="message-square" class="h-4 w-4 text-slate-600"></i> Moderate Community Wall
+                <i data-lucide="message-square" class="h-4 w-4 text-slate-600"></i> Moderate Raccon Forum
               </span>
               <span class="text-xs text-muted-foreground mt-1 block">Clean up spam or abusive topics and discussions from the public forum.</span>
             </button>
@@ -236,6 +236,25 @@
               <span class="text-xs text-muted-foreground mt-1 block">Run SQLite integrity checks, vacuum free space, and monitor server vitals.</span>
             </button>
           </div>
+        </div>
+
+        <!-- Content & Update Engine Control -->
+        <div class="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200 uppercase tracking-wide">
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-900 animate-pulse"></span>
+                Update Engine Active
+              </span>
+              <span class="text-xs text-muted-foreground font-semibold">Continuous background sync</span>
+            </div>
+            <h4 class="font-display text-sm font-bold text-slate-900">News, Forum &amp; Stories Engine</h4>
+            <p class="text-xs text-muted-foreground">Continuously fetches fresh topics and articles from reputable worldwide sources without displaying external attributions.</p>
+          </div>
+          <button id="btn-sync-engine" onclick="adminApp.triggerUpdateEngine()" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer border border-slate-900 shrink-0">
+            <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+            <span>Update Content Now</span>
+          </button>
         </div>
       </section>
 
@@ -293,7 +312,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 class="font-display text-lg font-bold">Community Forum Moderation</h3>
-            <p class="text-xs text-muted-foreground">Monitor public wall topics. Delete spam, inappropriate posts, or offensive topics with 1 click.</p>
+            <p class="text-xs text-muted-foreground">Monitor public forum topics. Delete spam, inappropriate posts, or offensive topics with 1 click.</p>
           </div>
           <button onclick="adminApp.loadForumPosts()" class="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold hover:bg-muted transition flex items-center gap-1.5 cursor-pointer">
             <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
@@ -893,9 +912,35 @@
           if (!res.ok) throw new Error('Failed to delete topic');
           this.loadForumPosts();
           this.loadStats();
-          this.showToast('Topic deleted from community wall');
+          this.showToast('Topic deleted from Raccon Forum');
         } catch (err) {
           alert('Error: ' + err.message);
+        }
+      },
+
+      async triggerUpdateEngine() {
+        const btn = document.getElementById('btn-sync-engine');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing content...';
+        }
+        try {
+          const res = await fetch('/api/engine/update', { method: 'POST' });
+          const d = await res.json();
+          if (!res.ok) throw new Error(d.error || 'Failed to update content');
+          this.showToast('Content updated successfully! Fresh news, forum topics & stories loaded.');
+          this.loadStats();
+          if (this.currentTab === 'forum') {
+            this.loadForumPosts();
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i><span>Update Content Now</span>';
+            if (window.lucide) lucide.createIcons();
+          }
         }
       },
 

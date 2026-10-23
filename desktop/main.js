@@ -14,7 +14,7 @@ function createWindow() {
     minHeight: 600,
     title: 'Raccon Mail - Nocturnal Webmail',
     icon: path.join(__dirname, 'icon.png'),
-    backgroundColor: '#0F172A',
+    backgroundColor: '#FFFFFF',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

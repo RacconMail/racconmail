@@ -38,7 +38,7 @@ html.theme-midnight-green, body.theme-midnight-green {
   --btn-radius: 50px;
   --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
-  --stamp-red: #E11D48;
+  --stamp-red: #0F172A;
   --stamp-blue: #0F172A;
 }
 
@@ -74,16 +74,16 @@ html, body {
   font-family: 'Caveat', cursive;
 }
 
-/* Postcard airmail border stripes */
+/* Postcard airmail border stripes - Monochrome Slate Minimalist */
 .stripes {
   background: repeating-linear-gradient(
     135deg,
-    #e11d48,
-    #e11d48 14px,
+    #64748B,
+    #64748B 14px,
     transparent 14px,
     transparent 24px,
-    #2563eb 24px,
-    #2563eb 38px,
+    #94A3B8 24px,
+    #94A3B8 38px,
     transparent 38px,
     transparent 48px
   );
@@ -92,14 +92,14 @@ html, body {
 .stripes-subtle {
   background: repeating-linear-gradient(
     135deg,
-    rgba(225, 29, 72, 0.18),
-    rgba(225, 29, 72, 0.18) 12px,
-    transparent 12px,
-    transparent 20px,
-    rgba(37, 99, 235, 0.18) 20px,
-    rgba(37, 99, 235, 0.18) 32px,
-    transparent 32px,
-    transparent 40px
+    rgba(100, 116, 139, 0.18),
+    rgba(100, 116, 139, 0.18) 14px,
+    transparent 14px,
+    transparent 24px,
+    rgba(148, 163, 184, 0.18) 24px,
+    rgba(148, 163, 184, 0.18) 38px,
+    transparent 38px,
+    transparent 48px
   );
 }
 

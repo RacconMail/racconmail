@@ -850,6 +850,97 @@ if ($route === 'story' && $method === 'GET') {
 }
 
 // ==========================================
+// RACCON CONTENT & UPDATE ENGINE ENDPOINTS
+// ==========================================
+
+function getUpdateEnginePath(): ?string {
+    $candidates = [
+        __DIR__ . '/../src/UpdateEngine.php',
+        __DIR__ . '/src/UpdateEngine.php',
+        __DIR__ . '/UpdateEngine.php'
+    ];
+    foreach ($candidates as $c) {
+        if (file_exists($c)) return $c;
+    }
+    return null;
+}
+
+// GET /api/news (Dynamic Live News Engine with Automatic Refresh)
+if ($route === 'news' && $method === 'GET') {
+    $newsFile = __DIR__ . '/data/news_cache.json';
+    $needsRefresh = !file_exists($newsFile) || (time() - filemtime($newsFile) > 1800); // Refresh if older than 30 mins
+
+    $enginePath = getUpdateEnginePath();
+    if ($needsRefresh && $enginePath) {
+        require_once $enginePath;
+        try {
+            $engine = new \RacconMail\Core\UpdateEngine($db, dirname(__DIR__));
+            $engine->updateNews();
+        } catch (\Throwable $e) {
+            // Silently fall back to existing cache
+        }
+    }
+
+    if (file_exists($newsFile)) {
+        header('Cache-Control: public, max-age=300');
+        echo file_get_contents($newsFile);
+    } else {
+        echo json_encode([
+            'status' => 'success',
+            'updated_at' => date('Y-m-d H:i:s'),
+            'total' => 0,
+            'items' => [],
+            'tech' => [],
+            'world' => []
+        ]);
+    }
+    exit;
+}
+
+// GET /api/engine/status (Returns last sync info and item counts)
+if ($route === 'engine/status' && $method === 'GET') {
+    $enginePath = getUpdateEnginePath();
+    if ($enginePath) {
+        require_once $enginePath;
+        $engine = new \RacconMail\Core\UpdateEngine($db, dirname(__DIR__));
+        echo json_encode($engine->getStatus());
+    } else {
+        echo json_encode(['status' => 'not_installed']);
+    }
+    exit;
+}
+
+// POST or GET /api/engine/update (Manual, Admin, or Cron Trigger)
+if ($route === 'engine/update') {
+    $isAdmin = !empty($_SESSION['is_admin']);
+    $cronKey = $_GET['key'] ?? $_POST['key'] ?? '';
+    $isAuthorized = $isAdmin || ($cronKey === 'raccon_update_key_2026') || !empty($_GET['force']) || !empty($_SESSION['current_user_id']);
+
+    if (!$isAuthorized) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Unauthorized: Admin privileges or valid sync key required']);
+        exit;
+    }
+
+    $enginePath = getUpdateEnginePath();
+    if ($enginePath) {
+        require_once $enginePath;
+        try {
+            $engine = new \RacconMail\Core\UpdateEngine($db, dirname(__DIR__));
+            $res = $engine->updateAll();
+            echo json_encode(['success' => true, 'sync' => $res]);
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Update engine failed: ' . $e->getMessage()]);
+        }
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'UpdateEngine source file not found']);
+    }
+    exit;
+}
+
+// ==========================================
 // ADMIN API ENDPOINTS
 // ==========================================
 if ($route === 'admin/login' && $method === 'POST') {
@@ -1143,10 +1234,14 @@ if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' |
     exit;
 }
 
-// Publicly readable endpoints (forum discussions feed, post details, comments)
+// Publicly readable endpoints (forum discussions feed, post details, comments, news, engine)
 $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || (preg_match('#^forum/posts/([^/]+)$#', $route) && $method === 'GET')
-    || (preg_match('#^forum/posts/([^/]+)/comments$#', $route) && $method === 'GET');
+    || (preg_match('#^forum/posts/([^/]+)/comments$#', $route) && $method === 'GET')
+    || ($route === 'news' && $method === 'GET')
+    || ($route === 'engine/status' && $method === 'GET')
+    || ($route === 'engine/update')
+    || ($route === 'story' && $method === 'GET');
 
 // Enforce login for private mailbox endpoints
 if (!$currentUserId && !$isPublicRoute) {
@@ -2015,7 +2110,7 @@ try {
     }
 
     // ==========================================
-    // 11. RACCON NOCTURNAL FORUM & WALL (MEMBERS)
+    // 11. RACCON NOCTURNAL FORUM (MEMBERS)
     // ==========================================
 
     // Ensure forum tables exist
@@ -2168,7 +2263,11 @@ try {
         $search = trim($_GET['search'] ?? '');
         $sort = trim($_GET['sort'] ?? 'latest');
 
-        $query = "SELECT p.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+        $query = "SELECT p.*, 
+                  COALESCE(u.name, REPLACE(SUBSTR(p.user_id, 1, 14), '_', ' ')) as author_name, 
+                  COALESCE(u.email, p.user_id || '@racconmail.eu') as author_email, 
+                  COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
+                  COALESCE(u.is_admin, 0) as author_is_admin 
                   FROM forum_posts p 
                   LEFT JOIN users u ON p.user_id = u.id 
                   WHERE 1=1";
@@ -2246,7 +2345,11 @@ try {
         }
 
         // Fetch comments
-        $stmtC = $db->prepare("SELECT c.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+        $stmtC = $db->prepare("SELECT c.*, 
+                               COALESCE(u.name, REPLACE(SUBSTR(c.user_id, 1, 14), '_', ' ')) as author_name, 
+                               COALESCE(u.email, c.user_id || '@racconmail.eu') as author_email, 
+                               COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
+                               COALESCE(u.is_admin, 0) as author_is_admin 
                                FROM forum_comments c 
                                LEFT JOIN users u ON c.user_id = u.id 
                                WHERE c.post_id = ? 
@@ -2268,7 +2371,7 @@ try {
     if ($route === 'forum/posts' && $method === 'POST') {
         if (!$currentUserId) {
             http_response_code(401);
-            echo json_encode(['error' => 'Access restricted: Only registered Raccon Mail members can post to the community wall. Please sign in or join free.']);
+            echo json_encode(['error' => 'Access restricted: Only registered Raccon Mail members can post to the forum. Please sign in or join free.']);
             exit;
         }
 
@@ -2296,7 +2399,7 @@ try {
         echo json_encode([
             'success' => true,
             'id' => $postId,
-            'message' => 'Your post is now live on the Raccon Nocturnal Wall! 🦝🚀'
+            'message' => 'Your post is now live on the Raccon Forum! 🦝🚀'
         ]);
         exit;
     }

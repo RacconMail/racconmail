@@ -78,7 +78,7 @@
         "url": "https://racconmail.eu/",
         "logo": "https://racconmail.eu/raccoon-logo.png",
         "image": "https://racconmail.eu/raccoon-logo.png",
-        "description": "Fast, private, and nocturnal webmail service with sealed envelopes, zero trackers, and community wall.",
+        "description": "Fast, private, and nocturnal webmail service with sealed envelopes, zero trackers, and Raccon Forum.",
         "email": "contact@racconmail.eu",
         "areaServed": {
           "@type": "AdministrativeArea",
@@ -255,7 +255,7 @@
 
     /* Harmony Canvas Background & Safe Area Insets */
     body {
-      background-color: #EFEDE9 !important;
+      background-color: #FFFFFF !important;
       color: #1E293B !important;
       font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
       height: auto !important;
@@ -349,9 +349,9 @@
 
   <div class="w-full flex flex-col justify-between">
     <!-- ANDROID APP RUNTIME STATUS (Visible inside Android APK) -->
-    <div id="android-app-badge-bar" class="hidden bg-[#1E293B] text-white text-[11px] font-semibold py-1.5 px-3 text-center border-b border-black/20 z-50">
+    <div id="android-app-badge-bar" class="hidden bg-slate-900 text-white text-[11px] font-semibold py-1.5 px-3 text-center border-b border-black/20 z-50">
       <span class="inline-flex items-center gap-1.5">
-        <i class="fab fa-android text-[#3DDC84]"></i>
+        <i class="fab fa-android text-white"></i>
         <span>Raccon Mail for Android &bull; Installed &amp; Active</span>
       </span>
     </div>
@@ -389,7 +389,7 @@
           </a>
           <a href="/forum" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
             <i class="fas fa-comments text-xs text-slate-600"></i>
-            <span>Community Wall</span>
+            <span>Raccon Forum</span>
           </a>
           <a href="#app" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5">Apps</a>
 
@@ -669,7 +669,7 @@
             <span>MULTI-PLATFORM NOCTURNAL SYNC</span>
           </div>
           <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1E293B] tracking-tight">
-            Your clever mailbox on <span class="text-slate-900">Android</span>, <span class="text-[#00A4EF]">Windows</span> &amp; <span class="text-[#1E293B]">Desktop</span>
+            Your clever mailbox on <span class="text-slate-900">Android</span>, <span class="text-slate-900">Windows</span> &amp; <span class="text-slate-900">Desktop</span>
           </h2>
           <p class="mt-4 text-[#64748B] text-base sm:text-lg leading-relaxed">
             Experience ultra-smooth mailbox interactions, instant push notifications, hardware-backed encryption, and native desktop keyboard efficiency (<kbd class="px-1.5 py-0.5 font-mono text-xs bg-slate-100 border border-slate-300 rounded">Ctrl+K</kbd>) with zero trackers and zero ads.
@@ -686,13 +686,13 @@
             <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-slate-300 p-6 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-[#3DDC84]/15 border border-[#3DDC84]/30 flex items-center justify-center text-[#3DDC84] shrink-0 text-2xl">
+                  <div class="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0 text-2xl">
                     <i class="fab fa-android"></i>
                   </div>
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="font-display text-lg font-bold text-[#1E293B]">Raccon Mail for Android</h3>
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#3DDC84]/20 text-[#0F6F3A] uppercase tracking-wide">Official APK</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-700 uppercase tracking-wide">Official APK</span>
                     </div>
                     <p class="text-xs text-[#64748B] mt-1">Universal build • Android 7.0 through Android 16+ • High-speed APK direct download</p>
                   </div>
@@ -702,7 +702,7 @@
               <!-- Android Features Pills -->
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-bell text-[#3DDC84] text-[11px]"></i> Push Postcard Chimes
+                  <i class="fas fa-bell text-slate-600 text-[11px]"></i> Push Postcard Chimes
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
                   <i class="fas fa-hand-pointer text-slate-900 text-[11px]"></i> Swipe to Archive
@@ -714,8 +714,8 @@
 
               <!-- Android Action Row -->
               <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3" id="android-apk-action-container">
-                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-v1.0.0.apk" class="btn-primary rounded-full bg-[#1E293B] hover:bg-[#000000] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
-                  <i class="fab fa-android text-base text-[#3DDC84]"></i>
+                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-v1.0.0.apk" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
+                  <i class="fab fa-android text-base text-white"></i>
                   <span>Download Android APK</span>
                   <span class="text-xs opacity-70 font-mono ml-1">v1.0.0</span>
                   <i class="fas fa-arrow-down text-xs bg-white/20 rounded-full w-4 h-4 flex items-center justify-center"></i>
@@ -733,16 +733,16 @@
             </div>
 
             <!-- iOS Card -->
-            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#1E293B]/30 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-slate-300 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-[#000000]/10 border border-[#000000]/20 flex items-center justify-center text-[#1E293B] shrink-0 text-2xl">
+                  <div class="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0 text-2xl">
                     <i class="fab fa-apple"></i>
                   </div>
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="font-display text-lg font-bold text-[#1E293B]">Raccon Mail for iOS &amp; iPadOS</h3>
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1E293B]/10 text-[#1E293B] uppercase tracking-wide">PWA Native</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-700 uppercase tracking-wide">PWA Native</span>
                     </div>
                     <p class="text-xs text-[#64748B] mt-1">Zero App Store tracking • 1-Tap Home Screen installation • Standalone fullscreen app</p>
                   </div>
@@ -764,10 +764,10 @@
 
               <!-- iOS Action Row with 3-Step Guide -->
               <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                <a href="/inbox" class="btn-secondary rounded-full bg-[#F2F2F2] hover:bg-[#E5E5E5] text-[#1E293B] border border-[#CBD5E1] px-6 py-3 font-semibold text-sm transition active:scale-95 inline-flex items-center justify-center gap-2.5 w-full sm:w-auto text-center">
-                  <i class="fab fa-apple text-base text-[#1E293B]"></i>
+                <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
+                  <i class="fab fa-apple text-base text-white"></i>
                   <span>Launch iOS Web App</span>
-                  <i class="fas fa-arrow-up-right-from-square text-xs text-[#64748B]"></i>
+                  <i class="fas fa-arrow-up-right-from-square text-xs text-slate-300"></i>
                 </a>
                 <div class="flex items-center justify-center sm:justify-start gap-2 text-[11px] text-[#64748B] bg-white px-3 py-1.5 rounded-full border border-[#E2E8F0]">
                   <span>On Safari:</span>
@@ -779,16 +779,16 @@
             </div>
 
             <!-- Desktop Card (Windows, Mac & Linux) -->
-            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-[#00A4EF]/40 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
+            <div class="rounded-3xl border border-[#E2E8F0] bg-[#FAFAFA] hover:bg-white hover:border-slate-300 p-5 sm:p-7 shadow-xs hover:shadow-md transition-all duration-300">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-[#00A4EF]/15 border border-[#00A4EF]/30 flex items-center justify-center text-[#00A4EF] shrink-0 text-2xl">
+                  <div class="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0 text-2xl">
                     <i class="fab fa-windows"></i>
                   </div>
                   <div>
                     <div class="flex items-center gap-2">
                       <h3 class="font-display text-lg font-bold text-[#1E293B]">Raccon Mail for Desktop</h3>
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#00A4EF]/15 text-[#0078D4] uppercase tracking-wide">Windows &amp; Mac</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 border border-slate-200 text-slate-700 uppercase tracking-wide">Windows &amp; Mac</span>
                     </div>
                     <p class="text-xs text-[#64748B] mt-1">Universal desktop package • System tray notifications • Hardware-accelerated 120Hz UI</p>
                   </div>
@@ -798,7 +798,7 @@
               <!-- Desktop Features Pills -->
               <div class="mt-4 flex flex-wrap gap-2 text-xs">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
-                  <i class="fas fa-terminal text-[#00A4EF] text-[11px]"></i> Command Palette (Ctrl+K)
+                  <i class="fas fa-terminal text-slate-600 text-[11px]"></i> Command Palette (Ctrl+K)
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#1E293B] font-medium">
                   <i class="fas fa-window-restore text-slate-900 text-[11px]"></i> Native System Tray
@@ -810,7 +810,7 @@
 
               <!-- Desktop Action Row with Reassuring Message -->
               <div class="mt-5 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-Setup.exe" class="btn-primary rounded-full bg-[#0078D4] hover:bg-[#005A9E] text-white px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
+                <a href="https://github.com/RacconMail/racconmail/releases/download/v1.0.0/RacconMail-Setup.exe" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-6 py-3 font-semibold text-sm transition shadow-sm hover:shadow active:scale-95 inline-flex items-center justify-center gap-2.5 cursor-pointer w-full sm:w-auto text-center">
                   <i class="fab fa-windows text-base text-white"></i>
                   <span>Download Windows App (.exe)</span>
                   <span class="text-xs opacity-80 font-mono ml-1">v1.0.0 Installer</span>

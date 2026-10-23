@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raccon Community Wall &bull; Tech, Coding, Web Design &amp; Explanations</title>
-  <meta name="description" content="Raccon Nocturnal Wall — Exclusive developer, designer, and tech community for registered Raccon Mail members. Share coding tips, web design tricks, tech explanations, and get help." />
+  <title>Raccon Forum &bull; Tech, Coding, Web Design &amp; Discussions</title>
+  <meta name="description" content="Raccon Nocturnal Forum — Exclusive developer, designer, and tech community for registered Raccon Mail members. Share coding tips, web design tricks, tech explanations, and get help." />
   <meta name="keywords" content="raccon community, developer forum, tech discussions, web design tricks, coding tips, racconmail forum" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <link rel="canonical" href="https://racconmail.eu/forum" />
@@ -13,14 +13,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://racconmail.eu/forum" />
   <meta property="og:site_name" content="Raccon Mail" />
-  <meta property="og:title" content="Raccon Community Wall — Tech, Coding &amp; Web Design" />
+  <meta property="og:title" content="Raccon Forum — Tech, Coding &amp; Web Design" />
   <meta property="og:description" content="Exclusive developer, designer, and tech community. Share coding tips, web design tricks, and get nocturnal help." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://racconmail.eu/forum" />
-  <meta name="twitter:title" content="Raccon Community Wall — Tech, Coding &amp; Web Design" />
+  <meta name="twitter:title" content="Raccon Forum — Tech, Coding &amp; Web Design" />
   <meta name="twitter:description" content="Exclusive developer, designer, and tech community. Share coding tips and web design tricks." />
   <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
   
@@ -119,7 +119,7 @@
           <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
           <div class="leading-none shrink-0">
             <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
-              <span>Raccon Wall</span>
+              <span>Raccon Forum</span>
               <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Members</span>
             </span>
             <span class="text-[10px] text-slate-500 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
@@ -127,7 +127,7 @@
         </a>
       </div>
 
-      <!-- Live Wall Search -->
+      <!-- Live Forum Search -->
       <div class="flex-1 max-w-md mx-2 hidden md:block">
         <div class="relative flex items-center">
           <i data-lucide="search" class="absolute left-3 h-4 w-4 text-slate-500"></i>
@@ -155,9 +155,9 @@
           <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
           <span class="hidden sm:inline">Stories</span>
         </a>
-        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Community Wall">
+        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
           <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span class="hidden sm:inline">Wall</span>
+          <span class="hidden sm:inline">Forum</span>
         </a>
         <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
           <!-- Populated by JS -->
@@ -169,7 +169,7 @@
   <!-- MAIN WRAPPER: 2-COLUMN MODERN COMMUNITY LAYOUT -->
   <div class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT / MAIN COLUMN (Feed & Wall) -->
+    <!-- LEFT / MAIN COLUMN (Feed & Forum) -->
     <main class="lg:col-span-8 space-y-5">
 
       <!-- WELCOME HERO BANNER -->
@@ -184,7 +184,7 @@
               Share Code, Web Design &amp; Tech Insights
             </h1>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
-              An exclusive nocturnal wall for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
+              An exclusive nocturnal forum for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
             </p>
           </div>
           <button
@@ -200,7 +200,7 @@
       <!-- CATEGORY PILL FILTER BAR -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
         <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
-          All Wall Posts
+          All Forum Posts
         </button>
         <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5">
           <span>💻</span><span>Tech &amp; AI</span>
@@ -324,12 +324,12 @@
             class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer border border-slate-900"
           >
             <i data-lucide="send" class="h-3.5 w-3.5"></i>
-            <span>Publish to Wall</span>
+            <span>Publish to Forum</span>
           </button>
         </div>
       </div>
 
-      <!-- WALL FEED CARDS CONTAINER -->
+      <!-- FORUM FEED CARDS CONTAINER -->
       <div id="forum-feed-container" class="space-y-4">
         <!-- Dynamically rendered via JS -->
       </div>
@@ -355,7 +355,7 @@
             <h3 class="font-display font-bold text-sm text-slate-900">Nocturnal Community</h3>
             <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
               <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>Encrypted Burrow Wall</span>
+              <span>Encrypted Forum Feed</span>
             </p>
           </div>
         </div>
@@ -460,7 +460,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT ENGINE FOR FORUM & WALL -->
+  <!-- SCRIPT ENGINE FOR RACCON FORUM -->
   <script>
     let currentCategory = 'all';
     let searchQuery = '';
@@ -603,7 +603,7 @@
           loadComments(postId);
         });
       } catch (err) {
-        console.error('Failed to load wall posts:', err);
+        console.error('Failed to load forum posts:', err);
       }
     }
 
@@ -888,14 +888,14 @@
         document.getElementById('c-post-tags').value = '';
         document.getElementById('composer-code-box')?.classList.add('hidden');
 
-        showToast(data.message || 'Post is now live on the wall! 🦝🚀');
+        showToast(data.message || 'Post is now live on the forum! 🦝🚀');
         loadForumPosts();
       } catch (err) {
         alert(err.message);
       } finally {
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Publish to Wall</span>`;
+          btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Publish to Forum</span>`;
           if (window.lucide) lucide.createIcons();
         }
       }
@@ -913,7 +913,7 @@
 
     function shareForumPost(id, title) {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${title} - Read and discuss on Raccon Wall: ${window.location.origin}/forum`);
+        navigator.clipboard.writeText(`${title} - Read and discuss on Raccon Forum: ${window.location.origin}/forum`);
         showToast('Discussion link copied to clipboard!');
       }
     }
