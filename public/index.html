@@ -471,24 +471,29 @@
       <!-- Mascot Showcase with Speech Bubble (Never Clipped) -->
       <div class="relative flex flex-col items-center justify-center py-4 select-none">
         
-        <!-- Raccoon Message Enclosed in 3D Glass Bubble -->
-        <div class="relative z-30 w-[270px] h-[270px] sm:w-[310px] sm:h-[310px] rounded-full mb-3 sm:mb-4 flex flex-col items-center justify-center p-6 text-center select-none transition-all duration-300 hover:scale-105"
-             style="background: url('/glass-bubble.png') no-repeat center center / contain, rgba(255, 255, 255, 0.45) !important; backdrop-filter: blur(20px) saturate(180%) !important; -webkit-backdrop-filter: blur(20px) saturate(180%) !important; filter: drop-shadow(0 15px 30px rgba(15, 23, 42, 0.12));">
+        <!-- Raccoon Message Speech Bubble (Pure White 3D Glossy Bubble) -->
+        <div class="relative z-30 max-w-[320px] sm:max-w-[360px] px-4 py-3.5 sm:px-5 sm:py-4 rounded-3xl mb-3 sm:mb-4 bg-white border border-slate-200/90 transition-all duration-300 hover:scale-105 select-none"
+             style="box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03), inset 0 2px 2px 0 #ffffff, inset 0 -2px 4px 0 rgba(15, 23, 42, 0.02);">
           
-          <img src="/raccoon-logo.png" alt="Raccoon icon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain mb-2 filter drop-shadow-sm" />
-          
-          <p class="text-xs sm:text-sm font-bold text-slate-900 leading-snug px-2">
-            "Psst! Mask your inbox from spam &bull; your emails are 100% private with me! 🐾"
-          </p>
-          
-          <div class="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/80 border border-slate-200/80 text-[10px] text-slate-600 font-semibold shadow-2xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse"></span>
-            <span>Nocturnal Courier &bull; Zero Trackers</span>
-          </div>
+          <!-- Glossy Specular Highlight Curve on upper rim of bubble -->
+          <div class="absolute inset-x-6 top-1.5 h-2.5 rounded-full bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none opacity-80"></div>
 
-          <!-- Glass bubble tail pointing down towards the raccoon mascot -->
-          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-white/80 border border-slate-200/80 shadow-xs"></div>
-          <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/90 border border-slate-200/60 shadow-xs"></div>
+          <!-- Speech Bubble Tail pointing down towards the raccoon mascot -->
+          <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[10px] border-t-white filter drop-shadow(0 2px 2px rgba(15,23,42,0.06))"></div>
+          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[11px] border-t-slate-200 -z-10"></div>
+          
+          <div class="flex items-start gap-3 relative z-10">
+            <img src="/raccoon-logo.png" alt="Raccoon icon" class="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0 mt-0.5 filter drop-shadow-sm" />
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
+                "Psst! Mask your inbox from spam &bull; your emails are 100% private with me! 🐾"
+              </p>
+              <div class="mt-1.5 flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-900 animate-pulse"></span>
+                <span>Nocturnal Courier &bull; Zero Trackers</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Raccoon Mascot Image -->
