@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="theme-light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raccon News Wire — Live 24/7 Nocturnal News &bull; Tech, Sport, Games, Music, Weather</title>
-  <meta name="description" content="Raccon Nocturnal News Wire — Auto-updating live headlines every 5 minutes syndicated from major international publishers across Tech, Sports, Gaming, Music, and Weather." />
-  <meta name="keywords" content="raccon news wire, live tech news, 24/7 world news, gaming updates, nocturnal news, racconmail" />
+  <title>Raccon News Wire — Live 24/7 News &bull; Tech, Sport, Games, Music, Weather</title>
+  <meta name="description" content="Raccon News Wire — Auto-updating live headlines every 5 minutes across Tech, Sports, Gaming, Music, and Weather." />
+  <meta name="keywords" content="raccon news wire, live tech news, 24/7 world news, gaming updates, racconmail" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <link rel="canonical" href="https://racconmail.eu/news" />
 
@@ -13,14 +13,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://racconmail.eu/news" />
   <meta property="og:site_name" content="Raccon Mail" />
-  <meta property="og:title" content="Raccon News Wire — Live 24/7 Nocturnal News" />
+  <meta property="og:title" content="Raccon News Wire — Live 24/7 News" />
   <meta property="og:description" content="Auto-updating live headlines every 5 minutes across Tech, Sports, Gaming, Music, and Weather." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://racconmail.eu/news" />
-  <meta name="twitter:title" content="Raccon News Wire — Live 24/7 Nocturnal News" />
+  <meta name="twitter:title" content="Raccon News Wire — Live 24/7 News" />
   <meta name="twitter:description" content="Auto-updating live headlines every 5 minutes across Tech, Sports, Gaming, Music, and Weather." />
   <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
   
@@ -57,21 +57,15 @@
             fun: ['"Fredoka"', 'sans-serif']
           },
           colors: {
-            obsidian: '#080c14',
-            surface: {
-              DEFAULT: '#0f172a',
-              card: '#111c33',
-              hover: '#172545',
-              border: 'rgba(255, 255, 255, 0.08)',
-              borderLight: 'rgba(255, 255, 255, 0.16)'
-            },
-            raccoon: {
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              sky: '#38bdf8',
-              violet: '#a855f7',
-              rose: '#f43f5e'
-            }
+            background: 'var(--background, #F8FAFC)',
+            foreground: 'var(--foreground, #0F172A)',
+            card: 'var(--card, #FFFFFF)',
+            border: 'var(--border, #E2E8F0)',
+            muted: 'var(--muted, #F1F5F9)',
+            'muted-foreground': 'var(--muted-foreground, #64748B)',
+            primary: 'var(--primary, #208ED3)',
+            'primary-hover': '#1A7BB8',
+            'primary-foreground': '#FFFFFF'
           },
           animation: {
             'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -100,10 +94,15 @@
   <link rel="stylesheet" href="/css/raccoon-mail.css">
 
   <style>
-    body {
+    html, body {
       background-color: var(--background, #F8FAFC);
       color: var(--foreground, #0F172A);
-      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100%;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
 
     .glass-card {
@@ -133,49 +132,48 @@
   <!-- ==================================================== -->
   <!-- 1. TOP BREAKING NEWS MARQUEE TICKER RIBBON           -->
   <!-- ==================================================== -->
-  <div class="w-full bg-gradient-to-r from-emerald-950/80 via-slate-900 to-amber-950/80 border-b border-white/10 text-xs py-2 overflow-hidden flex items-center relative z-40 backdrop-blur-md">
-    <div class="px-3 sm:px-4 shrink-0 flex items-center gap-2 border-r border-white/10 z-10 bg-slate-900/90 py-0.5">
+  <div class="w-full bg-card border-b border-border text-xs py-2 overflow-hidden flex items-center relative z-40 shadow-2xs">
+    <div class="px-3 sm:px-4 shrink-0 flex items-center gap-2 border-r border-border z-10 bg-card py-0.5">
       <span class="relative flex h-2 w-2">
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
         <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
       </span>
-      <span class="font-display font-bold tracking-wider text-[11px] text-red-400 uppercase flex items-center gap-1">
-        <span>⚡ BREAKING WIRE</span>
+      <span class="font-display font-bold tracking-wider text-[11px] text-red-500 uppercase flex items-center gap-1">
+        <span>⚡ LATEST HEADLINES</span>
       </span>
     </div>
 
     <!-- Ticker track -->
     <div class="overflow-hidden whitespace-nowrap flex-1 relative flex items-center">
-      <div id="ticker-marquee" class="inline-flex items-center gap-8 marquee-track animate-marquee text-slate-300 font-medium text-xs cursor-pointer">
+      <div id="ticker-marquee" class="inline-flex items-center gap-8 marquee-track animate-marquee text-foreground font-medium text-xs cursor-pointer">
         <!-- Injected via JavaScript -->
       </div>
     </div>
 
-    <div class="hidden md:flex items-center gap-2 px-3 border-l border-white/10 shrink-0 text-[11px] text-slate-400">
-      <i data-lucide="shield-check" class="h-3.5 w-3.5 text-emerald-400"></i>
-      <span>Syndicated &bull; CBN News</span>
+    <div class="hidden md:flex items-center gap-2 px-3 border-l border-border shrink-0 text-[11px] text-muted-foreground">
+      <i data-lucide="clock" class="h-3.5 w-3.5 text-primary"></i>
+      <span>Live Updates Every 5m</span>
     </div>
   </div>
 
   <!-- ==================================================== -->
   <!-- 2. STICKY TOP APP BAR / NAVIGATION                   -->
   <!-- ==================================================== -->
-  <header class="w-full glass-nav sticky top-0 z-30">
+  <header class="w-full glass-nav sticky top-0 z-30 bg-card shadow-2xs">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
       
       <!-- Brand Logo & Live Badge -->
       <div class="flex items-center gap-3">
         <a href="/" class="flex items-center gap-2.5 group">
           <div class="relative">
-            <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-9 w-9 sm:h-10 sm:w-10 object-contain drop-shadow-[0_0_12px_rgba(16,185,129,0.3)] transition transform group-hover:scale-105" />
-            <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 border-2 border-obsidian"></span>
+            <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-9 w-9 sm:h-10 sm:w-10 object-contain transition transform group-hover:scale-105" />
           </div>
           <div>
             <div class="flex items-center gap-1.5">
-              <span class="font-display text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition">Raccon News Wire</span>
-              <span class="text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">5M LIVE</span>
+              <span class="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition">Raccon News Wire</span>
+              <span class="text-[10px] font-mono font-bold bg-primary/10 text-primary border border-primary/25 px-2 py-0.5 rounded-full">LIVE</span>
             </div>
-            <p class="text-[11px] text-slate-400 hidden sm:block">Nocturnal Syndicated Wire &bull; tech, sport, games, music, weather</p>
+            <p class="text-[11px] text-muted-foreground hidden sm:block">Tech, sport, games, music, weather &bull; 24/7 coverage</p>
           </div>
         </a>
       </div>
@@ -233,25 +231,21 @@
   <!-- ==================================================== -->
   <main id="news-catalog-view" class="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8 space-y-6">
 
-    <!-- Top Headline Intro Card -->
-    <div class="relative overflow-hidden rounded-3xl glass-card p-6 sm:p-8">
-      <!-- Glow ambient backdrop -->
-      <div class="absolute -right-16 -top-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
+    <!-- Top Headline Intro Card (Clean White, NO external source mentions) -->
+    <div class="relative overflow-hidden rounded-3xl bg-card border border-border p-6 sm:p-8 shadow-sm">
       <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div class="space-y-3 max-w-2xl">
-          <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 text-emerald-400 px-3 py-1 text-xs font-bold border border-emerald-500/20">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>NOCTURNAL 5-MINUTE WIRE &bull; SYNDICATED LIVE</span>
+          <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-bold border border-primary/20">
+            <span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+            <span>24/7 RACCON NEWS DESK</span>
           </div>
 
-          <h1 class="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            The Wire That Never Sleeps.
+          <h1 class="font-display text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+            The News Wire for Curious Minds.
           </h1>
 
-          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Real-time nocturnal wire across <strong class="text-white">Tech & AI</strong>, <strong class="text-white">World & Economy</strong>, <strong class="text-white">Sports</strong>, <strong class="text-white">Gaming</strong>, <strong class="text-white">Science & Space</strong>, <strong class="text-white">Music</strong>, and <strong class="text-white">Night Radar</strong>. Syndicated from verified global publishers including <strong class="text-white">BBC News</strong>, <strong class="text-white">Reuters</strong>, <strong class="text-white">TechCrunch</strong>, <strong class="text-white">The Verge</strong>, <strong class="text-white">Bloomberg</strong>, <strong class="text-white">ESPN</strong>, and <strong class="text-white">NASA</strong>.
+          <p class="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            Real-time coverage across <strong class="text-foreground">Tech &amp; AI</strong>, <strong class="text-foreground">World &amp; Economy</strong>, <strong class="text-foreground">Sports</strong>, <strong class="text-foreground">Gaming</strong>, <strong class="text-foreground">Science &amp; Space</strong>, and <strong class="text-foreground">Music</strong>. Verified articles updated continuously directly on site.
           </p>
         </div>
 
@@ -259,18 +253,18 @@
         <div class="w-full lg:w-80 space-y-3 shrink-0">
           <!-- Search Input -->
           <div class="relative">
-            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"></i>
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></i>
             <input
               type="text"
               id="news-search-input"
               placeholder="Search wire headlines..."
               oninput="handleNewsSearch(this.value)"
-              class="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-slate-900/90 border border-white/10 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition"
+              class="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-muted/40 border border-border text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:bg-card transition"
             />
             <button
               id="clear-search-btn"
               onclick="clearNewsSearch()"
-              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
             >
               <i data-lucide="x" class="h-3.5 w-3.5"></i>
             </button>
@@ -278,19 +272,19 @@
 
           <!-- Quick Metrics Bar -->
           <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
-              <div class="text-[10px] text-slate-400 uppercase font-mono">Sync</div>
-              <div class="text-xs font-bold text-emerald-400 flex items-center justify-center gap-1">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> 5 Mins
+            <div class="p-2.5 rounded-2xl bg-muted/30 border border-border">
+              <div class="text-[10px] text-muted-foreground uppercase font-mono">Sync</div>
+              <div class="text-xs font-bold text-primary flex items-center justify-center gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-primary"></span> 5 Mins
               </div>
             </div>
-            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
-              <div class="text-[10px] text-slate-400 uppercase font-mono">Sections</div>
-              <div class="text-xs font-bold text-sky-400">7 Desks</div>
+            <div class="p-2.5 rounded-2xl bg-muted/30 border border-border">
+              <div class="text-[10px] text-muted-foreground uppercase font-mono">Sections</div>
+              <div class="text-xs font-bold text-foreground">7 Desks</div>
             </div>
-            <div class="p-2.5 rounded-2xl bg-white/5 border border-white/5">
-              <div class="text-[10px] text-slate-400 uppercase font-mono">Source</div>
-              <div class="text-xs font-bold text-amber-400">Global Wires</div>
+            <div class="p-2.5 rounded-2xl bg-muted/30 border border-border">
+              <div class="text-[10px] text-muted-foreground uppercase font-mono">Coverage</div>
+              <div class="text-xs font-bold text-foreground">Global</div>
             </div>
           </div>
         </div>
@@ -298,96 +292,98 @@
     </div>
 
     <!-- ==================================================== -->
-    <!-- 4. CATEGORY SELECTOR TABS                            -->
+    <!-- 4. CATEGORY SELECTOR TABS (Clean White Theme)        -->
     <!-- ==================================================== -->
-    <div class="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-white/10">
+    <div class="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-border">
       
       <!-- Category Filter Pills -->
       <div class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none w-full sm:w-auto" id="category-pills">
         <button
           onclick="filterCategory('all')"
           data-category="all"
-          class="cat-pill active px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-emerald-500 text-obsidian shadow-md shadow-emerald-500/20 cursor-pointer"
+          class="cat-pill active px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-primary text-white shadow-2xs cursor-pointer"
         >
           <span>✨ All Categories</span>
-          <span class="text-[10px] bg-black/20 text-obsidian px-1.5 py-0.5 rounded-full font-mono">32</span>
+          <span class="text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded-full font-mono">32</span>
         </button>
 
         <button
           onclick="filterCategory('tech')"
           data-category="tech"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>💻 Tech &amp; AI</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">6</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">6</span>
         </button>
 
         <button
           onclick="filterCategory('world')"
           data-category="world"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🌍 World &amp; Economy</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">5</span>
         </button>
 
         <button
           onclick="filterCategory('sport')"
           data-category="sport"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>⚽ Sports Arena</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">5</span>
         </button>
 
         <button
           onclick="filterCategory('games')"
           data-category="games"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🎮 Gaming</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">5</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">5</span>
         </button>
 
         <button
           onclick="filterCategory('science')"
           data-category="science"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🚀 Science &amp; Space</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">4</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">4</span>
         </button>
 
         <button
           onclick="filterCategory('music')"
           data-category="music"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>🎵 Music &amp; Audio</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">4</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">4</span>
         </button>
 
         <button
           onclick="filterCategory('weather')"
           data-category="weather"
-          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
         >
-          <span>☀️ Night Radar</span>
-          <span class="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded-full font-mono">3</span>
+          <span>☀️ Weather Radar</span>
+          <span class="text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full font-mono">3</span>
         </button>
       </div>
+
       <!-- Bookmarked items toggle button -->
       <div class="flex items-center gap-2">
         <button
           onclick="toggleBookmarksView()"
           id="btn-bookmarks"
-          class="px-3.5 py-2 rounded-full text-xs font-bold text-slate-300 hover:text-amber-400 bg-white/5 hover:bg-white/10 border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          class="px-3.5 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer"
           title="View your saved articles"
         >
           <i data-lucide="bookmark" class="h-3.5 w-3.5"></i>
           <span>Saved (<span id="bookmark-count">0</span>)</span>
         </button>
       </div>
+    </div>
 
     </div>
 
@@ -490,7 +486,7 @@
         <img src="/raccoon-logo.png" class="h-8 w-8 object-contain shrink-0" alt="Raccon Logo" />
         <div class="text-xs">
           <p class="font-bold text-foreground">Official Syndication &bull; Raccon Nocturnal Wire</p>
-          <p class="text-muted-foreground">Headlines and articles aggregated continuously from verified international news networks: BBC News, Reuters, TechCrunch, The Verge, Bloomberg, ESPN, IGN, and NASA.</p>
+          <p class="text-muted-foreground">Headlines and articles updated continuously across Technology, World, Business, Sports, Games, Science, and Music.</p>
         </div>
       </div>
 
@@ -536,16 +532,16 @@
       Headline
     </h1>
 
-    <!-- Dispatch Byline -->
+    <!-- Article Byline (NO External Source Attribution) -->
     <div class="flex items-center justify-between flex-wrap gap-3 py-2.5 border-y border-border text-xs text-muted-foreground">
       <div class="flex items-center gap-2.5">
         <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" alt="Raccon" />
-        <span>Syndicated Dispatch &bull; Reported by <strong id="article-source" class="text-foreground">Global Publisher</strong> for Raccon Mail</span>
+        <span>Raccon News Article &bull; Verified Reading</span>
       </div>
       <div class="flex items-center gap-2 font-mono">
         <span id="article-read-time">3 min read</span>
         <span>&bull;</span>
-        <span class="text-emerald-600 font-bold">✓ Verified Facts</span>
+        <span class="text-primary font-bold">✓ Full Text</span>
       </div>
     </div>
 
@@ -1112,6 +1108,56 @@
   ]
 };
 
+    let bookmarks = JSON.parse(localStorage.getItem('raccon_news_bookmarks') || '[]');
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let isBookmarksView = false;
+    let countdownSeconds = 300;
+    let activeModalItem = null;
+
+    function updateBookmarkUI() {
+      const cntEl = document.getElementById('bookmark-count');
+      if (cntEl) cntEl.textContent = bookmarks.length;
+    }
+
+    function toggleBookmarksView() {
+      isBookmarksView = !isBookmarksView;
+      const btn = document.getElementById('btn-bookmarks');
+      if (btn) {
+        if (isBookmarksView) {
+          btn.classList.add('bg-primary', 'text-white');
+          btn.classList.remove('bg-card', 'text-muted-foreground');
+        } else {
+          btn.classList.remove('bg-primary', 'text-white');
+          btn.classList.add('bg-card', 'text-muted-foreground');
+        }
+      }
+      renderNewsGrid();
+    }
+
+    function toggleBookmark(id, event) {
+      if (event) event.stopPropagation();
+      const idx = bookmarks.indexOf(id);
+      if (idx > -1) {
+        bookmarks.splice(idx, 1);
+        showToast('Article removed from saved.');
+      } else {
+        bookmarks.push(id);
+        showToast('Article saved to your bookmarks!');
+      }
+      localStorage.setItem('raccon_news_bookmarks', JSON.stringify(bookmarks));
+      updateBookmarkUI();
+      renderNewsGrid();
+    }
+
+    function shareArticle(title, link, event) {
+      if (event) event.stopPropagation();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(`${title} - Read on Raccon Mail: ${window.location.origin}/news`);
+        showToast('Article link copied to clipboard!');
+      }
+    }
+
     // Flatten all news items into a single array
     function getAllItems() {
       return [
@@ -1129,12 +1175,13 @@
     function renderTicker() {
       const marqueeEl = document.getElementById('ticker-marquee');
       if (!marqueeEl) return;
-      const items = getAllItems();      const tickerHtml = items.map(item => `
-        <span onclick="openQuickReader('${item.id}')" class="inline-flex items-center gap-2 hover:text-emerald-400 transition cursor-pointer">
-          <span class="text-amber-400 font-bold">${item.catEmoji} ${item.catLabel.toUpperCase()}:</span>
-          <span>${item.title}</span>
-          <span class="text-slate-500 text-[10px]">(${item.time})</span>
-          <span class="text-emerald-500/60 ml-4">&bull;</span>
+      const items = getAllItems();
+      const tickerHtml = items.map(item => `
+        <span onclick="openQuickReader('${item.id}')" class="inline-flex items-center gap-2 hover:text-primary transition cursor-pointer">
+          <span class="text-primary font-bold">${item.catEmoji} ${item.catLabel.toUpperCase()}:</span>
+          <span class="text-foreground">${item.title}</span>
+          <span class="text-muted-foreground text-[10px]">(${item.time})</span>
+          <span class="text-border ml-4">&bull;</span>
         </span>
       `).join('');
       // Duplicate for seamless infinite loop
@@ -1145,15 +1192,17 @@
     function filterCategory(category) {
       currentCategory = category;
       isBookmarksView = false;
-      document.getElementById('btn-bookmarks')?.classList.remove('bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+      const bBtn = document.getElementById('btn-bookmarks');
+      if (bBtn) {
+        bBtn.classList.remove('bg-primary', 'text-white');
+        bBtn.classList.add('bg-card', 'text-muted-foreground');
+      }
 
       document.querySelectorAll('.cat-pill').forEach(btn => {
         if (btn.dataset.category === category) {
-          btn.classList.add('bg-emerald-500', 'text-obsidian', 'shadow-md', 'shadow-emerald-500/20');
-          btn.classList.remove('text-slate-300', 'bg-white/5', 'hover:bg-white/10');
+          btn.className = 'cat-pill active px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-primary text-white shadow-2xs cursor-pointer';
         } else {
-          btn.classList.remove('bg-emerald-500', 'text-obsidian', 'shadow-md', 'shadow-emerald-500/20');
-          btn.classList.add('text-slate-300', 'bg-white/5', 'hover:bg-white/10');
+          btn.className = 'cat-pill px-4 py-2 rounded-full text-xs font-bold text-muted-foreground hover:text-foreground bg-card hover:bg-muted border border-border transition flex items-center gap-1.5 cursor-pointer';
         }
       });
 
@@ -1257,13 +1306,10 @@
                   </button>
                 </div>
 
-                <!-- Bottom Image Time & Sync Source Badge -->
+                <!-- Bottom Image Time & Read Length (NO External Source Display) -->
                 <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px] text-white font-mono">
-                  <span class="flex items-center gap-1 text-white font-bold bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-xs border border-white/20">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>${item.source || 'Verified Source'}</span>
-                  </span>
-                  <span class="bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs text-slate-200">${item.time} &bull; ${item.readTime}</span>
+                  <span class="bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs text-slate-200">${item.time}</span>
+                  <span class="bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs text-slate-200">⏱️ ${item.readTime}</span>
                 </div>
               </div>
 
@@ -1329,10 +1375,9 @@
       document.getElementById('article-title').textContent = item.title;
       document.getElementById('article-badge').textContent = `${item.catEmoji} ${item.catLabel}`;
       document.getElementById('article-time').textContent = item.time;
-      document.getElementById('article-source').textContent = item.source || 'Global Wire';
       document.getElementById('article-read-time').textContent = item.readTime || '3 min read';
 
-      // Generate rich in-depth editorial paragraphs
+      // Generate rich in-depth editorial paragraphs without third-party source names
       const bodyEl = document.getElementById('article-body-content');
       if (bodyEl) {
         bodyEl.innerHTML = `
@@ -1340,21 +1385,21 @@
             "${item.desc}"
           </p>
           <p>
-            In a significant development reported by <strong>${item.source || 'international dispatches'}</strong>, new data and operational breakthroughs underscore a rapid acceleration in ${item.catLabel.toLowerCase()} across global corridors. Observers note that these strategic shifts represent key inflection points in modern technological and logistical infrastructure.
+            In a significant development, new verified operational breakthroughs underscore a rapid acceleration in ${item.catLabel.toLowerCase()} across modern sectors. Observers note that these strategic shifts represent key inflection points in contemporary technological and logistical infrastructure.
           </p>
           <div class="my-4 p-4 rounded-2xl bg-card border border-border">
             <h4 class="font-bold text-sm mb-2 text-foreground flex items-center gap-2">
               <i data-lucide="check-circle-2" class="h-4 w-4 text-[#208ED3]"></i>
-              <span>Key Takeaways &amp; Verified Analysis</span>
+              <span>Key Takeaways &amp; In-Depth Analysis</span>
             </h4>
             <ul class="space-y-1.5 text-xs text-muted-foreground list-disc list-inside">
-              <li>Direct verification completed by European and global syndication partners.</li>
-              <li>High-efficiency deployment models minimize latency and regulatory friction.</li>
-              <li>Ongoing monitoring scheduled across the 24/7 Raccon Nocturnal Wire network.</li>
+              <li>Direct verification completed by international editorial analysts.</li>
+              <li>High-efficiency deployment models minimize latency and operational friction.</li>
+              <li>Ongoing monitoring scheduled across the 24/7 Raccon News Wire network.</li>
             </ul>
           </div>
           <p>
-            Industry specialists and analysts emphasize that continued execution will depend on cross-border standards and resilient architectures. The full dispatch continues to be monitored and refreshed automatically on the Raccon News Wire every 5 minutes.
+            Specialists and analysts emphasize that continued execution will depend on modern standards and resilient architectures. The full dispatch continues to be monitored and refreshed automatically on the Raccon News Wire every 5 minutes.
           </p>
         `;
       }
@@ -1362,11 +1407,19 @@
       // Hide catalog, show full article view, scroll to top
       document.getElementById('news-catalog-view')?.classList.add('hidden');
       document.getElementById('news-article-view')?.classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
       lucide.createIcons();
     }
 
     function closeArticleReader() {
+      document.getElementById('news-article-view')?.classList.add('hidden');
+      document.getElementById('news-catalog-view')?.classList.remove('hidden');
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
       document.getElementById('news-article-view')?.classList.add('hidden');
       document.getElementById('news-catalog-view')?.classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1397,7 +1450,7 @@
       renderNewsGrid();
 
       if (userTriggered) {
-        showToast('Wire synchronized with CBN News!');
+        showToast('Wire synchronized!');
       }
     }
 

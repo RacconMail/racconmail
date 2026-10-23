@@ -194,7 +194,7 @@ if (empty($_SESSION['current_user_id'])) {
     
   </style>
 </head>
-<body class="bg-background text-foreground flex flex-col h-screen select-none">
+<body class="bg-background text-foreground flex flex-col h-screen">
 
   <!-- TOP POSTAL STRIPE ACCENT -->
   <div class="stripes h-1.5 w-full shrink-0"></div>
@@ -455,47 +455,50 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </nav>
 
-      <!-- Bottom Sidebar Utilities -->
-      <div class="border-t border-border p-2 space-y-1 text-xs font-medium">
-        <a href="/forum" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 transition font-bold border border-emerald-500/25 mb-1 cursor-pointer">
-          <div class="flex items-center gap-2">
-            <i data-lucide="messages-square" class="h-4 w-4 text-emerald-500"></i>
-            <span>Community Wall</span>
+      <!-- Bottom Sidebar Utilities (Styled identical to standard folders) -->
+      <div class="border-t border-border p-2 space-y-0.5 text-xs font-medium">
+        <a href="/forum" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="messages-square" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Community Wall</span>
           </div>
-          <span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.2 rounded-full font-bold">Forum</span>
         </a>
-        <button onclick="app.openNewsModal()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-muted hover:bg-card transition font-bold border border-border mb-1 cursor-pointer">
-          <div class="flex items-center gap-2">
-            <i data-lucide="newspaper" class="h-4 w-4 text-amber-500"></i>
-            <span>Raccon News Wire</span>
+        <button onclick="app.openNewsModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="newspaper" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Raccon News Wire</span>
           </div>
-          <span class="text-[9px] bg-red-500 text-white px-1.5 py-0.2 rounded-full font-bold">5m Live</span>
         </button>
-        <button onclick="app.openStoriesModal()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-foreground bg-primary/10 hover:bg-primary/20 transition font-bold border border-primary/20 mb-1 cursor-pointer">
-          <div class="flex items-center gap-2">
-            <span>📚</span>
-            <span>World Stories</span>
+        <button onclick="app.openStoriesModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="book-open" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">World Stories</span>
           </div>
-          <span class="text-[9px] bg-primary text-white px-1.5 py-0.2 rounded-full font-bold">175+ Tales</span>
         </button>
-        <button onclick="app.openContactsView()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition">
-          <div class="flex items-center gap-2.5">
-            <i data-lucide="contact" class="h-4 w-4"></i>
-            <span>Address Book</span>
+        <button onclick="app.openContactsView()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="users" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Address Book</span>
           </div>
           <span id="contacts-count-badge" class="badge-count text-[10px]">5</span>
         </button>
-        <button onclick="app.openSettingsModal()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground transition">
-          <i data-lucide="sliders-horizontal" class="h-4 w-4"></i>
-          <span>Raccon / SMTP Config</span>
+        <button onclick="app.openSettingsModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="sliders-horizontal" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Raccon / SMTP Config</span>
+          </div>
         </button>
-        <button onclick="app.openPrivacyModal()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-emerald-800 bg-emerald-500/10 hover:bg-emerald-500/20 transition font-bold border border-emerald-300/30">
-          <i data-lucide="shield-check" class="h-4 w-4 text-emerald-600"></i>
-          <span>Privacy &amp; Policy</span>
+        <button onclick="app.openPrivacyModal()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-foreground hover:bg-muted">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="shield" class="h-4 w-4 shrink-0"></i>
+            <span class="truncate">Privacy &amp; Policy</span>
+          </div>
         </button>
-        <button onclick="app.logout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-red-600 hover:bg-red-50 transition font-bold">
-          <i data-lucide="log-out" class="h-4 w-4"></i>
-          <span>Sign Out</span>
+        <button onclick="app.logout()" class="nav-folder-btn w-full flex items-center justify-between px-3 py-2 rounded-2xl transition-all duration-200 text-xs font-medium cursor-pointer text-red-600 hover:bg-red-500/10">
+          <div class="flex items-center gap-2.5 truncate pointer-events-none">
+            <i data-lucide="log-out" class="h-4 w-4 shrink-0 text-red-600"></i>
+            <span class="truncate font-semibold">Sign Out</span>
+          </div>
         </button>
       </div>
     </aside>
@@ -510,14 +513,13 @@ if (empty($_SESSION['current_user_id'])) {
             <p id="current-folder-subtitle" class="text-xs text-muted-foreground">Loading emails...</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <a href="/forum" title="Open Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
-              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-emerald-500"></i>
+            <a href="/forum" title="Raccon Community Wall & Forum" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-foreground"></i>
               <span class="hidden sm:inline">Wall</span>
             </a>
-            <button onclick="app.openNewsModal()" title="Raccon News Wire (Updated every 5 mins from CBN)" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
-              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-amber-500"></i>
+            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-2.5 py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer">
+              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-foreground"></i>
               <span class="hidden sm:inline">News</span>
-              <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
             </button>
             <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer">
               <i data-lucide="refresh-cw" class="h-4 w-4"></i>
@@ -623,9 +625,9 @@ if (empty($_SESSION['current_user_id'])) {
     <button onclick="app.openCompose()" class="flex items-center justify-center -mt-2.5 h-10 w-10 rounded-full btn-orange-matte text-white shadow-md transform active:scale-90 transition border-2 border-card cursor-pointer shrink-0" title="Compose Postcard">
       <i data-lucide="pencil" class="h-4.5 w-4.5"></i>
     </button>
-    <button onclick="app.openStoriesModal()" class="flex flex-col items-center justify-center gap-1 text-primary py-1 px-3 rounded-xl transition cursor-pointer" title="World Stories (worldstories.org.uk)">
-      <i data-lucide="book-open" class="h-5 w-5 text-primary"></i>
-      <span class="text-[10px] font-bold text-primary">Stories</span>
+    <button onclick="app.openStoriesModal()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="World Stories">
+      <i data-lucide="book-open" class="h-5 w-5"></i>
+      <span class="text-[10px] font-medium">Stories</span>
     </button>
     <button onclick="app.toggleMobileSidebar()" class="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground py-1 px-3 rounded-xl transition cursor-pointer" title="All Folders">
       <i data-lucide="menu" class="h-5 w-5"></i>
@@ -1253,27 +1255,27 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
   </div>
 
-  <!-- RACCON NEWS MODAL (In-Mailbox 5-Minute Live Wire) -->
-  <div id="news-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-6 backdrop-blur-sm">
-    <div class="w-full max-w-5xl rounded-3xl bg-card p-5 sm:p-7 shadow-2xl border border-border relative overflow-hidden max-h-[92vh] flex flex-col">
+  <!-- RACCON NEWS MODAL (In-Mailbox Live Wire) -->
+  <div id="news-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto">
+    <div class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
       <!-- Header -->
       <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-orange-500/10 text-orange-700 border border-orange-500/20">
-            <span class="text-xl">🗞️</span>
+          <div class="p-2.5 rounded-2xl bg-primary/10 text-primary border border-primary/20">
+            <i data-lucide="newspaper" class="h-5 w-5 text-primary"></i>
           </div>
           <div>
             <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
               <span>Raccon News Wire</span>
-              <span class="text-xs font-mono bg-red-500/10 text-red-600 border border-red-500/20 px-2 py-0.5 rounded-full font-bold">Live 5m Sync</span>
+              <span class="text-xs font-mono bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">Live Updates</span>
             </h3>
-            <p class="text-xs text-muted-foreground">Tech, Sport, Games, Music, and Weather &bull; Syndicated live from <a href="https://cbn.com/lp/cbn-news" target="_blank" rel="noopener noreferrer" class="font-bold text-primary underline">CBN News</a></p>
+            <p class="text-xs text-muted-foreground">Tech, Sport, Games, Music, and Weather articles updated every 5 minutes</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <a href="/news" class="rounded-full bg-emerald-500 hover:bg-emerald-600 text-obsidian font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-sm" title="Open modern full-page news wire">
+          <a href="/news" class="rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs px-3.5 py-1.5 transition flex items-center gap-1.5 shadow-2xs" title="Open full-page news wire">
             <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
             <span>Open Full Page News</span>
           </a>
@@ -1283,8 +1285,8 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- 5 Columns Container -->
-      <div class="overflow-y-auto py-4 pr-1">
+      <!-- 5 Columns Container (Scroll Fixed) -->
+      <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4 pr-1">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" id="inbox-news-grid">
           <!-- Populated by app.js -->
         </div>
@@ -1293,39 +1295,39 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- Footer Bar -->
       <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground shrink-0">
         <div class="flex items-center gap-2">
-          <span>⏱️ 5-Minute Auto-Sync &bull; Syndicated Global Wire</span>
+          <span>⏱️ Live Auto-Sync &bull; Raccon Wire</span>
           <span class="text-muted-foreground">&bull;</span>
           <a href="/news" class="font-bold text-primary hover:underline flex items-center gap-1">
             <span>Open Full Page News</span>
             <i data-lucide="arrow-right" class="h-3 w-3"></i>
           </a>
         </div>
-        <button onclick="app.closeNewsModal()" class="rounded-full bg-primary text-primary-foreground font-semibold px-4 py-1.5 transition">
+        <button onclick="app.closeNewsModal()" class="rounded-full bg-muted hover:bg-muted/80 text-foreground font-semibold px-4 py-1.5 transition cursor-pointer">
           Close Wire
         </button>
       </div>
     </div>
   </div>
 
-  <!-- WORLD STORIES MODAL (Modern Reader Module with folktales from worldstories.org.uk) -->
-  <div id="stories-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-6 backdrop-blur-sm">
-    <div class="w-full max-w-5xl rounded-3xl bg-card p-5 sm:p-7 shadow-2xl border border-border relative overflow-hidden max-h-[92vh] flex flex-col">
+  <!-- WORLD STORIES MODAL (Modern Reader Module) -->
+  <div id="stories-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto">
+    <div class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
       <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
 
-      <!-- 1. LIBRARY CATALOG VIEW -->
-      <div id="stories-catalog-view" class="flex flex-col flex-1 overflow-hidden">
+      <!-- 1. LIBRARY CATALOG VIEW (Scroll Fixed) -->
+      <div id="stories-catalog-view" class="flex flex-col flex-1 overflow-hidden min-h-0">
         <!-- Header -->
         <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
           <div class="flex items-center gap-3">
             <div class="p-2.5 rounded-2xl bg-primary/10 text-primary border border-primary/20">
-              <span class="text-2xl">📚</span>
+              <i data-lucide="book-open" class="h-5 w-5 text-primary"></i>
             </div>
             <div>
               <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
                 <span>World Stories</span>
                 <span class="text-xs font-mono bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">English Library</span>
               </h3>
-              <p class="text-xs text-muted-foreground">Folktales, myths, and fables from cultures around the globe &bull; Curated from <a href="https://worldstories.org.uk/lang/english" target="_blank" rel="noopener noreferrer" class="font-bold text-primary underline">worldstories.org.uk</a></p>
+              <p class="text-xs text-muted-foreground">Folktales, myths, and fables from cultures around the globe</p>
             </div>
           </div>
           <button onclick="app.closeStoriesModal()" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
@@ -1336,7 +1338,7 @@ if (empty($_SESSION['current_user_id'])) {
         <!-- Filter Pills & Search Bar -->
         <div class="pt-3 pb-2 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
           <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs" id="story-filter-tabs">
-            <button onclick="app.filterStories('all')" class="story-tab active px-3 py-1.5 rounded-full font-bold btn-orange-matte transition shadow-xs shrink-0 cursor-pointer">All Tales</button>
+            <button onclick="app.filterStories('all')" class="story-tab active px-3 py-1.5 rounded-full font-bold bg-primary text-white transition shadow-2xs shrink-0 cursor-pointer">All Tales</button>
             <button onclick="app.filterStories('animals')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Clever Animals</button>
             <button onclick="app.filterStories('folktales')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Traditional Folktales</button>
             <button onclick="app.filterStories('fables')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Fables &amp; Wisdom</button>
@@ -1354,8 +1356,8 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </div>
 
-        <!-- Stories Grid -->
-        <div class="flex-1 overflow-y-auto py-3 pr-1">
+        <!-- Stories Grid (Scroll Fixed) -->
+        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-3 pr-1">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="stories-grid-container">
             <!-- Rendered by app.renderStoriesGrid() -->
           </div>
@@ -1364,7 +1366,7 @@ if (empty($_SESSION['current_user_id'])) {
         <!-- Footer Bar -->
         <div class="pt-3 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground shrink-0">
           <div class="flex items-center gap-2">
-            <span>🌍 175+ traditional folktales &bull; Read directly inside Raccon Mail</span>
+            <span>📖 175+ traditional folktales &bull; Read directly inside Raccon Mail</span>
           </div>
           <button onclick="app.closeStoriesModal()" class="rounded-full bg-muted hover:bg-accent text-foreground font-semibold px-4 py-1.5 transition cursor-pointer">
             Close Stories
@@ -1372,8 +1374,8 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- 2. STORY READER VIEW (Slides in when a story is clicked) -->
-      <div id="stories-reader-view" class="hidden flex-col flex-1 overflow-hidden">
+      <!-- 2. STORY READER VIEW (Scroll Fixed) -->
+      <div id="stories-reader-view" class="hidden flex-col flex-1 overflow-hidden min-h-0">
         <!-- Reader Header -->
         <div class="flex items-center justify-between pb-3 border-b border-border shrink-0">
           <button onclick="app.backToStoriesCatalog()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-accent text-foreground font-bold text-xs transition cursor-pointer">
@@ -1381,10 +1383,9 @@ if (empty($_SESSION['current_user_id'])) {
             <span>Back to Stories</span>
           </button>
           <div class="flex items-center gap-2">
-            <button onclick="app.sendStoryAsPostcard()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full btn-orange-matte text-white font-bold text-xs transition cursor-pointer active:scale-95 shadow-xs">
+            <button onclick="app.sendStoryAsPostcard()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs transition cursor-pointer active:scale-95 shadow-2xs">
               <i data-lucide="send" class="h-3.5 w-3.5"></i>
               <span>Send as Postcard</span>
-              <span class="paw-bounce text-xs">🐾</span>
             </button>
             <button onclick="app.closeStoriesModal()" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
               <i data-lucide="x" class="h-5 w-5"></i>
@@ -1392,8 +1393,8 @@ if (empty($_SESSION['current_user_id'])) {
           </div>
         </div>
 
-        <!-- Reader Scrollable Content -->
-        <div id="stories-reader-content" class="flex-1 overflow-y-auto py-5 px-2 sm:px-6 space-y-4">
+        <!-- Reader Scrollable Content (Scroll Fixed) -->
+        <div id="stories-reader-content" class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-5 px-2 sm:px-6 space-y-4">
           <!-- Populated by app.openStoryReader(storyId) -->
         </div>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="theme-light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -81,8 +81,17 @@
   <!-- Lucide Icons & FontAwesome -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="/css/raccoon-mail.css" />
 
   <style>
+    html, body {
+      min-height: 100%;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
     body {
       background-color: var(--background, #F8FAFC);
       color: var(--foreground, #0F172A);

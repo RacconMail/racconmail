@@ -239,6 +239,7 @@ const app = {
   },
 
   closeAllModals() {
+    this.closeMobileSidebar?.();
     document.getElementById('account-dropdown')?.classList.add('hidden');
     document.getElementById('new-folder-modal')?.classList.add('hidden');
     document.getElementById('contacts-modal')?.classList.add('hidden');
@@ -530,10 +531,9 @@ const app = {
                 <img src="${it.image}" alt="${it.title}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-border/60 shadow-xs" onerror="this.src='/raccoon-logo.png';" />
                 <div class="min-w-0 flex-1">
                   <div class="flex justify-between items-center text-[9px] text-muted-foreground mb-0.5">
-                    <span class="text-emerald-500 font-bold">${it.source || 'Verified Source'}</span>
-                    <span class="font-mono">${it.time}</span>
+                    <span class="font-mono text-muted-foreground">${it.time}</span>
                   </div>
-                  <a href="${it.link || '/news'}" target="_blank" rel="noopener noreferrer" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
+                  <a href="/news" class="font-bold text-[11px] text-foreground hover:text-primary leading-tight line-clamp-2 block">
                     ${it.title}
                   </a>
                   <p class="text-[10px] text-muted-foreground mt-0.5 line-clamp-1 leading-relaxed">
@@ -545,7 +545,7 @@ const app = {
           </div>
         </div>
         <div class="pt-2 mt-2 border-t border-border-light text-[10px]">
-          <a href="/news" target="_blank" class="text-primary hover:underline font-bold flex items-center justify-between">
+          <a href="/news" class="text-primary hover:underline font-bold flex items-center justify-between">
             <span>Open in Full Wire</span>
             <span>&rarr;</span>
           </a>
@@ -770,7 +770,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                   category: c.category || 'fables',
                   readTime: c.readTime || '3 min',
                   moral: 'A classic tale of wisdom, imagination, and cultural discovery.',
-                  synopsis: c.desc || 'Illustrated story from WorldStories UK.',
+                  synopsis: c.desc || 'Illustrated traditional story.',
                   cover: c.cover || `https://worldstories.org.uk/content/book/${c.id}/__cover.jpg`,
                   url: c.url || `https://worldstories.org.uk/reader/${c.slug || c.id}/english/${c.id}`,
                   languages: c.languages || ['English'],
@@ -874,7 +874,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
           <!-- Synopsis -->
           <p class="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-2.5">
-            ${story.synopsis || story.desc || 'A classic tale from WorldStories UK.'}
+            ${story.synopsis || story.desc || 'A classic traditional folktale.'}
           </p>
 
           <!-- Languages info -->
@@ -932,7 +932,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 <span>Traditional Tale from ${story.country || 'World'}</span>
               </span>
               <h2 class="font-display font-extrabold text-xl sm:text-2xl text-foreground mt-1 truncate">${story.title}</h2>
-              <p class="text-xs text-muted-foreground mt-1">Source: <a href="${story.url}" target="_blank" class="underline font-bold text-foreground">WorldStories UK</a></p>
+              <p class="text-xs text-muted-foreground mt-1">Cultural Folktale &bull; Traditional Heritage</p>
             </div>
             ${story.cover ? `<img src="${story.cover}" class="h-16 w-16 rounded-2xl object-cover shrink-0 border border-border" />` : `<span class="text-3xl sm:text-4xl">📜</span>`}
           </div>
@@ -942,7 +942,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             ${story.content ? story.content.split('\n\n').map(p => `<p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${p.trim()}</p>`).join('') : `
               <div class="flex flex-col items-center justify-center p-8 text-center text-muted-foreground space-y-3">
                 <i data-lucide="loader-2" class="h-6 w-6 animate-spin text-primary"></i>
-                <p class="text-sm">Fetching complete illustrated tale from WorldStories UK...</p>
+                <p class="text-sm">Loading story text...</p>
               </div>
             `}
           </div>
@@ -980,13 +980,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           if (textArea) {
             textArea.innerHTML = `
               <p class="text-base text-foreground/90 leading-relaxed">${story.synopsis || story.desc || 'A traditional tale of wonder and cultural heritage.'}</p>
-              <div class="p-4 rounded-2xl bg-muted/40 border border-border text-center space-y-2 mt-4">
-                <p class="text-xs text-muted-foreground">Read full interactive book with native audio on WorldStories UK:</p>
-                <a href="${story.url}" target="_blank" class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full btn-orange-matte text-white text-xs font-bold">
-                  <span>Open on WorldStories UK</span>
-                  <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
-                </a>
-              </div>
             `;
             lucide.createIcons();
           }
@@ -1020,12 +1013,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (editor) {
       editor.innerHTML = `
         <p><strong>📖 ${s.title}</strong></p>
-        <p><em>A traditional tale from ${s.country} &bull; Sourced from WorldStories UK</em></p>
+        <p><em>A traditional tale from ${s.country}</em></p>
         <blockquote style="border-left: 3px solid #208ED3; padding-left: 10px; margin: 10px 0; color: #555;">
           💡 <strong>Moral:</strong> ${s.moral}
         </blockquote>
         <p>${(s.content || s.synopsis || '').replace(/\n\n/g, '</p><p>')}</p>
-        <p style="margin-top: 15px; font-size: 11px; color: #888;">Sent with love via <a href="https://racconmail.eu">Raccon Mail</a> &bull; Read more at <a href="https://worldstories.org.uk/lang/english">worldstories.org.uk</a></p>
+        <p style="margin-top: 15px; font-size: 11px; color: #888;">Sent with love via <a href="https://racconmail.eu">Raccon Mail</a></p>
       `;
     }
     this.showToast(`Loaded "${s.title}" into Postcard Compose! 🐾`);
@@ -3519,7 +3512,6 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     // 6. Highlight active theme button
     this.highlightActiveTheme('light');
-  },
 
     // 7. Persist to backend if requested
     if (persist) {
