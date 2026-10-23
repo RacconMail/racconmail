@@ -77,6 +77,7 @@ const app = {
     try { this.setupClickOutsideDismiss(); } catch (_) {}
     try { this.startMailPolling(); } catch (_) {}
     try { this.initSwipeGestures(); } catch (_) {}
+    try { this.initGlassStyle(); } catch (_) {}
 
     // Responsive view synchronization on window resize / orientation change
     window.addEventListener('resize', () => {
@@ -1656,68 +1657,44 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     `;
   },
 
-  currentCategoryTab: 'primary',
+  currentCategoryTab: 'all',
   batchSelectionMode: false,
-  isAdDismissed: false,
+  isAdDismissed: true,
+  currentGlassStyle: 'realistic',
 
-  isOfferEmail(msg) {
-    if (!msg) return false;
-    const text = `${msg.subject || ''} ${msg.sender_name || ''} ${msg.sender_email || ''}`;
-    const offerRegex = /offer|deal|discount|sale|promo|order|shipping|delivery|coupon|voucher|lei|aeroterma|market|price|save|\$|€|£|store|shop|buy|cart|bill|invoice|catalog|black friday|superdeal/i;
-    return offerRegex.test(text);
+  initGlassStyle() {
+    const saved = localStorage.getItem('originos_glass_style') || 'realistic';
+    this.setGlassStyle(saved);
   },
 
-  isOtherEmail(msg) {
-    if (!msg) return false;
-    if (this.isOfferEmail(msg)) return false;
-    const text = `${msg.subject || ''} ${msg.sender_name || ''} ${msg.sender_email || ''}`;
-    const otherRegex = /update|digest|notification|terms|policy|security|notice|linkedin|experian|alert|system|confirm|verify|no-reply|noreply|newsletter|weekly|monthly|statement/i;
-    return otherRegex.test(text);
+  setGlassStyle(style) {
+    if (!['realistic', 'natural', 'soft'].includes(style)) style = 'realistic';
+    this.currentGlassStyle = style;
+    localStorage.setItem('originos_glass_style', style);
+    document.body.setAttribute('data-glass-style', style);
+
+    ['realistic', 'natural', 'soft'].forEach(s => {
+      const btn = document.getElementById(`glass-btn-${s}`);
+      if (btn) {
+        if (s === style) {
+          btn.className = 'glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-extrabold transition bg-white text-slate-900 shadow-xs cursor-pointer';
+        } else {
+          btn.className = 'glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer';
+        }
+      }
+    });
   },
 
   getFilteredMessagesList() {
-    const list = this.messages || [];
-    if (this.currentCategoryTab === 'offers') {
-      return list.filter(m => this.isOfferEmail(m));
-    }
-    if (this.currentCategoryTab === 'other') {
-      return list.filter(m => this.isOtherEmail(m));
-    }
-    if (this.currentCategoryTab === 'primary') {
-      return list.filter(m => !this.isOfferEmail(m) && !this.isOtherEmail(m));
-    }
-    // 'all'
-    return list;
+    return this.messages || [];
   },
 
   updateCategoryBadges() {
-    const list = this.messages || [];
-    const offersCount = list.filter(m => this.isOfferEmail(m)).length;
-    const badge = document.getElementById('offers-count-badge');
-    if (badge) {
-      badge.textContent = offersCount;
-      if (offersCount > 0) {
-        badge.classList.remove('hidden');
-        badge.style.display = 'inline-block';
-      } else {
-        badge.classList.add('hidden');
-        badge.style.display = 'none';
-      }
-    }
+    // Categories removed inside inbox per user request
   },
 
   setCategoryTab(tab) {
     this.currentCategoryTab = tab;
-    ['all', 'primary', 'offers', 'other'].forEach(t => {
-      const btn = document.getElementById(`tab-cat-${t}`);
-      if (btn) {
-        if (t === tab) {
-          btn.className = 'cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1';
-        } else {
-          btn.className = 'cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1';
-        }
-      }
-    });
     this.renderMessagesList();
     this.updateBatchToolbar();
   },
@@ -1727,9 +1704,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const btn = document.getElementById('btn-toggle-select');
     if (btn) {
       btn.textContent = this.batchSelectionMode ? 'Cancel' : 'Select';
-      btn.className = this.batchSelectionMode
-        ? 'text-xs font-bold text-slate-700 hover:text-slate-900 px-2 py-1 transition cursor-pointer shrink-0'
-        : 'text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 transition cursor-pointer shrink-0';
+      btn.className = 'text-xs font-bold text-white bg-slate-900 hover:bg-black px-2.5 py-1 rounded-full transition cursor-pointer shrink-0';
     }
 
     if (!this.batchSelectionMode) {
@@ -1820,27 +1795,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       return;
     }
 
-    // Top Sponsored Ad Row (High-converting native sponsor card)
-    const adHtml = (!this.isAdDismissed && (this.currentFolder === 'Inbox' || !this.currentFolder)) ? `
-      <div id="inbox-sponsored-ad" class="border-b border-slate-100 bg-white hover:bg-slate-50 px-3.5 py-3 flex items-center justify-between gap-3 cursor-pointer transition select-none">
-        <div class="flex items-center gap-3 min-w-0 flex-1" onclick="app.openSponsoredAd()">
-          <div class="h-10 w-10 rounded-full bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xs border border-slate-800">
-            <img src="/raccoon-logo.png" alt="Raccon Sponsor" class="h-6 w-6 object-contain" />
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1.5 leading-snug">
-              <span class="font-bold text-sm text-slate-900 truncate">Raccon Nocturnal Cloud</span>
-              <span class="text-xs text-slate-500 font-medium shrink-0">&bull; Ad</span>
-            </div>
-            <p class="text-xs text-slate-600 truncate mt-0.5">Encrypted private storage, custom domains &amp; nocturnal routing.</p>
-          </div>
-        </div>
-        <button onclick="event.stopPropagation(); app.dismissSponsoredAd()" class="text-slate-400 hover:text-slate-600 p-1 rounded-full transition cursor-pointer shrink-0" title="Hide Ad">
-          <i data-lucide="x" class="h-4 w-4"></i>
-        </button>
-      </div>
-    ` : '';
-
+    // Render OriginOS 7 Liquid Glass oval floating cards (No ad banner with duplicate logo)
     const messagesHtml = list.map(msg => {
       const isSelected = this.selectedMessage?.id === msg.id;
       const isChecked = this.checkedIds.has(msg.id);
@@ -1853,7 +1808,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const avatarBg = this.getSenderColor(senderName);
 
       return `
-        <div class="msg-swipe-wrapper group relative overflow-hidden bg-white border-b border-slate-200/80 select-none ${isSelected ? 'bg-blue-50/60 border-l-4 border-blue-600' : ''}" data-msg-id="${msg.id}">
+        <div class="msg-swipe-wrapper originos-liquid-card group relative select-none rounded-[24px] mx-2.5 my-1.5 transition-all duration-200 overflow-hidden ${isSelected ? 'is-selected ring-2 ring-slate-900 border-slate-900 shadow-md' : 'shadow-2xs hover:shadow-xs'}" data-msg-id="${msg.id}">
           <!-- Revealed on Swipe Right: Read & Planner / Star -->
           <div class="swipe-actions-left absolute inset-y-0 left-0 flex items-stretch z-0">
             <button onclick="event.stopPropagation(); app.swipeActionRead('${msg.id}')" class="swipe-btn-read" title="Mark Read / Open">
@@ -1874,11 +1829,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             </button>
           </div>
 
-          <!-- Foreground Card Content (Draggable / Tap to open) -->
-          <div class="swipe-content relative z-10 ${isUnread ? 'bg-slate-50/60 font-semibold' : 'bg-white'} hover:bg-slate-100/70 transition-colors px-3.5 py-3 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
-            <!-- Unread Blue Dot -->
+          <!-- Foreground Liquid Glass Content -->
+          <div class="swipe-content originos-glass-inner relative z-10 ${isUnread ? 'font-semibold' : ''} px-4 py-3.5 flex items-center gap-3 cursor-pointer" onclick="app.onEmailItemClick(event, '${msg.id}')">
+            <!-- Unread Dot (Liquid Obsidian Pill) -->
             <div class="w-2.5 flex items-center justify-center shrink-0">
-              ${isUnread ? '<span class="h-2 w-2 rounded-full bg-blue-600"></span>' : ''}
+              ${isUnread ? '<span class="h-2.5 w-2.5 rounded-full bg-slate-900 shadow-2xs"></span>' : ''}
             </div>
 
             <!-- Batch Selection Checkbox -->
@@ -1887,12 +1842,12 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
                 type="checkbox"
                 ${isChecked ? 'checked' : ''}
                 onchange="app.toggleMessageCheck('${msg.id}', this.checked)"
-                class="rounded border-slate-300 h-4 w-4 accent-blue-600 cursor-pointer"
+                class="rounded border-slate-400 h-4 w-4 accent-slate-900 cursor-pointer"
               />
             </div>
 
             <!-- Sender Avatar with Monogram or Brand Icon -->
-            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+            <div class="h-10 w-10 rounded-full ${avatarBg} text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs border border-white/40">
               ${isTeam ? '<img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />' : initials}
             </div>
 
@@ -1901,26 +1856,26 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               <div class="flex items-center justify-between gap-1 leading-snug">
                 <span class="font-bold text-sm text-slate-900 truncate">${this.escapeHtml(senderName)}</span>
                 <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-                  <!-- Desktop Quick Action Hover Icons -->
-                  <div class="hidden md:group-hover:flex items-center gap-0.5">
-                    <button onclick="app.trashMessage('${msg.id}')" class="p-1 rounded-full text-slate-400 hover:text-red-600 hover:bg-slate-200 transition cursor-pointer" title="Delete">
-                      <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                  <!-- Desktop Quick Action Hover Icons (Solid Black Buttons, White Write) -->
+                  <div class="hidden md:group-hover:flex items-center gap-1">
+                    <button onclick="app.trashMessage('${msg.id}')" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Delete">
+                      <i data-lucide="trash-2" class="h-3.5 w-3.5 text-white"></i>
                     </button>
-                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition cursor-pointer" title="${isUnread ? 'Mark read' : 'Mark unread'}">
-                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5"></i>
+                    <button onclick="app.toggleRead('${msg.id}', ${!msg.is_read})" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="${isUnread ? 'Mark read' : 'Mark unread'}">
+                      <i data-lucide="${isUnread ? 'mail-open' : 'mail'}" class="h-3.5 w-3.5 text-white"></i>
                     </button>
-                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition cursor-pointer" title="Archive">
-                      <i data-lucide="archive" class="h-3.5 w-3.5"></i>
+                    <button onclick="app.archiveMessage('${msg.id}')" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Archive">
+                      <i data-lucide="archive" class="h-3.5 w-3.5 text-white"></i>
                     </button>
                   </div>
                   <span class="text-xs text-slate-500 font-medium md:group-hover:hidden">${dateStr}</span>
-                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-0.5 text-slate-400 hover:text-amber-500 transition cursor-pointer" title="Star">
-                    <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'fill-amber-400 text-amber-500' : ''}"></i>
+                  <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" class="p-1 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs" title="Star">
+                    <i data-lucide="star" class="h-3.5 w-3.5 ${msg.is_starred ? 'fill-amber-400 text-amber-400' : 'text-white'}"></i>
                   </button>
                 </div>
               </div>
               <div class="text-xs ${isUnread ? 'font-bold text-slate-900' : 'font-medium text-slate-700'} truncate mt-0.5">
-                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-slate-500 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
+                ${msg.attachment_count > 0 ? '<i data-lucide="paperclip" class="inline h-3 w-3 text-slate-600 mr-1"></i>' : ''}${this.escapeHtml(msg.subject || '(no subject)')}
               </div>
               <div class="text-xs text-slate-500 truncate mt-0.5 font-normal">
                 ${this.escapeHtml((msg.body || '').replace(/\s+/g, ' ').trim())}
@@ -1931,7 +1886,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       `;
     }).join('');
 
-    container.innerHTML = adHtml + messagesHtml;
+    container.innerHTML = messagesHtml;
 
     if (window.lucide) {
       try { lucide.createIcons(); } catch (_) {}
@@ -2190,59 +2145,59 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       <div class="h-11 sm:h-12 border-b border-slate-200 bg-white px-3 sm:px-4 flex items-center justify-between shrink-0 gap-1.5">
         <div class="flex items-center gap-1.5 shrink-0">
           <!-- Mobile Back Button -->
-          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 shrink-0 cursor-pointer">
-            <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
+          <button onclick="app.backToMessages()" class="md:hidden flex items-center gap-1 text-xs font-bold py-1 px-3 rounded-full bg-slate-900 hover:bg-black text-white shrink-0 cursor-pointer border border-slate-800 shadow-2xs">
+            <i data-lucide="arrow-left" class="h-3.5 w-3.5 text-white"></i>
             <span>Back</span>
           </button>
           <button onclick="app.replyToMessage()"
-            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95 shrink-0">
+            class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white px-3.5 sm:px-4 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer active:scale-95 shrink-0 border border-slate-800">
             <i data-lucide="reply" class="h-3.5 w-3.5 text-white"></i>
             <span>Reply</span>
           </button>
           <button onclick="app.replyAllMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0">
-            <i data-lucide="reply-all" class="h-3 w-3 text-slate-600"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
+            <i data-lucide="reply-all" class="h-3 w-3 text-white"></i>
             <span>Reply All</span>
           </button>
           <button onclick="app.forwardMessage()"
-            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0">
-            <i data-lucide="forward" class="h-3 w-3 text-slate-600"></i>
+            class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shrink-0 shadow-2xs">
+            <i data-lucide="forward" class="h-3 w-3 text-white"></i>
             <span>Forward</span>
           </button>
         </div>
 
         <div class="flex items-center gap-1 shrink-0">
-          <!-- Desktop Only Direct Actions -->
-          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
-            <i data-lucide="printer" class="h-4 w-4 text-slate-600"></i>
+          <!-- Desktop Only Direct Actions (Solid Black Buttons, White Write) -->
+          <button onclick="app.printMessage()" title="Print Email or Save as PDF" class="hidden sm:flex p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shadow-2xs">
+            <i data-lucide="printer" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer">
-            <i data-lucide="download" class="h-4 w-4 text-slate-600"></i>
+          <button onclick="app.downloadMessageEml('${msg.id}')" title="Export as .EML file" class="hidden sm:flex p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shadow-2xs">
+            <i data-lucide="download" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95">
-            <i data-lucide="mail" class="h-3 w-3 text-slate-600"></i>
+          <button onclick="app.openPostcardModal()" title="View & Print as Physical Postcard" class="hidden sm:flex items-center gap-1 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-2.5 py-1 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs">
+            <i data-lucide="mail" class="h-3 w-3 text-white"></i>
             <span>Postcard View</span>
           </button>
           
           <!-- Star Action (Both Mobile & Desktop) -->
-          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0">
-            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-slate-900 fill-slate-900' : ''}"></i>
+          <button onclick="app.toggleStar('${msg.id}', ${!msg.is_starred})" title="Star / Favorite" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-400 fill-amber-400' : 'text-white'}"></i>
           </button>
 
           <!-- Archive Action (Both Mobile & Desktop) -->
-          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer shrink-0">
-            <i data-lucide="archive" class="h-4 w-4 text-slate-600"></i>
+          <button onclick="app.archiveMessage('${msg.id}')" title="Archive" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="archive" class="h-4 w-4 text-white"></i>
           </button>
 
           <!-- Trash Action (Both Mobile & Desktop) -->
-          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0">
-            <i data-lucide="trash-2" class="h-4 w-4 text-slate-600"></i>
+          <button onclick="app.trashMessage('${msg.id}')" title="Delete" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
+            <i data-lucide="trash-2" class="h-4 w-4 text-white"></i>
           </button>
 
           <!-- Mobile Overflow 'More' Menu Button -->
           <div class="relative sm:hidden">
-            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition cursor-pointer shrink-0">
-              <i data-lucide="more-vertical" class="h-4 w-4 text-slate-600"></i>
+            <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 transition cursor-pointer shrink-0 shadow-2xs">
+              <i data-lucide="more-vertical" class="h-4 w-4 text-white"></i>
             </button>
             <div id="reader-more-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-2xl z-50 text-xs text-slate-800">
               <button onclick="app.closeReaderMoreDropdown(); app.openPostcardModal();" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2 cursor-pointer">
@@ -2393,14 +2348,14 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             <span class="text-[11px] text-slate-500 hidden sm:inline">Press Ctrl+Enter to send fast</span>
           </div>
 
-          <!-- 1-Tap Fast Reply Chips -->
+          <!-- 1-Tap Fast Reply Chips (Solid Black Buttons, White Write) -->
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
-            <span class="text-[11px] font-semibold text-slate-500 mr-1">1-Tap:</span>
-            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Got it!</button>
-            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Sounds great!</button>
-            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Will review shortly.</button>
-            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">Thanks for the postcard!</button>
-            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3 py-1 text-xs font-semibold transition hover:scale-105 active:scale-95 text-slate-800 flex items-center gap-1 cursor-pointer">On my way!</button>
+            <span class="text-[11px] font-bold text-slate-600 mr-1">1-Tap:</span>
+            <button type="button" onclick="app.fillQuickReply('Got it!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Got it!</button>
+            <button type="button" onclick="app.fillQuickReply('Sounds great!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Sounds great!</button>
+            <button type="button" onclick="app.fillQuickReply('Will review shortly.')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Will review shortly.</button>
+            <button type="button" onclick="app.fillQuickReply('Thanks for the postcard!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">Thanks for the postcard!</button>
+            <button type="button" onclick="app.fillQuickReply('On my way!')" class="rounded-full bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 text-xs font-bold transition hover:scale-105 active:scale-95 text-white flex items-center gap-1 cursor-pointer shadow-2xs">On my way!</button>
           </div>
 
           <!-- Quick Reply Textarea with Integrated Fast Send Button inside the Box -->
@@ -3095,16 +3050,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     document.getElementById('compose-subject').focus();
   },
 
-  // Filters & Sorting
+  // Filters & Sorting (Solid Black Buttons, White Write)
   setFilter(filter) {
     this.currentFilter = filter;
     ['all', 'unread', 'starred', 'has_attachments'].forEach(f => {
       const btn = document.getElementById(`filter-${f}`);
       if (btn) {
         if (f === filter) {
-          btn.className = 'px-3 py-1 rounded-full font-bold bg-slate-900 text-white transition text-xs shadow-xs shrink-0 whitespace-nowrap';
+          btn.className = 'px-3 py-1 rounded-full font-bold bg-slate-900 hover:bg-black text-white transition text-xs shadow-xs shrink-0 whitespace-nowrap border border-slate-900';
         } else {
-          btn.className = 'px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition text-xs border border-transparent hover:border-slate-200 shrink-0 whitespace-nowrap';
+          btn.className = 'px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition text-xs border border-slate-700 shrink-0 whitespace-nowrap';
         }
       }
     });
@@ -3145,8 +3100,40 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
+  _searchSelectedIndex: -1,
+  _searchSuggestionItems: [],
+
+  highlightMatch(text, query) {
+    if (!text) return '';
+    if (!query || !query.trim()) return this.escapeHtml(text);
+    const escaped = this.escapeHtml(text);
+    const cleanQ = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${cleanQ})`, 'gi');
+    return escaped.replace(regex, '<mark class="bg-yellow-200 text-slate-900 rounded px-0.5 font-extrabold">$1</mark>');
+  },
+
   onSearchKeyDown(event) {
+    const dropdown = document.getElementById('search-suggestions-dropdown');
+    const isDropdownOpen = dropdown && !dropdown.classList.contains('hidden');
+
+    if (event.key === 'ArrowDown' && isDropdownOpen && this._searchSuggestionItems.length > 0) {
+      event.preventDefault();
+      this._searchSelectedIndex = (this._searchSelectedIndex + 1) % this._searchSuggestionItems.length;
+      this.highlightSearchSuggestion();
+      return;
+    }
+    if (event.key === 'ArrowUp' && isDropdownOpen && this._searchSuggestionItems.length > 0) {
+      event.preventDefault();
+      this._searchSelectedIndex = (this._searchSelectedIndex - 1 + this._searchSuggestionItems.length) % this._searchSuggestionItems.length;
+      this.highlightSearchSuggestion();
+      return;
+    }
     if (event.key === 'Enter') {
+      if (isDropdownOpen && this._searchSelectedIndex >= 0 && this._searchSuggestionItems[this._searchSelectedIndex]) {
+        event.preventDefault();
+        this._searchSuggestionItems[this._searchSelectedIndex].action();
+        return;
+      }
       const val = (document.getElementById('global-search')?.value || '').trim();
       if (val.length > 0) {
         this.searchAllFolders(val);
@@ -3155,6 +3142,18 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       this.closeSearchSuggestions();
       this.closeAdvancedSearchDropdown();
     }
+  },
+
+  highlightSearchSuggestion() {
+    const items = document.querySelectorAll('.search-suggestion-row');
+    items.forEach((el, idx) => {
+      if (idx === this._searchSelectedIndex) {
+        el.classList.add('bg-slate-100', 'ring-1', 'ring-slate-900/30');
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.classList.remove('bg-slate-100', 'ring-1', 'ring-slate-900/30');
+      }
+    });
   },
 
   triggerSearchSubmit() {
@@ -3271,37 +3270,40 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const dropdown = document.getElementById('search-suggestions-dropdown');
     if (!dropdown) return;
 
+    this._searchSelectedIndex = -1;
+    this._searchSuggestionItems = [];
+
     const people = data.people || [];
     const messages = data.messages || [];
 
     // Empty state: render quick filters, recent senders, and recent emails
     if (data.is_empty || (!query && query.trim().length === 0)) {
       let emptyHtml = `
-        <!-- Quick Search Filters -->
-        <div class="p-2.5 bg-muted/40 border-b border-border/60">
-          <div class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-            <span>⚡ Quick Filters</span>
-            <span class="text-[9px] text-muted-foreground">1-Tap</span>
+        <!-- Quick Search Filters (Solid Black Buttons, White Write) -->
+        <div class="p-3 bg-slate-50/80 border-b border-slate-200">
+          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-700 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><i data-lucide="zap" class="h-3.5 w-3.5 text-slate-900"></i> Quick Filters</span>
+            <span class="text-[9.5px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full">1-Tap</span>
           </div>
-          <div class="flex flex-wrap gap-1.5 mt-1.5 px-1">
-            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
-              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-slate-600"></i>
+          <div class="flex flex-wrap gap-1.5 mt-2 px-1">
+            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
+              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-white"></i>
               <span>Unread</span>
             </button>
-            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
-              <i data-lucide="star" class="h-3.5 w-3.5 text-slate-700 fill-slate-700"></i>
+            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
+              <i data-lucide="star" class="h-3.5 w-3.5 text-amber-400 fill-amber-400"></i>
               <span>Starred</span>
             </button>
-            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
-              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-slate-600"></i>
+            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
+              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-white"></i>
               <span>Attachments</span>
             </button>
-            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
-              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-slate-600"></i>
+            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
+              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-white"></i>
               <span>Spam Box</span>
             </button>
-            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition cursor-pointer active:scale-95">
-              <i data-lucide="layers" class="h-3.5 w-3.5 text-slate-600"></i>
+            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
+              <i data-lucide="layers" class="h-3.5 w-3.5 text-white"></i>
               <span>All Mail</span>
             </button>
           </div>
@@ -3311,49 +3313,57 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       if (people.length > 0) {
         emptyHtml += `
           <div class="p-2">
-            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
               <span>Recent Senders</span>
-              <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-bold">${people.length}</span>
+              <span class="text-[9.5px] bg-slate-900 text-white px-2 py-0.2 rounded-full font-bold">${people.length}</span>
             </div>
-            <div class="space-y-0.5 mt-1">
+            <div class="space-y-1 mt-1">
         `;
-        for (const p of people) {
+        people.forEach((p, idx) => {
           const initial = (p.name || p.email || 'U')[0].toUpperCase();
+          this._searchSuggestionItems.push({
+            type: 'sender',
+            action: () => this.filterBySender(p.email, p.name)
+          });
           emptyHtml += `
-            <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-card cursor-pointer transition">
-              <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+            <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="search-suggestion-row flex items-center gap-2.5 p-2 rounded-2xl hover:bg-slate-100 cursor-pointer transition">
+              <div class="h-7 w-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
                 ${initial}
               </div>
               <div class="min-w-0 flex-1">
-                <p class="font-bold text-foreground text-xs truncate">${this.escapeHtml(p.name)}</p>
-                <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(p.email)}</p>
+                <p class="font-bold text-slate-900 text-xs truncate">${this.escapeHtml(p.name)}</p>
+                <p class="text-[11px] text-slate-500 truncate font-mono">${this.escapeHtml(p.email)}</p>
               </div>
-              <span class="text-[10px] text-primary font-medium shrink-0">Filter ➔</span>
+              <span class="text-[11px] text-slate-900 font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full shrink-0">Filter ➔</span>
             </div>
           `;
-        }
+        });
         emptyHtml += `</div></div>`;
       }
 
       if (messages.length > 0) {
         emptyHtml += `
-          <div class="p-2 border-t border-border/50">
-            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          <div class="p-2 border-t border-slate-100">
+            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
               <span>Recent Messages</span>
             </div>
-            <div class="space-y-0.5 mt-1">
+            <div class="space-y-1 mt-1">
         `;
-        for (const m of messages) {
+        messages.forEach(m => {
+          this._searchSuggestionItems.push({
+            type: 'message',
+            action: () => this.selectSuggestionMessage(m.id)
+          });
           emptyHtml += `
-            <div onclick="app.selectSuggestionMessage('${m.id}')" class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-muted/60 cursor-pointer transition">
+            <div onclick="app.selectSuggestionMessage('${m.id}')" class="search-suggestion-row flex items-center justify-between gap-2 p-2 rounded-2xl hover:bg-slate-100 cursor-pointer transition">
               <div class="min-w-0 flex-1">
-                <span class="font-bold text-foreground text-xs truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
-                <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(m.subject || '(no subject)')}</p>
+                <span class="font-bold text-slate-900 text-xs truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
+                <p class="text-[11px] text-slate-600 truncate">${this.escapeHtml(m.subject || '(no subject)')}</p>
               </div>
-              <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-muted-foreground shrink-0"></i>
+              <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
             </div>
           `;
-        }
+        });
         emptyHtml += `</div></div>`;
       }
 
@@ -3365,11 +3375,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
 
     if (people.length === 0 && messages.length === 0) {
+      this._searchSuggestionItems.push({
+        type: 'search_all',
+        action: () => this.searchAllFolders(query)
+      });
       dropdown.innerHTML = `
-        <div class="p-4 text-center text-muted-foreground">
-          <p class="font-medium">No direct matches for "${this.escapeHtml(query)}"</p>
-          <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="mt-2 text-primary font-bold hover:underline cursor-pointer">
-            Search in all mail & spam anyway ➔
+        <div class="p-5 text-center text-slate-600">
+          <p class="font-semibold text-slate-900 text-sm">No direct suggestion for "${this.escapeHtml(query)}"</p>
+          <p class="text-xs text-slate-500 mt-0.5">Try searching across all mail, attachments &amp; trash:</p>
+          <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="mt-3 px-4 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs cursor-pointer shadow-xs transition">
+            Search all folders for "${this.escapeHtml(query)}" ➔
           </button>
         </div>
       `;
@@ -3380,79 +3395,94 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     let html = '';
 
-    // 1. People / Senders Section
+    // 1. People / Contacts Section (Accurate matching with highlighted substring)
     if (people.length > 0) {
       html += `
-        <div class="p-2 bg-muted/30">
-          <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-            <span>People & Contacts</span>
-            <span class="text-[9px] bg-primary/10 text-primary px-1.5 py-0.2 rounded-full font-bold">${people.length}</span>
+        <div class="p-2.5 bg-slate-50/70 border-b border-slate-100">
+          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
+            <span>People &amp; Contacts</span>
+            <span class="text-[9.5px] bg-slate-900 text-white px-2 py-0.2 rounded-full font-bold">${people.length}</span>
           </div>
-          <div class="space-y-0.5 mt-1">
+          <div class="space-y-1 mt-1.5">
       `;
-      for (const p of people) {
+      people.forEach(p => {
         const initial = (p.name || p.email || 'U')[0].toUpperCase();
+        this._searchSuggestionItems.push({
+          type: 'sender',
+          action: () => this.filterBySender(p.email, p.name)
+        });
         html += `
-          <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-card cursor-pointer transition">
-            <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+          <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="search-suggestion-row flex items-center gap-2.5 p-2 rounded-2xl hover:bg-white hover:shadow-xs cursor-pointer transition border border-transparent hover:border-slate-200">
+            <div class="h-7 w-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
               ${initial}
             </div>
             <div class="min-w-0 flex-1">
-              <p class="font-bold text-foreground truncate">${this.escapeHtml(p.name)}</p>
-              <p class="text-[11px] text-muted-foreground truncate">${this.escapeHtml(p.email)}</p>
+              <p class="font-bold text-slate-900 truncate leading-snug">${this.highlightMatch(p.name, query)}</p>
+              <p class="text-[11px] text-slate-500 truncate font-mono">${this.highlightMatch(p.email, query)}</p>
             </div>
-            <span class="text-[10px] text-primary font-medium shrink-0">Filter sender ➔</span>
+            <span class="text-[10px] text-white bg-slate-900 hover:bg-black font-bold px-2.5 py-1 rounded-full shrink-0 shadow-2xs">Filter ➔</span>
           </div>
         `;
-      }
+      });
       html += `</div></div>`;
     }
 
     // 2. Emails Section (Across all folders: Inbox, Spam, Sent, Archive, Trash)
     if (messages.length > 0) {
       html += `
-        <div class="p-2">
-          <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-            <span>Matching Emails (Inbox, Spam, Sent)</span>
-            <span class="text-[9px] bg-muted text-foreground px-1.5 py-0.2 rounded-full font-bold">${messages.length}</span>
+        <div class="p-2.5">
+          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
+            <span>Matching Messages</span>
+            <span class="text-[9.5px] bg-slate-200 text-slate-800 px-2 py-0.2 rounded-full font-bold">${messages.length}</span>
           </div>
-          <div class="space-y-0.5 mt-1">
+          <div class="space-y-1 mt-1.5">
       `;
-      for (const m of messages) {
+      messages.forEach(m => {
         const folder = m.folder_label || 'Inbox';
-        let folderBadgeColor = 'bg-slate-100 text-slate-700 border border-slate-200';
+        let folderBadgeColor = 'bg-slate-900 text-white';
+
+        this._searchSuggestionItems.push({
+          type: 'message',
+          action: () => this.selectSuggestionMessage(m.id)
+        });
 
         html += `
-          <div onclick="app.selectSuggestionMessage('${m.id}')" class="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-muted/60 cursor-pointer transition">
+          <div onclick="app.selectSuggestionMessage('${m.id}')" class="search-suggestion-row flex items-start justify-between gap-2.5 p-2.5 rounded-2xl hover:bg-slate-50 cursor-pointer transition border border-transparent hover:border-slate-200">
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md ${folderBadgeColor}">${folder}</span>
-                <span class="font-bold text-foreground truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${folderBadgeColor}">${folder}</span>
+                <span class="font-bold text-slate-900 truncate">${this.highlightMatch(m.sender_name || m.sender_email, query)}</span>
               </div>
-              <p class="text-xs text-foreground/90 font-medium truncate mt-0.5">${this.escapeHtml(m.subject || '(no subject)')}</p>
+              <p class="text-xs text-slate-900 font-semibold truncate mt-1">${this.highlightMatch(m.subject || '(no subject)', query)}</p>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${this.highlightMatch(m.body || '', query)}</p>
             </div>
-            <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-muted-foreground shrink-0"></i>
+            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-400 shrink-0 self-center"></i>
           </div>
         `;
-      }
+      });
       html += `</div></div>`;
     }
 
-    // 3. Search Loop Footer
+    // 3. Search Loop Footer (Solid Black Button, White Write)
+    this._searchSuggestionItems.push({
+      type: 'search_all',
+      action: () => this.searchAllFolders(query)
+    });
+
     html += `
-      <div class="p-2.5 bg-muted/50 flex items-center justify-between">
-        <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="font-bold text-primary hover:underline flex items-center gap-1.5 cursor-pointer text-left">
-          <i data-lucide="search" class="h-3.5 w-3.5 shrink-0"></i>
-          <span>Search in all mail (Inbox, Spam, Sent, Archive) for "${this.escapeHtml(query)}"</span>
+      <div class="p-3 bg-slate-50 flex items-center justify-between border-t border-slate-200">
+        <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition">
+          <i data-lucide="search" class="h-3.5 w-3.5 text-white"></i>
+          <span>Search in all mail for "${this.escapeHtml(query)}"</span>
         </button>
-        <span class="text-[10px] text-muted-foreground font-mono hidden sm:inline">Press Enter ↵</span>
+        <span class="text-[10px] text-slate-500 font-mono hidden sm:inline">Press Enter ↵</span>
       </div>
     `;
 
     dropdown.innerHTML = html;
     dropdown.classList.remove('hidden');
     dropdown.classList.add('flex');
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
   },
 
   selectSuggestionMessage(id) {

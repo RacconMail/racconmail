@@ -168,28 +168,35 @@ if (empty($_SESSION['current_user_id'])) {
     
   </style>
 </head>
-<body class="bg-background text-foreground flex flex-col h-screen">
+<body class="bg-background text-foreground flex flex-col h-screen relative selection:bg-slate-900 selection:text-white overflow-hidden" data-glass-style="realistic">
+
+  <!-- ORIGINOS 7 LIQUID GLASS AMBIENT LIGHT-HARVESTING ENGINE LAYER -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" id="originos-light-harvesting-canvas">
+    <div class="glass-light-orb glass-orb-1 absolute -top-32 left-1/4 w-[420px] h-[420px] rounded-full blur-3xl opacity-40"></div>
+    <div class="glass-light-orb glass-orb-2 absolute top-1/3 -right-24 w-[380px] h-[380px] rounded-full blur-3xl opacity-35"></div>
+    <div class="glass-light-orb glass-orb-3 absolute -bottom-24 left-1/3 w-[480px] h-[480px] rounded-full blur-3xl opacity-30"></div>
+  </div>
 
   <!-- TOP POSTAL STRIPE ACCENT -->
   <div class="stripes h-1.5 w-full shrink-0"></div>
 
   <!-- TOP APP BAR -->
   <header class="h-14 border-b border-border bg-card px-3 md:px-4 flex items-center justify-between shrink-0 shadow-xs z-20">
-    <!-- Brand / Mascot / Hamburger (Fixed stationary logo so it NEVER overlaps menus or buttons) -->
+    <!-- Brand / Mascot / Hamburger (Stationary logo restored to original clean size on both mobile & desktop) -->
     <div class="flex items-center gap-2 md:gap-3 shrink-0">
       <!-- Mobile Sidebar Toggle -->
       <button
         onclick="app.toggleMobileSidebar()"
-        class="md:hidden p-1.5 rounded-xl hover:bg-muted text-foreground transition cursor-pointer"
+        class="md:hidden p-2 rounded-xl bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs"
         title="Open Folders"
       >
-        <i data-lucide="menu" class="h-6 w-6 text-slate-800"></i>
+        <i data-lucide="menu" class="h-5 w-5 text-white"></i>
       </button>
 
-      <!-- Desktop Logo returns cleanly to Inbox (Never logs out) -->
-      <a href="/inbox" class="hidden md:flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
-        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-8 w-8 md:h-9 md:w-9 object-contain raccoon-wiggle shrink-0" />
-        <span class="text-foreground shrink-0">Raccon Mail</span>
+      <!-- Desktop & Mobile Brand Logo (Visible on all screens, original clean size) -->
+      <a href="/inbox" class="flex items-center gap-2 md:gap-2.5 font-display text-base md:text-xl font-bold tracking-tight cursor-pointer shrink-0 group text-foreground" onclick="event.preventDefault(); app.returnToInbox();" title="Return to Inbox">
+        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-7 w-7 md:h-8 md:w-8 object-contain raccoon-wiggle shrink-0" />
+        <span class="text-foreground shrink-0 font-display font-bold">Raccon Mail</span>
       </a>
       <span class="hidden lg:inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-medium text-slate-700 shrink-0">
         <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
@@ -197,24 +204,18 @@ if (empty($_SESSION['current_user_id'])) {
       </span>
     </div>
 
-    <!-- Mobile Center: Folder Title + Email Address -->
-    <div class="md:hidden flex flex-col items-center justify-center flex-1 min-w-0 px-1 text-center">
-      <h1 class="font-display font-extrabold text-base text-slate-900 tracking-tight leading-none">Inbox</h1>
-      <span id="mobile-header-user-email" class="text-[11px] text-slate-500 font-medium truncate max-w-[200px] mt-0.5">me@racconmail.eu</span>
-    </div>
-
-    <!-- Global Search Bar with Integrated Search Loop Button (Clean White & Slate) -->
+    <!-- Global Search Bar with Integrated Search Loop Button (Solid Black Button, White Text) -->
     <div class="hidden md:block flex-1 min-w-0 max-w-2xl mx-3 lg:mx-6 relative" id="global-search-container">
-      <div class="relative flex items-center rounded-full border border-slate-300 bg-white shadow-2xs hover:border-slate-400 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/15 transition overflow-hidden">
+      <div class="relative flex items-center rounded-full border border-slate-300 bg-white shadow-2xs hover:border-slate-400 focus-within:border-slate-900 focus-within:ring-2 focus-within:ring-slate-900/15 transition overflow-hidden">
         <!-- Advanced Search Filter Dropdown Toggle Button on Left -->
         <button
           type="button"
           onclick="app.toggleAdvancedSearchDropdown()"
-          class="pl-3.5 pr-2 py-2 text-slate-500 hover:text-slate-800 transition cursor-pointer flex items-center gap-1 shrink-0"
+          class="pl-3.5 pr-2 py-2 text-slate-500 hover:text-slate-900 transition cursor-pointer flex items-center gap-1 shrink-0"
           title="Search options & filters"
         >
-          <i data-lucide="sliders-horizontal" class="h-4 w-4 text-slate-500"></i>
-          <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
+          <i data-lucide="sliders-horizontal" class="h-4 w-4 text-slate-600"></i>
+          <i data-lucide="chevron-down" class="h-3 w-3 text-slate-500"></i>
         </button>
 
         <!-- Search Input Field -->
@@ -246,11 +247,11 @@ if (empty($_SESSION['current_user_id'])) {
           ⌘K
         </span>
 
-        <!-- Dedicated Search Loop Action Button (Iconic attached loop button) -->
+        <!-- Dedicated Search Loop Action Button (Solid Black Background, White Write) -->
         <button
           type="button"
           onclick="app.triggerSearchSubmit()"
-          class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-xs"
+          class="bg-slate-900 hover:bg-black active:bg-black text-white px-5 py-2.5 transition flex items-center justify-center shrink-0 cursor-pointer shadow-xs border-l border-slate-900"
           title="Search"
         >
           <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.5]"></i>
@@ -266,19 +267,19 @@ if (empty($_SESSION['current_user_id'])) {
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">From</label>
-            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+            <input type="text" id="adv-search-from" placeholder="Sender name or email..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">To</label>
-            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+            <input type="text" id="adv-search-to" placeholder="Recipient..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">Subject</label>
-            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600" />
+            <input type="text" id="adv-search-subject" placeholder="Keywords in subject..." class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900" />
           </div>
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">In Folder</label>
-            <select id="adv-search-folder" class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-blue-600 bg-white">
+            <select id="adv-search-folder" class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-slate-900 bg-white">
               <option value="all">All Folders</option>
               <option value="Inbox">Inbox</option>
               <option value="Sent">Sent</option>
@@ -291,12 +292,12 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
         <div class="flex items-center justify-between pt-2 border-t border-slate-100">
           <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-slate-300 accent-blue-600 cursor-pointer" />
+            <input type="checkbox" id="adv-search-has-attachment" class="rounded border-slate-300 accent-slate-900 cursor-pointer" />
             <span>Has attachment</span>
           </label>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3 py-1.5 rounded-full hover:bg-slate-100 text-slate-600 font-semibold cursor-pointer">Reset</button>
-            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold cursor-pointer shadow-xs">Search</button>
+            <button type="button" onclick="app.resetAdvancedSearch()" class="px-3.5 py-1.5 rounded-full bg-slate-800 hover:bg-black text-white font-semibold cursor-pointer transition">Reset</button>
+            <button type="button" onclick="app.submitAdvancedSearch()" class="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold cursor-pointer shadow-xs transition">Search</button>
           </div>
         </div>
       </div>
@@ -307,39 +308,45 @@ if (empty($_SESSION['current_user_id'])) {
       </div>
     </div>
 
-    <!-- Header Actions & Account Switcher -->
+    <!-- Header Actions & Account Switcher (All Black Buttons, White Write + Liquid Glass Style Switcher) -->
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
-      <!-- Mobile Quick Search Loop -->
+      <!-- OriginOS 7 Liquid Glass Rendering Switcher (Realistic / Natural / Soft) -->
+      <div class="hidden xl:flex items-center gap-1 rounded-full p-1 bg-slate-900 text-white shadow-xs border border-slate-800 text-[11px] font-bold shrink-0" id="liquid-glass-selector" title="OriginOS 7 Liquid Glass Engine">
+        <button type="button" onclick="app.setGlassStyle('realistic')" id="glass-btn-realistic" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Realistic</button>
+        <button type="button" onclick="app.setGlassStyle('natural')" id="glass-btn-natural" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Natural</button>
+        <button type="button" onclick="app.setGlassStyle('soft')" id="glass-btn-soft" class="glass-style-pill px-2.5 py-0.5 rounded-full text-[11px] font-bold transition text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer">Soft</button>
+      </div>
+      <!-- Mobile Quick Search Loop Button -->
       <button
         onclick="app.focusMobileSearch()"
-        class="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full transition cursor-pointer"
+        class="md:hidden p-2 rounded-full bg-slate-900 hover:bg-black text-white transition cursor-pointer shadow-xs"
         title="Search Mail"
       >
-        <i data-lucide="search" class="h-5 w-5 text-slate-700 stroke-[2.2]"></i>
+        <i data-lucide="search" class="h-4.5 w-4.5 text-white stroke-[2.2]"></i>
       </button>
 
       <!-- World Stories Button (Desktop/Tablet) -->
       <button
         onclick="app.openStoriesModal()"
         title="World Stories — Read global folktales & fables"
-        class="hidden sm:flex items-center gap-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2.5 sm:px-3 py-1.5 text-xs font-medium transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
+        class="hidden sm:flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 px-3 py-1.5 text-xs font-bold transition cursor-pointer active:scale-95 shadow-2xs shrink-0"
       >
-        <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
+        <i data-lucide="book-open" class="h-3.5 w-3.5 text-white shrink-0"></i>
         <span class="hidden sm:inline">Stories</span>
-        <span class="text-[10px] bg-slate-900 text-white px-1.5 py-0.2 rounded-full font-bold hidden md:inline">175+</span>
+        <span class="text-[10px] bg-white text-slate-900 px-1.5 py-0.2 rounded-full font-extrabold hidden md:inline">175+</span>
       </button>
 
-      <!-- Account Switcher Dropdown (Monogram circle badge on mobile) -->
+      <!-- Account Switcher Dropdown (Solid Black Background, White Write) -->
       <div class="relative">
         <button
           onclick="app.toggleAccountDropdown()"
-          class="flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted/50 p-1 md:pl-2 text-xs transition cursor-pointer"
+          class="flex items-center gap-1.5 rounded-full bg-slate-900 hover:bg-black text-white border border-slate-800 p-1 md:pl-2.5 md:pr-2 text-xs transition cursor-pointer shadow-xs"
         >
-          <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline">Clever Raccoon</span>
-          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-800">
+          <span id="active-user-name" class="font-medium max-w-[100px] truncate hidden md:inline text-white">Clever Raccoon</span>
+          <div id="active-user-avatar-badge" class="h-7 w-7 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-700">
             <span id="active-user-badge-initial">R</span>
           </div>
-          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-muted-foreground mr-1 hidden md:inline"></i>
+          <i data-lucide="chevron-down" class="h-3.5 w-3.5 text-white mr-1 hidden md:inline"></i>
         </button>
 
         <!-- Modern Profile Dropdown Menu (Auto-dismisses on click-outside) -->
@@ -563,46 +570,46 @@ if (empty($_SESSION['current_user_id'])) {
     <!-- 2. MESSAGES LIST PANEL (Full width on mobile until email opened, Middle Panel on Desktop) -->
     <section id="messages-panel" class="w-full md:w-96 border-r border-border bg-card flex flex-col shrink-0 overflow-hidden">
       <!-- Folder Header & Filter Toolbar -->
-      <div class="p-3 border-b border-border bg-card shrink-0 space-y-2">
+      <div class="p-3 border-b border-border/80 bg-card/70 backdrop-blur-md shrink-0 space-y-2">
         <div class="flex items-center justify-between gap-2">
           <div class="min-w-0 flex-1 truncate">
-            <h1 id="current-folder-title" class="font-display text-lg font-bold truncate">Inbox</h1>
-            <p id="current-folder-subtitle" class="text-xs text-muted-foreground truncate">Loading emails...</p>
+            <h1 id="current-folder-title" class="font-display text-lg font-extrabold truncate text-slate-900">Inbox</h1>
+            <p id="current-folder-subtitle" class="text-xs text-slate-500 font-medium truncate">Loading emails...</p>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <a href="/forum" title="Raccon Forum" class="p-1.5 sm:px-2.5 sm:py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-foreground shrink-0"></i>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <a href="/forum" title="Raccon Forum" class="px-3 py-1 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
+              <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
               <span class="hidden sm:inline">Forum</span>
             </a>
-            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="p-1.5 sm:px-2.5 sm:py-1 rounded-full text-foreground bg-muted hover:bg-card border border-border transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
-              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-foreground shrink-0"></i>
+            <button onclick="app.openNewsModal()" title="Raccon News Wire" class="px-3 py-1 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer shrink-0">
+              <i data-lucide="newspaper" class="h-3.5 w-3.5 text-white shrink-0"></i>
               <span class="hidden sm:inline">News</span>
             </button>
-            <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer shrink-0">
-              <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+            <button onclick="app.refreshCurrentFolder()" title="Refresh" class="p-1.5 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition cursor-pointer shrink-0 shadow-xs">
+              <i data-lucide="refresh-cw" class="h-4 w-4 text-white"></i>
             </button>
-            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition cursor-pointer shrink-0">
-              <i data-lucide="check-check" class="h-4 w-4"></i>
+            <button onclick="app.markAllRead()" title="Mark all as read" class="p-1.5 rounded-full text-white bg-slate-900 hover:bg-black border border-slate-800 transition cursor-pointer shrink-0 shadow-xs">
+              <i data-lucide="check-check" class="h-4 w-4 text-white"></i>
             </button>
-            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-muted-foreground hover:text-foreground hover:bg-muted px-2 py-1 rounded-md transition font-medium shrink-0">
+            <button id="empty-folder-btn" onclick="app.emptyCurrentFolder()" title="Empty Folder" class="hidden text-xs text-white bg-slate-900 hover:bg-black border border-slate-800 px-3 py-1 rounded-full transition font-bold shrink-0 shadow-xs">
               Empty
             </button>
           </div>
         </div>
 
-        <!-- Filter Pills & Sorting -->
+        <!-- Filter Pills & Sorting (Solid Black Buttons, White Write) -->
         <div class="flex items-center justify-between gap-1 pt-1 overflow-x-auto no-scrollbar">
           <div class="flex items-center gap-1.5 text-xs shrink-0">
-            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-slate-900 text-white transition shadow-xs whitespace-nowrap shrink-0">All</button>
-            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 whitespace-nowrap shrink-0">Unread</button>
-            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 whitespace-nowrap shrink-0">Starred</button>
-            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium text-slate-600 hover:bg-slate-100 transition border border-transparent hover:border-slate-200 flex items-center gap-1 whitespace-nowrap shrink-0">
-              <i data-lucide="paperclip" class="h-3 w-3"></i> Files
+            <button onclick="app.setFilter('all')" id="filter-all" class="px-3 py-1 rounded-full font-bold bg-slate-900 hover:bg-black text-white transition shadow-xs whitespace-nowrap shrink-0 border border-slate-900">All</button>
+            <button onclick="app.setFilter('unread')" id="filter-unread" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 whitespace-nowrap shrink-0">Unread</button>
+            <button onclick="app.setFilter('starred')" id="filter-starred" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 whitespace-nowrap shrink-0">Starred</button>
+            <button onclick="app.setFilter('has_attachments')" id="filter-has_attachments" class="px-3 py-1 rounded-full font-medium bg-slate-800 hover:bg-black text-white transition border border-slate-700 flex items-center gap-1 whitespace-nowrap shrink-0">
+              <i data-lucide="paperclip" class="h-3 w-3 text-white"></i> Files
             </button>
           </div>
 
           <!-- Sort menu -->
-          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-muted/60 border border-border rounded-lg px-2 py-1 outline-none text-muted-foreground cursor-pointer shrink-0 ml-2">
+          <select id="sort-select" onchange="app.onSortChange(this.value)" class="text-xs bg-white/80 backdrop-blur-sm border border-slate-300 rounded-full px-2.5 py-1 outline-none text-slate-800 font-medium cursor-pointer shrink-0 ml-2 shadow-2xs">
             <option value="date_desc">Newest</option>
             <option value="date_asc">Oldest</option>
             <option value="sender">Sender</option>
@@ -611,56 +618,35 @@ if (empty($_SESSION['current_user_id'])) {
         </div>
       </div>
 
-      <!-- Category Tabs & Select Button (Mobile & Desktop) -->
-      <div class="px-3.5 border-b border-border bg-card shrink-0 flex items-center justify-between overflow-x-auto no-scrollbar">
-        <div class="flex items-center gap-5 text-xs font-semibold py-1">
-          <button onclick="app.setCategoryTab('all')" id="tab-cat-all" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
-            All
-          </button>
-          <button onclick="app.setCategoryTab('primary')" id="tab-cat-primary" class="cat-tab active py-2 px-1 font-extrabold text-slate-900 border-b-2 border-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
-            Primary
-          </button>
-          <button onclick="app.setCategoryTab('offers')" id="tab-cat-offers" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
-            <span>Offers</span>
-            <span id="offers-count-badge" class="hidden text-[10px] text-slate-500 font-bold bg-slate-100 border border-slate-200 px-1.5 py-0.2 rounded-full">0</span>
-          </button>
-          <button onclick="app.setCategoryTab('other')" id="tab-cat-other" class="cat-tab py-2 px-1 text-slate-500 hover:text-slate-900 transition whitespace-nowrap cursor-pointer flex items-center gap-1">
-            Other
-          </button>
-        </div>
-
-        <button onclick="app.toggleBatchSelectMode()" id="btn-toggle-select" class="text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 transition cursor-pointer shrink-0">
-          Select
-        </button>
-      </div>
-
       <!-- Batch Action Toolbar (Reveals when items are checked) -->
-      <div id="batch-toolbar" class="hidden bg-accent/80 border-b border-border px-3 py-2 flex items-center justify-between text-xs shrink-0 transition">
+      <div id="batch-toolbar" class="hidden bg-slate-900 text-white border-b border-slate-800 px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
         <div class="flex items-center gap-2">
-          <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-border cursor-pointer" />
-          <span id="selected-count-label" class="font-bold">0 selected</span>
+          <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
+          <span id="selected-count-label" class="font-bold text-white">0 selected</span>
         </div>
         <div class="flex items-center gap-1">
-          <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
-            <i data-lucide="mail-open" class="h-4 w-4"></i>
+          <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800">
+            <i data-lucide="mail-open" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.batchAction('mark_unread')" title="Mark as unread" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
-            <i data-lucide="mail" class="h-4 w-4"></i>
+          <button onclick="app.batchAction('mark_unread')" title="Mark as unread" class="p-1 rounded text-white hover:bg-slate-800">
+            <i data-lucide="mail" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.batchAction('star')" title="Star" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
-            <i data-lucide="star" class="h-4 w-4"></i>
+          <button onclick="app.batchAction('star')" title="Star" class="p-1 rounded text-white hover:bg-slate-800">
+            <i data-lucide="star" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.batchAction('archive')" title="Archive" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
-            <i data-lucide="archive" class="h-4 w-4"></i>
+          <button onclick="app.batchAction('archive')" title="Archive" class="p-1 rounded text-white hover:bg-slate-800">
+            <i data-lucide="archive" class="h-4 w-4 text-white"></i>
           </button>
-          <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded hover:bg-card text-muted-foreground hover:text-foreground">
-            <i data-lucide="trash-2" class="h-4 w-4"></i>
+          <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800">
+            <i data-lucide="trash-2" class="h-4 w-4 text-white"></i>
           </button>
         </div>
       </div>
 
-      <!-- Messages Scrollable List -->
-      <div id="messages-list" class="flex-1 overflow-y-auto divide-y divide-border-light pb-20 md:pb-0">
+      <!-- Messages Scrollable List (Modern Floating Oval / Liquid Glass Cards) -->
+      <div id="messages-list" class="flex-1 overflow-y-auto py-2 space-y-1.5 pb-20 md:pb-2">
+        <!-- Rendered by JS -->
+      </div>
         <!-- Rendered by JS -->
       </div>
     </section>
@@ -1450,46 +1436,7 @@ if (empty($_SESSION['current_user_id'])) {
     </div>
   </div>
 
-  <!-- SPONSORED AD DETAILS MODAL -->
-  <div id="sponsored-ad-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closeSponsoredAdModal()">
-    <div onclick="event.stopPropagation()" class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 relative">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-        <div class="flex items-center gap-2.5">
-          <div class="h-9 w-9 rounded-full bg-slate-900 flex items-center justify-center text-white">
-            <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" />
-          </div>
-          <div>
-            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-              <span>Raccon Nocturnal Cloud</span>
-              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">Ad</span>
-            </h3>
-            <p class="text-[11px] text-slate-500">Verified Sponsor &bull; racconmail.eu</p>
-          </div>
-        </div>
-        <button onclick="app.closeSponsoredAdModal()" class="p-1 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
-          <i data-lucide="x" class="h-5 w-5"></i>
-        </button>
-      </div>
 
-      <div class="py-4 space-y-2 text-xs text-slate-700 leading-relaxed">
-        <p class="font-semibold text-slate-900 text-sm">Nocturnal Encrypted Cloud Stash &amp; High-Speed VPN</p>
-        <p>Keep your data masked from surveillance and ISP logging. Enjoy 25GB of sealed storage, custom postal envelopes, and dedicated zero-log routing.</p>
-        <div class="rounded-2xl bg-slate-50 p-3 border border-slate-200 flex items-center justify-between mt-3">
-          <span class="font-bold text-slate-900">100% Free with Raccon Mail</span>
-          <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Included</span>
-        </div>
-      </div>
-
-      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-        <button onclick="app.dismissSponsoredAd(); app.closeSponsoredAdModal();" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition cursor-pointer">
-          Hide This Ad
-        </button>
-        <button onclick="app.closeSponsoredAdModal(); app.openCompose({ to: 'sponsor@racconmail.eu', subject: 'Inquiry: Raccon Cloud & VPN' });" class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition cursor-pointer">
-          Learn More
-        </button>
-      </div>
-    </div>
-  </div>
 
   <audio id="mail-chime" preload="auto">
     <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..." type="audio/wav">

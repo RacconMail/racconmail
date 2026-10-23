@@ -1262,13 +1262,232 @@ header img[src*="raccoon-logo"]:hover {
 }
 
 /* =======================================================
+   ORIGINOS 7 "LIQUID GLASS" & TRANSLUCENT BUBBLE ENGINE
+   (Blue River Virtual GPU Inspired Refraction & Light Harvesting)
+   ======================================================= */
+
+/* 1. Ambient Light-Harvesting Canvas */
+#originos-light-harvesting-canvas {
+  filter: saturate(160%);
+  pointer-events: none;
+}
+.glass-orb-1 {
+  background: radial-gradient(circle, rgba(148, 163, 184, 0.45) 0%, rgba(203, 213, 225, 0.2) 50%, transparent 70%);
+  animation: orbDrift1 18s ease-in-out infinite alternate;
+}
+.glass-orb-2 {
+  background: radial-gradient(circle, rgba(226, 232, 240, 0.5) 0%, rgba(148, 163, 184, 0.25) 50%, transparent 70%);
+  animation: orbDrift2 22s ease-in-out infinite alternate;
+}
+.glass-orb-3 {
+  background: radial-gradient(circle, rgba(203, 213, 225, 0.4) 0%, rgba(100, 116, 139, 0.18) 50%, transparent 70%);
+  animation: orbDrift3 26s ease-in-out infinite alternate;
+}
+
+@keyframes orbDrift1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.1); }
+  100% { transform: translate(-30px, 80px) scale(0.95); }
+}
+@keyframes orbDrift2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(1.15); }
+  100% { transform: translate(40px, 30px) scale(0.9); }
+}
+@keyframes orbDrift3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, -50px) scale(1.08); }
+  100% { transform: translate(50px, -20px) scale(0.92); }
+}
+
+/* 2. Visual Glass Styles: [Realistic], [Natural], [Soft] */
+
+/* Realistic (Default): High refraction, sharp specular rim highlights, deep blur */
+body[data-glass-style="realistic"] .originos-liquid-card,
+body[data-glass-style="realistic"] .originos-glass-surface,
+.originos-glass-realistic {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.52) 50%, rgba(255, 255, 255, 0.78) 100%) !important;
+  backdrop-filter: blur(28px) saturate(210%) contrast(108%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%) contrast(108%);
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px 0 rgba(15, 23, 42, 0.08),
+    0 10px 28px -4px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Natural: Balanced frosted transparency, medium blur, organic light catch */
+body[data-glass-style="natural"] .originos-liquid-card,
+body[data-glass-style="natural"] .originos-glass-surface,
+.originos-glass-natural {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.4) 60%, rgba(255, 255, 255, 0.65) 100%) !important;
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 1px 0 rgba(15, 23, 42, 0.05),
+    0 8px 22px -3px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Soft: Milky diffuse frosted glow, gentle diffusion, subtle refraction */
+body[data-glass-style="soft"] .originos-liquid-card,
+body[data-glass-style="soft"] .originos-glass-surface,
+.originos-glass-soft {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.75),
+    0 4px 16px -2px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* 3. Liquid Glass Message Cards (Oval Bubble / Squircle Aesthetic) */
+.msg-swipe-wrapper.originos-liquid-card {
+  position: relative;
+  overflow: hidden;
+  margin: 7px 10px;
+  border-radius: 24px !important;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.msg-swipe-wrapper.originos-liquid-card:hover {
+  transform: translateY(-1.5px) scale(1.003);
+  border-color: rgba(255, 255, 255, 1) !important;
+  box-shadow: 
+    inset 0 2px 2.5px 0 rgba(255, 255, 255, 1),
+    0 14px 34px -4px rgba(15, 23, 42, 0.12) !important;
+}
+.msg-swipe-wrapper.originos-liquid-card.is-selected {
+  border-color: #0F172A !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.9),
+    0 0 0 2px #0F172A,
+    0 12px 30px -4px rgba(15, 23, 42, 0.2) !important;
+}
+
+.originos-glass-inner {
+  position: relative;
+  z-index: 2;
+  background: transparent !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
+  will-change: transform;
+}
+.originos-liquid-card:hover .originos-glass-inner {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 4. Obsidian Liquid Glass Buttons (Black Background, White Write + Liquid Glass Rim) */
+button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill),
+.btn,
+a.btn,
+input[type="button"],
+input[type="submit"] {
+  background: linear-gradient(150deg, #1e293b 0%, #0f172a 60%, #020617 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5),
+    0 4px 14px -2px rgba(15, 23, 42, 0.25) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 9999px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill):hover,
+.btn:hover,
+a.btn:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background: linear-gradient(150deg, #334155 0%, #0f172a 60%, #000000 100%) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 
+    inset 0 1.8px 2px 0 rgba(255, 255, 255, 0.45),
+    0 8px 24px -3px rgba(15, 23, 42, 0.35) !important;
+}
+
+button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill):active,
+.btn:active,
+a.btn:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+  transform: translateY(0.5px) scale(0.97) !important;
+  background: #000000 !important;
+}
+
+button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill) i,
+button:not(.btn-unstyled):not(.cat-tab):not(.glass-style-pill) svg,
+.btn i,
+.btn svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* 5. Translucent Liquid Glass Header & Floating Capsule Nav */
+header {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+#mobile-floating-capsule {
+  background: linear-gradient(150deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 60%, rgba(2, 6, 23, 0.98) 100%) !important;
+  backdrop-filter: blur(28px) saturate(210%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.35),
+    0 16px 42px -4px rgba(15, 23, 42, 0.45) !important;
+}
+
+/* 6. Liquid Glass Search Bar */
+#global-search-container > div {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.9),
+    0 4px 18px -2px rgba(15, 23, 42, 0.06) !important;
+}
+#global-search-container > div:focus-within {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(15, 23, 42, 0.8) !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 1),
+    0 8px 28px -4px rgba(15, 23, 42, 0.12) !important;
+}
+
+/* 7. Liquid Glass Dropdowns & Modals */
+#search-suggestions-dropdown,
+#advanced-search-dropdown,
+#account-dropdown,
+#reader-more-dropdown,
+.unique-email-card {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.95),
+    0 20px 48px -6px rgba(15, 23, 42, 0.14) !important;
+}
+
+/* =======================================================
    MOBILE INBOX, SWIPE GESTURES & FLOATING CAPSULE
    ======================================================= */
 .msg-swipe-wrapper {
   position: relative;
   overflow: hidden;
-  background-color: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y;
@@ -1297,14 +1516,13 @@ header img[src*="raccoon-logo"]:hover {
 .swipe-content {
   position: relative;
   z-index: 2;
-  background-color: #ffffff;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
 .swipe-btn-delete {
-  background-color: #DC2626;
-  color: #FFFFFF;
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
   width: 80px;
   display: flex;
   flex-direction: column;
@@ -1315,16 +1533,16 @@ header img[src*="raccoon-logo"]:hover {
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border: none;
+  border: none !important;
   outline: none;
 }
 .swipe-btn-delete:active {
-  background-color: #B91C1C;
+  background-color: #B91C1C !important;
 }
 
 .swipe-btn-read {
-  background-color: #0284C7;
-  color: #FFFFFF;
+  background-color: #0284C7 !important;
+  color: #FFFFFF !important;
   width: 70px;
   display: flex;
   flex-direction: column;
@@ -1335,16 +1553,16 @@ header img[src*="raccoon-logo"]:hover {
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border: none;
+  border: none !important;
   outline: none;
 }
 .swipe-btn-read:active {
-  background-color: #0369A1;
+  background-color: #0369A1 !important;
 }
 
 .swipe-btn-planner {
-  background-color: #0F172A;
-  color: #FFFFFF;
+  background-color: #0F172A !important;
+  color: #FFFFFF !important;
   width: 70px;
   display: flex;
   flex-direction: column;
@@ -1355,11 +1573,11 @@ header img[src*="raccoon-logo"]:hover {
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border: none;
+  border: none !important;
   outline: none;
 }
 .swipe-btn-planner:active {
-  background-color: #1E293B;
+  background-color: #1E293B !important;
 }
 
 #mobile-floating-capsule {

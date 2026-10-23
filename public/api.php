@@ -1767,39 +1767,54 @@ try {
         }
 
         $term = '%' . $q . '%';
+        $prefixTerm = $q . '%';
 
-        // 1. Senders & Contacts
+        // 1. Senders & Contacts (Accurate ranking: exact & prefix match first)
         $stmtSenders = $db->prepare('
-            SELECT DISTINCT sender_name as name, sender_email as email, "sender" as type
+            SELECT DISTINCT sender_name as name, sender_email as email, "sender" as type,
+            CASE 
+                WHEN sender_name LIKE ? THEN 1
+                WHEN sender_email LIKE ? THEN 2
+                ELSE 3
+            END as rank_order
             FROM messages
             WHERE user_id = ? AND (sender_name LIKE ? OR sender_email LIKE ?)
-            LIMIT 5
+            ORDER BY rank_order ASC, created_at DESC
+            LIMIT 6
         ');
-        $stmtSenders->execute([$currentUserId, $term, $term]);
+        $stmtSenders->execute([$prefixTerm, $prefixTerm, $currentUserId, $term, $term]);
         $senders = $stmtSenders->fetchAll();
 
         $stmtContacts = $db->prepare('
-            SELECT name, email, "contact" as type
+            SELECT name, email, "contact" as type,
+            CASE 
+                WHEN name LIKE ? THEN 1
+                WHEN email LIKE ? THEN 2
+                ELSE 3
+            END as rank_order
             FROM contacts
             WHERE user_id = ? AND (name LIKE ? OR email LIKE ?)
-            LIMIT 5
+            ORDER BY rank_order ASC, name ASC
+            LIMIT 6
         ');
-        $stmtContacts->execute([$currentUserId, $term, $term]);
+        $stmtContacts->execute([$prefixTerm, $prefixTerm, $currentUserId, $term, $term]);
         $contacts = $stmtContacts->fetchAll();
 
         $people = [];
         $seenEmails = [];
+        // Contacts first, then senders
         foreach (array_merge($contacts, $senders) as $p) {
-            $e = strtolower($p['email']);
+            $e = strtolower($p['email'] ?? '');
             if (!empty($e) && empty($seenEmails[$e])) {
                 $seenEmails[$e] = true;
                 $people[] = $p;
             }
         }
 
-        // 2. Matching Messages across ALL folders
+        // 2. Matching Messages across ALL folders with accurate scoring / ranking:
+        // Match in Subject (prefix > contains) > Sender > Body
         $stmtMsgs = $db->prepare('
-            SELECT id, sender_name, sender_email, subject, body, created_at, is_spam, is_trashed, is_archived, folder_id,
+            SELECT id, sender_name, sender_email, subject, SUBSTR(body, 1, 140) as body, created_at, is_spam, is_trashed, is_archived, folder_id,
             CASE 
                 WHEN is_trashed = 1 THEN "Trash"
                 WHEN is_spam = 1 THEN "Spam"
@@ -1808,13 +1823,19 @@ try {
                 WHEN folder_id = "sent" THEN "Sent"
                 WHEN folder_id IS NOT NULL AND folder_id != "" AND folder_id != "inbox" THEN folder_id
                 ELSE "Inbox"
-            END as folder_label
+            END as folder_label,
+            CASE
+                WHEN subject LIKE ? THEN 1
+                WHEN subject LIKE ? THEN 2
+                WHEN sender_name LIKE ? OR sender_email LIKE ? THEN 3
+                ELSE 4
+            END as relevance_rank
             FROM messages
             WHERE user_id = ? AND (subject LIKE ? OR sender_name LIKE ? OR sender_email LIKE ? OR recipient_email LIKE ? OR body LIKE ?)
-            ORDER BY created_at DESC
-            LIMIT 6
+            ORDER BY relevance_rank ASC, created_at DESC
+            LIMIT 8
         ');
-        $stmtMsgs->execute([$currentUserId, $term, $term, $term, $term, $term]);
+        $stmtMsgs->execute([$prefixTerm, $term, $term, $term, $currentUserId, $term, $term, $term, $term, $term]);
         $matchedMessages = $stmtMsgs->fetchAll();
 
         echo json_encode([
