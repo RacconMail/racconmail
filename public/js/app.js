@@ -110,7 +110,7 @@ const app = {
       // 1. Account dropdown auto dismiss on click outside
       const accountDropdown = document.getElementById('account-dropdown');
       if (accountDropdown && !accountDropdown.classList.contains('hidden')) {
-        const toggleBtn = e.target.closest('[onclick*="toggleAccountDropdown"]');
+        const toggleBtn = e.target.closest('#user-profile-btn') || e.target.closest('[onclick*="toggleAccountDropdown"]');
         if (!accountDropdown.contains(e.target) && !toggleBtn) {
           accountDropdown.classList.add('hidden');
         }
@@ -1420,10 +1420,22 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
-  toggleAccountDropdown() {
+  toggleAccountDropdown(e) {
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     const el = document.getElementById('account-dropdown');
     if (!el) return;
     el.classList.toggle('hidden');
+    if (this.currentUser) {
+      const dName = document.getElementById('dropdown-user-name');
+      const dEmail = document.getElementById('dropdown-user-email');
+      if (dName) dName.textContent = this.currentUser.name || this.currentUser.display_name || 'Raccon User';
+      if (dEmail) dEmail.textContent = this.currentUser.email || '';
+    }
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
   },
 
   // Folders
@@ -1435,9 +1447,77 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       this.renderStandardFolders();
       this.renderCustomFolders();
       this.updateStorageMeter();
+      this.updateRealCounts();
     } catch (err) {
       console.error('Failed to fetch folders:', err);
     }
+  },
+
+  updateRealCounts() {
+    const std = this.folders?.standard || {};
+
+    // 1. Sidebar Inbox unread count
+    const inboxUnread = (std.inbox && typeof std.inbox.unread === 'number') ? std.inbox.unread : 0;
+    const sidebarInboxBadge = document.getElementById('sidebar-inbox-badge');
+    if (sidebarInboxBadge) {
+      if (inboxUnread > 0) {
+        sidebarInboxBadge.textContent = inboxUnread;
+        sidebarInboxBadge.classList.remove('hidden');
+      } else {
+        sidebarInboxBadge.textContent = '';
+        sidebarInboxBadge.classList.add('hidden');
+      }
+    }
+
+    // 2. Middle header coral badge:
+    const inboxCoralBadge = document.getElementById('inbox-coral-badge');
+    if (inboxCoralBadge) {
+      if (this.currentFolder === 'Inbox') {
+        if (inboxUnread > 0) {
+          inboxCoralBadge.textContent = inboxUnread;
+          inboxCoralBadge.classList.remove('hidden');
+        } else {
+          inboxCoralBadge.textContent = '';
+          inboxCoralBadge.classList.add('hidden');
+        }
+      } else {
+        const currFolderKey = this.currentFolder.toLowerCase();
+        const fStat = std[currFolderKey];
+        const unread = (fStat && typeof fStat.unread === 'number') ? fStat.unread : 0;
+        if (unread > 0) {
+          inboxCoralBadge.textContent = unread;
+          inboxCoralBadge.classList.remove('hidden');
+        } else {
+          inboxCoralBadge.textContent = '';
+          inboxCoralBadge.classList.add('hidden');
+        }
+      }
+    }
+
+    // 3. Standard folder count badges (strictly real counts, no placeholders)
+    const setBadge = (id, count) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = (typeof count === 'number' && count > 0) ? count : '';
+      }
+    };
+
+    setBadge('badge-favorites', std.favorites?.total);
+    setBadge('badge-spam', std.spam?.total);
+    setBadge('badge-sent', std.sent?.total);
+    setBadge('badge-drafts', std.drafts?.total);
+    setBadge('badge-archive', std.archive?.total);
+    setBadge('badge-trash', std.trash?.total);
+
+    // 4. Category Badges (Personal, Work, Community)
+    const allMsgs = this.messages || [];
+    const personalCount = allMsgs.filter(m => !/work|project|meeting|invoice|deadline|forum|digest|newsletter|announcement|automated|noreply/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
+    const workCount = allMsgs.filter(m => /work|project|meeting|schedule|office|task|client|proposal|contract|invoice|report|deadline|sync|corp|job|business|budget|review|strategy/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
+    const commCount = allMsgs.filter(m => /community|forum|event|meetup|group|social|club|discussion|digest|update|announcement|welcome|stories|newsletter|public/i.test(`${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase())).length;
+
+    setBadge('badge-cat-personal', personalCount);
+    setBadge('badge-cat-work', workCount);
+    setBadge('badge-cat-community', commCount);
   },
 
   updateStorageMeter() {
@@ -1541,11 +1621,13 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   navTo(folderKey) {
     this.closeMobileSidebar();
     this.currentFolder = folderKey;
+    this.currentCategoryFilter = null; // Clear category filter when switching folder
     this.checkedIds.clear();
     this.updateBatchToolbar();
 
     // Update active highlight in modern bubble sidebar
     document.querySelectorAll('.bubble-nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.category-nav-btn').forEach(el => el.classList.remove('active'));
     const navMap = {
       'Inbox': 'nav-item-inbox',
       'Starred': 'nav-item-favorites',
@@ -1605,9 +1687,37 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       // Update folder title display
       let title = this.currentFolder;
+      if (this.currentFolder === 'Spam') title = 'Spam & Ignored';
+      else if (this.currentFolder === 'Starred') title = 'Favorites';
+      else if (this.currentFolder === 'Inbox') title = 'Inbox';
+
       const customFolder = this.folders.custom?.find(f => f.id === this.currentFolder);
       if (customFolder) title = customFolder.name;
-      folderTitleEl.textContent = title;
+      if (folderTitleEl) folderTitleEl.textContent = title;
+
+      const middleTitleEl = document.getElementById('middle-folder-title');
+      if (middleTitleEl) middleTitleEl.textContent = title;
+
+      const middleSubEl = document.getElementById('middle-folder-subtitle');
+      if (middleSubEl) {
+        if (this.currentFolder === 'Spam') {
+          middleSubEl.textContent = 'Filtered unsolicited and flagged messages.';
+        } else if (this.currentFolder === 'Inbox') {
+          middleSubEl.textContent = 'Maximizing Efficiency, and Achieving Email Zen.';
+        } else if (this.currentFolder === 'Starred') {
+          middleSubEl.textContent = 'Your starred and important messages.';
+        } else if (this.currentFolder === 'Sent') {
+          middleSubEl.textContent = 'Delivered & outgoing messages.';
+        } else if (this.currentFolder === 'Drafts') {
+          middleSubEl.textContent = 'Saved drafts and unfinished notes.';
+        } else if (this.currentFolder === 'Archive') {
+          middleSubEl.textContent = 'Archived messages for safekeeping.';
+        } else if (this.currentFolder === 'Trash') {
+          middleSubEl.textContent = 'Deleted messages pending cleanup.';
+        } else {
+          middleSubEl.textContent = '';
+        }
+      }
 
       // Show/hide empty folder button for Trash & Spam
       if (this.currentFolder.toLowerCase() === 'trash' || this.currentFolder.toLowerCase() === 'spam') {
@@ -1652,6 +1762,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       folderSubEl.textContent = `${this.messages.length} message${this.messages.length === 1 ? '' : 's'}`;
       this.renderMessagesList();
+      this.updateRealCounts();
     } catch (err) {
       console.error('Failed to load messages:', err);
     }
@@ -1734,8 +1845,61 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
+  currentCategoryFilter: null,
+
+  filterByCategory(category) {
+    if (this.currentCategoryFilter === category) {
+      // Deselect category and return to current folder view
+      this.currentCategoryFilter = null;
+      document.querySelectorAll('.category-nav-btn').forEach(btn => btn.classList.remove('active'));
+      const activeNavMap = {
+        'Inbox': 'nav-item-inbox',
+        'Starred': 'nav-item-favorites',
+        'Sent': 'nav-item-sent',
+        'Drafts': 'nav-item-drafts',
+        'Archive': 'nav-item-archive',
+        'Trash': 'nav-item-trash',
+        'Spam': 'nav-item-ignored'
+      };
+      const activeNavId = activeNavMap[this.currentFolder];
+      if (activeNavId) document.getElementById(activeNavId)?.classList.add('active');
+
+      const folderTitle = this.currentFolder === 'Spam' ? 'Spam & Ignored' : (this.currentFolder === 'Starred' ? 'Favorites' : this.currentFolder);
+      const midTitle = document.getElementById('middle-folder-title');
+      if (midTitle) midTitle.textContent = folderTitle;
+    } else {
+      this.currentCategoryFilter = category;
+      document.querySelectorAll('.bubble-nav-item').forEach(btn => btn.classList.remove('active'));
+      const btn = document.querySelector(`[data-category-filter="${category}"]`);
+      if (btn) btn.classList.add('active');
+
+      const catNames = { personal: 'Personal', work: 'Work', community: 'Community' };
+      const midTitle = document.getElementById('middle-folder-title');
+      if (midTitle) midTitle.textContent = catNames[category] || category;
+    }
+    this.closeMobileSidebar();
+    this.renderMessagesList();
+    this.updateRealCounts();
+  },
+
   getFilteredMessagesList() {
     let list = this.messages || [];
+
+    if (this.currentCategoryFilter) {
+      const cat = this.currentCategoryFilter;
+      list = list.filter(m => {
+        const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''} ${m.body || ''}`.toLowerCase();
+        if (cat === 'work') {
+          return /work|project|meeting|schedule|office|task|client|proposal|contract|invoice|report|deadline|sync|corp|job|business|budget|review|strategy/i.test(text);
+        } else if (cat === 'community') {
+          return /community|forum|event|meetup|group|social|club|discussion|digest|update|announcement|welcome|stories|newsletter|public/i.test(text);
+        } else if (cat === 'personal') {
+          return !/work|project|meeting|invoice|deadline|forum|digest|newsletter|announcement|automated|noreply/i.test(text);
+        }
+        return true;
+      });
+    }
+
     if (this.currentCategoryTab === 'other') {
       const otherList = list.filter(m => {
         const text = `${m.sender_name || ''} ${m.sender_email || ''} ${m.subject || ''}`.toLowerCase();
@@ -1803,15 +1967,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.updateCategoryBadges();
     const list = this.getFilteredMessagesList();
 
-    // Update coral badges (both on sidebar and top header)
-    const unreadCount = this.messages ? this.messages.filter(m => !m.is_read).length : 0;
-    const countDisplay = unreadCount > 0 ? unreadCount : (this.messages?.length || '40');
-
-    const sidebarBadge = document.getElementById('sidebar-inbox-badge');
-    if (sidebarBadge) sidebarBadge.textContent = countDisplay;
-
-    const inboxCoralBadge = document.getElementById('inbox-coral-badge');
-    if (inboxCoralBadge) inboxCoralBadge.textContent = countDisplay;
+    // Dynamically update all real counts with zero hardcoded numbers
+    this.updateRealCounts();
 
     if (list.length === 0) {
       container.innerHTML = `
@@ -2129,16 +2286,43 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         </div>
 
         <!-- Action Icons: Reply, Star, More -->
-        <div class="flex items-center gap-1 shrink-0 ml-3 text-slate-400">
+        <div class="flex items-center gap-1 shrink-0 ml-3 text-slate-400 relative">
           <button onclick="app.replyToMessage()" title="Reply" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="reply" class="h-4 w-4"></i>
           </button>
           <button onclick="app.toggleStarred('${msg.id}')" title="Star" class="p-2 rounded-xl hover:text-amber-500 hover:bg-amber-50 transition cursor-pointer">
             <i data-lucide="star" class="h-4 w-4 ${msg.is_starred ? 'text-amber-500 fill-amber-500' : ''}"></i>
           </button>
-          <button onclick="app.toggleReaderMoreDropdown()" title="More actions" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
+          <button onclick="app.toggleReaderMoreDropdown(event)" title="More actions" class="p-2 rounded-xl hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="more-vertical" class="h-4 w-4"></i>
           </button>
+
+          <!-- Reader More Dropdown -->
+          <div id="reader-more-dropdown" class="hidden absolute right-0 top-full mt-1.5 w-52 bg-white rounded-2xl border border-slate-200 shadow-2xl p-1.5 z-50 text-slate-800 space-y-0.5">
+            ${msg.is_spam ? `
+              <button onclick="app.unspamMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer">
+                <i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i>
+                <span>Move to Inbox (Not Spam)</span>
+              </button>
+            ` : `
+              <button onclick="app.spamMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer text-amber-600">
+                <i data-lucide="shield-alert" class="h-4 w-4"></i>
+                <span>Mark as Spam</span>
+              </button>
+            `}
+            <button onclick="app.archiveMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer">
+              <i data-lucide="archive" class="h-4 w-4 text-slate-500"></i>
+              <span>Archive</span>
+            </button>
+            <button onclick="app.deleteMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-rose-50 transition text-left cursor-pointer text-rose-600">
+              <i data-lucide="trash-2" class="h-4 w-4"></i>
+              <span>Move to Trash</span>
+            </button>
+            <button onclick="window.print()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer">
+              <i data-lucide="printer" class="h-4 w-4 text-slate-500"></i>
+              <span>Print Email</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -2164,7 +2348,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             </div>
             <div class="flex items-center gap-2 text-slate-400 shrink-0">
               <span class="text-xs font-mono">${dateStrLong}</span>
-              <button onclick="app.toggleReaderMoreDropdown()" class="p-1 hover:text-slate-700">
+              <button onclick="app.toggleReaderMoreDropdown(event)" class="p-1 hover:text-slate-700">
                 <i data-lucide="more-vertical" class="h-3.5 w-3.5"></i>
               </button>
             </div>
@@ -2535,10 +2719,31 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       });
       this.showToast('Marked as spam');
       this.selectedMessage = null;
+      await this.fetchFolders();
       this.navTo(this.currentFolder);
     } catch (err) {
       console.error('Failed to mark spam:', err);
     }
+  },
+
+  async unspamMessage(id) {
+    try {
+      await fetch(`/api/messages/${id}/spam`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_spam: false })
+      });
+      this.showToast('Moved to Inbox');
+      this.selectedMessage = null;
+      await this.fetchFolders();
+      this.navTo(this.currentFolder);
+    } catch (err) {
+      console.error('Failed to unspam:', err);
+    }
+  },
+
+  deleteMessage(id) {
+    return this.trashMessage(id);
   },
 
   async trashMessage(id) {
@@ -2905,13 +3110,16 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     this.loadMessages();
   },
 
-  onSearchClick() {
+  onSearchClick(e) {
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     const val = (document.getElementById('global-search')?.value || '').trim();
     this.fetchSearchSuggestions(val);
   },
 
-  onSearchFocus() {
-    this.onSearchClick();
+  onSearchFocus(e) {
+    this.onSearchClick(e);
   },
 
   onSearchInput(val) {
@@ -3203,7 +3411,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
       dropdown.innerHTML = emptyHtml;
       dropdown.classList.remove('hidden');
-      dropdown.classList.add('flex');
+      dropdown.classList.add('flex', 'flex-col');
       if (window.lucide) lucide.createIcons();
       return;
     }
@@ -3223,7 +3431,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         </div>
       `;
       dropdown.classList.remove('hidden');
-      dropdown.classList.add('flex');
+      dropdown.classList.add('flex', 'flex-col');
       return;
     }
 
@@ -3315,7 +3523,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     dropdown.innerHTML = html;
     dropdown.classList.remove('hidden');
-    dropdown.classList.add('flex');
+    dropdown.classList.add('flex', 'flex-col');
     if (window.lucide) lucide.createIcons();
   },
 
@@ -3702,6 +3910,10 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     }
   },
 
+  openContactsModal() {
+    this.openContactsView();
+  },
+
   openContactsView() {
     document.getElementById('contacts-modal').classList.remove('hidden');
     this.renderContactsList(this.contacts);
@@ -3957,9 +4169,15 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     document.getElementById('account-dropdown')?.classList.add('hidden');
   },
 
-  toggleReaderMoreDropdown() {
+  toggleReaderMoreDropdown(e) {
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
     const el = document.getElementById('reader-more-dropdown');
     el?.classList.toggle('hidden');
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch (_) {}
+    }
   },
 
   closeReaderMoreDropdown() {

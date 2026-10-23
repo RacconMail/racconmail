@@ -1911,6 +1911,13 @@ try {
 
     if (preg_match('#^messages/([^/]+)/spam$#', $route, $matches) && $method === 'PUT') {
         $msgId = $matches[1];
+        $input = json_decode(file_get_contents('php://input'), true) ?: [];
+        if (isset($input['is_spam']) && !$input['is_spam']) {
+            $db->prepare('UPDATE messages SET is_spam = 0, is_archived = 0, folder_id = "inbox" WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+            echo json_encode(['success' => true, 'unspammed' => true]);
+            exit;
+        }
+
         // Protect registered members from being marked as spam
         $stmtSender = $db->prepare('SELECT sender_email FROM messages WHERE id = ? AND user_id = ?');
         $stmtSender->execute([$msgId, $currentUserId]);

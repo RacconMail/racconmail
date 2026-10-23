@@ -114,33 +114,34 @@ if (empty($_SESSION['current_user_id'])) {
 </head>
 <body class="bg-white text-slate-900 flex flex-col h-screen w-screen relative select-none overflow-hidden m-0 p-0">
 
-  <!-- TOP APP BAR (EDGE-TO-EDGE, NO LOGO, NO THEME BUTTON) -->
-  <header class="h-14 border-b border-slate-100 bg-white flex items-center justify-between px-6 shrink-0 z-20">
-    <!-- Left: Brand Text & Sidebar Toggle (NO LOGO) -->
+  <!-- TOP APP BAR (WHITE BACKGROUND, GRAY WRITE, BLACK BUTTONS, RACCON LOGO) -->
+  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-6 shrink-0 z-20">
+    <!-- Left: Raccon Logo + Brand Name in Gray + Sidebar Toggle (Black Button) -->
     <div class="flex items-center gap-3">
-      <span class="font-bold text-lg tracking-tight text-slate-900">Raccon</span>
-      <button onclick="app.toggleMobileSidebar()" class="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition cursor-pointer" title="Toggle Sidebar">
-        <i data-lucide="panel-left" class="h-4 w-4"></i>
+      <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
+      <span class="font-bold text-base tracking-tight text-slate-500">Raccon</span>
+      <button onclick="app.toggleMobileSidebar()" class="ml-2 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-xs" title="Toggle Sidebar">
+        <i data-lucide="panel-left" class="h-4 w-4 text-white"></i>
       </button>
     </div>
 
-    <!-- Center: View Title -->
+    <!-- Center: View Title in Gray -->
     <div class="hidden sm:flex items-center gap-2">
-      <h1 id="current-folder-title" class="text-base font-bold text-slate-900">All Mail</h1>
+      <h1 id="current-folder-title" class="text-sm font-semibold text-slate-400">All Mail</h1>
       <p id="current-folder-subtitle" class="hidden"></p>
       <button id="empty-folder-btn" class="hidden"></button>
     </div>
 
-    <!-- Right: ONLY Compose Button (NO THEME BUTTON) -->
+    <!-- Right: Black Button with White Write (Compose) -->
     <div class="flex items-center gap-2">
       <button
         onclick="app.openCompose()"
         id="btn-top-compose"
-        class="bubble-compose-pill"
+        class="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
         title="Compose Message"
       >
-        <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
-        <span>Compose</span>
+        <i data-lucide="edit-3" class="h-3.5 w-3.5 text-white"></i>
+        <span class="text-white">Compose</span>
       </button>
     </div>
   </header>
@@ -176,13 +177,14 @@ if (empty($_SESSION['current_user_id'])) {
               <i data-lucide="bookmark" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Favorites</span>
             </div>
-            <span class="text-xs font-mono opacity-60">6</span>
+            <span id="badge-favorites" class="text-xs font-mono opacity-60"></span>
           </button>
           <button onclick="app.navTo('Spam')" id="nav-item-ignored" class="bubble-nav-item">
             <div class="flex items-center gap-2.5 truncate">
               <i data-lucide="bell-off" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Spam & Ignored</span>
             </div>
+            <span id="badge-spam" class="text-xs font-mono opacity-60"></span>
           </button>
         </div>
 
@@ -195,34 +197,35 @@ if (empty($_SESSION['current_user_id'])) {
               <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
               <span class="truncate">Inbox</span>
             </div>
-            <span id="sidebar-inbox-badge" class="bubble-count-coral">40</span>
+            <span id="sidebar-inbox-badge" class="bubble-count-coral hidden"></span>
           </button>
           <button onclick="app.navTo('Sent')" id="nav-item-sent" class="bubble-nav-item">
             <div class="flex items-center gap-2.5 truncate">
               <i data-lucide="send" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Sent</span>
             </div>
-            <span class="text-xs font-mono opacity-60">39</span>
+            <span id="badge-sent" class="text-xs font-mono opacity-60"></span>
           </button>
           <button onclick="app.navTo('Drafts')" id="nav-item-drafts" class="bubble-nav-item">
             <div class="flex items-center gap-2.5 truncate">
               <i data-lucide="file-edit" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Drafts</span>
             </div>
-            <span class="text-xs font-mono opacity-60">1</span>
+            <span id="badge-drafts" class="text-xs font-mono opacity-60"></span>
           </button>
           <button onclick="app.navTo('Archive')" id="nav-item-archive" class="bubble-nav-item">
             <div class="flex items-center gap-2.5 truncate">
               <i data-lucide="archive" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Archive</span>
             </div>
-            <span class="text-xs font-mono opacity-60">2381</span>
+            <span id="badge-archive" class="text-xs font-mono opacity-60"></span>
           </button>
           <button onclick="app.navTo('Trash')" id="nav-item-trash" class="bubble-nav-item">
             <div class="flex items-center gap-2.5 truncate">
               <i data-lucide="trash-2" class="h-4 w-4 shrink-0 opacity-70"></i>
               <span class="truncate">Trash</span>
             </div>
+            <span id="badge-trash" class="text-xs font-mono opacity-60"></span>
           </button>
         </div>
 
@@ -234,23 +237,26 @@ if (empty($_SESSION['current_user_id'])) {
           </button>
         </div>
         <div class="space-y-0.5">
-          <button onclick="app.filterByCategory('personal')" class="bubble-nav-item">
+          <button type="button" onclick="app.filterByCategory('personal')" data-category-filter="personal" class="bubble-nav-item category-nav-btn">
             <div class="flex items-center gap-2.5 truncate">
               <span class="category-dot-pill border-teal-500"></span>
               <span class="truncate">Personal</span>
             </div>
+            <span id="badge-cat-personal" class="text-xs font-mono opacity-60"></span>
           </button>
-          <button onclick="app.filterByCategory('work')" class="bubble-nav-item">
+          <button type="button" onclick="app.filterByCategory('work')" data-category-filter="work" class="bubble-nav-item category-nav-btn">
             <div class="flex items-center gap-2.5 truncate">
               <span class="category-dot-pill border-purple-500"></span>
               <span class="truncate">Work</span>
             </div>
+            <span id="badge-cat-work" class="text-xs font-mono opacity-60"></span>
           </button>
-          <button onclick="app.filterByCategory('community')" class="bubble-nav-item">
+          <button type="button" onclick="app.filterByCategory('community')" data-category-filter="community" class="bubble-nav-item category-nav-btn">
             <div class="flex items-center gap-2.5 truncate">
               <span class="category-dot-pill border-blue-500"></span>
               <span class="truncate">Community</span>
             </div>
+            <span id="badge-cat-community" class="text-xs font-mono opacity-60"></span>
           </button>
           <div id="custom-folders-list" class="space-y-0.5"></div>
         </div>
@@ -301,10 +307,30 @@ if (empty($_SESSION['current_user_id'])) {
           </button>
         </div>
 
-        <!-- Bottom User Profile Row -->
-        <div class="mt-auto pt-3 border-t border-slate-100">
-          <div class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-50 transition cursor-pointer" onclick="app.toggleAccountDropdown()">
-            <div class="flex items-center gap-2.5 min-w-0">
+        <!-- Bottom User Profile Row (Interactive Account Dropdown) -->
+        <div class="mt-auto pt-3 border-t border-slate-100 relative">
+          <!-- Account Popover / Dropdown Menu -->
+          <div id="account-dropdown" class="hidden absolute bottom-full left-0 right-0 mb-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2 z-50 text-slate-900 space-y-1">
+            <div class="px-3 py-2 border-b border-slate-100">
+              <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate">Raccon User</p>
+              <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate">user@racconmail.eu</p>
+            </div>
+            <button onclick="app.openSettingsModal(); app.toggleAccountDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
+              <i data-lucide="settings" class="h-4 w-4 text-slate-500"></i>
+              <span>Profile & Settings</span>
+            </button>
+            <button onclick="app.openContactsModal(); app.toggleAccountDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
+              <i data-lucide="contact" class="h-4 w-4 text-teal-500"></i>
+              <span>Address Book</span>
+            </button>
+            <button onclick="app.logout()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition cursor-pointer text-left">
+              <i data-lucide="log-out" class="h-4 w-4 text-rose-500"></i>
+              <span>Sign Out</span>
+            </button>
+          </div>
+
+          <div id="user-profile-btn" class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-100 transition cursor-pointer select-none" onclick="app.toggleAccountDropdown(event)">
+            <div class="flex items-center gap-2.5 min-w-0 pointer-events-none">
               <div id="active-user-avatar-badge" class="h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0">
                 <span id="active-user-badge-initial">R</span>
               </div>
@@ -313,7 +339,7 @@ if (empty($_SESSION['current_user_id'])) {
                 <p id="active-user-email" class="text-[11px] text-slate-400 truncate">user@racconmail.eu</p>
               </div>
             </div>
-            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-400 shrink-0"></i>
+            <i data-lucide="chevron-up" class="h-4 w-4 text-slate-400 shrink-0 pointer-events-none"></i>
           </div>
         </div>
       </aside>
@@ -321,12 +347,12 @@ if (empty($_SESSION['current_user_id'])) {
       <!-- 2. MESSAGES LIST PANEL -->
       <section id="messages-panel" class="w-full md:w-80 lg:w-[380px] border-r border-slate-100 flex flex-col shrink-0 overflow-hidden bg-white">
         
-        <!-- Header: Title + Coral Badge + Subtitle -->
+        <!-- Header: Title + Dynamic Badge + Subtitle -->
         <div class="pt-5 px-5 pb-2 shrink-0">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <h2 class="text-xl font-bold text-slate-900 tracking-tight">Inbox</h2>
-              <span id="inbox-coral-badge" class="bubble-count-coral">40</span>
+              <h2 id="middle-folder-title" class="text-xl font-bold text-slate-900 tracking-tight">Inbox</h2>
+              <span id="inbox-coral-badge" class="bubble-count-coral hidden"></span>
             </div>
             <div class="flex items-center gap-1">
               <button onclick="app.refreshCurrentFolder()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Refresh">
@@ -337,23 +363,28 @@ if (empty($_SESSION['current_user_id'])) {
               </button>
             </div>
           </div>
-          <p class="text-xs text-slate-400 leading-normal mt-1 font-normal">Maximizing Efficiency, and Achieving Email Zen.</p>
+          <p id="middle-folder-subtitle" class="text-xs text-slate-400 leading-normal mt-1 font-normal"></p>
 
-          <!-- Search Bar -->
-          <div class="mt-3.5 mb-1">
+          <!-- Search Bar with Click-to-Open Suggestions -->
+          <div id="global-search-container" class="mt-3.5 mb-1 relative">
             <div class="bubble-search-box">
               <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
               <input
                 id="global-search"
                 type="text"
                 placeholder="Search"
+                onclick="app.onSearchClick(event)"
+                onfocus="app.onSearchClick(event)"
                 oninput="app.onSearchInput(this.value)"
                 onkeydown="app.onSearchKeyDown(event)"
+                autocomplete="off"
               />
               <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="h-3.5 w-3.5"></i>
               </button>
             </div>
+            <!-- Search Suggestions Dropdown (Only appears when clicked) -->
+            <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden divide-y divide-slate-100 max-h-80 overflow-y-auto flex flex-col"></div>
           </div>
         </div>
 
