@@ -338,25 +338,25 @@
       min-width: 44px;
     }
 
-    /* Vivo X500 Pro Max Flagship Levitation & Gleam Animations */
-    @keyframes vivoFloat {
+    /* Flagship Smartphone Mockup Levitation & Gleam Animations */
+    @keyframes phoneFloat {
       0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 35px rgba(6, 182, 212, 0.15);
+        transform: translateY(0px);
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22);
       }
       50% {
-        transform: translateY(-12px) rotate(-0.5deg);
-        box-shadow: 0 40px 80px -15px rgba(15, 23, 42, 0.45), 0 0 50px rgba(6, 182, 212, 0.25);
+        transform: translateY(-8px);
+        box-shadow: 0 35px 60px -12px rgba(15, 23, 42, 0.3);
       }
     }
 
-    @keyframes vivoScreenGleam {
+    @keyframes phoneScreenGleam {
       0% {
         transform: translateX(-180%) skewX(-25deg);
         opacity: 0;
       }
       15% {
-        opacity: 0.45;
+        opacity: 0.35;
       }
       35% {
         transform: translateX(260%) skewX(-25deg);
@@ -368,41 +368,26 @@
       }
     }
 
-    @keyframes vivoPulseAura {
-      0%, 100% {
-        transform: scale(0.96);
-        opacity: 0.35;
-      }
-      50% {
-        transform: scale(1.08);
-        opacity: 0.65;
-      }
-    }
-
-    @keyframes vivoBadgeBounce {
+    @keyframes phoneBadgeBounce {
       0%, 100% {
         transform: translateY(0);
       }
       50% {
-        transform: translateY(-6px);
+        transform: translateY(-5px);
       }
     }
 
-    .vivo-device-container {
-      animation: vivoFloat 5s ease-in-out infinite;
+    .phone-device-container {
+      animation: phoneFloat 5s ease-in-out infinite;
       will-change: transform, box-shadow;
     }
 
-    .vivo-gleam-overlay {
-      animation: vivoScreenGleam 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    .phone-gleam-overlay {
+      animation: phoneScreenGleam 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    .vivo-aura-glow {
-      animation: vivoPulseAura 4s ease-in-out infinite;
-    }
-
-    .vivo-toast-anim {
-      animation: vivoBadgeBounce 4s ease-in-out infinite;
+    .phone-toast-anim {
+      animation: phoneBadgeBounce 4s ease-in-out infinite;
     }
   </style>
 
@@ -932,25 +917,13 @@
 
           </div>
 
-          <!-- Right Column: Ultra-Sleek Animated Vivo X500 Pro Max (5 Cols) -->
-          <div class="lg:col-span-5 flex justify-center relative">
+          <!-- Right Column: Ultra-Sleek Modern Smartphone Mockup (5 Cols) -->
+          <div class="lg:col-span-5 flex justify-center relative bg-transparent">
             
-            <!-- Ambient Glowing Pulse Behind Vivo Device -->
-            <div class="vivo-aura-glow pointer-events-none absolute -inset-4 rounded-[60px] bg-gradient-to-tr from-cyan-500/25 via-sky-500/15 to-indigo-500/25 blur-2xl"></div>
-
-            <div class="vivo-device-container relative w-full max-w-[325px]">
+            <div class="phone-device-container relative w-full max-w-[320px] select-none">
               
-              <!-- Floating Flagship Badge Pill (Top Center) -->
-              <div class="absolute -top-7 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-extrabold bg-slate-900 text-white shadow-xl border border-slate-700/80">
-                  <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                  <span class="tracking-wider">vivo X500 Pro Max</span>
-                  <span class="text-cyan-400 font-mono text-[9px] font-bold">144Hz ZEISS</span>
-                </span>
-              </div>
-
               <!-- Floating Notification Toast Pill (Top Left) -->
-              <div class="vivo-toast-anim absolute -top-4 -left-6 z-20 hidden sm:flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl border border-slate-200">
+              <div class="phone-toast-anim absolute -top-4 -left-6 z-20 hidden sm:flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl border border-slate-200">
                 <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" alt="RacconMail" />
                 <div class="text-left text-xs">
                   <div class="font-bold text-slate-900 flex items-center gap-1">Sealed Postcard 🐾 <span class="text-[9px] text-slate-400 font-normal">Now</span></div>
@@ -958,35 +931,30 @@
                 </div>
               </div>
 
-              <!-- Floating SuperFlash Charge / Private Vault Pill (Bottom Right) -->
-              <div class="absolute -bottom-4 -right-4 z-20 hidden sm:flex items-center gap-2 bg-slate-900 text-white px-3.5 py-2 rounded-2xl shadow-xl border border-white/10 text-xs">
-                <i class="fas fa-bolt text-amber-400 text-xs animate-pulse"></i>
-                <span class="font-bold text-[10px] tracking-wide">vivo FlashCharge &bull; 100% Private</span>
-              </div>
-
-              <!-- Vivo X500 Pro Max Hardware Chassis (Curved Titanium Obsidian Frame with Buttons) -->
-              <div class="relative rounded-[48px] p-2 bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 shadow-2xl border-2 border-slate-700/60 ring-1 ring-white/10">
+              <!-- Flagship Smartphone Hardware Chassis (Clean Concentric Curved Titanium Frame) -->
+              <div class="relative rounded-[50px] p-[10px] bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 shadow-2xl border border-slate-700/80 ring-1 ring-white/10">
                 
-                <!-- Side Hardware Buttons: Volume Rocker & Power Button on Right Edge -->
+                <!-- Side Hardware Buttons: Volume Rockers & Power Button on Edges -->
                 <div class="absolute -right-[4px] top-24 w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
-                <div class="absolute -right-[4px] top-38 w-[3px] h-7 bg-slate-600 rounded-r-md"></div>
+                <div class="absolute -right-[4px] top-36 w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
+                <div class="absolute -left-[4px] top-28 w-[3px] h-12 bg-slate-600 rounded-l-md"></div>
 
-                <!-- Inner Screen Bezel with Curved Corners & 144Hz AMOLED Display -->
-                <div class="relative rounded-[40px] bg-slate-950 overflow-hidden border border-black/40 text-slate-900 flex flex-col min-h-[580px]">
+                <!-- Inner Screen Bezel with Flawless 40px Concentric Curved Corners (50px - 10px = 40px) -->
+                <div class="relative rounded-[40px] bg-white overflow-hidden border border-black/30 text-slate-900 flex flex-col min-h-[580px] shadow-inner">
                   
                   <!-- Diagonal Glass Gleam Light Reflection (Animated) -->
                   <div class="pointer-events-none absolute inset-0 overflow-hidden z-30">
-                    <div class="vivo-gleam-overlay absolute -inset-y-10 -inset-x-20 w-[120px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-xs"></div>
+                    <div class="phone-gleam-overlay absolute -inset-y-10 -inset-x-20 w-[120px] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-xs"></div>
                   </div>
 
-                  <!-- Vivo Top Status Bar & Centered Punch-Hole Camera -->
+                  <!-- Smartphone Top Status Bar & Centered Punch-Hole Camera -->
                   <div class="bg-white pt-2.5 px-5 pb-1 flex items-center justify-between text-[11px] font-bold text-slate-900 relative z-20 select-none">
                     <span>9:41</span>
                     
-                    <!-- Centered Vivo Micro Punch-Hole Camera with ZEISS Anti-reflective Ring -->
-                    <div class="w-3.5 h-3.5 rounded-full bg-black ring-1 ring-blue-500/30 flex items-center justify-center relative shadow-inner">
+                    <!-- Centered Micro Punch-Hole Camera -->
+                    <div class="w-3.5 h-3.5 rounded-full bg-black ring-1 ring-slate-800/60 flex items-center justify-center relative shadow-inner">
                       <div class="w-1.5 h-1.5 rounded-full bg-slate-900 flex items-center justify-center">
-                        <div class="w-0.5 h-0.5 rounded-full bg-blue-400"></div>
+                        <div class="w-0.5 h-0.5 rounded-full bg-cyan-400"></div>
                       </div>
                     </div>
 
@@ -1003,7 +971,7 @@
                   <div class="p-3 bg-white border-b border-slate-100 flex items-center justify-between relative z-10">
                     <div class="flex items-center gap-2">
                       <img src="/raccoon-logo.png" alt="RacconMail" class="h-6 w-6 raccoon-anim object-contain" />
-                      <span class="font-display font-extrabold text-xs text-slate-900">RacconMail <span class="text-[9px] font-mono text-cyan-600 font-bold">PRO MAX</span></span>
+                      <span class="font-display font-extrabold text-xs text-slate-900">RacconMail <span class="text-[9px] font-mono text-cyan-600 font-bold">Mobile v2.0</span></span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1049,21 +1017,21 @@
                         <span class="text-[10px] text-slate-400 font-mono">Yesterday</span>
                       </div>
                       <div class="text-xs text-slate-900 font-semibold mt-1">Universal Sync v2.0 Ready ⚡</div>
-                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">High-speed delivery on vivo X500 Pro Max.</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">High-speed delivery on modern mobile devices.</div>
                     </div>
                   </div>
 
                   <!-- Mock Compose Floating Bar with Working Pencil -->
                   <div class="mt-auto p-3 bg-white border-t border-slate-100 flex items-center justify-between relative z-10">
-                    <span class="text-[10px] font-bold text-slate-400">vivo X500 Pro Max &bull; 144Hz</span>
+                    <span class="text-[10px] font-bold text-slate-400">RacconMail Mobile &bull; 120Hz Fluid</span>
                     <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-bold shadow-xs">
                       <i class="fas fa-pen text-[10px]"></i>
                       <span>Write Mail</span>
                     </div>
                   </div>
 
-                  <!-- Vivo Curved Home Gesture Bar -->
-                  <div class="bg-white pb-2 pt-1 flex justify-center relative z-10">
+                  <!-- Curved Home Gesture Bar -->
+                  <div class="bg-white pb-2.5 pt-1 flex justify-center relative z-10">
                     <div class="h-1 w-28 rounded-full bg-slate-900/40"></div>
                   </div>
 
