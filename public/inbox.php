@@ -11,79 +11,149 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
     session_start();
 }
-if (empty($_SESSION['current_user_id'])) {
-    header("Location: /auth?mode=register");
+
+$token = $_GET['token'] ?? ($_COOKIE['raccon_token'] ?? null);
+$db = null;
+try {
+    $db = new PDO('sqlite:' . __DIR__ . '/raccoon_mail.db', null, null, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+} catch (Throwable $e) {}
+
+if (empty($_SESSION['current_user_id']) && $token && $db) {
+    try {
+        $stmtTok = $db->prepare("SELECT user_id FROM user_tokens WHERE token = ? AND expires_at > datetime('now')");
+        $stmtTok->execute([$token]);
+        $tokUid = $stmtTok->fetchColumn();
+        if ($tokUid) {
+            $_SESSION['current_user_id'] = $tokUid;
+        }
+    } catch (Throwable $e) {}
+}
+
+// If user is not authenticated, redirect immediately to landing page
+if (empty($_SESSION['current_user_id']) || empty($db)) {
+    header("Location: https://racconmail.eu/");
     exit;
 }
+
+$currentUser = null;
+try {
+    $stmtUser = $db->prepare("SELECT id, name, email, avatar, signature, theme FROM users WHERE id = ?");
+    $stmtUser->execute([$_SESSION['current_user_id']]);
+    $currentUser = $stmtUser->fetch();
+} catch (Throwable $e) {}
+
+if (!$currentUser) {
+    $_SESSION = [];
+    header("Location: https://racconmail.eu/");
+    exit;
+}
+if (empty($currentUser['avatar'])) {
+    $currentUser['avatar'] = '/raccoon-logo.png';
+}
+
+$uid = $currentUser['id'];
+$uemail = $currentUser['email'];
+
+// Calculate REAL counts for each folder
+$counts = [
+    'inbox_total' => 0,
+    'inbox_unread' => 0,
+    'unread_total' => 0,
+    'starred_total' => 0,
+    'drafts_total' => 0,
+    'sent_total' => 0,
+    'archive_total' => 0,
+    'spam_total' => 0,
+    'trash_total' => 0
+];
+
+$initialInboxMessages = [];
+
+try {
+    // 1. Inbox counts
+    $stmt = $db->prepare("SELECT COUNT(*) as total, SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox')");
+    $stmt->execute([$uid]);
+    $row = $stmt->fetch();
+    $counts['inbox_total'] = (int)($row['total'] ?? 0);
+    $counts['inbox_unread'] = (int)($row['unread'] ?? 0);
+
+    // 2. Unread total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_read = 0 AND is_draft = 0 AND is_spam = 0 AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['unread_total'] = (int)$stmt->fetchColumn();
+
+    // 3. Starred total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_starred = 1 AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['starred_total'] = (int)$stmt->fetchColumn();
+
+    // 4. Drafts total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_draft = 1 AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['drafts_total'] = (int)$stmt->fetchColumn();
+
+    // 5. Sent total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND folder_id = 'sent' AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['sent_total'] = (int)$stmt->fetchColumn();
+
+    // 6. Archive total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_archived = 1 AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['archive_total'] = (int)$stmt->fetchColumn();
+
+    // 7. Spam total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_spam = 1 AND is_trashed = 0");
+    $stmt->execute([$uid]);
+    $counts['spam_total'] = (int)$stmt->fetchColumn();
+
+    // 8. Trash total
+    $stmt = $db->prepare("SELECT COUNT(*) FROM messages WHERE user_id = ? AND is_trashed = 1");
+    $stmt->execute([$uid]);
+    $counts['trash_total'] = (int)$stmt->fetchColumn();
+
+    // Fetch initial messages for Inbox
+    $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox') ORDER BY created_at DESC LIMIT 50");
+    $stmtMsgs->execute([$uid]);
+    $initialInboxMessages = $stmtMsgs->fetchAll();
+} catch (Throwable $e) {}
 ?>
 <!DOCTYPE html>
-<html lang="en" class="notranslate" translate="no">
+<html lang="en" class="h-full bg-slate-100/70 notranslate" translate="no">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Raccon Mail" />
+  <meta name="apple-mobile-web-app-title" content="RacconMail" />
   <meta name="theme-color" content="#FFFFFF" />
   <meta name="google" content="notranslate" />
-  <title>Raccon Mail — Clever email for web & mobile</title>
-  <meta name="description" content="Raccon Mail: a super modern, secure inbox on the web and your smartphone." />
-    <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+  <title>RacconMail &mdash; All Emails</title>
+  <meta name="description" content="Clever, minimal, encrypted email inbox with email zen precision." />
+
+  <!-- Favicon Suite -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  
-  <!-- FontAwesome 6 (Harmony SocialEngine icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- Google AdSense -->
-  <!-- AdSense script removed from private inbox for privacy and policy compliance -->
-
-  <script>
-    if (navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches) {
-      document.documentElement.classList.add('is-android-app');
-    }
-  </script>
-  <!-- Early Theme Initializer (Strictly Light Bubble White) -->
-  <script>
-    (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
-    })();
-  </script>
-
-  <!-- Tailwind CSS Configured with Dynamic CSS Variables for Seamless Live Theming -->
+  <!-- Tailwind CSS & Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            background: 'var(--background)',
-            foreground: 'var(--foreground)',
-            card: 'var(--card)',
-            'card-foreground': 'var(--card-foreground)',
-            primary: 'var(--primary)',
-            'primary-foreground': 'var(--primary-foreground)',
-            secondary: 'var(--secondary)',
-            'secondary-foreground': 'var(--secondary-foreground)',
-            muted: 'var(--muted)',
-            'muted-foreground': 'var(--muted-foreground)',
-            accent: 'var(--accent)',
-            'accent-foreground': 'var(--accent-foreground)',
-            border: 'var(--border)',
-            'border-light': 'var(--border-light)'
-          },
           fontFamily: {
-            sans: ['"DM Sans"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-            handwriting: ['"Caveat"', 'cursive']
+            sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            coral: '#FF4D6D'
           }
         }
       }
@@ -93,1097 +163,1715 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Custom Postcard Styles with Dynamic Cache Busting -->
-  <link rel="stylesheet" href="/css/raccoon-mail.css?v=<?php echo time(); ?>" />
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
-    /* Direct adjustments for the Bubble White layout */
-    .bubble-compose-pill {
-      background: #18181B !important;
-      color: #FFFFFF !important;
-      border-radius: 12px !important;
-      padding: 8px 16px !important;
-      font-size: 13px !important;
-      font-weight: 600 !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 7px !important;
-      cursor: pointer !important;
-      transition: all 0.15s ease !important;
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #FFFFFF;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
-    .bubble-compose-pill:hover {
-      background: #000000 !important;
-      transform: translateY(-0.5px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    /* Form inputs and textareas MUST have selectable, editable text */
+    input, textarea, [contenteditable="true"] {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      cursor: text !important;
+    }
+
+    /* All icons gray by default ("iconite gri") */
+    i[data-lucide], .lucide {
+      color: #94A3B8;
+      stroke: #94A3B8;
+    }
+
+    /* Active Black Capsule Pill matching user's design */
+    .nav-pill-active {
+      background: linear-gradient(180deg, #27272A 0%, #09090B 100%) !important;
+      color: #FFFFFF !important;
+      border-radius: 14px !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+    }
+    .nav-pill-active i, .nav-pill-active svg {
+      color: #FFFFFF !important;
+      stroke: #FFFFFF !important;
+    }
+
+    /* Inactive nav items */
+    .nav-pill-inactive {
+      color: #64748B;
+      border-radius: 12px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .nav-pill-inactive:hover {
+      background-color: #F8FAFC;
+      color: #0F172A;
+    }
+    .nav-pill-inactive:hover i {
+      color: #64748B;
+      stroke: #64748B;
+    }
+
+    /* Active Message Card Elevation */
+    .msg-card-active {
+      background: #FFFFFF !important;
+      border-radius: 18px !important;
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04) !important;
+      border: 1px solid #F1F5F9 !important;
+    }
+
+    /* Inactive message row */
+    .msg-card-inactive {
+      background: transparent;
+      border-radius: 14px;
+      transition: background-color 0.15s ease;
+      cursor: pointer;
+    }
+    .msg-card-inactive:hover {
+      background-color: #F8FAFC;
+    }
+
+    /* Collapsed Sidebar Rail Style */
+    .sidebar-collapsed {
+      width: 68px !important;
+      min-width: 68px !important;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+    .sidebar-collapsed .sidebar-text,
+    .sidebar-collapsed .sidebar-section-title,
+    .sidebar-collapsed .sidebar-badge {
+      display: none !important;
+    }
+    .sidebar-collapsed .nav-pill-active,
+    .sidebar-collapsed .nav-pill-inactive {
+      justify-content: center !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #E2E8F0;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #CBD5E1;
     }
   </style>
 </head>
-<body class="bg-white text-slate-900 flex flex-col h-screen w-screen relative select-none overflow-hidden m-0 p-0">
+<body class="flex flex-col h-screen w-screen overflow-hidden bg-white text-slate-900 select-none">
 
-  <!-- TOP APP BAR (WHITE BACKGROUND, GRAY WRITE, BLACK BUTTONS, RACCON LOGO) -->
-  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-3 sm:px-6 shrink-0 z-20 w-full" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
-    <!-- Left: Raccon Logo + Brand Name in Gray + Sidebar Toggle (Black Button) -->
-    <div class="flex items-center gap-3">
-      <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />
-      <span class="font-bold text-base tracking-tight text-slate-500" style="color: #64748b !important;">Raccon</span>
+  <!-- ========================================================================= -->
+  <!-- PROTONMAIL-STYLE TOP TOGGLEBAR (WHITE BG, SUBTLE BORDER, GRAY WRITE, BLACK BUTTONS) -->
+  <!-- ========================================================================= -->
+  <header id="proton-togglebar" class="h-14 border-b border-slate-200/90 bg-white flex items-center justify-between px-3 sm:px-6 shrink-0 z-30 w-full select-none" style="background-color: #FFFFFF !important; border-bottom: 1px solid #E2E8F0 !important;">
+    
+    <!-- Left Section: App Switcher + Logo + Brand + Sidebar Toggle -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- App Switcher (Proton Waffle 9-dots) -->
+      <button onclick="toggleAppSwitcher()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="RacconMail Apps">
+        <i data-lucide="layout-grid" class="h-4 w-4"></i>
+      </button>
+
+      <!-- Brand Mascot Logo & Name: Clicking refreshes the mail without logging out -->
+      <a href="/inbox" onclick="window.location.reload(); return false;" class="flex items-center gap-2 group cursor-pointer mr-1" title="RacconMail (Click to refresh)">
+        <img src="/raccoon-logo.png" alt="RacconMail" class="h-7 w-7 object-contain group-hover:scale-105 transition" />
+        <span class="font-bold text-base tracking-tight hidden sm:inline" style="color: #64748B !important;">RacconMail</span>
+      </a>
+
+      <!-- ProtonMail Sidebar Toggle Button -->
       <button
         type="button"
         id="btn-toggle-sidebar"
-        onclick="app.toggleSidebar()"
-        class="ml-1 p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer flex items-center justify-center"
-        style="background: transparent !important; color: #94a3b8 !important; border: none !important;"
+        onclick="toggleSidebarAction()"
+        class="p-2 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition cursor-pointer flex items-center justify-center shadow-2xs"
         title="Toggle Sidebar"
       >
-        <i data-lucide="panel-left" class="h-4 w-4" style="color: #94a3b8 !important;"></i>
+        <i data-lucide="panel-left" class="h-4 w-4"></i>
       </button>
     </div>
 
-    <!-- Center: View Title in Gray -->
-    <div class="hidden sm:flex items-center gap-2">
-      <h1 id="current-folder-title" class="text-sm font-semibold text-slate-400" style="color: #94a3b8 !important;">All Mail</h1>
-      <p id="current-folder-subtitle" class="hidden"></p>
-      <button id="empty-folder-btn" class="hidden"></button>
-    </div>
-
-    <!-- Right: Black Button with White Write (Compose) -->
-    <div class="flex items-center gap-2">
-      <button
-        onclick="app.openCompose()"
-        id="btn-top-compose"
-        class="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white px-4 py-2 text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
-        style="background-color: #0f172a !important; color: #ffffff !important;"
-        title="Compose Message"
-      >
-        <i data-lucide="edit-3" class="h-3.5 w-3.5 text-white" style="color: #ffffff !important;"></i>
-        <span class="text-white" style="color: #ffffff !important;">Compose</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- MAIN 3-COLUMN WORKSPACE (EDGE-TO-EDGE) -->
-  <div class="flex-1 flex overflow-hidden min-h-0 relative bg-white">
-
-      <!-- 1. NAVIGATION SIDEBAR -->
-      <aside id="sidebar-panel" class="sidebar fixed inset-y-0 left-0 z-50 w-64 bg-white transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-200 ease-in-out shrink-0 flex flex-col border-r border-slate-100 p-3 overflow-y-auto select-none shadow-xl md:shadow-none">
-        
-        <!-- Mobile Close Header -->
-        <div class="p-2 border-b border-slate-100 flex items-center justify-between md:hidden mb-2">
-          <div class="flex items-center gap-2 font-bold text-sm text-slate-900">
-            <img src="/raccoon-logo.png" class="h-5 w-5 object-contain" />
-            <span>Raccon Mail</span>
-          </div>
-          <button onclick="app.closeMobileSidebar()" class="p-1 rounded-full hover:bg-slate-100 text-slate-500">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-
-        <!-- Section 1: MENU -->
-        <div class="bubble-section-label">Menu</div>
-        <div class="space-y-0.5">
-          <button onclick="app.navTo('Inbox')" id="nav-item-all-mail" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="layout-grid" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">All Mail</span>
-            </div>
-          </button>
-          <button onclick="app.navTo('Starred')" id="nav-item-favorites" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="bookmark" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Favorites</span>
-            </div>
-            <span id="badge-favorites" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button onclick="app.navTo('Spam')" id="nav-item-ignored" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="bell-off" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Spam & Ignored</span>
-            </div>
-            <span id="badge-spam" class="text-xs font-mono opacity-60"></span>
-          </button>
-        </div>
-
-        <!-- Section 2: MAILBOX -->
-        <div class="bubble-section-label">Mailbox</div>
-        <div class="space-y-0.5">
-          <!-- Active State: Black Capsule Pill -->
-          <button onclick="app.navTo('Inbox')" id="nav-item-inbox" class="bubble-nav-item active">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
-              <span class="truncate">Inbox</span>
-            </div>
-            <span id="sidebar-inbox-badge" class="bubble-count-coral hidden"></span>
-          </button>
-          <button onclick="app.navTo('Sent')" id="nav-item-sent" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="send" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Sent</span>
-            </div>
-            <span id="badge-sent" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button onclick="app.navTo('Drafts')" id="nav-item-drafts" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="file-edit" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Drafts</span>
-            </div>
-            <span id="badge-drafts" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button onclick="app.navTo('Archive')" id="nav-item-archive" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="archive" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Archive</span>
-            </div>
-            <span id="badge-archive" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button onclick="app.navTo('Trash')" id="nav-item-trash" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="trash-2" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Trash</span>
-            </div>
-            <span id="badge-trash" class="text-xs font-mono opacity-60"></span>
-          </button>
-        </div>
-
-        <!-- Section 3: CATEGORIES -->
-        <div class="flex items-center justify-between pr-2">
-          <div class="bubble-section-label">Categories</div>
-          <button onclick="app.openNewFolderModal()" title="Add Category" class="text-slate-400 hover:text-slate-700 transition cursor-pointer">
-            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-          </button>
-        </div>
-        <div class="space-y-0.5">
-          <button type="button" onclick="app.filterByCategory('personal')" data-category-filter="personal" class="bubble-nav-item category-nav-btn">
-            <div class="flex items-center gap-2.5 truncate">
-              <span class="category-dot-pill border-teal-500"></span>
-              <span class="truncate">Personal</span>
-            </div>
-            <span id="badge-cat-personal" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button type="button" onclick="app.filterByCategory('work')" data-category-filter="work" class="bubble-nav-item category-nav-btn">
-            <div class="flex items-center gap-2.5 truncate">
-              <span class="category-dot-pill border-purple-500"></span>
-              <span class="truncate">Work</span>
-            </div>
-            <span id="badge-cat-work" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <button type="button" onclick="app.filterByCategory('community')" data-category-filter="community" class="bubble-nav-item category-nav-btn">
-            <div class="flex items-center gap-2.5 truncate">
-              <span class="category-dot-pill border-blue-500"></span>
-              <span class="truncate">Community</span>
-            </div>
-            <span id="badge-cat-community" class="text-xs font-mono opacity-60"></span>
-          </button>
-          <div id="custom-folders-list" class="space-y-0.5"></div>
-        </div>
-
-        <!-- Section 4: ECOSYSTEM -->
-        <div class="bubble-section-label">Ecosystem</div>
-        <div class="space-y-0.5">
-          <button onclick="app.openStoriesModal()" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="zap" class="h-4 w-4 shrink-0 opacity-70 text-amber-500"></i>
-              <span class="truncate">World Stories</span>
-            </div>
-          </button>
-          <button onclick="window.location.href='/news'" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="newspaper" class="h-4 w-4 shrink-0 opacity-70 text-blue-500"></i>
-              <span class="truncate">News Wire</span>
-            </div>
-          </button>
-          <button onclick="window.location.href='/forum'" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="message-square" class="h-4 w-4 shrink-0 opacity-70 text-cyan-500"></i>
-              <span class="truncate">Forum</span>
-            </div>
-          </button>
-          <button onclick="app.openContactsModal()" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="contact" class="h-4 w-4 shrink-0 opacity-70 text-teal-500"></i>
-              <span class="truncate">Address Book</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Section 5: ACCOUNT & SETTINGS -->
-        <div class="bubble-section-label">Account</div>
-        <div class="space-y-0.5">
-          <button onclick="app.openSettingsModal()" class="bubble-nav-item">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="settings" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Settings & IMAP</span>
-            </div>
-          </button>
-          <button onclick="app.logout()" class="bubble-nav-item text-rose-600 hover:text-rose-700">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="log-out" class="h-4 w-4 shrink-0 opacity-70"></i>
-              <span class="truncate">Sign Out</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Bottom User Profile Row (Interactive Account Dropdown) -->
-        <div class="mt-auto pt-3 border-t border-slate-100 relative">
-          <!-- Account Popover / Dropdown Menu -->
-          <div id="account-dropdown" class="hidden absolute bottom-full left-0 right-0 mb-2 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2 z-50 text-slate-900 space-y-1">
-            <div class="px-3 py-2 border-b border-slate-100">
-              <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate">Raccon User</p>
-              <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate">user@racconmail.eu</p>
-            </div>
-            <button onclick="app.openSettingsModal(); app.toggleAccountDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
-              <i data-lucide="settings" class="h-4 w-4 text-slate-500"></i>
-              <span>Profile & Settings</span>
-            </button>
-            <button onclick="app.openContactsModal(); app.toggleAccountDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
-              <i data-lucide="contact" class="h-4 w-4 text-teal-500"></i>
-              <span>Address Book</span>
-            </button>
-            <button onclick="app.logout()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition cursor-pointer text-left">
-              <i data-lucide="log-out" class="h-4 w-4 text-rose-500"></i>
-              <span>Sign Out</span>
-            </button>
-          </div>
-
-          <div id="user-profile-btn" class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-100 transition cursor-pointer select-none" onclick="app.toggleAccountDropdown(event)">
-            <div class="flex items-center gap-2.5 min-w-0 pointer-events-none">
-              <div id="active-user-avatar-badge" class="h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                <span id="active-user-badge-initial">R</span>
-              </div>
-              <div class="min-w-0 flex-1">
-                <p id="active-user-name" class="text-xs font-bold text-slate-900 truncate">Raccon User</p>
-                <p id="active-user-email" class="text-[11px] text-slate-400 truncate">user@racconmail.eu</p>
-              </div>
-            </div>
-            <i data-lucide="chevron-up" class="h-4 w-4 text-slate-400 shrink-0 pointer-events-none"></i>
-          </div>
-        </div>
-      </aside>
-
-      <!-- 2. MESSAGES LIST PANEL -->
-      <section id="messages-panel" class="w-full md:w-80 lg:w-[380px] border-r border-slate-100 flex flex-col shrink-0 overflow-hidden bg-white">
-        
-        <!-- Header: Title + Dynamic Badge + Subtitle -->
-        <div class="pt-5 px-5 pb-2 shrink-0">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <h2 id="middle-folder-title" class="text-xl font-bold text-slate-900 tracking-tight">Inbox</h2>
-              <span id="inbox-coral-badge" class="bubble-count-coral hidden"></span>
-            </div>
-            <div class="flex items-center gap-1">
-              <button onclick="app.refreshCurrentFolder()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Refresh">
-                <i data-lucide="rotate-cw" class="h-4 w-4"></i>
-              </button>
-              <button onclick="app.markAllRead()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Mark all read">
-                <i data-lucide="check" class="h-4 w-4"></i>
-              </button>
-            </div>
-          </div>
-          <p id="middle-folder-subtitle" class="text-xs text-slate-400 leading-normal mt-1 font-normal"></p>
-
-          <!-- Search Bar with Click-to-Open Suggestions -->
-          <div id="global-search-container" class="mt-3.5 mb-1 relative w-full" style="background: transparent !important; border: none !important;">
-            <div class="bubble-search-box relative w-full" style="background: transparent !important; border: none !important;">
-              <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
-              <input
-                id="global-search"
-                type="text"
-                placeholder="Search"
-                onclick="app.onSearchClick(event)"
-                onfocus="app.onSearchClick(event)"
-                oninput="app.onSearchInput(this.value)"
-                onkeydown="app.onSearchKeyDown(event)"
-                autocomplete="off"
-                style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
-              />
-              <button onclick="app.clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                <i data-lucide="x" class="h-3.5 w-3.5"></i>
-              </button>
-            </div>
-            <!-- Search Suggestions Dropdown (Only appears when typing query) -->
-            <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl border border-slate-200 shadow-xl z-50 overflow-hidden divide-y divide-slate-100 max-h-80 overflow-y-auto flex flex-col"></div>
-          </div>
-        </div>
-
-        <!-- Batch Action Toolbar (revealed when selected) -->
-        <div id="batch-toolbar" class="hidden bg-slate-900 text-white px-3.5 py-2 flex items-center justify-between text-xs shrink-0 transition">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="select-all-checkbox" onchange="app.toggleSelectAll(this.checked)" class="rounded border-slate-600 accent-white cursor-pointer" />
-            <span id="selected-count-label" class="font-bold text-white">0 selected</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <button onclick="app.batchAction('mark_read')" title="Mark as read" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="mail-open" class="h-4 w-4 text-white"></i></button>
-            <button onclick="app.batchAction('trash')" title="Move to trash" class="p-1 rounded text-white hover:bg-slate-800"><i data-lucide="trash-2" class="h-4 w-4 text-white"></i></button>
-          </div>
-        </div>
-
-        <!-- Messages List Container -->
-        <div id="messages-list" class="flex-1 overflow-y-auto px-2 py-1 space-y-1 pb-20 md:pb-2">
-          <!-- Dynamic bubble message cards populated by app.js -->
-        </div>
-      </section>
-
-      <!-- 3. EMAIL READER & DETAILS PANEL -->
-      <main class="hidden md:flex flex-1 flex-col bg-white overflow-hidden relative" id="reader-panel">
-        <div id="reader-content" class="h-full flex flex-col overflow-y-auto">
-          <!-- Default Empty State -->
-          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 select-none">
-            <div class="relative mb-6">
-              <img src="/raccoon-logo.png" alt="Raccon" class="raccoon-anim relative h-28 w-28 object-contain opacity-75" />
-            </div>
-            <h2 class="text-xl font-bold text-slate-900">Select an email to read</h2>
-            <p class="mt-2 max-w-sm text-xs text-slate-400">
-              Clean, private and beautifully minimal mail client with bubble zen precision.
-            </p>
-          </div>
-        </div>
-      </main>
-    </div>
-
-  <!-- FLOATING CAPSULE BOTTOM BAR (MOBILE ONLY) -->
-  <nav id="mobile-floating-capsule" class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white px-7 py-2.5 rounded-full shadow-2xl flex items-center gap-8 border border-slate-700 safe-area-bottom select-none">
-    <button onclick="app.toggleMobileSidebar()" class="text-white hover:text-slate-200 transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="All Folders (List)">
-      <i data-lucide="list" class="h-5 w-5 text-white"></i>
-    </button>
-    <button onclick="app.openCompose()" class="text-white hover:text-slate-200 transition cursor-pointer flex items-center justify-center p-1.5 active:scale-90" title="Compose New Email">
-      <i data-lucide="edit-3" class="h-5 w-5 text-white"></i>
-    </button>
-  </nav>
-
-  <!-- FLOATING ACTION BUTTON (FAB) FOR DESKTOP / TABLET QUICK COMPOSE -->
-  <button
-    id="desktop-compose-fab"
-    onclick="app.openCompose()"
-    title="Compose New Message"
-    class="hidden fixed bottom-6 right-6 z-30 h-14 w-14 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(14,165,233,0.45)] items-center justify-center transform active:scale-90 transition border-2 border-sky-400/40 cursor-pointer"
-  >
-    <i data-lucide="pencil" class="h-6 w-6 text-white"></i>
-  </button>
-
-  <!-- FLOATING BUBBLE WHITE COMPOSE CARD MODAL -->
-  <div id="compose-modal" class="hidden fixed inset-0 md:inset-auto md:bottom-6 md:right-8 z-50 w-full md:w-[520px] bg-white md:rounded-3xl border border-slate-200/90 shadow-2xl flex flex-col overflow-hidden transition-all duration-200">
-    <!-- Header bar -->
-    <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 select-none cursor-pointer" onclick="if(app.isComposeMinimized) app.minimizeCompose()">
-      <div class="flex items-center gap-2">
-        <h3 id="compose-title" class="font-bold text-sm text-slate-900">New Email</h3>
-      </div>
-      <div class="flex items-center gap-1 text-slate-400">
-        <span id="draft-status-pill" class="text-[11px] text-slate-400 font-mono mr-1"></span>
-        <button type="button" onclick="event.stopPropagation(); app.minimizeCompose()" class="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Minimize">
-          <i data-lucide="minus" class="h-3.5 w-3.5"></i>
-        </button>
-        <button type="button" onclick="event.stopPropagation(); app.closeCompose()" class="p-1 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer" title="Close">
+    <!-- Center Section: Proton-style Global Search Bar -->
+    <!-- Center Section: Proton-style Global Search Bar (Hidden on mobile & APK, accessed via bottom-left search button) -->
+    <div class="hidden md:block flex-1 max-w-xl mx-6">
+      <div class="relative w-full flex items-center">
+        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
+        <input
+          id="global-search"
+          type="text"
+          placeholder="Search all emails..."
+          oninput="handleSearch(this.value)"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-full border border-slate-200/90 pl-10 pr-10 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition shadow-2xs"
+        />
+        <button onclick="clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
           <i data-lucide="x" class="h-3.5 w-3.5"></i>
         </button>
       </div>
     </div>
 
-    <!-- Compose Form -->
-    <div id="compose-body-container" class="p-5 flex-1 flex flex-col gap-3 overflow-y-auto max-h-[70vh] bg-white text-slate-900">
-      <!-- From Field -->
-      <div class="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">From:</span>
-        <div class="bubble-pill-chip">
-          <img src="/raccoon-logo.png" class="h-4 w-4 rounded-full object-cover" />
-          <span id="compose-from-display" class="truncate max-w-[220px]">user@racconmail.eu</span>
-        </div>
-      </div>
-
-      <!-- To Field -->
-      <div class="relative flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">To:</span>
-        <input
-          id="compose-to"
-          type="text"
-          placeholder="recipient@example.com"
-          class="flex-1 bg-transparent text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none"
-          oninput="app.onRecipientInput(this.value)"
-        />
-        <button type="button" onclick="app.toggleCcBcc()" class="text-xs font-semibold text-slate-400 hover:text-slate-800 transition cursor-pointer">Cc/Bcc</button>
-        <!-- Contact Auto-complete Suggestions Dropdown -->
-        <div id="contact-suggestions" class="hidden absolute left-12 top-full mt-1 w-72 rounded-2xl border border-slate-200 bg-white p-1 shadow-2xl z-50 text-slate-900"></div>
-      </div>
-
-      <!-- CC / BCC Rows (Collapsible) -->
-      <div id="cc-bcc-row" class="hidden space-y-2 border-b border-slate-100 pb-2">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Cc:</span>
-          <input id="compose-cc" type="text" placeholder="Carbon copy..." class="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 outline-none" />
-        </div>
-        <div class="flex items-center gap-2.5">
-          <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Bcc:</span>
-          <input id="compose-bcc" type="text" placeholder="Blind carbon copy..." class="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 outline-none" />
-        </div>
-      </div>
-
-      <!-- Subject Field -->
-      <div class="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-        <span class="text-xs font-semibold text-slate-400 w-12 shrink-0">Subject:</span>
-        <input id="compose-subject" type="text" placeholder="Email subject..." class="flex-1 bg-transparent text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none" />
-      </div>
-
-      <!-- Editable Message Body -->
-      <div
-        id="compose-editor"
-        contenteditable="true"
-        placeholder="Write your email here..."
-        class="min-h-[140px] max-h-[260px] overflow-y-auto text-xs sm:text-sm text-slate-800 leading-relaxed py-2 bg-transparent outline-none placeholder:text-slate-400"
-      ></div>
-
-      <!-- File Attachments List -->
-      <div id="compose-attachments-list" class="flex flex-wrap gap-2 pt-2 border-t border-slate-100"></div>
-    </div>
-
-    <!-- Compose Bottom Action Bar -->
-    <div id="compose-footer-container" class="px-5 py-3 border-t border-slate-100 bg-white flex items-center justify-between shrink-0">
-      <button
-        onclick="app.sendMessage()"
-        id="send-mail-btn"
-        class="flex items-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-semibold shadow-sm transition active:scale-95 cursor-pointer"
-        title="Send Email"
-      >
-        <span>Send</span>
+    <!-- Right Section: Action Icons + Proton User Account Dropdown -->
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- Refresh Button -->
+      <button onclick="refreshMailbox()" id="btn-top-refresh" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Refresh messages">
+        <i data-lucide="rotate-cw" class="h-4 w-4"></i>
       </button>
 
-      <div class="flex items-center gap-1 text-slate-400">
-        <label class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Attach Files">
-          <i data-lucide="paperclip" class="h-4 w-4"></i>
-          <input type="file" id="compose-file-input" multiple class="hidden" onchange="app.handleFilesSelected(this.files)" />
-        </label>
-        <button type="button" onclick="app.insertLinkPrompt()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Insert Link">
-          <i data-lucide="link" class="h-4 w-4"></i>
-        </button>
-        <button type="button" onclick="app.insertSignature()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Insert Signature">
-          <i data-lucide="pen-tool" class="h-4 w-4"></i>
-        </button>
-        <button type="button" onclick="app.saveDraft()" class="p-1.5 rounded-lg hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Save Draft">
-          <i data-lucide="save" class="h-4 w-4"></i>
-        </button>
-        <button type="button" onclick="app.discardDraft()" class="p-1.5 rounded-lg hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer" title="Discard">
-          <i data-lucide="trash-2" class="h-4 w-4"></i>
-        </button>
-      </div>
-    </div>
-  </div>
+      <!-- Help Button -->
+      <button onclick="window.location.href='/forum'" class="hidden sm:flex p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Help & Forum">
+        <i data-lucide="help-circle" class="h-4 w-4"></i>
+      </button>
 
-  <!-- NEW CUSTOM FOLDER MODAL -->
-  <div id="new-folder-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeNewFolderModal()">
-    <div class="w-full max-w-sm rounded-3xl bg-card p-6 shadow-soft border border-border">
-      <h3 class="font-display text-lg font-bold">Create Custom Folder</h3>
-      <p class="text-xs text-muted-foreground mt-1">Organize your clever postcards & letters.</p>
-      <input
-        id="new-folder-name"
-        type="text"
-        placeholder="e.g. Acorns & Stashes"
-        class="mt-4 w-full rounded-xl border border-border bg-muted/50 p-2.5 text-sm outline-none focus:border-primary"
-      />
-      <div class="mt-5 flex items-center justify-end gap-2">
-        <button onclick="app.closeNewFolderModal()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted transition">Cancel</button>
-        <button onclick="app.createFolder()" class="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground hover:bg-black transition">Create</button>
-      </div>
-    </div>
-  </div>
+      <!-- Settings Button -->
+      <button onclick="openSettingsModal()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Settings">
+        <i data-lucide="settings" class="h-4 w-4"></i>
+      </button>
 
-  <!-- ADDRESS BOOK / CONTACTS MODAL -->
-  <div id="contacts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeContactsModal()">
-    <div class="w-full max-w-2xl rounded-3xl bg-card shadow-soft border border-border flex flex-col max-h-[85vh] overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i data-lucide="contact" class="h-5 w-5 text-primary"></i>
-          <h3 class="font-display text-lg font-bold">Address Book & Contacts</h3>
+      <!-- Proton User Account Pill -->
+      <div class="relative ml-1">
+        <button onclick="toggleUserDropdown(event)" id="user-profile-btn" class="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-full border border-slate-200/90 hover:bg-slate-50 transition cursor-pointer select-none shadow-2xs">
+          <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-6 w-6 rounded-full object-cover shrink-0 border border-slate-200" />
+          <span id="header-user-email" class="text-xs font-medium text-slate-700 hidden lg:inline max-w-[130px] truncate"><?php echo htmlspecialchars($currentUser['email']); ?></span>
+          <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
+        </button>
+
+        <!-- Account Popover Dropdown -->
+        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2 z-50 text-slate-900 space-y-1">
+          <div class="px-3 py-2.5 border-b border-slate-100">
+            <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+            <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
+            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+              <span>Storage: <strong>12.5 MB / 1 GB</strong></span>
+              <span class="text-emerald-500 font-bold">1%</span>
+            </div>
+            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1 overflow-hidden">
+              <div class="bg-slate-900 h-full w-[2%] rounded-full"></div>
+            </div>
+          </div>
+          <button onclick="openSettingsModal(); toggleUserDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
+            <i data-lucide="user" class="h-4 w-4 text-slate-400"></i>
+            <span>Profile & Settings</span>
+          </button>
+          <button onclick="openContactsModal(); toggleUserDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
+            <i data-lucide="contact" class="h-4 w-4 text-slate-400"></i>
+            <span>Address Book</span>
+          </button>
+          <button onclick="window.location.href='/forum'" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
+            <i data-lucide="message-square" class="h-4 w-4 text-slate-400"></i>
+            <span>RacconMail Community</span>
+          </button>
+          <button onclick="logoutNow()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition cursor-pointer text-left font-medium">
+            <i data-lucide="log-out" class="h-4 w-4 text-rose-500"></i>
+            <span>Sign Out</span>
+          </button>
         </div>
-        <button onclick="app.closeContactsModal()" class="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground">
-          <i data-lucide="x" class="h-4 w-4"></i>
-        </button>
       </div>
-      <div class="p-4 border-b border-border bg-muted/30 flex items-center justify-between gap-3">
-        <input
-          type="text"
-          placeholder="Filter contacts..."
-          oninput="app.filterContacts(this.value)"
-          class="flex-1 rounded-full border border-border bg-card px-4 py-1.5 text-xs outline-none"
-        />
-        <button onclick="app.openNewContactForm()" class="flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-black transition">
-          <i data-lucide="user-plus" class="h-3.5 w-3.5"></i>
-          <span>Add Contact</span>
-        </button>
-      </div>
-      <div id="contacts-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+
     </div>
-  </div>
 
-  <!-- NEW/EDIT CONTACT MODAL -->
-  <div id="contact-form-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeContactForm()">
-    <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-soft border border-border">
-      <h3 id="contact-form-title" class="font-display text-lg font-bold">New Contact</h3>
-      <div class="mt-4 space-y-3 text-sm">
-        <input id="contact-form-name" type="text" placeholder="Full Name (e.g. Luna)" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
-        <input id="contact-form-email" type="email" placeholder="Email address" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
-        <input id="contact-form-phone" type="text" placeholder="Phone number" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
-        <textarea id="contact-form-notes" placeholder="Notes (e.g. night photographer)" rows="2" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none"></textarea>
-      </div>
-      <div class="mt-5 flex justify-end gap-2">
-        <button onclick="app.closeContactForm()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted">Cancel</button>
-        <button onclick="app.saveContact()" class="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground hover:bg-black">Save Contact</button>
-      </div>
-    </div>
-  </div>
+  </header>
 
-  <!-- SETTINGS & REAL IMAP / SMTP MODAL -->
-  <div id="settings-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onclick="if (event.target === this) app.closeSettingsModal()">
-    <div class="w-full max-w-lg rounded-3xl bg-card shadow-soft border border-border flex flex-col max-h-[90vh] overflow-hidden">
-      <div class="p-5 border-b border-border flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i data-lucide="sliders" class="h-5 w-5 text-primary"></i>
-          <h3 class="font-display text-lg font-bold">Mail Client Settings</h3>
-        </div>
-        <button onclick="app.closeSettingsModal()" class="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground">
-          <i data-lucide="x" class="h-4 w-4"></i>
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleSidebarAction()" class="hidden md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-2xs z-40 transition-opacity"></div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN 3-COLUMN WORKSPACE (EDGE-TO-EDGE)                                    -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 flex overflow-hidden min-h-0 relative bg-white w-full">
+
+    <!-- ========================================================================= -->
+    <!-- COLUMN 1: SIDEBAR NAVIGATION WITH ALL MAIL FOLDERS                        -->
+    <!-- ========================================================================= -->
+    <aside id="sidebar-panel" class="w-60 border-r border-slate-100 flex flex-col shrink-0 bg-white h-full p-3 overflow-y-auto select-none fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 transition-all duration-200 -translate-x-full md:flex">
+      
+      <!-- Primary New Message Black Capsule Button at Top of Sidebar -->
+      <div class="pb-3 pt-1">
+        <button onclick="openComposeCard()" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white py-2.5 px-4 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer">
+          <i data-lucide="plus" class="h-4 w-4 text-white"></i>
+          <span class="sidebar-text">New message</span>
         </button>
       </div>
 
-      <div class="p-5 flex-1 overflow-y-auto space-y-5 text-xs">
-        <!-- Profile & Signature -->
-        <div class="space-y-3">
-          <h4 class="font-display text-sm font-bold text-foreground">User Profile & Signature</h4>
-          <div>
-            <label class="block text-muted-foreground mb-1">Display Name</label>
-            <input id="settings-name" type="text" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none" />
+      <!-- Section: MAILBOX (ALL ESSENTIAL FOLDERS) -->
+      <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-2">Mailbox</div>
+      <div class="space-y-0.5">
+        
+        <!-- 1. INBOX (ACTIVE BY DEFAULT) -->
+        <button onclick="switchFolder('Inbox')" id="folder-btn-inbox" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold nav-pill-active cursor-pointer">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Inbox</span>
           </div>
-          <div>
-            <label class="block text-muted-foreground mb-1">Custom Postcard Signature</label>
-            <textarea id="settings-signature" rows="2" class="w-full rounded-xl border border-border bg-muted/40 p-2.5 text-xs outline-none"></textarea>
+          <span id="badge-inbox" class="sidebar-badge bg-[#FF4D6D] text-white text-[10px] font-bold px-2 py-0.5 rounded-full"><?php echo $counts['inbox_unread']; ?></span>
+        </button>
+
+        <!-- 2. UNREAD -->
+        <button onclick="switchFolder('Unread')" id="folder-btn-unread" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Unread</span>
           </div>
+          <span id="badge-unread" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['unread_total']; ?></span>
+        </button>
+
+        <!-- 3. STARRED / FAVORITES -->
+        <button onclick="switchFolder('Starred')" id="folder-btn-starred" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="star" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Starred</span>
+          </div>
+          <span id="badge-starred" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['starred_total']; ?></span>
+        </button>
+
+        <!-- 4. DRAFTS -->
+        <button onclick="switchFolder('Drafts')" id="folder-btn-drafts" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="file-edit" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Drafts</span>
+          </div>
+          <span id="badge-drafts" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['drafts_total']; ?></span>
+        </button>
+
+        <!-- 5. SENT -->
+        <button onclick="switchFolder('Sent')" id="folder-btn-sent" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="send" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Sent</span>
+          </div>
+          <span id="badge-sent" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['sent_total']; ?></span>
+        </button>
+
+        <!-- 6. ARCHIVE -->
+        <button onclick="switchFolder('Archive')" id="folder-btn-archive" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="archive" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Archive</span>
+          </div>
+          <span id="badge-archive" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['archive_total']; ?></span>
+        </button>
+
+        <!-- 7. SPAM -->
+        <button onclick="switchFolder('Spam')" id="folder-btn-spam" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Spam</span>
+          </div>
+          <span id="badge-spam" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['spam_total']; ?></span>
+        </button>
+
+        <!-- 8. TRASH -->
+        <div class="flex items-center justify-between w-full">
+          <button onclick="switchFolder('Trash')" id="folder-btn-trash" class="flex-1 flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+            <div class="flex items-center gap-2.5 truncate">
+              <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
+              <span class="sidebar-text truncate">Trash</span>
+            </div>
+            <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['trash_total']; ?></span>
+          </button>
+          <button onclick="emptyTrashAction()" title="Empty Trash" class="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer">
+            <i data-lucide="eraser" class="h-3.5 w-3.5"></i>
+          </button>
         </div>
 
-        <!-- Real External IMAP / SMTP Server (Custom SMTP / IMAP) -->
-        <div class="space-y-3 border-t border-border pt-4">
-          <div class="flex items-center justify-between">
-            <h4 class="font-display text-sm font-bold text-foreground">External Raccon / SMTP Server</h4>
-            <span class="text-[10px] bg-accent px-2 py-0.5 rounded-full font-medium">Optional</span>
+        <!-- 9. ALL MAIL -->
+        <button onclick="switchFolder('All')" id="folder-btn-all" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="folder" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">All Mail</span>
           </div>
-          <p class="text-[11px] text-muted-foreground">
-            Connect your custom SMTP or external mail server to send live external emails!
-          </p>
-          <div class="grid grid-cols-3 gap-2">
-            <div class="col-span-2">
-              <label class="block text-muted-foreground mb-1">SMTP Host (e.g. mail.racconmail.eu)</label>
-              <input id="settings-smtp-host" type="text" placeholder="mail.racconmail.eu" class="w-full rounded-xl border border-border bg-muted/40 p-2 text-xs outline-none" />
-            </div>
-            <div>
-              <label class="block text-muted-foreground mb-1">Port</label>
-              <input id="settings-smtp-port" type="number" placeholder="587" class="w-full rounded-xl border border-border bg-muted/40 p-2 text-xs outline-none" />
+        </button>
+      </div>
+
+      <!-- Section: CATEGORIES -->
+      <div class="flex items-center justify-between px-3 mb-1 mt-5">
+        <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider">Categories</div>
+        <button onclick="openNewCategoryModal()" title="Add Category" class="text-slate-400 hover:text-slate-700 transition cursor-pointer">
+          <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+        </button>
+      </div>
+      <div class="space-y-0.5">
+        <button onclick="filterCategory('personal')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <span class="w-3.5 h-3.5 rounded-md border-2 border-teal-400 shrink-0"></span>
+          <span class="sidebar-text truncate">Personal</span>
+        </button>
+        <button onclick="filterCategory('work')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <span class="w-3.5 h-3.5 rounded-md border-2 border-purple-400 shrink-0"></span>
+          <span class="sidebar-text truncate">Work</span>
+        </button>
+        <button onclick="filterCategory('entertainment')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive">
+          <span class="w-3.5 h-3.5 rounded-md border-2 border-sky-400 shrink-0"></span>
+          <span class="sidebar-text truncate">Entertainment</span>
+        </button>
+      </div>
+
+      <!-- Section: ECOSYSTEM (Modern Gray Badges) -->
+      <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-5">Ecosystem</div>
+      <div class="space-y-1">
+        <button onclick="openStoriesModal()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+            <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">World Stories</span>
+        </button>
+        <button onclick="window.location.href='/news'" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+            <i data-lucide="newspaper" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">News Wire</span>
+        </button>
+        <button onclick="window.location.href='/forum'" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+            <i data-lucide="message-square" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">Forum</span>
+        </button>
+        <button onclick="openContactsModal()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+            <i data-lucide="users" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">Address Book</span>
+        </button>
+      </div>
+
+      <!-- Bottom User Profile Card -->
+      <div class="mt-auto pt-4 border-t border-slate-100">
+        <div onclick="toggleUserDropdown(event)" class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-50 transition cursor-pointer select-none">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full object-cover shrink-0 border border-slate-200" />
+            <div class="sidebar-text min-w-0 flex-1">
+              <p class="text-xs font-bold text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+              <p class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-muted-foreground mb-1">SMTP Username / Email</label>
-              <input id="settings-smtp-user" type="text" placeholder="user@racconmail.eu" class="w-full rounded-xl border border-border bg-muted/40 p-2 text-xs outline-none" />
-            </div>
-            <div>
-              <label class="block text-muted-foreground mb-1">SMTP App Password</label>
-              <input id="settings-smtp-pass" type="password" placeholder="••••••••••••" class="w-full rounded-xl border border-border bg-muted/40 p-2 text-xs outline-none" />
-            </div>
+          <i data-lucide="chevron-up" class="sidebar-text h-4 w-4 text-slate-400 shrink-0"></i>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ========================================================================= -->
+    <!-- COLUMN 2: MIDDLE INBOX LIST PANEL (~360px)                                -->
+    <!-- ========================================================================= -->
+    <section id="col-inbox" class="w-full md:w-[350px] lg:w-[380px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
+      
+      <!-- Middle Header: Folder Title + Badge + Subtitle + Action Buttons -->
+      <div class="p-5 pb-3 shrink-0">
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-2.5">
+            <h1 id="current-folder-display-title" class="text-2xl font-bold text-slate-900 tracking-tight">Inbox</h1>
+            <span id="coral-inbox-badge" class="bg-[#FF4D6D] text-white text-[11px] font-bold px-2 py-0.5 rounded-full shadow-2xs"><?php echo $counts['inbox_unread']; ?></span>
           </div>
-          <div class="flex items-center justify-between pt-1">
-            <button onclick="app.testSmtpConnection()" class="flex items-center gap-1.5 rounded-full border border-border bg-muted hover:bg-card px-3 py-1.5 text-xs font-medium transition">
-              <i data-lucide="check-circle" class="h-3.5 w-3.5 text-muted-foreground"></i>
-              <span>Test Connection</span>
+
+          <!-- Mark all read and refresh buttons -->
+          <div class="flex items-center gap-1 text-slate-400">
+            <button onclick="refreshMailbox()" class="p-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer" title="Refresh">
+              <i data-lucide="rotate-cw" class="h-4 w-4"></i>
             </button>
-            <span id="smtp-test-status" class="text-[11px]"></span>
+            <button onclick="markAllAsReadAction()" class="p-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer" title="Mark all as read">
+              <i data-lucide="check-check" class="h-4 w-4"></i>
+            </button>
           </div>
         </div>
 
-        <!-- Sound & Notifications -->
-        <div class="border-t border-border pt-4 flex items-center justify-between">
-          <div>
-            <p class="font-bold text-foreground">Incoming Mail Chime</p>
-            <p class="text-[11px] text-muted-foreground">Play a soft postal notification chime when new clever mail arrives.</p>
-          </div>
-          <input type="checkbox" id="settings-sound-enabled" class="cursor-pointer h-4 w-4" checked />
+        <p class="text-xs text-slate-400 leading-normal mb-3 font-normal">
+          Maximizing Efficiency, and Achieving Email Zen.
+        </p>
+
+        <!-- Quick Filter Tabs: All, Unread, Starred -->
+        <div class="flex items-center gap-1.5 mb-2">
+          <button onclick="setListFilter('all')" id="filter-btn-all" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer">All</button>
+          <button onclick="setListFilter('unread')" id="filter-btn-unread" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Unread</button>
+          <button onclick="setListFilter('starred')" id="filter-btn-starred" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Starred</button>
         </div>
       </div>
 
-      <div class="p-4 border-t border-border bg-muted/30 flex justify-end gap-2">
-        <button onclick="app.closeSettingsModal()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted">Close</button>
-        <button onclick="app.saveSettings()" class="rounded-full bg-primary px-5 py-2 text-xs font-medium text-primary-foreground hover:bg-black">Save Settings</button>
+      <!-- Messages Thread List Container -->
+      <div id="threads-container" class="flex-1 overflow-y-auto px-3 py-1 space-y-1.5 pb-6">
+        <!-- Rendered dynamically by renderMessageList() -->
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- COLUMN 3: RIGHT ALL EMAILS & CONVERSATION READING PANE                    -->
+    <!-- ========================================================================= -->
+    <main id="col-reader" class="hidden md:flex flex-1 flex-col bg-white h-full overflow-hidden relative">
+      
+      <!-- Right Top Bar: All Emails + Top Actions + [ Compose ] + [ + New Identity ] -->
+      <header class="h-16 px-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none z-20">
+        <div class="flex items-center gap-3">
+          <button onclick="backToMobileInbox()" class="md:hidden p-1.5 rounded-lg border border-slate-200 text-slate-600">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+          </button>
+          <h2 id="reader-top-title" class="text-lg font-bold text-slate-900 tracking-tight">All Emails</h2>
+        </div>
+
+        <!-- Action Buttons: Reply, Star, Trash, Archive, Compose, New Identity -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 text-slate-400">
+            <button onclick="replyCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Reply">
+              <i data-lucide="reply" class="h-4 w-4"></i>
+            </button>
+            <button onclick="starCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-amber-500 transition cursor-pointer" title="Star message">
+              <i data-lucide="star" id="reader-star-icon" class="h-4 w-4"></i>
+            </button>
+            <button onclick="archiveCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Archive">
+              <i data-lucide="archive" class="h-4 w-4"></i>
+            </button>
+            <button onclick="trashCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-rose-600 transition cursor-pointer" title="Delete / Move to Trash">
+              <i data-lucide="trash-2" class="h-4 w-4"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Thread Conversation View Area -->
+      <div id="thread-conversation-container" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 pb-36">
+        <!-- Rendered dynamically by renderConversationThread() -->
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ALL MODALS (SETTINGS, CONTACTS, STORIES, APP SWITCHER) -->
+  
+  <!-- 1. Settings & Profile Modal -->
+  <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+          <i data-lucide="settings" class="h-5 w-5 text-slate-500"></i>
+          <span>RacconMail Settings</span>
+        </h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Your Display Name</label>
+          <input id="setting-name" type="text" value="<?php echo htmlspecialchars($currentUser['name']); ?>" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-slate-800" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Primary Email Address</label>
+          <input type="text" disabled value="<?php echo htmlspecialchars($currentUser['email']); ?>" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-500" />
+        </div>
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+          <span class="text-slate-500">Need to change password or manage storage?</span>
+          <a href="/admin" class="font-bold text-slate-900 hover:underline">Admin Console &rarr;</a>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 font-semibold text-slate-700 cursor-pointer">Close</button>
+          <button onclick="saveSettingsAction()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold cursor-pointer">Save Changes</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- PRINTABLE VINTAGE POSTCARD MODAL -->
-  <div id="postcard-print-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onclick="if (event.target === this) app.closePostcardModal()">
-    <div class="w-full max-w-3xl bg-white rounded-3xl p-8 border-2 border-slate-300 shadow-2xl relative overflow-hidden text-slate-900">
-      <button onclick="app.closePostcardModal()" class="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition">
-        <i data-lucide="x" class="h-5 w-5"></i>
-      </button>
-
-      <!-- Printable Postcard Body -->
-      <div id="printable-postcard" class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-        <!-- Airmail border inner -->
-        <div class="col-span-full stripes-subtle h-3 rounded-full mb-2"></div>
-
-        <!-- Left Half: Postcard Letter Message -->
-        <div class="flex flex-col justify-between pr-4 border-r border-slate-200">
-          <div>
-            <div class="flex items-center gap-2 mb-4">
-              <img src="/raccoon-logo.png" class="h-8 w-8 object-contain" />
-              <span class="font-display font-bold text-xs uppercase tracking-widest text-slate-500">Official Raccon Postcard</span>
-            </div>
-            <h2 id="postcard-subject" class="font-display text-xl font-bold mb-3 text-slate-900"></h2>
-            <div id="postcard-body" class="font-handwriting text-2xl text-slate-800 leading-relaxed whitespace-pre-wrap min-h-[140px]"></div>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-200 text-xs font-display text-slate-500">
-            From: <span id="postcard-from" class="font-bold text-slate-900"></span>
-          </div>
+  <!-- 2. Contacts / Address Book Modal -->
+  <div id="contacts-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+          <i data-lucide="contact" class="h-5 w-5 text-slate-500"></i>
+          <span>Address Book</span>
+        </h3>
+        <button onclick="closeContactsModal()" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <div class="space-y-2 max-h-60 overflow-y-auto text-xs divide-y divide-slate-100">
+        <div class="py-2 flex items-center justify-between">
+          <div><p class="font-bold text-slate-800">List Imin</p><p class="text-slate-400 text-[11px]">listimin@gmail.com</p></div>
+          <button onclick="composeTo('listimin@gmail.com'); closeContactsModal();" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600"><i data-lucide="mail" class="h-3.5 w-3.5"></i></button>
         </div>
+        <div class="py-2 flex items-center justify-between">
+          <div><p class="font-bold text-slate-800">Happy Baswedan</p><p class="text-slate-400 text-[11px]">happy@gmail.com</p></div>
+          <button onclick="composeTo('happy@gmail.com'); closeContactsModal();" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600"><i data-lucide="mail" class="h-3.5 w-3.5"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Right Half: Postage Stamp, Postmark & Address Lines -->
-        <div class="flex flex-col justify-between pl-4">
-          <!-- Top right: Vintage Postage Stamp & Postmark -->
-          <div class="flex items-start justify-end gap-3">
-            <div class="postmark-seal">
-              <span>RACCON</span>
-              <span>EXPRESS</span>
-              <span id="postcard-postmark-date">OCT 2026</span>
-            </div>
-            <div class="postcard-stamp">
-              <img src="/raccoon-logo.png" class="h-10 w-10 object-contain" />
-              <div class="text-[9px] font-bold text-slate-600 leading-tight">
-                RACCON<br/>POSTAGE<br/>25 ACORNS
+  <!-- 3. App Switcher Popover (RacconMail Ecosystem - Modern Gray Badges) -->
+  <div id="app-switcher-modal" class="hidden fixed top-16 left-4 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-4 z-50 w-80">
+    <div class="flex items-center justify-between mb-3 px-1">
+      <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">RacconMail Ecosystem</p>
+      <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full border border-slate-200/80">v2.0</span>
+    </div>
+    <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
+      <a href="/inbox" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="mail" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">Mail</span>
+      </a>
+      <a href="/forum" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="message-square" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">Forum</span>
+      </a>
+      <a href="/news" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="newspaper" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">News</span>
+      </a>
+      <a href="/stories" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="book-open" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">Stories</span>
+      </a>
+      <button onclick="openContactsModal(); toggleAppSwitcher();" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group cursor-pointer w-full">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="users" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">Contacts</span>
+      </button>
+      <a href="/downloads/RacconMail-v2.0.apk" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+          <i data-lucide="smartphone" class="h-5 w-5"></i>
+        </div>
+        <span class="font-semibold text-[11px]">Android</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- HIGH-PERFORMANCE CLIENT-SIDE INTERACTIVITY SCRIPT                         -->
+  <!-- ========================================================================= -->
+  <script>
+    // Initialize Lucide Icons immediately
+    lucide.createIcons();
+
+    // Central Data Model with real messages & realistic seed
+    let currentFolder = 'Inbox';
+    let currentFilter = 'all';
+    let currentSelectedThreadIndex = 0;
+    let isSidebarCollapsed = false;
+
+    // Database of messages across all folders initialized from real SQLite database
+    const initialDbMessages = <?php echo json_encode($initialInboxMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?> || [];
+
+    const mailDatabase = {
+      'Inbox': initialDbMessages.map(m => ({
+        id: m.id,
+        sender: m.sender_email,
+        senderName: m.sender_name || m.sender_email,
+        time: (m.created_at || '').slice(11, 16) || 'Today',
+        subject: m.subject || '(no subject)',
+        isStarred: !!m.is_starred,
+        isRead: !!m.is_read,
+        avatar: '/raccoon-logo.png',
+        body_html: m.body_html || '',
+        thread: [
+          {
+            sender: m.sender_email,
+            to: m.recipient_email || '<?php echo htmlspecialchars($currentUser['email']); ?>',
+            date: m.created_at || 'Recently',
+            avatar: '/raccoon-logo.png',
+            body: m.body || m.body_html || 'No content.'
+          }
+        ]
+      })),
+      'Unread': [],
+      'Starred': [],
+      'Drafts': [],
+      'Sent': [],
+      'Archive': [],
+      'Spam': [],
+      'Trash': []
+    };
+
+    // Togglebar Action (ProtonMail Style)
+    function toggleSidebarAction() {
+      const sidebar = document.getElementById('sidebar-panel');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      if (!sidebar) return;
+
+      if (window.innerWidth < 768) {
+        // Mobile drawer slide
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop?.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop?.classList.add('hidden');
+        }
+      } else {
+        // Desktop collapse toggle
+        isSidebarCollapsed = !isSidebarCollapsed;
+        sidebar.classList.toggle('sidebar-collapsed', isSidebarCollapsed);
+      }
+    }
+
+    // Switch Folder (Inbox, Unread, Starred, Sent, Drafts, Archive, Spam, Trash, All)
+    async function switchFolder(folderName) {
+      currentFolder = folderName;
+      currentSelectedThreadIndex = 0;
+
+      // Close mobile drawer if open
+      if (window.innerWidth < 768) {
+        document.getElementById('sidebar-panel')?.classList.add('-translate-x-full');
+        document.getElementById('mobile-sidebar-backdrop')?.classList.add('hidden');
+        document.getElementById('col-inbox')?.classList.remove('hidden');
+        document.getElementById('col-reader')?.classList.add('hidden');
+      }
+
+      // Update sidebar active highlights
+      const folderIds = ['inbox', 'unread', 'starred', 'drafts', 'sent', 'archive', 'spam', 'trash', 'all'];
+      folderIds.forEach(id => {
+        const btn = document.getElementById('folder-btn-' + id);
+        if (btn) {
+          if (id.toLowerCase() === folderName.toLowerCase()) {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2 text-xs font-bold nav-pill-active cursor-pointer';
+          } else {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive';
+          }
+        }
+      });
+
+      // Update title in middle column
+      const titleEl = document.getElementById('current-folder-display-title');
+      if (titleEl) titleEl.innerText = folderName;
+
+      renderMessageList();
+      await fetchFolderMessages(folderName);
+    }
+
+    // Filter message list (All, Unread, Starred)
+    function setListFilter(filter) {
+      currentFilter = filter;
+      ['all', 'unread', 'starred'].forEach(f => {
+        const btn = document.getElementById('filter-btn-' + f);
+        if (btn) {
+          if (f === filter) {
+            btn.className = 'px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer';
+          } else {
+            btn.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer';
+          }
+        }
+      });
+      renderMessageList();
+    }
+
+    // Render messages in Middle Column
+    function renderMessageList(searchQuery = '') {
+      const container = document.getElementById('threads-container');
+      if (!container) return;
+
+      let list = [];
+      if (currentFolder === 'All') {
+        list = [].concat(...Object.values(mailDatabase));
+      } else if (currentFolder === 'Unread') {
+        list = (mailDatabase['Inbox'] || []).filter(m => !m.isRead);
+      } else if (currentFolder === 'Starred') {
+        list = [].concat(...Object.values(mailDatabase)).filter(m => m.isStarred);
+      } else {
+        list = mailDatabase[currentFolder] || [];
+      }
+
+      // Apply sub-filters
+      if (currentFilter === 'unread') list = list.filter(m => !m.isRead);
+      if (currentFilter === 'starred') list = list.filter(m => m.isStarred);
+
+      // Apply search query
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        list = list.filter(m => 
+          m.senderName.toLowerCase().includes(q) ||
+          m.subject.toLowerCase().includes(q) ||
+          m.sender.toLowerCase().includes(q)
+        );
+      }
+
+      // Update Coral Badge count
+      const badge = document.getElementById('coral-inbox-badge');
+      if (badge) badge.innerText = list.length;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-slate-400 select-none">
+            <i data-lucide="inbox" class="h-10 w-10 mx-auto mb-2 opacity-50"></i>
+            <p class="font-bold text-sm text-slate-600">No messages in ${currentFolder}</p>
+            <p class="text-xs text-slate-400 mt-1">Achieving Email Zen.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        renderEmptyConversation();
+        return;
+      }
+
+      container.innerHTML = list.map((msg, idx) => {
+        const isActive = idx === currentSelectedThreadIndex;
+        return `
+          <div onclick="selectThreadItem(${idx})" id="thread-item-${idx}" class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-3.5 transition">
+            <div class="flex items-start gap-3">
+              <img src="${msg.avatar}" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-100" />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-0.5">
+                  <span class="font-bold text-xs text-slate-900 truncate">${msg.senderName}</span>
+                  <span class="text-[11px] font-medium text-slate-400">${msg.time}</span>
+                </div>
+                <p class="text-xs font-semibold text-slate-800 truncate mb-0.5">${msg.subject}</p>
+                <p class="text-[11px] text-slate-500 line-clamp-1 truncate">${msg.thread[msg.thread.length - 1]?.body.slice(0, 70)}...</p>
+              </div>
+              <div class="flex items-center gap-0.5 shrink-0">
+                <button onclick="event.stopPropagation(); deleteMessageById('${msg.id}')" title="Delete" class="p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
+                  <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                </button>
+                <button onclick="event.stopPropagation(); toggleStarItem('${msg.id}')" title="Star" class="p-1 text-slate-300 hover:text-amber-500 transition cursor-pointer">
+                  <i data-lucide="star" class="h-3.5 w-3.5 ${msg.isStarred ? 'text-amber-500 fill-amber-500' : ''}"></i>
+                </button>
               </div>
             </div>
           </div>
+        `;
+      }).join('');
 
-          <!-- Bottom: Postcard Address Lines -->
-          <div class="space-y-4 my-8">
-            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-900">
-              To: <span id="postcard-to"></span>
+      lucide.createIcons();
+      renderConversationThread(list[currentSelectedThreadIndex] || list[0]);
+    }
+
+    // Select Thread Item
+    function selectThreadItem(index) {
+      currentSelectedThreadIndex = index;
+      renderMessageList(document.getElementById('global-search')?.value || '');
+
+      // On mobile view: show reading pane and hide middle column
+      if (window.innerWidth < 768) {
+        document.getElementById('col-inbox')?.classList.add('hidden');
+        document.getElementById('col-reader')?.classList.remove('hidden');
+        document.getElementById('col-reader')?.classList.add('flex');
+      }
+    }
+
+    // Render Conversation in Right Column
+    function renderConversationThread(msg) {
+      const container = document.getElementById('thread-conversation-container');
+      const titleEl = document.getElementById('reader-top-title');
+      if (!container || !msg) return;
+
+      if (titleEl) titleEl.innerText = msg.subject || 'All Emails';
+
+      // Update reader star icon
+      const starIcon = document.getElementById('reader-star-icon');
+      if (starIcon) {
+        starIcon.className = `h-4 w-4 ${msg.isStarred ? 'text-amber-500 fill-amber-500' : 'text-slate-400'}`;
+      }
+
+      container.innerHTML = msg.thread.map((card, i) => `
+        <div class="border-b border-slate-100 pb-6">
+          <div class="flex items-start gap-3 mb-3">
+            <img src="${card.avatar}" class="h-9 w-9 rounded-full object-cover shrink-0 border border-slate-200" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-900">${card.sender}</span>
+                <div class="flex items-center gap-2 text-slate-400">
+                  <span class="text-[11px]">${card.date}</span>
+                  <button class="hover:text-slate-700 p-0.5"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                </div>
+              </div>
+              <div class="text-[11px] text-slate-400 flex items-center gap-1">
+                <span>to ${card.to}</span>
+                <i data-lucide="chevron-down" class="h-3 w-3"></i>
+              </div>
             </div>
-            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-600">
-              Forest Burrow #42, Whispering Pines
-            </div>
-            <div class="border-b border-slate-300 pb-1 text-sm font-handwriting text-xl text-slate-600">
-              The Great Northern Woodland, ZIP 00042
-            </div>
           </div>
-
-          <div class="flex justify-end gap-3 mt-4">
-            <button onclick="window.print()" class="rounded-full bg-slate-900 text-white px-5 py-2 text-xs font-bold hover:bg-black transition flex items-center gap-1.5 cursor-pointer">
-              <i data-lucide="printer" class="h-3.5 w-3.5 text-white"></i>
-              <span>Print Physical Postcard</span>
-            </button>
+          <div class="pl-12 text-xs text-slate-600 leading-relaxed space-y-2 whitespace-pre-line">
+            ${card.body}
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- KEYBOARD SHORTCUTS MODAL -->
-  <div id="keyboard-shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closeKeyboardShortcuts()">
-    <div class="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-200 relative overflow-hidden flex flex-col">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-        <div class="flex items-center gap-2">
-          <div class="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-800">
-            <i data-lucide="keyboard" class="h-4 w-4 text-slate-700"></i>
-          </div>
-          <div>
-            <h3 class="font-display font-bold text-base text-slate-900">Keyboard Shortcuts</h3>
-            <p class="text-xs text-slate-500">Speed up your nocturnal workflow</p>
+      `).join('') + `
+        <!-- Quick Reply Box at bottom -->
+        <div class="pt-4 flex items-center gap-3">
+          <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full border border-slate-200" />
+          <div class="flex-1 relative flex items-center">
+            <input id="quick-reply-input" type="text" placeholder="Write a quick reply..." class="w-full bg-slate-50 rounded-full border border-slate-200 pl-4 pr-24 py-2 text-xs text-slate-800 outline-none focus:border-slate-400" />
+            <button onclick="sendQuickReply()" class="absolute right-1.5 px-3 py-1 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-semibold cursor-pointer">Reply</button>
           </div>
         </div>
-        <button onclick="app.closeKeyboardShortcuts()" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
-          <i data-lucide="x" class="h-5 w-5"></i>
-        </button>
-      </div>
+      `;
 
-      <div class="py-4 space-y-2.5 text-xs text-slate-700 max-h-[60vh] overflow-y-auto">
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Compose New Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">C</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Reply to Open Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">R</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Reply All</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">A</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Forward Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">F</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Archive Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">E</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Delete / Move to Trash</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">#</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Star / Unstar Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">S</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Mark as Unread / Read</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">U</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Print / Export PDF</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">P</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Next Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">J</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Previous Message</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">K</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Global Search</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">/</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
-          <span>Command Palette</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">Ctrl + K</kbd>
-        </div>
-        <div class="flex items-center justify-between py-1.5">
-          <span>Open Shortcuts Help</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-900 text-white font-mono text-[11px] font-bold">?</kbd>
-        </div>
-      </div>
+      lucide.createIcons();
+    }
 
-      <div class="pt-4 border-t border-slate-200 flex justify-end">
-        <button onclick="app.closeKeyboardShortcuts()" class="rounded-full bg-slate-900 hover:bg-black text-white px-5 py-2 text-xs font-bold transition cursor-pointer">
-          Got It
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PRIVACY POLICY MODAL -->
-  <div id="privacy-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" onclick="if (event.target === this) app.closePrivacyModal()">
-    <div class="w-full max-w-2xl rounded-3xl bg-card p-6 sm:p-8 shadow-2xl border border-border relative overflow-hidden max-h-[90vh] flex flex-col">
-      <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
-
-      <!-- Header -->
-      <div class="flex items-start justify-between gap-4 pb-4 border-b border-border shrink-0">
-        <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-slate-100 text-slate-800 border border-slate-200">
-            <i data-lucide="shield-check" class="h-6 w-6"></i>
+    function renderEmptyConversation() {
+      const container = document.getElementById('thread-conversation-container');
+      if (container) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full p-8 text-center text-slate-400">
+            <img src="/raccoon-logo.png" class="h-20 w-20 object-contain opacity-60 mb-3" />
+            <p class="font-bold text-base text-slate-700">No Conversation Selected</p>
+            <p class="text-xs text-slate-400 mt-1">Select an email to read or click Compose to start a new thread.</p>
           </div>
-          <div>
-            <h3 class="font-display text-xl sm:text-2xl font-bold text-foreground">Raccon Mail Privacy &amp; Security Policy</h3>
-            <p class="text-xs text-muted-foreground">European GDPR &amp; Nocturnal Privacy Architecture &bull; racconmail.eu</p>
+        `;
+      }
+    }
+
+    // Fetch real messages for a folder from SQLite API
+    async function fetchFolderMessages(folderName) {
+      const folderKey = folderName.toLowerCase();
+      try {
+        const res = await fetch('/api/messages?folder=' + encodeURIComponent(folderKey));
+        if (res.ok) {
+          const data = await res.json();
+          const msgs = data.messages || [];
+          mailDatabase[folderName] = msgs.map(m => ({
+            id: m.id,
+            sender: m.sender_email,
+            senderName: m.sender_name || m.sender_email,
+            time: (m.created_at || '').slice(11, 16) || 'Today',
+            subject: m.subject || '(no subject)',
+            isStarred: !!m.is_starred,
+            isRead: !!m.is_read,
+            avatar: '/raccoon-logo.png',
+            body_html: m.body_html || '',
+            thread: [
+              {
+                sender: m.sender_email,
+                to: m.recipient_email || '<?php echo htmlspecialchars($currentUser['email']); ?>',
+                date: m.created_at || 'Recently',
+                avatar: '/raccoon-logo.png',
+                body: m.body || m.body_html || 'No content.'
+              }
+            ]
+          }));
+          if (currentFolder === folderName) {
+            renderMessageList();
+            if (mailDatabase[folderName].length > 0) {
+              renderConversationThread(mailDatabase[folderName][currentSelectedThreadIndex] || mailDatabase[folderName][0]);
+            } else {
+              renderEmptyConversation();
+            }
+          }
+        }
+      } catch (err) {
+        console.error('fetchFolderMessages error:', err);
+      }
+    }
+
+    // Refresh real counts from SQLite API
+    async function refreshFolderCounts() {
+      try {
+        const res = await fetch('/api/folders');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.standard) {
+            const std = data.standard;
+            const bInbox = document.getElementById('badge-inbox');
+            if (bInbox) bInbox.innerText = std.inbox?.total || 0;
+            const bCoral = document.getElementById('coral-inbox-badge');
+            if (bCoral && currentFolder === 'Inbox') bCoral.innerText = std.inbox?.total || 0;
+            const bUnread = document.getElementById('badge-unread');
+            if (bUnread) bUnread.innerText = std.unread?.total || 0;
+            const bStarred = document.getElementById('badge-starred');
+            if (bStarred) bStarred.innerText = std.favorites?.total || 0;
+            const bDrafts = document.getElementById('badge-drafts');
+            if (bDrafts) bDrafts.innerText = std.drafts?.total || 0;
+            const bSent = document.getElementById('badge-sent');
+            if (bSent) bSent.innerText = std.sent?.total || 0;
+            const bArchive = document.getElementById('badge-archive');
+            if (bArchive) bArchive.innerText = std.archive?.total || 0;
+            const bSpam = document.getElementById('badge-spam');
+            if (bSpam) bSpam.innerText = std.spam?.total || 0;
+            const bTrash = document.getElementById('badge-trash');
+            if (bTrash) bTrash.innerText = std.trash?.total || 0;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function updateBadgeCounts() {
+      const bInbox = document.getElementById('badge-inbox');
+      if (bInbox && mailDatabase['Inbox']) bInbox.innerText = mailDatabase['Inbox'].length;
+      const bCoral = document.getElementById('coral-inbox-badge');
+      if (bCoral && mailDatabase[currentFolder]) bCoral.innerText = mailDatabase[currentFolder].length;
+      const bTrash = document.getElementById('badge-trash');
+      if (bTrash && mailDatabase['Trash']) bTrash.innerText = mailDatabase['Trash'].length;
+    }
+
+    // Delete single message permanently or move to trash
+    async function deleteMessageById(msgId) {
+      let removedMsg = null;
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          const idx = mailDatabase[f].findIndex(m => m.id === msgId);
+          if (idx !== -1) {
+            removedMsg = mailDatabase[f].splice(idx, 1)[0];
+          }
+        }
+      }
+
+      const isCurrentlyTrash = (currentFolder.toLowerCase() === 'trash');
+      if (!isCurrentlyTrash && removedMsg) {
+        if (!mailDatabase['Trash']) mailDatabase['Trash'] = [];
+        mailDatabase['Trash'].unshift(removedMsg);
+      }
+
+      currentSelectedThreadIndex = 0;
+      renderMessageList(document.getElementById('global-search')?.value || '');
+      updateBadgeCounts();
+
+      try {
+        if (isCurrentlyTrash) {
+          await fetch('/api/messages/' + encodeURIComponent(msgId) + '?permanent=1', { method: 'DELETE' });
+        } else {
+          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/trash', { method: 'POST' });
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+      }
+      refreshFolderCounts();
+    }
+
+    // Toggle Star
+    async function toggleStarItem(msgId) {
+      let targetMsg = null;
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          const item = mailDatabase[f].find(m => m.id === msgId);
+          if (item) {
+            item.isStarred = !item.isStarred;
+            targetMsg = item;
+            break;
+          }
+        }
+      }
+      renderMessageList(document.getElementById('global-search')?.value || '');
+      if (targetMsg) {
+        try {
+          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/star', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_starred: targetMsg.isStarred ? 1 : 0 })
+          });
+        } catch (e) {}
+        refreshFolderCounts();
+      }
+    }
+
+    function starCurrentThread() {
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) toggleStarItem(msg.id);
+    }
+
+    // Reply Current Thread
+    function replyCurrentThread() {
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) {
+        openComposeCard();
+        document.getElementById('compose-to').value = msg.sender;
+        document.getElementById('compose-subject').value = 'Re: ' + msg.subject;
+        document.getElementById('compose-body').value = `\n\n--- Original Message ---\nFrom: ${msg.sender}\n${msg.thread[0]?.body || ''}`;
+        document.getElementById('compose-body').focus();
+        document.getElementById('compose-body').setSelectionRange(0, 0);
+      }
+    }
+
+    // Move to Trash
+    async function trashCurrentThread() {
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) {
+        await deleteMessageById(msg.id);
+      }
+    }
+
+    // Archive Current Thread
+    async function archiveCurrentThread() {
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
+      const msg = list[currentSelectedThreadIndex];
+      if (!msg) return;
+
+      const msgId = msg.id;
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          const idx = mailDatabase[f].findIndex(m => m.id === msgId);
+          if (idx !== -1) mailDatabase[f].splice(idx, 1);
+        }
+      }
+      if (!mailDatabase['Archive']) mailDatabase['Archive'] = [];
+      mailDatabase['Archive'].unshift(msg);
+
+      currentSelectedThreadIndex = 0;
+      renderMessageList(document.getElementById('global-search')?.value || '');
+      updateBadgeCounts();
+
+      try {
+        await fetch('/api/messages/' + encodeURIComponent(msgId) + '/archive', { method: 'POST' });
+      } catch (e) {
+        console.error('Archive error:', e);
+      }
+      refreshFolderCounts();
+    }
+
+    // Empty Trash
+    async function emptyTrashAction() {
+      if (!confirm('Permanently delete all messages in Trash?')) return;
+      mailDatabase['Trash'] = [];
+      if (currentFolder === 'Trash') {
+        renderMessageList();
+        renderEmptyConversation();
+      }
+      updateBadgeCounts();
+
+      try {
+        await fetch('/api/messages/empty-folder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder: 'trash' })
+        });
+      } catch (e) {
+        console.error('Empty trash error:', e);
+      }
+      refreshFolderCounts();
+    }
+
+    // Mark All Read
+    async function markAllAsReadAction() {
+      const folderKey = currentFolder.toLowerCase();
+      (mailDatabase[currentFolder] || []).forEach(m => m.isRead = true);
+      renderMessageList();
+      updateBadgeCounts();
+
+      try {
+        await fetch('/api/messages/batch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'mark_all_read', folder: folderKey })
+        });
+      } catch (e) {}
+      refreshFolderCounts();
+    }
+
+    // Compose Card Handlers
+    function openComposeCard(isReply = false) {
+      if (window.innerWidth < 768) {
+        document.getElementById('sidebar-panel')?.classList.add('-translate-x-full');
+        document.getElementById('mobile-sidebar-backdrop')?.classList.add('hidden');
+      }
+      const card = document.getElementById('docked-compose-card');
+      if (card) {
+        card.classList.remove('hidden');
+        document.getElementById('compose-body-container')?.classList.remove('hidden');
+        try { lucide.createIcons(); } catch (_) {}
+        if (!isReply) {
+          const toEl = document.getElementById('compose-to');
+          const subEl = document.getElementById('compose-subject');
+          const bodyEl = document.getElementById('compose-body');
+          if (toEl) toEl.value = '';
+          if (subEl) subEl.value = '';
+          if (bodyEl) bodyEl.value = '';
+          setTimeout(() => {
+            toEl?.focus();
+          }, 80);
+        }
+      }
+    }
+
+    function closeComposeCard() {
+      document.getElementById('docked-compose-card')?.classList.add('hidden');
+    }
+
+    function minimizeComposeCard() {
+      const body = document.getElementById('compose-body-container');
+      body?.classList.toggle('hidden');
+    }
+
+    function composeTo(email) {
+      openComposeCard();
+      document.getElementById('compose-to').value = email;
+    }
+
+    // Send Email
+    async function sendEmailNow() {
+      const btn = document.getElementById('btn-send-email');
+      const to = document.getElementById('compose-to')?.value.trim();
+      const subject = document.getElementById('compose-subject')?.value.trim();
+      const body = document.getElementById('compose-body')?.value.trim();
+
+      if (!to || !body) {
+        alert('Please fill in both the recipient (To) and body text.');
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'Sending...';
+      }
+
+      try {
+        const res = await fetch('/api/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to, subject, body })
+        });
+      } catch (_) {}
+
+      // Add to Sent folder
+      mailDatabase['Sent'].unshift({
+        id: 'sent_' + Date.now(),
+        sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
+        senderName: 'To: ' + to,
+        time: 'Just now',
+        subject: subject,
+        isStarred: false,
+        isRead: true,
+        avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
+        thread: [
+          {
+            sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
+            to: to,
+            date: 'Just now',
+            avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
+            body: body
+          }
+        ]
+      });
+
+      showRaccoonSuccessModal();
+      refreshFolderCounts();
+      closeComposeCard();
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = 'Send';
+      }
+    }
+
+    function sendQuickReply() {
+      const inp = document.getElementById('quick-reply-input');
+      const val = inp?.value.trim();
+      if (!val) return;
+
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) {
+        msg.thread.push({
+          sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
+          to: msg.sender,
+          date: 'Just now',
+          avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
+          body: val
+        });
+        inp.value = '';
+        showRaccoonSuccessModal();
+        renderConversationThread(msg);
+      }
+    }
+
+    
+    // Mobile Search Sheet Functions
+    function openMobileSearchSheet() {
+      const sheet = document.getElementById('mobile-search-sheet');
+      const backdrop = document.getElementById('mobile-search-backdrop');
+      if (!sheet || !backdrop) return;
+      backdrop.classList.remove('hidden');
+      sheet.classList.remove('hidden');
+      setTimeout(() => {
+        sheet.classList.remove('translate-y-full');
+        sheet.classList.add('translate-y-0');
+        const inp = document.getElementById('mobile-search-input');
+        if (inp) {
+          inp.focus();
+          handleMobileSearchInput(inp.value || '');
+        }
+      }, 20);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeMobileSearchSheet() {
+      const sheet = document.getElementById('mobile-search-sheet');
+      const backdrop = document.getElementById('mobile-search-backdrop');
+      if (!sheet || !backdrop) return;
+      sheet.classList.remove('translate-y-0');
+      sheet.classList.add('translate-y-full');
+      setTimeout(() => {
+        sheet.classList.add('hidden');
+        backdrop.classList.add('hidden');
+      }, 300);
+    }
+
+    function handleMobileSearchInput(val) {
+      const clearBtn = document.getElementById('mobile-search-clear-btn');
+      if (val && val.trim().length > 0) {
+        clearBtn?.classList.remove('hidden');
+      } else {
+        clearBtn?.classList.add('hidden');
+      }
+
+      // Synchronize with desktop search input
+      const deskInp = document.getElementById('global-search');
+      if (deskInp) deskInp.value = val;
+
+      renderMobileSearchSuggestions(val);
+      renderMessageList(val);
+    }
+
+    function clearMobileSearch() {
+      const inp = document.getElementById('mobile-search-input');
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+      }
+      handleMobileSearchInput('');
+    }
+
+    function applySearchFilter(filterQuery) {
+      const inp = document.getElementById('mobile-search-input');
+      if (inp) inp.value = filterQuery;
+      handleMobileSearchInput(filterQuery);
+    }
+
+    function renderMobileSearchSuggestions(query = '') {
+      const listEl = document.getElementById('mobile-search-suggestions-list');
+      const countEl = document.getElementById('mobile-search-results-count');
+      const titleEl = document.getElementById('mobile-search-results-title');
+      if (!listEl) return;
+
+      const q = query.trim().toLowerCase();
+      const allMsgs = (mailDatabase[currentFolder] || mailDatabase['Inbox'] || []);
+
+      let matches = [];
+      if (q) {
+        titleEl.textContent = 'Matching Conversations';
+        matches = allMsgs.filter(m => 
+          (m.senderName && m.senderName.toLowerCase().includes(q)) ||
+          (m.sender && m.sender.toLowerCase().includes(q)) ||
+          (m.subject && m.subject.toLowerCase().includes(q)) ||
+          (m.preview && m.preview.toLowerCase().includes(q))
+        );
+      } else {
+        titleEl.textContent = 'Recent Conversations';
+        matches = allMsgs.slice(0, 6);
+      }
+
+      if (countEl) countEl.textContent = matches.length + ' found';
+
+      if (matches.length === 0) {
+        listEl.innerHTML = `
+          <div class="py-6 text-center text-slate-400">
+            <i data-lucide="search-x" class="h-8 w-8 mx-auto mb-2 text-slate-300"></i>
+            <p class="text-xs font-semibold">No emails matching "${escapeHtml(query)}"</p>
+            <p class="text-[11px] text-slate-400 mt-1">Try another keyword or tap a smart filter above.</p>
           </div>
-        </div>
-        <button onclick="app.closePrivacyModal()" class="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-          <i data-lucide="x" class="h-5 w-5"></i>
-        </button>
-      </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
 
-      <!-- Content -->
-      <div class="overflow-y-auto py-4 space-y-4 text-xs sm:text-sm text-foreground/90 leading-relaxed pr-2">
-        <div class="rounded-2xl bg-muted/40 p-4 border border-border">
-          <p class="font-semibold text-foreground flex items-center gap-1.5">
-            <i data-lucide="lock" class="h-4 w-4 text-slate-700"></i>
-            <span>Our Nocturnal Guarantee:</span>
-          </p>
-          <p class="text-xs text-muted-foreground mt-1">
-            Raccon Mail operates with zero third-party telemetry, zero ad-network tracking, and zero email content analysis. Your emails, attachments, and contacts belong exclusively to you.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-            1. Zero Tracker Policy &amp; No Device Fingerprinting
-          </h4>
-          <p class="mt-1 text-xs text-muted-foreground">
-            We do not collect IP addresses, hardware identifiers, or tracking cookies for marketing. No surveillance agents or data brokers monitor your mailbox.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-            2. Nocturnal Postcard Masking &amp; Mail Transmission
-          </h4>
-          <p class="mt-1 text-xs text-muted-foreground">
-            When you send or receive postcards via <strong>@racconmail.eu</strong>, communications are routed through secure MIME multipart envelopes. Outgoing mail sent through our system aligns strictly with SPF, DKIM, and DMARC authentication protocols.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-            3. Isolated Encrypted Mailboxes &amp; Server Storage
-          </h4>
-          <p class="mt-1 text-xs text-muted-foreground">
-            User credentials are protected using industry-standard salted <code>bcrypt/argon2</code> password hashing. Mailbox databases and uploaded attachments are guarded in isolated SQLite storage with strict filesystem ACLs.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-            4. Absolute Data Ownership &amp; Right to Erasure (GDPR)
-          </h4>
-          <p class="mt-1 text-xs text-muted-foreground">
-            You have complete sovereignty over your data. You may delete individual messages, purge attachment stashes, or request complete account erasure at any time.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="font-bold text-foreground flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-            5. Security Contacts &amp; Inquiries
-          </h4>
-          <p class="mt-1 text-xs text-muted-foreground">
-            For security disclosures or compliance inquiries, contact our postmaster directly at <code class="text-foreground font-bold">postmaster@racconmail.eu</code>.
-          </p>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="pt-4 border-t border-border flex items-center justify-between shrink-0">
-        <span class="text-xs text-muted-foreground flex items-center gap-1.5">
-          <i data-lucide="lock" class="h-3.5 w-3.5 text-muted-foreground"></i>
-          <span>100% Masked Nocturnal Privacy Guaranteed</span>
-        </span>
-        <button onclick="app.closePrivacyModal()" class="rounded-full bg-primary hover:bg-black text-primary-foreground font-semibold px-5 py-2 text-xs transition cursor-pointer">
-          Got It, Keep Me Safe
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- RACCON NEWS MODAL (In-Mailbox Live Wire) -->
-  <div id="news-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto" onclick="if (event.target === this) app.closeNewsModal()">
-    <div onclick="event.stopPropagation()" class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
-      <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
-
-      <!-- Header -->
-      <div class="flex items-start justify-between gap-2 sm:gap-4 pb-4 border-b border-border shrink-0">
-        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div class="p-2 sm:p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
-            <i data-lucide="newspaper" class="h-4 w-4 sm:h-5 sm:w-5 text-slate-600"></i>
-          </div>
-          <div class="min-w-0">
-            <h3 class="font-display text-base sm:text-2xl font-bold text-foreground flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span class="whitespace-nowrap">Raccon News Wire</span>
-              <span class="text-[10px] sm:text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold whitespace-nowrap">Live Updates</span>
-            </h3>
-            <p class="text-xs text-muted-foreground line-clamp-1 sm:line-clamp-none">Tech, Sport, Games, Music, and Weather articles updated every 5 minutes</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <a href="/news" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-2 sm:px-3.5 sm:py-1.5 transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap" title="Open full-page news wire">
-            <i data-lucide="maximize-2" class="h-3.5 w-3.5 shrink-0"></i>
-            <span class="hidden sm:inline">Open Full Page News</span>
-          </a>
-          <button onclick="app.closeNewsModal()" class="p-1.5 sm:p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer shrink-0">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- 5 Columns Container (Scroll Fixed) -->
-      <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4 pr-1">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" id="inbox-news-grid">
-          <!-- Populated by app.js -->
-        </div>
-      </div>
-
-      <!-- Footer Bar -->
-      <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground shrink-0">
-        <div class="flex items-center gap-2">
-          <span>⏱️ Live Auto-Sync &bull; Raccon Wire</span>
-          <span class="text-muted-foreground">&bull;</span>
-          <a href="/news" class="font-bold text-primary hover:underline flex items-center gap-1">
-            <span>Open Full Page News</span>
-            <i data-lucide="arrow-right" class="h-3 w-3"></i>
-          </a>
-        </div>
-        <button onclick="app.closeNewsModal()" class="rounded-full bg-muted hover:bg-muted/80 text-foreground font-semibold px-4 py-1.5 transition cursor-pointer">
-          Close Wire
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- WORLD STORIES MODAL (Modern Reader Module) -->
-  <div id="stories-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-2 sm:p-6 backdrop-blur-sm overflow-y-auto" onclick="if (event.target === this) app.closeStoriesModal()">
-    <div onclick="event.stopPropagation()" class="w-full max-w-5xl rounded-3xl bg-card p-4 sm:p-7 shadow-2xl border border-border relative flex flex-col h-[90vh] sm:h-[85vh] max-h-[90vh] sm:max-h-[85vh] min-h-0">
-      <div class="stripes-subtle h-2.5 -mx-8 -mt-8 mb-4 shrink-0"></div>
-
-      <!-- 1. LIBRARY CATALOG VIEW (Scroll Fixed) -->
-      <div id="stories-catalog-view" class="flex flex-col flex-1 overflow-hidden min-h-0">
-        <!-- Header -->
-        <div class="flex items-start justify-between gap-2 sm:gap-4 pb-4 border-b border-border shrink-0">
-          <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div class="p-2 sm:p-2.5 rounded-2xl bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
-              <i data-lucide="book-open" class="h-4 w-4 sm:h-5 sm:w-5 text-slate-600"></i>
+      listEl.innerHTML = matches.map((m, idx) => `
+        <div onclick="selectMobileSearchResult('${escapeJsString(m.id)}')" class="p-2.5 rounded-2xl border border-slate-100 hover:border-slate-200 bg-white hover:bg-slate-50 transition cursor-pointer flex items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs shrink-0">
+              ${escapeHtml(m.senderName ? m.senderName.charAt(0).toUpperCase() : 'M')}
             </div>
             <div class="min-w-0">
-              <h3 class="font-display text-base sm:text-2xl font-bold text-foreground flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span class="whitespace-nowrap">World Stories</span>
-                <span class="text-[10px] sm:text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-full font-bold whitespace-nowrap">English Library</span>
-              </h3>
-              <p class="text-xs text-muted-foreground line-clamp-1 sm:line-clamp-none">Folktales, myths, and fables from cultures around the globe</p>
+              <p class="text-xs font-bold text-slate-800 truncate">${escapeHtml(m.senderName || m.sender)}</p>
+              <p class="text-[11px] text-slate-500 truncate">${escapeHtml(m.subject)}</p>
             </div>
           </div>
-          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <a href="/stories" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-2 sm:px-3.5 sm:py-1.5 transition flex items-center gap-1.5 shadow-2xs whitespace-nowrap" title="Open full-page stories library">
-              <i data-lucide="maximize-2" class="h-3.5 w-3.5 shrink-0"></i>
-              <span class="hidden sm:inline">Open Full Page Stories</span>
-            </a>
-            <button onclick="app.closeStoriesModal()" class="p-1.5 sm:p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer shrink-0">
-              <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-          </div>
+          <span class="text-[10px] text-slate-400 font-mono shrink-0">${escapeHtml(m.time || 'Today')}</span>
         </div>
+      `).join('');
 
-        <!-- Filter Pills & Search Bar -->
-        <div class="pt-3 pb-2 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs" id="story-filter-tabs">
-            <button onclick="app.filterStories('all')" class="story-tab active px-3 py-1.5 rounded-full font-bold bg-primary text-white transition shadow-2xs shrink-0 cursor-pointer">All Tales</button>
-            <button onclick="app.filterStories('animals')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Clever Animals</button>
-            <button onclick="app.filterStories('folktales')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Traditional Folktales</button>
-            <button onclick="app.filterStories('fables')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Fables &amp; Wisdom</button>
-            <button onclick="app.filterStories('myths')" class="story-tab px-3 py-1.5 rounded-full font-medium text-muted-foreground hover:bg-muted transition shrink-0 cursor-pointer">Myths &amp; Magic</button>
-          </div>
-          <div class="relative w-full sm:w-64">
-            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground"></i>
-            <input
-              id="stories-search-input"
-              type="text"
-              placeholder="Search stories, country..."
-              class="w-full rounded-full border border-border bg-muted/60 pl-8 pr-3 py-1 text-xs outline-none focus:bg-card focus:border-primary transition text-foreground"
-              oninput="app.searchStories(this.value)"
-            />
-          </div>
-        </div>
+      if (window.lucide) lucide.createIcons();
+    }
 
-        <!-- Stories Grid (Scroll Fixed) -->
-        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-3 pr-1">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="stories-grid-container">
-            <!-- Rendered by app.renderStoriesGrid() -->
-          </div>
-        </div>
+    function selectMobileSearchResult(msgId) {
+      closeMobileSearchSheet();
+      const allMsgs = (mailDatabase[currentFolder] || mailDatabase['Inbox'] || []);
+      const idx = allMsgs.findIndex(m => String(m.id) === String(msgId));
+      if (idx !== -1) {
+        selectThreadItem(idx);
+      }
+    }
 
-        <!-- Footer Bar -->
-        <div class="pt-3 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground shrink-0">
-          <div class="flex items-center gap-2">
-            <span>📖 175+ traditional folktales &bull; Read directly inside Raccon Mail</span>
-          </div>
-          <button onclick="app.closeStoriesModal()" class="rounded-full bg-muted hover:bg-accent text-foreground font-semibold px-4 py-1.5 transition cursor-pointer">
-            Close Stories
-          </button>
+    // Search
+    function handleSearch(val) {
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (val && val.trim().length > 0) {
+        clearBtn?.classList.remove('hidden');
+      } else {
+        clearBtn?.classList.add('hidden');
+      }
+      renderMessageList(val);
+    }
+
+    function clearSearch() {
+      const inp = document.getElementById('global-search');
+      if (inp) inp.value = '';
+      document.getElementById('search-clear-btn')?.classList.add('hidden');
+      renderMessageList();
+    }
+
+    // Refresh Mailbox
+    async function refreshMailbox() {
+      const refreshBtn = document.getElementById('btn-top-refresh');
+      if (refreshBtn) refreshBtn.classList.add('animate-spin');
+      try {
+        await Promise.all([
+          fetchFolderMessages(currentFolder),
+          refreshFolderCounts()
+        ]);
+      } catch (e) {}
+      if (refreshBtn) refreshBtn.classList.remove('animate-spin');
+    }
+
+    // Mobile Back Navigation
+    function backToMobileInbox() {
+      document.getElementById('col-inbox')?.classList.remove('hidden');
+      document.getElementById('col-reader')?.classList.add('hidden');
+    }
+
+    // Dropdowns & Modals
+    function toggleUserDropdown(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('account-dropdown')?.classList.toggle('hidden');
+    }
+
+    function toggleAppSwitcher() {
+      document.getElementById('app-switcher-modal')?.classList.toggle('hidden');
+    }
+
+    function openSettingsModal() {
+      document.getElementById('settings-modal')?.classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal')?.classList.add('hidden');
+    }
+
+    async function saveSettingsAction() {
+      const name = document.getElementById('setting-name')?.value.trim();
+      const signature = document.getElementById('setting-signature')?.value.trim();
+      try {
+        const res = await fetch('/api/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, signature })
+        });
+        const d = await res.json();
+        if (d.success && d.user) {
+          const newName = d.user.name || d.user.email;
+          const topName = document.getElementById('top-user-name');
+          if (topName) topName.textContent = newName;
+          const dropName = document.getElementById('dropdown-user-name');
+          if (dropName) dropName.textContent = newName;
+          const sideName = document.getElementById('sidebar-user-name');
+          if (sideName) sideName.textContent = newName;
+          alert('Profile name updated successfully!');
+          closeSettingsModal();
+        } else {
+          alert(d.error || 'Could not update profile.');
+        }
+      } catch (err) {
+        alert('Failed to save settings: ' + err.message);
+      }
+    }
+
+    function openContactsModal() {
+      document.getElementById('contacts-modal')?.classList.remove('hidden');
+    }
+
+    function closeContactsModal() {
+      document.getElementById('contacts-modal')?.classList.add('hidden');
+    }
+
+    function openNewIdentityModal() {
+      alert('New Masked Identity created! Mask: secure.' + Math.random().toString(36).substring(2, 7) + '@racconmail.eu');
+    }
+
+    function openNewCategoryModal() {
+      const name = prompt('Enter new category or label name:');
+      if (name) alert('Category "' + name + '" created successfully!');
+    }
+
+    function openStoriesModal() {
+      window.location.href = '/stories';
+    }
+
+    function attachFileAction() {
+      const inp = document.createElement('input');
+      inp.type = 'file';
+      inp.onchange = () => alert('File attached: ' + inp.files[0]?.name);
+      inp.click();
+    }
+
+    function insertLinkAction() {
+      const url = prompt('Enter link URL (e.g. https://...):');
+      if (url) {
+        document.getElementById('compose-body').value += ' ' + url;
+      }
+    }
+
+    function insertImageAction() {
+      attachFileAction();
+    }
+
+    function filterCategory(cat) {
+      alert('Filtered by category: ' + cat);
+    }
+
+    // Logout - Always returns to root landing page
+    async function logoutNow() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (_) {}
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        document.cookie = 'raccon_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+        document.cookie = 'roundcube_sessid=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+        document.cookie = 'roundcube_sessauth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      } catch (_) {}
+      window.location.replace('https://racconmail.eu/');
+    }
+
+    // Dismiss popovers on outside click
+    document.addEventListener('click', (e) => {
+      const dd = document.getElementById('account-dropdown');
+      const btn = document.getElementById('user-profile-btn');
+      if (dd && !dd.contains(e.target) && !btn?.contains(e.target)) {
+        dd.classList.add('hidden');
+      }
+      const appSw = document.getElementById('app-switcher-modal');
+      if (appSw && !appSw.contains(e.target) && !e.target.closest('button[onclick="toggleAppSwitcher()"]')) {
+        appSw.classList.add('hidden');
+      }
+    });
+
+    // Raccoon Success Popup Controllers
+    function showRaccoonSuccessModal() {
+      const modal = document.getElementById('raccoon-success-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          closeRaccoonSuccessModal();
+        }, 3500);
+      }
+    }
+
+    function closeRaccoonSuccessModal() {
+      const modal = document.getElementById('raccoon-success-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // Initial Render
+    renderMessageList();
+  </script>
+
+  <!-- ========================================================================= -->
+  <!-- DOCKED / FLOATING COMPOSE CARD: "New Email" (Universal Root Level)        -->
+  <!-- ========================================================================= -->
+  <div id="docked-compose-card" class="hidden fixed inset-x-3 bottom-3 sm:inset-x-auto sm:bottom-5 sm:right-6 sm:w-[500px] max-w-[calc(100vw-24px)] max-h-[90vh] bg-white rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.35)] border border-slate-200/90 flex flex-col overflow-hidden z-[99999] transition-all duration-200">
+    
+    <!-- Header: "New Email" + Minimize (-) + Close (X) -->
+    <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-xs text-slate-900 tracking-tight">New Email</span>
+        <span class="text-[10px] text-slate-400 font-mono">RacconMail</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button onclick="minimizeComposeCard()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Minimize">
+          <i data-lucide="minus" class="h-3.5 w-3.5"></i>
+        </button>
+        <button onclick="closeComposeCard()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-3.5 w-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Form Rows matching Figma -->
+    <div id="compose-body-container" class="p-4 space-y-2.5 text-xs overflow-y-auto">
+      <!-- From Field with Capsule Pill -->
+      <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+        <span class="text-slate-400 font-medium w-12 shrink-0">From:</span>
+        <div class="inline-flex items-center gap-1.5 bg-slate-100 rounded-full px-2.5 py-1 text-slate-700 font-medium">
+          <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-3.5 w-3.5 rounded-full object-cover" />
+          <span><?php echo htmlspecialchars($currentUser['email']); ?></span>
         </div>
       </div>
 
-      <!-- 2. STORY READER VIEW (Scroll Fixed) -->
-      <div id="stories-reader-view" class="hidden flex-col flex-1 overflow-hidden min-h-0">
-        <!-- Reader Header -->
-        <div class="flex items-center justify-between pb-3 border-b border-border shrink-0">
-          <button onclick="app.backToStoriesCatalog()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted hover:bg-accent text-foreground font-bold text-xs transition cursor-pointer">
-            <i data-lucide="arrow-left" class="h-3.5 w-3.5"></i>
-            <span>Back to Stories</span>
-          </button>
-          <div class="flex items-center gap-2">
-            <button onclick="app.sendStoryAsPostcard()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-xs transition cursor-pointer active:scale-95 shadow-2xs">
-              <i data-lucide="send" class="h-3.5 w-3.5"></i>
-              <span>Send as Postcard</span>
-            </button>
-            <button onclick="app.closeStoriesModal()" class="p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition cursor-pointer">
-              <i data-lucide="x" class="h-5 w-5"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Reader Scrollable Content (Scroll Fixed) -->
-        <div id="stories-reader-content" class="flex-1 min-h-0 overflow-y-auto overscroll-contain py-5 px-2 sm:px-6 space-y-4">
-          <!-- Populated by app.openStoryReader(storyId) -->
-        </div>
-
-        <!-- Reader Footer -->
-        <div class="pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground shrink-0">
-          <span id="story-reader-origin-badge">Origin</span>
-          <span class="font-bold text-primary flex items-center gap-1">
-            <span>Integrated Reader &bull; Raccon Mail Library</span>
-          </span>
-        </div>
+      <!-- To Field with Capsule Pill -->
+      <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+        <span class="text-slate-400 font-medium w-12 shrink-0">To:</span>
+        <input id="compose-to" type="email" placeholder="recipient@domain.com" value="" autocomplete="off" class="flex-1 bg-transparent text-slate-800 font-medium outline-none text-xs select-text" />
       </div>
 
+      <!-- Subject Field -->
+      <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+        <span class="text-slate-400 font-medium w-12 shrink-0">Subject:</span>
+        <input id="compose-subject" type="text" placeholder="Subject" value="" autocomplete="off" class="flex-1 bg-transparent text-slate-800 font-medium outline-none text-xs select-text" />
+      </div>
+
+      <!-- Message Body Textarea -->
+      <div>
+        <textarea
+          id="compose-body"
+          rows="6"
+          class="w-full resize-none bg-transparent outline-none text-xs text-slate-700 leading-relaxed placeholder-slate-400 select-text"
+          placeholder="Write your email here..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Footer Action Toolbar -->
+    <div class="px-4 py-3 bg-white border-t border-slate-100 flex items-center justify-between shrink-0">
+      <!-- Black Send Button on the Left -->
+      <button
+        onclick="sendEmailNow()"
+        id="btn-send-email"
+        class="bg-slate-900 hover:bg-black text-white text-xs font-semibold px-5 py-2 rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+      >
+        <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
+        <span>Send</span>
+      </button>
+
+      <!-- Toolbar Icons on the Right (Gray Lucide Icons) -->
+      <div class="flex items-center gap-2 text-slate-400">
+        <button type="button" onclick="attachFileAction()" class="hover:text-slate-700 p-1 transition" title="Attach file"><i data-lucide="paperclip" class="h-4 w-4"></i></button>
+        <button type="button" onclick="insertLinkAction()" class="hover:text-slate-700 p-1 transition" title="Insert link"><i data-lucide="link" class="h-4 w-4"></i></button>
+        <button type="button" onclick="insertImageAction()" class="hover:text-slate-700 p-1 transition" title="Insert image"><i data-lucide="image" class="h-4 w-4"></i></button>
+        <button type="button" onclick="closeComposeCard()" class="hover:text-rose-500 p-1 transition" title="Discard"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- FLOATING MOBILE COMPOSE BUTTON (PENCIL IN BOTTOM RIGHT CORNER)            -->
+  <!-- ========================================================================= -->
+  <button
+    type="button"
+    onclick="openComposeCard()"
+    id="mobile-floating-compose-btn"
+    class="md:hidden fixed bottom-6 right-6 z-[9990] w-14 h-14 rounded-full bg-slate-900 hover:bg-black text-white shadow-[0_10px_25px_rgba(15,23,42,0.45)] flex items-center justify-center transition active:scale-95 cursor-pointer border border-slate-700/40"
+    title="Write New Message"
+    aria-label="Write New Message"
+  >
+    <i class="fas fa-pen text-lg text-white"></i>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- RACCOON SUCCESS POPUP MODAL ("Email sent successfully! 🐾")                -->
+  <!-- ========================================================================= -->
+  <div id="raccoon-success-modal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-all duration-200" onclick="if(event.target === this) closeRaccoonSuccessModal()">
+    <div class="relative w-full max-w-sm rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200/90 text-center animate-in zoom-in-95 duration-200">
+      <button onclick="closeRaccoonSuccessModal()" class="absolute top-4 right-4 w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition cursor-pointer">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+      <div class="relative inline-block mb-3">
+        <img src="/raccoon-logo.png" alt="Raccon Mascot" class="h-24 w-24 mx-auto object-contain filter drop-shadow-md animate-bounce" />
+        <span class="absolute -top-1 -right-1 text-2xl">✨</span>
+      </div>
+      <h3 class="font-display text-xl font-bold text-slate-900">Email sent successfully! 🐾</h3>
+      <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+        Your sealed envelope is on its nocturnal flight and has been safely dispatched worldwide!
+      </p>
+      <button onclick="closeRaccoonSuccessModal()" class="mt-5 w-full rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs py-3 transition active:scale-95 shadow-sm cursor-pointer">
+        Awesome, thanks Rocky!
+      </button>
     </div>
   </div>
 
-  <!-- ======================================================= -->
-  <!-- COMMAND PALETTE MODAL (K-BAR / Ctrl+K / Cmd+K)         -->
-  <!-- ======================================================= -->
-  <div id="command-palette-backdrop" onclick="app.closeCommandPalette()" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-14 sm:pt-20 px-3 sm:px-4 transition-opacity">
-    <div onclick="event.stopPropagation()" class="w-full max-w-xl bg-card rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col transform transition-all duration-200 divide-y divide-border/60">
-      
-      <!-- Command Palette Search Input Header -->
-      <div class="p-3.5 flex items-center gap-3 bg-muted/30">
-        <i data-lucide="terminal" class="h-5 w-5 text-primary shrink-0"></i>
+  <!-- ========================================================================= -->
+  <!-- FLOATING MOBILE SEARCH BUTTON (BOTTOM-LEFT CORNER)                         -->
+  <!-- ========================================================================= -->
+  <button
+    type="button"
+    onclick="openMobileSearchSheet()"
+    id="mobile-floating-search-btn"
+    class="md:hidden fixed bottom-6 left-6 z-[9990] w-14 h-14 rounded-full bg-white hover:bg-slate-50 text-slate-700 shadow-[0_10px_25px_rgba(15,23,42,0.18)] flex items-center justify-center transition active:scale-95 cursor-pointer border border-slate-200/90"
+    title="Search Emails"
+    aria-label="Search Emails"
+  >
+    <i data-lucide="search" class="h-6 w-6 text-slate-700"></i>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- MODERN HALF-SCREEN SEARCH BOTTOM SHEET (MOBILE VIEW & ANDROID APK)        -->
+  <!-- ========================================================================= -->
+  <div id="mobile-search-backdrop" onclick="closeMobileSearchSheet()" class="hidden fixed inset-0 bg-black/40 backdrop-blur-xs z-[99995] md:hidden transition-opacity duration-300"></div>
+
+  <div id="mobile-search-sheet" class="hidden fixed bottom-0 left-0 right-0 z-[99998] md:hidden bg-white rounded-t-3xl border-t border-slate-200/90 shadow-2xl flex flex-col max-h-[75vh] h-[65vh] transition-transform duration-300 ease-out transform translate-y-full">
+    <!-- Drag handle indicator -->
+    <div class="pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeMobileSearchSheet()">
+      <div class="w-12 h-1.5 rounded-full bg-slate-300"></div>
+    </div>
+
+    <!-- Sheet Header with Search Bar -->
+    <div class="p-3.5 border-b border-slate-100 flex items-center gap-2">
+      <div class="relative flex-1 flex items-center">
+        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
         <input
-          id="command-palette-input"
+          id="mobile-search-input"
           type="text"
-          placeholder="Type a command or search mail... (Esc to close)"
-          class="w-full bg-transparent text-sm sm:text-base outline-none font-medium placeholder:text-muted-foreground text-foreground"
-          oninput="app.onCommandPaletteInput(this.value)"
-          onkeydown="app.onCommandPaletteKeyDown(event)"
+          placeholder="Search sender, subject, keywords..."
+          oninput="handleMobileSearchInput(this.value)"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-2xl border border-slate-200 pl-10 pr-9 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition shadow-2xs"
           autocomplete="off"
         />
-        <kbd class="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono font-semibold bg-muted text-muted-foreground border border-border rounded">ESC</kbd>
+        <button id="mobile-search-clear-btn" onclick="clearMobileSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
       </div>
+      <button onclick="closeMobileSearchSheet()" class="px-2.5 py-1.5 text-slate-500 hover:text-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-100 transition cursor-pointer">
+        Cancel
+      </button>
+    </div>
 
-      <!-- Command Palette Actions List -->
-      <div id="command-palette-results" class="max-h-[60vh] overflow-y-auto p-2 space-y-1 text-xs">
-        <!-- Rendered by app.renderCommandPaletteItems() -->
-      </div>
-
-      <!-- Command Palette Keyboard Guide Footer -->
-      <div class="px-4 py-2 bg-muted/20 text-[11px] text-muted-foreground flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↑</kbd><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↓</kbd> Navigate</span>
-          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 font-mono text-[10px] bg-card border border-border rounded">↵</kbd> Select</span>
+    <!-- Scrollable Suggestions & Results Body -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-4">
+      <!-- Quick Filter Pills -->
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Smart Filters</p>
+        <div class="flex flex-wrap gap-1.5">
+          <button onclick="applySearchFilter('is:unread')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span> Unread
+          </button>
+          <button onclick="applySearchFilter('is:starred')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer">
+            <i data-lucide="star" class="h-3 w-3 text-amber-500 fill-amber-500"></i> Starred
+          </button>
+          <button onclick="applySearchFilter('has:attachment')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer">
+            <i data-lucide="paperclip" class="h-3 w-3 text-slate-500"></i> Attachments
+          </button>
+          <button onclick="applySearchFilter('support')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 text-[11px] font-medium flex items-center gap-1 transition cursor-pointer">
+            <i data-lucide="shield-check" class="h-3 w-3 text-slate-500"></i> Support
+          </button>
         </div>
-        <span class="text-primary font-semibold flex items-center gap-1">🦝 Command Center</span>
       </div>
 
+      <!-- Live Search Suggestions Section -->
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <p id="mobile-search-results-title" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Suggested Results</p>
+          <span id="mobile-search-results-count" class="text-[10px] text-slate-400 font-mono"></span>
+        </div>
+        <div id="mobile-search-suggestions-list" class="space-y-1.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
     </div>
   </div>
-
-
-
-  <audio id="mail-chime" preload="auto">
-    <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..." type="audio/wav">
-  </audio>
-
-  <!-- Application Logic -->
-  <script>
-    // Immediate auth gate check: do not render mailbox if not logged in
-    (async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (!data.loggedIn || !data.user) {
-          window.location.replace('/auth?mode=register');
-        }
-      } catch (_) {
-        window.location.replace('/auth?mode=register');
-      }
-    })();
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="/js/app.js?v=<?php echo time(); ?>"></script>
-
-  
 
 </body>
 </html>
-

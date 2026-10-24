@@ -107,8 +107,9 @@
       font-family: 'JetBrains Mono', monospace;
     }
   </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
 </head>
-<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white">
+<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white font-sans">
 
   <!-- TOP NAVIGATION HEADER (Matching Inbox Bubble White Design) -->
   <header class="w-full sticky top-0 z-40 bg-white border-b border-slate-200/80 shadow-xs" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
@@ -677,7 +678,7 @@
       const formattedDate = formatTime(p.created_at);
 
       return `
-        <article class="rounded-3xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-md transition p-5 sm:p-6 space-y-4 group shadow-xl shadow-slate-900/5 max-w-full overflow-hidden">
+        <article id="post-${p.id}" class="rounded-2xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-sm transition p-4 sm:p-5 space-y-3 group shadow-lg shadow-slate-900/5 max-w-full overflow-hidden">
           <!-- Post Author Header -->
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
@@ -741,9 +742,9 @@
             </div>
           ` : ''}
 
-          <!-- Bottom Action Buttons: Like, Comment, Share -->
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
-            <div class="flex items-center gap-3">
+          <!-- Bottom Action Buttons: Like, Comment, Social Share -->
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
+            <div class="flex items-center gap-2 sm:gap-2.5">
               <!-- Paw / Like Button -->
               <button
                 onclick="togglePostLike('${p.id}')"
@@ -759,43 +760,106 @@
                 onclick="toggleCommentsDrawer('${p.id}')"
                 class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition cursor-pointer shadow-2xs"
               >
-              >
                 <i data-lucide="message-square" class="h-3.5 w-3.5 text-slate-600"></i>
                 <span id="comment-cnt-${p.id}">${p.comments_count || 0}</span>
                 <span class="text-[11px]">Replies</span>
               </button>
             </div>
 
-            <button
-              onclick="shareForumPost('${p.id}', '${escapeJsString(p.title)}')"
-              class="px-2.5 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition flex items-center gap-1 text-[11px] cursor-pointer"
-            >
-              <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-600"></i>
-              <span>Share</span>
-            </button>
-          </div>
+            <!-- Social Networks Share Dropdown Trigger -->
+            <div class="relative">
+              <button
+                onclick="toggleSharePopover(event, '${p.id}')"
+                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition flex items-center gap-1.5 text-[11px] font-semibold cursor-pointer shadow-2xs"
+                title="Share to social networks"
+              >
+                <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-600"></i>
+                <span>Share</span>
+              </button>
 
+              <!-- Social Networks Share Popover Card -->
+              <div id="share-popover-${p.id}" class="hidden absolute right-0 bottom-full mb-2 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-30 w-72 animate-in fade-in zoom-in-95 duration-150">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Share Discussion</span>
+                  <span class="text-[10px] text-slate-400 font-mono">Social Networks</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <!-- X (Twitter) -->
+                  <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(p.title)}&url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-xs"><i class="fab fa-x-twitter"></i></div>
+                    <span class="text-[10px] font-medium">X</span>
+                  </a>
+                  <!-- WhatsApp -->
+                  <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(p.title + ' https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-[#25D366] text-white flex items-center justify-center text-xs"><i class="fab fa-whatsapp"></i></div>
+                    <span class="text-[10px] font-medium">WhatsApp</span>
+                  </a>
+                  <!-- LinkedIn -->
+                  <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-[#0A66C2] text-white flex items-center justify-center text-xs"><i class="fab fa-linkedin-in"></i></div>
+                    <span class="text-[10px] font-medium">LinkedIn</span>
+                  </a>
+                  <!-- Facebook -->
+                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center text-xs"><i class="fab fa-facebook-f"></i></div>
+                    <span class="text-[10px] font-medium">Facebook</span>
+                  </a>
+                  <!-- Telegram -->
+                  <a href="https://t.me/share/url?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}&text=${encodeURIComponent(p.title)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-[#229ED9] text-white flex items-center justify-center text-xs"><i class="fab fa-telegram-plane"></i></div>
+                    <span class="text-[10px] font-medium">Telegram</span>
+                  </a>
+                  <!-- Reddit -->
+                  <a href="https://reddit.com/submit?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}&title=${encodeURIComponent(p.title)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
+                    <div class="w-8 h-8 rounded-lg bg-[#FF4500] text-white flex items-center justify-center text-xs"><i class="fab fa-reddit-alien"></i></div>
+                    <span class="text-[10px] font-medium">Reddit</span>
+                  </a>
+                </div>
+                <div class="mt-2.5 pt-2 border-t border-slate-100">
+                  <button onclick="copyDirectPostLink(this, '${p.id}')" class="w-full py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="link" class="h-3.5 w-3.5 text-slate-500"></i>
+                    <span>Copy Direct Link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- Threaded Comments Drawer -->
           <div id="comments-drawer-${p.id}" class="hidden pt-3 border-t border-slate-200 space-y-3">
-            <div id="comments-list-${p.id}" class="space-y-2.5">
-              <!-- Comments load here -->
+            <div id="comments-list-${p.id}" class="space-y-2">
+              <div class="p-3 text-center text-xs text-slate-400">Loading replies...</div>
             </div>
 
-            <!-- New Comment Input (Protected for Members) -->
-            <div class="flex items-start gap-2 pt-2">
-              <input
-                id="comment-input-${p.id}"
-                type="text"
-                placeholder="Write a constructive reply..."
-                onkeydown="if(event.key === 'Enter') submitComment('${p.id}')"
-                class="flex-1 bg-white border border-slate-200 rounded-full px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400"
-              />
-              <button
-                onclick="submitComment('${p.id}')"
-                class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 transition shrink-0 cursor-pointer shadow-2xs"
-              >
-                Reply
-              </button>
+            <!-- New Comment Input (Seamless for Members and Guests) -->
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500">
+                <span class="font-semibold flex items-center gap-1">
+                  <i data-lucide="message-circle" class="h-3.5 w-3.5 text-slate-500"></i>
+                  <span>Leave a Reply</span>
+                </span>
+                <input
+                  id="comment-author-${p.id}"
+                  type="text"
+                  placeholder="Your Name / Handle"
+                  class="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-36"
+                />
+              </div>
+              <div class="flex items-start gap-2">
+                <textarea
+                  id="comment-input-${p.id}"
+                  rows="2"
+                  placeholder="Share your feedback, coding tips, or explanation..."
+                  class="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition resize-none leading-relaxed"
+                ></textarea>
+                <button
+                  id="comment-btn-${p.id}"
+                  onclick="submitComment('${p.id}')"
+                  class="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs active:scale-95 self-end"
+                >
+                  <span>Reply</span>
+                  <i data-lucide="send" class="h-3 w-3"></i>
+                </button>
+              </div>
             </div>
           </div>
         </article>

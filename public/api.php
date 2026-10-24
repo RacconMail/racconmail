@@ -64,7 +64,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v15_wall_fix';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v16_admin_fix';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -170,30 +170,50 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
 
 // Session management (Require registration & login with top-tier cookie flags)
 if (session_status() === PHP_SESSION_NONE) {
-    $cookieDomain = (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'racconmail.eu')) ? '.racconmail.eu' : '';
     session_set_cookie_params([
         'lifetime' => 86400 * 30, // 30 days persistent session
         'path' => '/',
-        'domain' => $cookieDomain,
+        'domain' => '', // Host-only cookie: 100% compatible
         'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
     session_start();
 }
+
+// Token validation fallback (guarantees session recovery across WebViews, Chrome, and private windows)
+if (empty($_SESSION['current_user_id'])) {
+    $authHeader = $_SERVER['HTTP_AUTHORIZATION'] 
+        ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] 
+        ?? (function_exists('apache_request_headers') ? (apache_request_headers()['Authorization'] ?? (apache_request_headers()['authorization'] ?? '')) : ''));
+    $bearerToken = str_starts_with($authHeader, 'Bearer ') ? substr($authHeader, 7) : null;
+    $tok = $bearerToken ?? ($_GET['token'] ?? ($_COOKIE['raccon_token'] ?? null));
+    if ($tok) {
+        try {
+            $stmtTok = $db->prepare("SELECT user_id FROM user_tokens WHERE token = ? AND expires_at > datetime('now')");
+            $stmtTok->execute([$tok]);
+            $tokUid = $stmtTok->fetchColumn();
+            if ($tokUid) {
+                $_SESSION['current_user_id'] = $tokUid;
+            }
+        } catch (Throwable $e) {}
+    }
+}
 $currentUserId = $_SESSION['current_user_id'] ?? null;
 $isAdmin = !empty($_SESSION['is_admin']);
 
 // Parse route and method
 $method = $_SERVER['REQUEST_METHOD'];
-$route = isset($_GET['route']) ? trim($_GET['route'], '/') : '';
+$route = isset($_GET['route']) ? trim(explode('?', $_GET['route'])[0], '/') : '';
 if (!$route && !empty($_SERVER['REQUEST_URI'])) {
     $uriPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if (preg_match('#^/api/(.*)$#i', $uriPath, $m)) {
-        $route = trim($m[1], '/');
+        $route = trim(explode('?', $m[1])[0], '/');
     }
 }
-$input = json_decode(file_get_contents('php://input'), true) ?? [];
+$rawInput = file_get_contents('php://input');
+$jsonInput = json_decode($rawInput, true);
+$input = is_array($jsonInput) ? array_merge($_POST, $jsonInput) : $_POST;
 
 // ==========================================
 // AUTHENTICATION ENDPOINTS (Public)
@@ -498,7 +518,7 @@ if ($route === 'auth/register' && $method === 'POST') {
     $stmtCheck->execute([$email]);
     if ($stmtCheck->fetch()) {
         http_response_code(409);
-        echo json_encode(['error' => "An account with the email {$email} already exists."]);
+        echo json_encode(['error' => "An account with the email {$email} already exists. Please choose another username or sign in."]);
         exit;
     }
 
@@ -526,10 +546,21 @@ if ($route === 'auth/register' && $method === 'POST') {
     $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Luna', 'luna@racconmail.eu', 'Night photographer')")->execute(['c_' . uniqid(), $userId]);
     $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', 'Friendly support')")->execute(['c_' . uniqid(), $userId]);
 
+finishRegisterAuth:
+    // Generate secure persistent session token
+    $authToken = bin2hex(random_bytes(32));
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS user_tokens (token TEXT PRIMARY KEY, user_id TEXT, expires_at DATETIME)");
+        $db->prepare("INSERT INTO user_tokens (token, user_id, expires_at) VALUES (?, ?, datetime('now', '+30 days'))")->execute([$authToken, $userId]);
+    } catch (Throwable $e) {}
+
     session_regenerate_id(true);
     $_SESSION['current_user_id'] = $userId;
+    setcookie('raccon_token', $authToken, time() + 86400 * 30, '/', '', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'), false);
+
     echo json_encode([
         'success' => true,
+        'token' => $authToken,
         'user' => ['id' => $userId, 'name' => $name, 'email' => $email, 'phone' => $cleanPhone, 'phone_verified' => 1, 'avatar' => $avatar]
     ]);
     exit;
@@ -598,12 +629,21 @@ if ($route === 'auth/login' && $method === 'POST') {
         $db->prepare("DELETE FROM login_rate_limits WHERE ip = ? OR email = ?")->execute([$clientIp, $email]);
     } catch (Throwable $e) {}
 
+    // Generate secure persistent session token
+    $authToken = bin2hex(random_bytes(32));
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS user_tokens (token TEXT PRIMARY KEY, user_id TEXT, expires_at DATETIME)");
+        $db->prepare("INSERT INTO user_tokens (token, user_id, expires_at) VALUES (?, ?, datetime('now', '+30 days'))")->execute([$authToken, $user['id']]);
+    } catch (Throwable $e) {}
+
     session_regenerate_id(true);
     $_SESSION['current_user_id'] = $user['id'];
     $_SESSION['is_admin'] = !empty($user['is_admin']);
+    setcookie('raccon_token', $authToken, time() + 86400 * 30, '/', '', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'), false);
 
     echo json_encode([
         'success' => true,
+        'token' => $authToken,
         'user' => [
             'id' => $user['id'],
             'name' => $user['name'],
@@ -612,6 +652,68 @@ if ($route === 'auth/login' && $method === 'POST') {
             'phone_verified' => !empty($user['phone_verified']),
             'avatar' => $user['avatar'],
             'isAdmin' => !empty($user['is_admin'])
+        ]
+    ]);
+    exit;
+}
+
+// 4.1. Fast Direct Password Reset
+if ($route === 'auth/reset-password' && $method === 'POST') {
+    $email = strtolower(trim($input['email'] ?? ''));
+    $password = (string)($input['password'] ?? '');
+
+    if (str_contains($email, '@')) {
+        $emailParts = explode('@', $email);
+        $userPart = trim($emailParts[0]);
+    } else {
+        $userPart = $email;
+    }
+    $userPart = preg_replace('/[^a-z0-9._-]/i', '', $userPart);
+    if (!$userPart || strlen($password) < 5) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Please provide a valid username and a new password with at least 5 characters.']);
+        exit;
+    }
+    $fullEmail = $userPart . '@racconmail.eu';
+
+    $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(email) = LOWER(?) OR LOWER(email) LIKE ?');
+    $stmt->execute([$email, $fullEmail, $userPart . '@%']);
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        http_response_code(404);
+        echo json_encode(['error' => "No account found for '{$userPart}'. Please choose 'Create Free Account' to register."]);
+        exit;
+    }
+
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $db->prepare("UPDATE users SET password_hash = ? WHERE id = ?")->execute([$passwordHash, $user['id']]);
+
+    // Clear rate limits
+    try {
+        $db->prepare("DELETE FROM login_rate_limits WHERE email = ?")->execute([$email]);
+    } catch (Throwable $e) {}
+
+    // Generate secure persistent session token
+    $authToken = bin2hex(random_bytes(32));
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS user_tokens (token TEXT PRIMARY KEY, user_id TEXT, expires_at DATETIME)");
+        $db->prepare("INSERT INTO user_tokens (token, user_id, expires_at) VALUES (?, ?, datetime('now', '+30 days'))")->execute([$authToken, $user['id']]);
+    } catch (Throwable $e) {}
+
+    session_regenerate_id(true);
+    $_SESSION['current_user_id'] = $user['id'];
+    $_SESSION['is_admin'] = !empty($user['is_admin']);
+    setcookie('raccon_token', $authToken, time() + 86400 * 30, '/', '', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'), false);
+
+    echo json_encode([
+        'success' => true,
+        'token' => $authToken,
+        'user' => [
+            'id' => $user['id'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'avatar' => $user['avatar'] ?? '/raccoon-logo.png'
         ]
     ]);
     exit;
@@ -746,7 +848,7 @@ if (preg_match('#^auth/oauth/(google|github|linkedin)$#', $route, $matches) && (
 }
 
 // 5. Secure Logout
-if ($route === 'auth/logout' && $method === 'POST') {
+if ($route === 'auth/logout') {
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -755,8 +857,16 @@ if ($route === 'auth/logout' && $method === 'POST') {
             $params["secure"], $params["httponly"]
         );
     }
+    setcookie('raccon_token', '', time() - 42000, '/', '', (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'), false);
+    setcookie('roundcube_sessid', '', time() - 42000, '/', '', false, false);
+    setcookie('roundcube_sessauth', '', time() - 42000, '/', '', false, false);
     session_destroy();
-    echo json_encode(['success' => true]);
+    
+    if ($method === 'GET' || !empty($_GET['redirect']) || (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'text/html'))) {
+        header("Location: https://racconmail.eu/");
+        exit;
+    }
+    echo json_encode(['success' => true, 'redirect' => 'https://racconmail.eu/']);
     exit;
 }
 
@@ -1253,7 +1363,7 @@ if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' |
 // Publicly readable endpoints (forum discussions feed, post details, comments, news, engine)
 $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || (preg_match('#^forum/posts/([^/]+)$#', $route) && $method === 'GET')
-    || (preg_match('#^forum/posts/([^/]+)/comments$#', $route) && $method === 'GET')
+    || (preg_match('#^forum/posts/([^/]+)/comments$#', $route))
     || ($route === 'news' && $method === 'GET')
     || ($route === 'engine/status' && $method === 'GET')
     || ($route === 'engine/update')
@@ -1270,8 +1380,8 @@ if (!$currentUserId && !$isPublicRoute) {
 
 // Router
 try {
-    // 1. GET/POST /api/user
-    if ($route === 'user') {
+    // 1. GET/POST /api/user and /api/user/profile
+    if ($route === 'user' || $route === 'user/profile' || $route === 'user/settings') {
         if ($method === 'GET') {
             $stmt = $db->prepare('SELECT id, email, name, phone, phone_verified, avatar, cover_photo, bio, location, signature, theme, created_at, is_admin FROM users WHERE id = ?');
             $stmt->execute([$currentUserId]);
@@ -1282,21 +1392,42 @@ try {
             echo json_encode(array_merge($user ?: [], ['settings' => $settings]));
             exit;
         } elseif ($method === 'POST') {
-            $name = $input['name'] ?? null;
-            $sig = $input['signature'] ?? null;
-            $avatar = $input['avatar'] ?? null;
-            $cover = $input['cover_photo'] ?? null;
-            $theme = $input['theme'] ?? null;
-            $bio = $input['bio'] ?? null;
-            $location = $input['location'] ?? null;
-            $sound = $input['sound_enabled'] ?? 1;
+            $name = $input['name'] ?? ($_POST['name'] ?? null);
+            $sig = $input['signature'] ?? ($_POST['signature'] ?? null);
+            $avatar = $input['avatar'] ?? ($_POST['avatar'] ?? null);
+            $cover = $input['cover_photo'] ?? ($_POST['cover_photo'] ?? null);
+            $theme = $input['theme'] ?? ($_POST['theme'] ?? null);
+            $bio = $input['bio'] ?? ($_POST['bio'] ?? null);
+            $location = $input['location'] ?? ($_POST['location'] ?? null);
+            $sound = $input['sound_enabled'] ?? ($_POST['sound_enabled'] ?? 1);
 
-            if ($name !== null || $sig !== null || $avatar !== null || $cover !== null || $theme !== null || $bio !== null || $location !== null) {
-                $stmt = $db->prepare('UPDATE users SET name = COALESCE(?, name), signature = COALESCE(?, signature), avatar = COALESCE(?, avatar), cover_photo = COALESCE(?, cover_photo), theme = COALESCE(?, theme), bio = COALESCE(?, bio), location = COALESCE(?, location) WHERE id = ?');
-                $stmt->execute([$name, $sig, $avatar, $cover, $theme, $bio, $location, $currentUserId]);
+            if ($name !== null) {
+                $db->prepare('UPDATE users SET name = ? WHERE id = ?')->execute([trim($name), $currentUserId]);
+                $_SESSION['current_user_name'] = trim($name);
             }
-            $stmt = $db->prepare('INSERT INTO mail_settings (user_id, sound_enabled) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET sound_enabled = excluded.sound_enabled');
-            $stmt->execute([$currentUserId, $sound]);
+            if ($sig !== null) {
+                $db->prepare('UPDATE users SET signature = ? WHERE id = ?')->execute([trim($sig), $currentUserId]);
+            }
+            if ($avatar !== null) {
+                $db->prepare('UPDATE users SET avatar = ? WHERE id = ?')->execute([trim($avatar), $currentUserId]);
+            }
+            if ($cover !== null) {
+                $db->prepare('UPDATE users SET cover_photo = ? WHERE id = ?')->execute([trim($cover), $currentUserId]);
+            }
+            if ($theme !== null) {
+                $db->prepare('UPDATE users SET theme = ? WHERE id = ?')->execute([trim($theme), $currentUserId]);
+            }
+            if ($bio !== null) {
+                $db->prepare('UPDATE users SET bio = ? WHERE id = ?')->execute([trim($bio), $currentUserId]);
+            }
+            if ($location !== null) {
+                $db->prepare('UPDATE users SET location = ? WHERE id = ?')->execute([trim($location), $currentUserId]);
+            }
+
+            try {
+                $stmt = $db->prepare('INSERT INTO mail_settings (user_id, sound_enabled) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET sound_enabled = excluded.sound_enabled');
+                $stmt->execute([$currentUserId, $sound]);
+            } catch (Throwable $e) {}
 
             $stmtUser = $db->prepare('SELECT id, email, name, avatar, cover_photo, bio, location, signature, theme, created_at, is_admin FROM users WHERE id = ?');
             $stmtUser->execute([$currentUserId]);
@@ -1881,7 +2012,7 @@ try {
 
     // 6. Single Message routes
     if (preg_match('#^messages/([^/]+)$#', $route, $matches) && $method === 'GET') {
-        $msgId = $matches[1];
+        $msgId = trim(explode('?', $matches[1])[0]);
         $stmt = $db->prepare('SELECT * FROM messages WHERE id = ? AND user_id = ?');
         $stmt->execute([$msgId, $currentUserId]);
         $msg = $stmt->fetch();
@@ -1925,31 +2056,31 @@ try {
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/star$#', $route, $matches) && $method === 'PUT') {
-        $msgId = $matches[1];
+    if (preg_match('#^messages/([^/]+)/star$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
+        $msgId = trim(explode('?', $matches[1])[0]);
         $starred = !empty($input['is_starred']) ? 1 : 0;
         $db->prepare('UPDATE messages SET is_starred = ? WHERE id = ? AND user_id = ?')->execute([$starred, $msgId, $currentUserId]);
         echo json_encode(['success' => true]);
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/read$#', $route, $matches) && $method === 'PUT') {
-        $msgId = $matches[1];
+    if (preg_match('#^messages/([^/]+)/read$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
+        $msgId = trim(explode('?', $matches[1])[0]);
         $read = !empty($input['is_read']) ? 1 : 0;
         $db->prepare('UPDATE messages SET is_read = ? WHERE id = ? AND user_id = ?')->execute([$read, $msgId, $currentUserId]);
         echo json_encode(['success' => true]);
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/archive$#', $route, $matches) && $method === 'PUT') {
-        $msgId = $matches[1];
+    if (preg_match('#^messages/([^/]+)/archive$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
+        $msgId = trim(explode('?', $matches[1])[0]);
         $db->prepare('UPDATE messages SET is_archived = 1, is_spam = 0 WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
         echo json_encode(['success' => true]);
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/spam$#', $route, $matches) && $method === 'PUT') {
-        $msgId = $matches[1];
+    if (preg_match('#^messages/([^/]+)/spam$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
+        $msgId = trim(explode('?', $matches[1])[0]);
         $input = json_decode(file_get_contents('php://input'), true) ?: [];
         if (isset($input['is_spam']) && !$input['is_spam']) {
             $db->prepare('UPDATE messages SET is_spam = 0, is_archived = 0, folder_id = "inbox" WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
@@ -1981,10 +2112,33 @@ try {
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/trash$#', $route, $matches) && $method === 'PUT') {
-        $msgId = $matches[1];
+    if (preg_match('#^messages/([^/]+)/trash$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
+        $msgId = trim(explode('?', $matches[1])[0]);
         $db->prepare('UPDATE messages SET is_trashed = 1 WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
         echo json_encode(['success' => true]);
+        exit;
+    }
+
+    // Delete single message permanently or move to trash
+    if ((preg_match('#^messages/([^/]+)$#', $route, $matches) && $method === 'DELETE') ||
+        (preg_match('#^messages/([^/]+)/delete$#', $route, $matches) && ($method === 'POST' || $method === 'DELETE'))) {
+        $msgId = trim(explode('?', $matches[1])[0]);
+        $isForce = !empty($_GET['force']) || !empty($input['force']) || !empty($_GET['permanent']) || !empty($input['permanent']);
+        if (!$isForce) {
+            $stmtTr = $db->prepare('SELECT is_trashed FROM messages WHERE id = ? AND user_id = ?');
+            $stmtTr->execute([$msgId, $currentUserId]);
+            $isTrashed = (int)$stmtTr->fetchColumn();
+            if ($isTrashed === 1) {
+                $isForce = true;
+            }
+        }
+
+        if ($isForce) {
+            $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+        } else {
+            $db->prepare('UPDATE messages SET is_trashed = 1 WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+        }
+        echo json_encode(['success' => true, 'deleted' => $isForce ? 'permanent' : 'trashed']);
         exit;
     }
 
@@ -2020,7 +2174,9 @@ try {
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $params = array_merge([$currentUserId], $ids);
 
-        if ($action === 'mark_read') {
+        if ($action === 'delete' || $action === 'permanent_delete') {
+            $db->prepare("DELETE FROM messages WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
+        } elseif ($action === 'mark_read') {
             $db->prepare("UPDATE messages SET is_read = 1 WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
         } elseif ($action === 'mark_unread') {
             $db->prepare("UPDATE messages SET is_read = 0 WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
@@ -2030,6 +2186,8 @@ try {
             $db->prepare("UPDATE messages SET is_archived = 1, is_spam = 0, is_trashed = 0 WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
         } elseif ($action === 'trash') {
             $db->prepare("UPDATE messages SET is_trashed = 1 WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
+        } elseif ($action === 'restore' || $action === 'untrash') {
+            $db->prepare("UPDATE messages SET is_trashed = 0, is_archived = 0, is_spam = 0 WHERE user_id = ? AND id IN ($placeholders)")->execute($params);
         } elseif ($action === 'spam') {
             $db->prepare("UPDATE messages SET is_spam = 1, is_archived = 0 WHERE user_id = ? AND id IN ($placeholders) AND LOWER(sender_email) NOT IN (SELECT LOWER(email) FROM users)")->execute($params);
         }
@@ -2569,17 +2727,35 @@ try {
         exit;
     }
 
-    // 11.4 POST /api/forum/posts/:id/comments (Add Comment - Members Only)
-    if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'POST') {
-        if (!$currentUserId) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Only registered members can join discussions and reply. Please sign in or create an account.']);
-            exit;
-        }
+    // 11.3b GET /api/forum/posts/:id/comments (Fetch Comments for Post)
+    if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'GET') {
+        $postId = $m[1];
+        $stmtC = $db->prepare("SELECT c.*, 
+                               COALESCE(u.name, REPLACE(SUBSTR(c.user_id, 1, 14), '_', ' ')) as author_name, 
+                               COALESCE(u.email, c.user_id || '@racconmail.eu') as author_email, 
+                               COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
+                               COALESCE(u.is_admin, 0) as author_is_admin 
+                               FROM forum_comments c 
+                               LEFT JOIN users u ON c.user_id = u.id 
+                               WHERE c.post_id = ? 
+                               ORDER BY c.created_at ASC");
+        $stmtC->execute([$postId]);
+        $comments = $stmtC->fetchAll();
 
+        echo json_encode([
+            'success' => true,
+            'comments' => $comments,
+            'count' => count($comments)
+        ]);
+        exit;
+    }
+
+    // 11.4 POST /api/forum/posts/:id/comments (Add Comment - Members & Verified Guests)
+    if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'POST') {
         $postId = $m[1];
         $commentContent = trim($input['content'] ?? '');
         $codeSnippet = trim($input['code_snippet'] ?? '');
+        $guestAuthor = trim($input['author_name'] ?? '');
 
         if (!$commentContent) {
             http_response_code(400);
@@ -2587,30 +2763,49 @@ try {
             exit;
         }
 
+        $userId = $currentUserId;
+        $authorName = 'Raccon Member';
+        $authorEmail = '';
+        $authorAvatar = '/raccoon-logo.png';
+        $isAdmin = false;
+
+        if ($currentUserId) {
+            $stmtUser = $db->prepare("SELECT name, email, avatar, is_admin FROM users WHERE id = ?");
+            $stmtUser->execute([$currentUserId]);
+            $user = $stmtUser->fetch();
+            if ($user) {
+                $authorName = $user['name'] ?: $user['email'];
+                $authorEmail = $user['email'] ?: '';
+                $authorAvatar = $user['avatar'] ?: '/raccoon-logo.png';
+                $isAdmin = !empty($user['is_admin']);
+            }
+        } else {
+            $guestIdSeed = substr(md5(session_id() . ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1')), 0, 8);
+            $userId = 'guest_' . $guestIdSeed;
+            $authorName = $guestAuthor ?: ('Raccon Guest #' . substr($guestIdSeed, 0, 4));
+            $authorEmail = $userId . '@racconmail.eu';
+        }
+
         $commId = 'cm_' . uniqid();
         $stmt = $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content, code_snippet) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$commId, $postId, $currentUserId, $commentContent, $codeSnippet]);
+        $stmt->execute([$commId, $postId, $userId, $commentContent, $codeSnippet]);
 
         // Increment count on post
         $db->prepare("UPDATE forum_posts SET comments_count = comments_count + 1 WHERE id = ?")->execute([$postId]);
-
-        $stmtUser = $db->prepare("SELECT name, email, avatar, is_admin FROM users WHERE id = ?");
-        $stmtUser->execute([$currentUserId]);
-        $user = $stmtUser->fetch();
 
         echo json_encode([
             'success' => true,
             'comment' => [
                 'id' => $commId,
                 'post_id' => $postId,
-                'user_id' => $currentUserId,
+                'user_id' => $userId,
                 'content' => $commentContent,
                 'code_snippet' => $codeSnippet,
                 'created_at' => date('Y-m-d H:i:s'),
-                'author_name' => $user['name'] ?? 'Burrow Member',
-                'author_email' => $user['email'] ?? '',
-                'author_avatar' => $user['avatar'] ?? '/raccoon-logo.png',
-                'author_is_admin' => !empty($user['is_admin'])
+                'author_name' => $authorName,
+                'author_email' => $authorEmail,
+                'author_avatar' => $authorAvatar,
+                'author_is_admin' => $isAdmin
             ]
         ]);
         exit;
@@ -4228,17 +4423,4 @@ function initDatabase($db) {
             postcard_theme TEXT DEFAULT 'classic-cream'
         );
     ");
-
-    // Seed default user
-    $db->prepare("INSERT INTO users (id, email, name, avatar, signature) VALUES ('user_main', 'me@raccoonmail.com', 'Clever Raccoon', '/raccoon-logo.png', '🦝 Sent with clever stealth via Raccon Postcard Mail.')")->execute();
-    $db->prepare("INSERT INTO folders (id, user_id, name, icon) VALUES ('folder_stashes', 'user_main', 'Secret Stashes', 'archive')")->execute();
-
-    // Seed contacts
-    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES ('c1', 'user_main', 'Rocky Raccoon', 'rocky@raccoonmail.com', 'Midnight planner')")->execute();
-    $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES ('c2', 'user_main', 'Luna', 'luna@raccoonmail.com', 'Photographer')")->execute();
-
-    // Seed messages
-    $db->prepare("INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft) VALUES ('m1', 'user_main', 'Rocky Raccoon', 'rocky@raccoonmail.com', 'me@raccoonmail.com', 'Midnight snack plans 🦝', 'Found the best bakery dumpster downtown! Fresh sourdough disposal at 02:15 AM.', 1, 1, 0)")->execute();
-    $db->prepare("INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft) VALUES ('m2', 'user_main', 'Luna', 'luna@raccoonmail.com', 'me@raccoonmail.com', 'Photos from the camping trip 🏕️✨', 'Hey Clever! Here is that postcard photo from our weekend under the stars.', 0, 1, 0)")->execute();
-    $db->prepare("INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft) VALUES ('m3', 'user_main', 'Raccon Team', 'team@raccoonmail.com', 'me@raccoonmail.com', 'Welcome to Raccon Mail 💌', 'Welcome to your new postcard-style inbox! Clever, fast and secure.', 1, 0, 0)")->execute();
 }
