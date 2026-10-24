@@ -253,7 +253,7 @@
       max-width: 100vw !important;
     }
 
-    /* Harmony Canvas Background & Safe Area Insets */
+    /* Harmony Canvas Background & Edge-to-Edge Full Screen Mobile Display */
     body {
       background-color: #FFFFFF !important;
       color: #1E293B !important;
@@ -264,10 +264,9 @@
       overflow-y: visible !important;
       touch-action: auto !important;
       max-width: 100vw !important;
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      padding-left: env(safe-area-inset-left, 0px);
-      padding-right: env(safe-area-inset-right, 0px);
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
     /* Raccoon Mascot Animation */
@@ -348,17 +347,11 @@
 <body class="bg-white text-slate-900 antialiased selection:bg-slate-900 selection:text-white flex flex-col justify-between transition-colors duration-200">
 
   <div class="w-full flex flex-col justify-between">
-    <!-- ANDROID APP RUNTIME STATUS (Visible inside Android APK) -->
-    <div id="android-app-badge-bar" class="hidden bg-slate-900 text-white text-[11px] font-semibold py-1.5 px-3 text-center border-b border-black/20 z-50">
-      <span class="inline-flex items-center gap-1.5">
-        <i class="fab fa-android text-white"></i>
-        <span>Raccon Mail for Android v2.0 &bull; Installed &amp; Active</span>
-      </span>
-    </div>
+
 
     <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
-    <header class="bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10 sticky top-0 z-40 shadow-xs transition-colors duration-200">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-3 sm:px-6 py-2 sm:py-4">
+    <header class="bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10 sticky top-0 z-40 shadow-xs transition-colors duration-200 w-full m-0">
+      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-4">
         <!-- Brand Logo -->
         <a href="/" id="brand-logo-link" class="flex items-center gap-1.5 sm:gap-2 font-display text-sm sm:text-xl font-bold text-slate-900 dark:text-white hover:opacity-95 transition shrink-0">
           <img src="/raccoon-logo.png" alt="Raccon Mail mascot" class="h-7 w-7 sm:h-10 sm:w-10 raccoon-anim object-contain shrink-0"/>
@@ -1497,8 +1490,6 @@
       const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
       if (isAndroidApp) {
         document.documentElement.classList.add('is-android-app');
-        const badgeBar = document.getElementById('android-app-badge-bar');
-        if (badgeBar) badgeBar.classList.remove('hidden');
 
         const apkBox = document.getElementById('android-apk-action-container');
         if (apkBox) {

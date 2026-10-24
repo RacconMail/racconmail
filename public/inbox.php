@@ -42,6 +42,11 @@ if (empty($_SESSION['current_user_id'])) {
   <!-- Google AdSense -->
   <!-- AdSense script removed from private inbox for privacy and policy compliance -->
 
+  <script>
+    if (navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches) {
+      document.documentElement.classList.add('is-android-app');
+    }
+  </script>
   <!-- Early Theme Initializer (Strictly Light Bubble White) -->
   <script>
     (function() {
@@ -115,7 +120,7 @@ if (empty($_SESSION['current_user_id'])) {
 <body class="bg-white text-slate-900 flex flex-col h-screen w-screen relative select-none overflow-hidden m-0 p-0">
 
   <!-- TOP APP BAR (WHITE BACKGROUND, GRAY WRITE, BLACK BUTTONS, RACCON LOGO) -->
-  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-6 shrink-0 z-20" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
+  <header class="h-14 border-b border-slate-200/80 bg-white flex items-center justify-between px-3 sm:px-6 shrink-0 z-20 w-full" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
     <!-- Left: Raccon Logo + Brand Name in Gray + Sidebar Toggle (Black Button) -->
     <div class="flex items-center gap-3">
       <img src="/raccoon-logo.png" alt="Raccon" class="h-6 w-6 object-contain" />

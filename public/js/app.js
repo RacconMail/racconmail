@@ -164,6 +164,12 @@ const app = {
 
   // Initialize
   async init() {
+    // Detect Android App & Standalone Mode
+    const isAndroid = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
+    if (isAndroid) {
+      document.documentElement.classList.add('is-android-app');
+    }
+
     // Check authentication: do not allow unauthenticated visitors into the mailbox
     try {
       const meRes = await fetch('/api/auth/me');
@@ -2536,8 +2542,8 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
               </div>
             </div>
             <div class="flex items-center gap-2 text-slate-400 shrink-0">
-              <div class="flex items-center gap-1.5"><span class="text-xs font-mono">${dateStrLong}</span><span class="text-[10px] text-slate-500 font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200" title="Detected Timezone: ${userTz}">${userTz}</span></div>
-              <button onclick="app.toggleReaderMoreDropdown(event)" class="p-1 hover:text-slate-700">
+              <span class="text-xs font-mono text-slate-500">${dateStrLong}</span>
+              <button onclick="app.toggleReaderMoreDropdown(event)" class="p-1 hover:text-slate-700" title="More options">
                 <i data-lucide="more-vertical" class="h-3.5 w-3.5"></i>
               </button>
             </div>

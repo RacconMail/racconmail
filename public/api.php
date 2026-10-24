@@ -3305,7 +3305,7 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
     $safeFromEmail = htmlspecialchars($fromEmail);
     $safeToEmail = htmlspecialchars($toEmail);
     $safeSubject = htmlspecialchars($cleanSubject);
-    $nowStr = date('l, F j, Y \a\t g:i A T');
+    $nowStr = date('D, M j, Y, g:i A');
 
     return <<<HTML
 <!DOCTYPE html>
@@ -3316,11 +3316,14 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
   <title>{$safeSubject}</title>
   <style>
     @media only screen and (max-width: 600px) {
-      .postcard-wrapper { padding: 12px 6px !important; }
-      .postcard-table { width: 100% !important; border-radius: 14px !important; }
+      .postcard-wrapper { padding: 6px 4px !important; }
+      .postcard-table { width: 100% !important; max-width: 100% !important; border-radius: 12px !important; table-layout: fixed !important; }
+      .mobile-pad { padding: 12px 14px !important; }
+      .mobile-header-stack { display: block !important; width: 100% !important; text-align: left !important; }
+      .mobile-header-stamp { display: block !important; width: 100% !important; text-align: left !important; margin-top: 10px !important; }
       .mobile-stack { display: block !important; width: 100% !important; box-sizing: border-box !important; }
-      .mobile-pad { padding: 14px 14px !important; }
-      .mobile-date { display: block !important; text-align: left !important; margin-top: 6px !important; font-size: 11px !important; }
+      .mobile-date { display: block !important; text-align: left !important; margin-top: 5px !important; font-size: 11px !important; }
+      .mobile-btn-wrap { display: block !important; width: 100% !important; margin: 0 0 8px 0 !important; }
       .mobile-btn { display: block !important; width: 100% !important; margin: 6px 0 !important; text-align: center !important; box-sizing: border-box !important; }
     }
   </style>
@@ -3333,7 +3336,7 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
       <td align="center">
         
         <!-- Bubble White Postcard Card (Max 620px) -->
-        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-table" style="max-width:620px; width:100%; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:20px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.04);">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" class="postcard-table" style="max-width:600px; width:100%; background-color:#ffffff; border:1px solid #e2e8f0; border-radius:18px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.04); table-layout:fixed;">
           
           <!-- Top Airmail Diagonal Striped Ribbon -->
           <tr>
@@ -3346,25 +3349,25 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <!-- Left: Raccon Mail Brand & Logo -->
-                  <td align="left" style="vertical-align:middle;">
+                  <td class="mobile-header-stack" align="left" style="vertical-align:middle;">
                     <table role="presentation" border="0" cellspacing="0" cellpadding="0">
                       <tr>
-                        <td style="vertical-align:middle; padding-right:12px;">
+                        <td style="vertical-align:middle; padding-right:10px;">
                           <a href="{$siteUrl}" style="text-decoration:none;">
-                            <img src="{$logoUrl}" width="46" height="46" alt="Raccon Mail" style="display:block; border-radius:12px; border:1px solid #e2e8f0; background-color:#f8fafc; object-fit:cover;" />
+                            <img src="{$logoUrl}" width="42" height="42" alt="Raccon Mail" style="display:block; border-radius:10px; border:1px solid #e2e8f0; background-color:#f8fafc; object-fit:cover;" />
                           </a>
                         </td>
                         <td style="vertical-align:middle;">
-                          <div style="font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:0.5px; line-height:1.2;">RACCON MAIL</div>
-                          <div style="font-size:11px; color:#0284c7; font-weight:700; letter-spacing:0.4px; margin-top:2px;">🦝 Bubble White Nocturnal Postcard</div>
+                          <div style="font-family:'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif; font-size:17px; font-weight:800; color:#0f172a; letter-spacing:0.5px; line-height:1.2;">RACCON MAIL</div>
+                          <div style="font-size:11px; color:#0284c7; font-weight:700; letter-spacing:0.3px; margin-top:2px;">🦝 Bubble White Postcard</div>
                         </td>
                       </tr>
                     </table>
                   </td>
 
                   <!-- Right: Postmark Stamp Badge -->
-                  <td align="right" style="vertical-align:middle;">
-                    <div style="display:inline-block; border:2px dashed #0284c7; border-radius:10px; padding:6px 10px; text-align:center; background-color:#f0f9ff; color:#0284c7; font-family:'Courier New', monospace; font-size:10px; font-weight:bold; letter-spacing:0.8px; line-height:1.3;">
+                  <td class="mobile-header-stamp" align="right" style="vertical-align:middle;">
+                    <div style="display:inline-block; border:1.5px dashed #0284c7; border-radius:8px; padding:5px 8px; text-align:center; background-color:#f0f9ff; color:#0284c7; font-family:'Courier New', monospace; font-size:9px; font-weight:bold; letter-spacing:0.6px; line-height:1.2;">
                       <div style="font-size:9px; color:#0284c7;">RACCON POST</div>
                       <div style="font-size:8px; color:#64748b;">AIRMAIL &bull; 2026</div>
                     </div>
@@ -3418,13 +3421,13 @@ function buildRacconMailPostcardHtml($fromName, $fromEmail, $toEmail, $subject, 
           <tr>
             <td class="mobile-pad" style="padding:0 24px 24px 24px;">
               <div style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px 20px;">
-                <div style="display:inline-block; margin-right:8px; margin-bottom:4px;">
-                  <a href="{$webmailReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#0f172a; color:#ffffff; font-weight:700; font-size:13px; padding:10px 22px; border-radius:9999px; text-decoration:none; box-shadow:0 4px 12px rgba(15, 23, 42, 0.12);">
+                <div class="mobile-btn-wrap" style="display:inline-block; margin-right:8px; margin-bottom:4px;">
+                  <a href="{$webmailReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#0f172a; color:#ffffff; font-weight:700; font-size:13px; padding:10px 22px; border-radius:9999px; text-decoration:none; box-shadow:0 4px 12px rgba(15, 23, 42, 0.12); text-align:center;">
                     ✉️ Reply to {$safeFromName}
                   </a>
                 </div>
-                <div style="display:inline-block; margin-bottom:4px;">
-                  <a href="{$rawReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#ffffff; color:#334155; font-weight:600; font-size:12px; padding:9px 18px; border-radius:9999px; text-decoration:none; border:1px solid #cbd5e1;">
+                <div class="mobile-btn-wrap" style="display:inline-block; margin-bottom:4px;">
+                  <a href="{$rawReplyUrl}" class="mobile-btn" style="display:inline-block; background-color:#ffffff; color:#334155; font-weight:600; font-size:12px; padding:9px 18px; border-radius:9999px; text-decoration:none; border:1px solid #cbd5e1; text-align:center;">
                     Reply via Email App
                   </a>
                 </div>
