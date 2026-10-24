@@ -13,8 +13,10 @@ RewriteRule ^installer\.php - [F,L]
 RewriteRule \.db$ - [F,L]
 
 # 2. Direct static assets & logo
-RewriteRule ^raccoon-logo\.png$ raccoon-logo.png [L]
-RewriteRule ^favicon\.ico$ static.php/skins/elastic/images/favicon.ico [L]
+RewriteRule ^raccoon-logo\.(png|svg)$ raccoon-logo.$1 [L]
+RewriteRule ^favicon\.(ico|png)$ favicon.$1 [L]
+RewriteRule ^(android-chrome|apple-touch-icon|favicon)-.*\.png$ $0 [L]
+RewriteRule ^site\.webmanifest$ site.webmanifest [L]
 RewriteRule ^static\.php(.*)$ static.php$1 [QSA,L]
 
 # 3. Webmail direct shortcuts & Logout redirect
