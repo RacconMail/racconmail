@@ -1282,6 +1282,7 @@ try {
 
     // Real-Time High-Speed Inbound Mail Engine (Fast 3-Second Cycle + Instant Focus Triggers)
     const knownMessageIds = new Set(initialDbMessages.map(m => m.id));
+    const permanentlyDeletedIds = new Set(JSON.parse(localStorage.getItem('raccon_deleted_ids') || '[]'));
     let isPollingActive = false;
 
     async function pollForIncomingEmails() {
@@ -1318,6 +1319,7 @@ try {
           const data = await res.json();
           const msgs = data.messages || [];
           for (const m of msgs) {
+            if (permanentlyDeletedIds.has(m.id)) continue;
             if (!knownMessageIds.has(m.id)) {
               knownMessageIds.add(m.id);
               if (!hasNew) {
@@ -1675,7 +1677,7 @@ function cleanMimeEmailContent(raw) {
           <div onclick="selectThreadItem(${idx})" 
                ontouchstart="handleCardTouchStart(event, '${msg.id}', ${idx})"
                ontouchmove="handleCardTouchMove(event)"
-               ontouchend="handleCardTouchEnd(event)"
+               ontouchend="handleCardTouchEnd(event, ${idx})"
                oncontextmenu="handleCardContextMenu(event, '${msg.id}', ${idx})"
                id="thread-item-${idx}" 
                class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group select-none">
@@ -1722,7 +1724,7 @@ function cleanMimeEmailContent(raw) {
 
               <!-- Right Column: Visual Thumbnail with floating badge -->
               <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
-                <img src="${art.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Artwork visual" />
+                <img src="${art.img}" class="w-full h-full object-cover transition-transform duration-200" alt="Artwork visual" />
                 <!-- Floating Colorful Corner Icon Badge -->
                 <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${art.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
                   <i class="${art.badgeIcon}"></i>
@@ -1801,11 +1803,15 @@ function cleanMimeEmailContent(raw) {
         renderConversationThread(selected);
       }
 
-      // On mobile view: show reading pane and hide middle column
+      // On mobile view: show reading pane and hide middle column immediately on 1 click
       if (window.innerWidth < 768) {
-        document.getElementById('col-inbox')?.classList.add('hidden');
-        document.getElementById('col-reader')?.classList.remove('hidden');
-        document.getElementById('col-reader')?.classList.add('flex');
+        const colInbox = document.getElementById('col-inbox');
+        const colReader = document.getElementById('col-reader');
+        if (colInbox) colInbox.classList.add('hidden');
+        if (colReader) {
+          colReader.classList.remove('hidden');
+          colReader.classList.add('flex');
+        }
       }
     }
 
@@ -2066,6 +2072,10 @@ function cleanMimeEmailContent(raw) {
       }
 
       const isCurrentlyTrash = (currentFolder.toLowerCase() === 'trash' || (removedMsg && (removedMsg.is_trashed === 1 || removedMsg.computed_folder === 'Trash')));
+      if (isCurrentlyTrash) {
+        permanentlyDeletedIds.add(msgId);
+        try { localStorage.setItem('raccon_deleted_ids', JSON.stringify(Array.from(permanentlyDeletedIds))); } catch (_) {}
+      }
       if (!isCurrentlyTrash && removedMsg) {
         if (!mailDatabase['Trash']) mailDatabase['Trash'] = [];
         mailDatabase['Trash'].unshift(removedMsg);
@@ -2148,12 +2158,17 @@ function cleanMimeEmailContent(raw) {
       }
     }
 
-    function handleCardTouchEnd(e) {
+    function handleCardTouchEnd(e, idx) {
       clearTimeout(cardLongPressTimer);
       if (cardLongPressFired) {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation();
         setTimeout(() => { cardLongPressFired = false; }, 200);
+        return;
+      }
+      if (!cardTouchMoved && typeof idx === 'number') {
+        // Immediate 1-tap open on smartphone (zero double-click needed!)
+        selectThreadItem(idx);
       }
     }
 
@@ -2387,6 +2402,8 @@ function cleanMimeEmailContent(raw) {
     // Empty Trash
     async function emptyTrashAction() {
       if (!confirm('Permanently delete all messages in Trash?')) return;
+      (mailDatabase['Trash'] || []).forEach(m => permanentlyDeletedIds.add(m.id));
+      try { localStorage.setItem('raccon_deleted_ids', JSON.stringify(Array.from(permanentlyDeletedIds))); } catch (_) {}
       mailDatabase['Trash'] = [];
       if (currentFolder === 'Trash') {
         renderMessageList();

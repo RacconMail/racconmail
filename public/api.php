@@ -37,6 +37,8 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 15
     ]);
+    $db->exec("CREATE TABLE IF NOT EXISTS deleted_messages (message_id TEXT NOT NULL, user_id TEXT NOT NULL, subject TEXT DEFAULT '', sender_email TEXT DEFAULT '', deleted_at DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (message_id, user_id));");
+
     $db->exec('PRAGMA busy_timeout = 15000;');
     $db->exec('PRAGMA journal_mode = WAL;');
     $db->exec('PRAGMA synchronous = NORMAL;');
@@ -2285,14 +2287,32 @@ try {
         $msgId = trim(explode('?', $matches[1])[0]);
         $isForce = !empty($_GET['force']) || !empty($input['force']) || !empty($_GET['permanent']) || !empty($input['permanent']);
 
-        $stmtTr = $db->prepare('SELECT is_trashed, folder_id FROM messages WHERE id = ? AND user_id = ?');
+        $stmtTr = $db->prepare('SELECT id, is_trashed, folder_id, message_id, subject, sender_email FROM messages WHERE id = ? AND user_id = ?');
         $stmtTr->execute([$msgId, $currentUserId]);
         $rowTr = $stmtTr->fetch(PDO::FETCH_ASSOC);
 
         if ($rowTr) {
             $alreadyTrashed = ((int)$rowTr['is_trashed'] === 1 || strtolower((string)$rowTr['folder_id']) === 'trash');
             if ($alreadyTrashed || $isForce) {
-                // Permanently delete message from SQLite and disk
+                // Permanently record in deleted_messages table so IMAP / Maildir sync NEVER re-adds it!
+                $mIdHeader = $rowTr['message_id'] ?: $msgId;
+                @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, ?, ?, ?)')->execute([
+                    $mIdHeader,
+                    $currentUserId,
+                    $rowTr['subject'] ?? '',
+                    $rowTr['sender_email'] ?? ''
+                ]);
+                @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, ?, ?, ?)')->execute([
+                    $msgId,
+                    $currentUserId,
+                    $rowTr['subject'] ?? '',
+                    $rowTr['sender_email'] ?? ''
+                ]);
+
+                // Also unlink physical email file from cPanel Maildir
+                deletePhysicalMaildirFiles($rowTr['message_id'], $rowTr['subject'] ?? '', $rowTr['sender_email'] ?? '');
+
+                // Permanently delete message from SQLite and attachments
                 $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
                 @$db->prepare('DELETE FROM attachments WHERE message_id = ?')->execute([$msgId]);
                 echo json_encode(['success' => true, 'deleted' => 'permanent', 'id' => $msgId]);
@@ -2302,7 +2322,8 @@ try {
                 echo json_encode(['success' => true, 'deleted' => 'trash', 'id' => $msgId]);
             }
         } else {
-            // If already deleted or id passed directly
+            // Already gone or direct permanent delete request
+            @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id) VALUES (?, ?)')->execute([$msgId, $currentUserId]);
             $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
             echo json_encode(['success' => true, 'deleted' => 'permanent', 'id' => $msgId]);
         }
@@ -2365,6 +2386,26 @@ try {
     if (($route === 'messages/empty-folder' || $route === 'messages/empty-trash') && $method === 'POST') {
         $folder = strtolower($input['folder'] ?? ($route === 'messages/empty-trash' ? 'trash' : ''));
         if ($folder === 'trash') {
+            // Track all message_ids before deleting
+            $stmtAllTr = $db->prepare("SELECT id, message_id, subject, sender_email FROM messages WHERE user_id = ? AND (is_trashed = 1 OR folder_id = 'trash')");
+            $stmtAllTr->execute([$currentUserId]);
+            $trashRows = $stmtAllTr->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($trashRows as $tRow) {
+                $mid = $tRow['message_id'] ?: $tRow['id'];
+                @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, ?, ?, ?)')->execute([
+                    $mid,
+                    $currentUserId,
+                    $tRow['subject'] ?? '',
+                    $tRow['sender_email'] ?? ''
+                ]);
+                @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, ?, ?, ?)')->execute([
+                    $tRow['id'],
+                    $currentUserId,
+                    $tRow['subject'] ?? '',
+                    $tRow['sender_email'] ?? ''
+                ]);
+                deletePhysicalMaildirFiles($tRow['message_id'], $tRow['subject'] ?? '', $tRow['sender_email'] ?? '');
+            }
             $db->prepare("DELETE FROM messages WHERE user_id = ? AND (is_trashed = 1 OR folder_id = 'trash')")->execute([$currentUserId]);
         } elseif ($folder === 'spam') {
             $db->prepare("DELETE FROM messages WHERE user_id = ? AND (is_spam = 1 OR folder_id = 'spam')")->execute([$currentUserId]);
@@ -5293,6 +5334,49 @@ function cleanMimeEmailContent($raw) {
     return trim($str);
 }
 
+function deletePhysicalMaildirFiles($messageId, $subject = '', $fromEmail = '') {
+    if (empty($messageId) && empty($subject)) return;
+    $domDir = '/home/raccxuxv/mail/racconmail.eu';
+    $searchDirs = [
+        '/home/raccxuxv/mail/new',
+        '/home/raccxuxv/mail/cur',
+        '/home/raccxuxv/mail/racconmail.eu/mail/new',
+        '/home/raccxuxv/mail/racconmail.eu/mail/cur',
+        '/home/raccxuxv/mail/racconmail.eu/admin/new',
+        '/home/raccxuxv/mail/racconmail.eu/admin/cur',
+        '/home/raccxuxv/mail/racconmail.eu/support/new',
+        '/home/raccxuxv/mail/racconmail.eu/support/cur',
+    ];
+    if (is_dir($domDir)) {
+        $subDirs = @scandir($domDir) ?: [];
+        foreach ($subDirs as $sd) {
+            if ($sd === '.' || $sd === '..') continue;
+            if (is_dir("$domDir/$sd/new")) $searchDirs[] = "$domDir/$sd/new";
+            if (is_dir("$domDir/$sd/cur")) $searchDirs[] = "$domDir/$sd/cur";
+        }
+    }
+    foreach ($searchDirs as $dir) {
+        if (!is_dir($dir)) continue;
+        $files = @scandir($dir) ?: [];
+        foreach ($files as $f) {
+            if ($f === '.' || $f === '..') continue;
+            $fPath = "$dir/$f";
+            if (!is_file($fPath)) continue;
+            $headerChunk = @file_get_contents($fPath, false, null, 0, 1500);
+            if (!$headerChunk) continue;
+            $match = false;
+            if (!empty($messageId) && str_contains($headerChunk, $messageId)) {
+                $match = true;
+            } elseif (!empty($subject) && str_contains($headerChunk, $subject)) {
+                $match = true;
+            }
+            if ($match) {
+                @unlink($fPath);
+            }
+        }
+    }
+}
+
 function syncInboundEmails($db, $force = false) {
     // Ultra-Fast Zero-Lag Inbound Sync
     static $lastSync = 0;
@@ -5452,6 +5536,25 @@ function syncInboundEmails($db, $force = false) {
                     $attachments = $extracted['attachments'] ?? [];
 
                     foreach ($matchedUsers as $targetUser) {
+                        // Check if permanently deleted by user
+                        if (!empty($messageIdHeader)) {
+                            $stmtDelChk = $db->prepare('SELECT 1 FROM deleted_messages WHERE user_id = ? AND message_id = ?');
+                            $stmtDelChk->execute([$targetUser['id'], $messageIdHeader]);
+                            if ($stmtDelChk->fetchColumn()) {
+                                @imap_delete($mbox, $i);
+                                continue;
+                            }
+                        }
+                        if (!empty($subject) && !empty($fromEmail)) {
+                            $stmtDelChkSubj = $db->prepare('SELECT 1 FROM deleted_messages WHERE user_id = ? AND sender_email = ? AND subject = ?');
+                            $stmtDelChkSubj->execute([$targetUser['id'], $fromEmail, $subject]);
+                            if ($stmtDelChkSubj->fetchColumn()) {
+                                @imap_delete($mbox, $i);
+                                continue;
+                            }
+                        }
+
+                        // Duplicate prevention
                         if (!empty($messageIdHeader)) {
                             $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND message_id = ?');
                             $stmtCheck->execute([$targetUser['id'], $messageIdHeader]);
@@ -5697,7 +5800,25 @@ function syncMaildirFolder($db, $newDir, $uploadsDir, $isCur = false) {
         }
 
         foreach ($matchedUsers as $targetUser) {
-            // Duplicate prevention
+            // 1. Check if permanently deleted by user
+            if (!empty($messageId)) {
+                $stmtDelChk = $db->prepare('SELECT 1 FROM deleted_messages WHERE user_id = ? AND message_id = ?');
+                $stmtDelChk->execute([$targetUser['id'], $messageId]);
+                if ($stmtDelChk->fetchColumn()) {
+                    @unlink($srcPath);
+                    continue;
+                }
+            }
+            if (!empty($subject) && !empty($fromEmail)) {
+                $stmtDelChkSubj = $db->prepare('SELECT 1 FROM deleted_messages WHERE user_id = ? AND sender_email = ? AND subject = ?');
+                $stmtDelChkSubj->execute([$targetUser['id'], $fromEmail, $subject]);
+                if ($stmtDelChkSubj->fetchColumn()) {
+                    @unlink($srcPath);
+                    continue;
+                }
+            }
+
+            // 2. Duplicate prevention
             if (!empty($messageId)) {
                 $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND message_id = ?');
                 $stmtCheck->execute([$targetUser['id'], $messageId]);
@@ -5782,6 +5903,14 @@ function initDatabase($db) {
             icon TEXT DEFAULT 'folder',
             is_system INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS deleted_messages (
+            message_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            subject TEXT DEFAULT '',
+            sender_email TEXT DEFAULT '',
+            deleted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (message_id, user_id)
         );
         CREATE TABLE IF NOT EXISTS messages (
             id TEXT PRIMARY KEY,
