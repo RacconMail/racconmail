@@ -48,7 +48,34 @@
         document.documentElement.classList.add('is-native-app');
       }
     })();
-  </script>
+  
+    function toggleStoriesNotificationPanel() {
+      const modal = document.getElementById('stories-notifications-modal');
+      if (modal) modal.classList.toggle('hidden');
+    }
+    function handleStoriesNotificationClick(fromButton = false) {
+      if (!fromButton) toggleStoriesNotificationPanel();
+      if (window.RacconNotifications && typeof RacconNotifications.requestPermission === 'function') {
+        RacconNotifications.requestPermission().then(function(perm) {
+          if (perm === 'granted') {
+            RacconNotifications.show({
+              title: 'Raccoon Stories Notifications Active! 🔔',
+              body: 'Alerts for new chapters, bookmarks, and author updates.',
+              url: '/stories'
+            });
+          }
+        }).catch(function(err) {
+          console.warn('Notifications permission notice:', err);
+        });
+      }
+      if (typeof showToast === 'function') {
+        showToast('Notifications Active! 🔔');
+      }
+    }
+    window.toggleStoriesNotificationPanel = toggleStoriesNotificationPanel;
+    window.handleStoriesNotificationClick = handleStoriesNotificationClick;
+
+</script>
 
   <!-- Google Fonts Preconnect & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -2057,13 +2084,75 @@
     </a>
 
     <!-- Notifications Bell -->
-    <button onclick="if(window.RacconNotifications) { RacconNotifications.requestPermission().then(p => { if(p==='granted') RacconNotifications.show({ title: 'Raccoon Stories Notifications Active! 🔔', body: 'Alerts for new chapters, bookmarks, and author updates.', url: '/stories' }); }); } showToast('Notifications are active! 🔔');" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+    <button onclick="handleStoriesNotificationClick()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       </div>
       <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
     </button>
   </nav>
+
+
+  <!-- Notification Center Modal -->
+  <div 
+    id="stories-notifications-modal" 
+    class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs select-none" 
+    onclick="if(event.target === this) toggleStoriesNotificationPanel()"
+  >
+    <div class="relative w-full max-w-sm rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center">
+            <i class="fas fa-bell text-xs"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900">Notifications & Alerts</h3>
+            <p class="text-[11px] text-slate-400">World Stories & Chapters</p>
+          </div>
+        </div>
+        <button onclick="toggleStoriesNotificationPanel()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition cursor-pointer">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="fas fa-check-circle text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Stories Alerts Enabled</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Instant notifications for new published chapters and author replies.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#FFFBEB] text-[#D97706] flex items-center justify-center shrink-0">
+            <i class="fas fa-bookmark text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Reading List Sync Active</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Your bookmarks and reading progress are synced automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center gap-2">
+        <button 
+          onclick="handleStoriesNotificationClick(true)" 
+          class="flex-1 py-2.5 rounded-xl bg-[#F68D72] hover:bg-[#F57C60] text-white font-bold text-xs transition shadow-none cursor-pointer text-center"
+        >
+          Send Test Alert 🔔
+        </button>
+        <button 
+          onclick="toggleStoriesNotificationPanel()" 
+          class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

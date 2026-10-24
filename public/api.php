@@ -1477,7 +1477,7 @@ if (strpos($route, 'admin/') === 0) {
 }
 
 // Allow cron or background sync with secret key
-if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' || !empty($_SESSION['current_user_id']))) {
+if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' || !empty($currentUserId) || !empty($_SESSION['current_user_id']))) {
     $res = syncInboundEmails($db, true);
     $count = is_array($res) ? ($res['count'] ?? 0) : (int)$res;
     $msgs = is_array($res) ? ($res['messages'] ?? []) : [];
@@ -5149,27 +5149,40 @@ function syncInboundEmails($db, $force = false) {
     $processedCount = 0;
     $newlySynced = [];
 
-    // 1. INSTANT LOCAL MAILDIR SCAN FIRST (< 1ms on local SSD/NVMe)
-    // Directly ingests all incoming Exim catch-all & mailbox deliveries without network lag
+    // 1. SCAN BOTH NEW AND CUR MAILDIR FOLDERS ACROSS ALL CPANEL MAILBOXES
     $foldersToScan = [
-        '/home/raccxuxv/mail/new',
-        '/home/raccxuxv/mail/racconmail.eu/mail/new',
-        '/home/raccxuxv/mail/.mail@racconmail_eu/new'
+        ['path' => '/home/raccxuxv/mail/new', 'is_cur' => false],
+        ['path' => '/home/raccxuxv/mail/cur', 'is_cur' => true],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/mail/new', 'is_cur' => false],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/mail/cur', 'is_cur' => true],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/admin/new', 'is_cur' => false],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/admin/cur', 'is_cur' => true],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/support/new', 'is_cur' => false],
+        ['path' => '/home/raccxuxv/mail/racconmail.eu/support/cur', 'is_cur' => true],
     ];
+
     $domDir = '/home/raccxuxv/mail/racconmail.eu';
     if (is_dir($domDir)) {
         $subDirs = @scandir($domDir) ?: [];
         foreach ($subDirs as $sd) {
             if ($sd === '.' || $sd === '..') continue;
             $userNew = "$domDir/$sd/new";
-            if (is_dir($userNew) && !in_array($userNew, $foldersToScan)) {
-                $foldersToScan[] = $userNew;
+            $userCur = "$domDir/$sd/cur";
+            if (is_dir($userNew)) {
+                $exists = false;
+                foreach ($foldersToScan as $f) { if ($f['path'] === $userNew) { $exists = true; break; } }
+                if (!$exists) $foldersToScan[] = ['path' => $userNew, 'is_cur' => false];
+            }
+            if (is_dir($userCur)) {
+                $exists = false;
+                foreach ($foldersToScan as $f) { if ($f['path'] === $userCur) { $exists = true; break; } }
+                if (!$exists) $foldersToScan[] = ['path' => $userCur, 'is_cur' => true];
             }
         }
     }
 
-    foreach ($foldersToScan as $fDir) {
-        $res = syncMaildirFolder($db, $fDir, $uploadsDir);
+    foreach ($foldersToScan as $fInfo) {
+        $res = syncMaildirFolder($db, $fInfo['path'], $uploadsDir, $fInfo['is_cur']);
         $processedCount += $res['count'];
         $newlySynced = array_merge($newlySynced, $res['messages']);
     }
@@ -5208,137 +5221,135 @@ function syncInboundEmails($db, $force = false) {
                     }
 
                     // Extract all recipient addresses from headers
-                    $recipients = [];
+                    $recips = [];
                     if (!empty($header->to)) {
                         foreach ($header->to as $t) {
-                            $recipients[] = strtolower(($t->mailbox ?? '') . '@' . ($t->host ?? ''));
+                            $recips[] = strtolower(($t->mailbox ?? '') . '@' . ($t->host ?? ''));
                         }
                     }
                     if (!empty($header->cc)) {
                         foreach ($header->cc as $c) {
-                            $recipients[] = strtolower(($c->mailbox ?? '') . '@' . ($c->host ?? ''));
+                            $recips[] = strtolower(($c->mailbox ?? '') . '@' . ($c->host ?? ''));
                         }
                     }
-                    if (preg_match_all('/^(?:Envelope-to|Delivered-To|X-Original-To|X-Envelope-To|To|Cc):\s*(.+)$/mi', $rawHeader, $matches)) {
-                        foreach ($matches[1] as $rLine) {
-                            if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $rLine, $em)) {
-                                foreach ($em[0] as $e) {
-                                    $recipients[] = strtolower($e);
+                    if (preg_match_all('/^(?:Envelope-to|Delivered-To|X-Original-To|X-Envelope-To):\s*(.+)$/mi', $rawHeader, $envMatches)) {
+                        foreach ($envMatches[1] as $envLine) {
+                            if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $envLine, $envEmails)) {
+                                foreach ($envEmails[0] as $ee) {
+                                    $recips[] = strtolower($ee);
                                 }
                             }
                         }
                     }
-                    $recipients = array_values(array_unique(array_filter($recipients)));
+                    $recips = array_values(array_unique(array_filter($recips)));
 
-                    // Extract body and attachments
-                    $structure = @imap_fetchstructure($mbox, $i);
-                    $extracted = extractImapBodyAndAttachments($mbox, $i, $structure, $uploadsDir);
-                    $bodyText = $extracted['text'];
-                    $bodyHtml = $extracted['html'];
-                    $attachments = $extracted['attachments'];
-
-                    // Determine target user(s) in SQLite
+                    // Match user in SQLite
                     $matchedUsers = [];
-                    foreach ($recipients as $recipEmail) {
+                    foreach ($recips as $re) {
                         $stmt = $db->prepare('SELECT id, email, name FROM users WHERE LOWER(email) = LOWER(?)');
-                        $stmt->execute([$recipEmail]);
+                        $stmt->execute([$re]);
                         $u = $stmt->fetch();
-                        if ($u) {
-                            $matchedUsers[$u['id']] = $u;
-                        }
+                        if ($u) $matchedUsers[$u['id']] = $u;
                     }
 
-                    // Match username prefix if recipient is @racconmail.eu
+                    // Match prefix if recipient is @racconmail.eu
                     if (empty($matchedUsers)) {
-                        foreach ($recipients as $recipEmail) {
-                            if (str_ends_with($recipEmail, '@racconmail.eu')) {
-                                $uPrefix = substr($recipEmail, 0, strpos($recipEmail, '@'));
+                        foreach ($recips as $re) {
+                            if (str_ends_with($re, '@racconmail.eu')) {
+                                $uPrefix = substr($re, 0, strpos($re, '@'));
                                 $stmt = $db->prepare('SELECT id, email, name FROM users WHERE LOWER(SUBSTR(email, 1, INSTR(email, "@")-1)) = LOWER(?)');
                                 $stmt->execute([$uPrefix]);
                                 $u = $stmt->fetch();
-                                if ($u) {
-                                    $matchedUsers[$u['id']] = $u;
-                                }
+                                if ($u) $matchedUsers[$u['id']] = $u;
                             }
                         }
                     }
 
-                    // If active logged-in user triggered sync and target is still unresolved, give to active user
+                    // Fallback to active session user if available
                     if (empty($matchedUsers) && !empty($_SESSION['current_user_id'])) {
                         $stmtSess = $db->prepare('SELECT id, email, name FROM users WHERE id = ?');
                         $stmtSess->execute([$_SESSION['current_user_id']]);
                         $sessUser = $stmtSess->fetch();
-                        if ($sessUser) {
-                            $matchedUsers[$sessUser['id']] = $sessUser;
-                        }
+                        if ($sessUser) $matchedUsers[$sessUser['id']] = $sessUser;
                     }
 
-                    // Fallback to admin or first registered member
+                    // Fallback to all admin users so mail is never dropped
                     if (empty($matchedUsers)) {
-                        $stmtAdmin = $db->query('SELECT id, email, name FROM users WHERE is_admin = 1 ORDER BY created_at ASC LIMIT 1');
-                        $adminUser = $stmtAdmin->fetch();
-                        if ($adminUser) {
-                            $matchedUsers[$adminUser['id']] = $adminUser;
+                        $stmtAdmin = $db->query('SELECT id, email, name FROM users WHERE is_admin = 1 ORDER BY created_at ASC');
+                        $admins = $stmtAdmin->fetchAll();
+                        if (!empty($admins)) {
+                            foreach ($admins as $adm) $matchedUsers[$adm['id']] = $adm;
                         } else {
                             $stmtAny = $db->query('SELECT id, email, name FROM users ORDER BY created_at ASC LIMIT 1');
                             $anyUser = $stmtAny->fetch();
-                            if ($anyUser) {
-                                $matchedUsers[$anyUser['id']] = $anyUser;
-                            }
+                            if ($anyUser) $matchedUsers[$anyUser['id']] = $anyUser;
                         }
                     }
 
-                    // Insert message for matched user(s)
+                    // Parse body and attachments
+                    $structure = @imap_fetchstructure($mbox, $i);
+                    $extracted = extractImapBodyAndAttachments($mbox, $i, $structure, $uploadsDir);
+                    $bodyText = $extracted['text'] ?: '(no text body)';
+                    $bodyHtml = $extracted['html'] ?: '';
+                    $attachments = $extracted['attachments'] ?? [];
+
                     foreach ($matchedUsers as $targetUser) {
-                        // Safe duplicate prevention using RFC Message-ID or 5-minute identical content check
                         if (!empty($messageIdHeader)) {
                             $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND message_id = ?');
                             $stmtCheck->execute([$targetUser['id'], $messageIdHeader]);
                             if ($stmtCheck->fetch()) continue;
                         } else {
-                            $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND sender_email = ? AND subject = ? AND body = ? AND created_at >= datetime("now", "-5 minutes")');
-                            $stmtCheck->execute([$targetUser['id'], $fromEmail, $subject, $bodyText ?: '']);
+                            $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND sender_email = ? AND subject = ? AND created_at >= datetime("now", "-1 day")');
+                            $stmtCheck->execute([$targetUser['id'], $fromEmail, $subject]);
                             if ($stmtCheck->fetch()) continue;
                         }
 
                         $inId = 'in_' . uniqid();
-                        $targetEmail = $targetUser['email'];
-
-                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))');
+                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, datetime("now"))');
                         $stmtIns->execute([
                             $inId,
                             $targetUser['id'],
                             $fromName,
                             $fromEmail,
-                            $targetEmail,
+                            $targetUser['email'],
                             $subject,
-                            $bodyText ?: '(no plain text body)',
+                            $bodyText,
                             $bodyHtml,
                             $messageIdHeader ?: null,
                             $inReplyToHeader ?: null
                         ]);
+
+                        if (!empty($attachments)) {
+                            $stmtAtt = $db->prepare('INSERT INTO attachments (id, message_id, filename, original_name, mime_type, size_bytes, file_path, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime("now"))');
+                            foreach ($attachments as $att) {
+                                $stmtAtt->execute([
+                                    'att_' . uniqid(),
+                                    $inId,
+                                    $att['filename'],
+                                    $att['original_name'],
+                                    $att['mime_type'],
+                                    $att['size_bytes'],
+                                    $att['file_path']
+                                ]);
+                            }
+                        }
+
                         $newlySynced[] = [
                             'id' => $inId,
                             'sender_name' => $fromName,
                             'sender_email' => $fromEmail,
                             'subject' => $subject,
-                            'is_reply' => (bool)(preg_match('/^\\s*(re|fwd)\\s*:/i', $subject) || !empty($inReplyToHeader))
+                            'is_reply' => (bool)(preg_match('/^\s*(re|fwd)\s*:/i', $subject) || !empty($inReplyToHeader))
                         ];
-
-                        foreach ($attachments as $att) {
-                            $attId = 'att_' . uniqid();
-                            $db->prepare('INSERT INTO attachments (id, message_id, filename, original_name, mime_type, size_bytes, file_path) VALUES (?, ?, ?, ?, ?, ?, ?)')
-                               ->execute([$attId, $inId, $att['filename'], $att['original_name'], $att['mime_type'], $att['size_bytes'], $att['filename']]);
-                        }
+                        $processedCount++;
                     }
 
-                    // Mark deleted from IMAP box
+                    // Delete from IMAP mailbox after successful ingestion
                     @imap_delete($mbox, $i);
-                    $processedCount++;
                 }
+                @imap_errors();
+                @imap_expunge($mbox);
             }
-            @imap_errors();
-            @imap_expunge($mbox);
             @imap_close($mbox);
             @imap_errors();
         }
@@ -5347,18 +5358,18 @@ function syncInboundEmails($db, $force = false) {
     return ['count' => $processedCount, 'messages' => $newlySynced];
 }
 
-function syncMaildirFolder($db, $newDir, $uploadsDir) {
+function syncMaildirFolder($db, $newDir, $uploadsDir, $isCur = false) {
     if (!is_dir($newDir)) return ['count' => 0, 'messages' => []];
     $files = @scandir($newDir);
     if (!$files) return ['count' => 0, 'messages' => []];
 
     $curDir = dirname($newDir) . '/cur';
-    if (!is_dir($curDir)) @mkdir($curDir, 0755, true);
+    if (!$isCur && !is_dir($curDir)) @mkdir($curDir, 0755, true);
 
     $count = 0;
     $newlySynced = [];
     foreach ($files as $f) {
-        if ($f === '.' || $f === '..') continue;
+        if ($f === '.' || $f === '..' || str_starts_with($f, '.')) continue;
         $srcPath = $newDir . '/' . $f;
         if (!is_file($srcPath) || !is_readable($srcPath)) continue;
 
@@ -5448,12 +5459,12 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
             if ($sessUser) $matchedUsers[$sessUser['id']] = $sessUser;
         }
 
-        // Admin fallback
+        // Fallback to all admin users or any user so no mail is ever dropped
         if (empty($matchedUsers)) {
-            $stmtAdmin = $db->query('SELECT id, email, name FROM users WHERE is_admin = 1 ORDER BY created_at ASC LIMIT 1');
-            $adminUser = $stmtAdmin->fetch();
-            if ($adminUser) {
-                $matchedUsers[$adminUser['id']] = $adminUser;
+            $stmtAdmin = $db->query('SELECT id, email, name FROM users WHERE is_admin = 1 ORDER BY created_at ASC');
+            $admins = $stmtAdmin->fetchAll();
+            if (!empty($admins)) {
+                foreach ($admins as $adm) $matchedUsers[$adm['id']] = $adm;
             } else {
                 $stmtAny = $db->query('SELECT id, email, name FROM users ORDER BY created_at ASC LIMIT 1');
                 $anyUser = $stmtAny->fetch();
@@ -5461,23 +5472,71 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
             }
         }
 
+        // Decode content: handle multipart and transfer encoding
+        $bodyHtml = '';
+        $bodyText = '';
+
+        if (preg_match('/Content-Type:\s*multipart\/[^;]+;\s*boundary=["\']?([^"\';\r\n]+)/i', $rawHeaders, $bMatch)) {
+            $boundary = trim($bMatch[1]);
+            $mParts = explode('--' . $boundary, $rawBody);
+            foreach ($mParts as $mp) {
+                if (str_contains($mp, '--') && trim($mp) === '--') continue;
+                $subSplit = explode("\r\n\r\n", $mp, 2);
+                if (count($subSplit) < 2) $subSplit = explode("\n\n", $mp, 2);
+                $subH = $subSplit[0] ?? '';
+                $subB = $subSplit[1] ?? '';
+                if (stripos($subH, 'text/html') !== false) {
+                    if (stripos($subH, 'quoted-printable') !== false) {
+                        $bodyHtml = quoted_printable_decode($subB);
+                    } elseif (stripos($subH, 'base64') !== false) {
+                        $bodyHtml = base64_decode($subB);
+                    } else {
+                        $bodyHtml = $subB;
+                    }
+                } elseif (stripos($subH, 'text/plain') !== false && empty($bodyText)) {
+                    if (stripos($subH, 'quoted-printable') !== false) {
+                        $bodyText = quoted_printable_decode($subB);
+                    } elseif (stripos($subH, 'base64') !== false) {
+                        $bodyText = base64_decode($subB);
+                    } else {
+                        $bodyText = $subB;
+                    }
+                }
+            }
+        } else {
+            if (stripos($rawHeaders, 'quoted-printable') !== false) {
+                $decoded = quoted_printable_decode($rawBody);
+            } elseif (stripos($rawHeaders, 'base64') !== false) {
+                $decoded = base64_decode($rawBody);
+            } else {
+                $decoded = $rawBody;
+            }
+            if (stripos($rawHeaders, 'text/html') !== false) {
+                $bodyHtml = $decoded;
+                $bodyText = strip_tags($decoded);
+            } else {
+                $bodyText = $decoded;
+            }
+        }
+
+        if (empty($bodyText)) {
+            $bodyText = strip_tags($bodyHtml ?: $rawBody);
+        }
+
         foreach ($matchedUsers as $targetUser) {
-            // Safe duplicate prevention using RFC Message-ID or 5-minute identical content check
+            // Duplicate prevention
             if (!empty($messageId)) {
                 $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND message_id = ?');
                 $stmtCheck->execute([$targetUser['id'], $messageId]);
                 if ($stmtCheck->fetch()) continue;
             } else {
-                $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND sender_email = ? AND subject = ? AND body = ? AND created_at >= datetime("now", "-5 minutes")');
-                $stmtCheck->execute([$targetUser['id'], $fromEmail, $subject, strip_tags($rawBody)]);
+                $stmtCheck = $db->prepare('SELECT id FROM messages WHERE user_id = ? AND sender_email = ? AND subject = ? AND created_at >= datetime("now", "-1 day")');
+                $stmtCheck->execute([$targetUser['id'], $fromEmail, $subject]);
                 if ($stmtCheck->fetch()) continue;
             }
 
             $inId = 'in_' . uniqid();
-            $bodyText = strip_tags($rawBody);
-            $bodyHtml = (stripos($rawHeaders, 'text/html') !== false) ? $rawBody : '';
-
-            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))');
+            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, datetime("now"))');
             $stmtIns->execute([
                 $inId,
                 $targetUser['id'],
@@ -5497,12 +5556,14 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
                 'subject' => $subject,
                 'is_reply' => (bool)(preg_match('/^\\s*(re|fwd)\\s*:/i', $subject) || !empty($inReplyTo))
             ];
+            $count++;
         }
 
-        // Move processed mail to cur folder
-        $destPath = $curDir . '/' . $f . ':2,S';
-        @rename($srcPath, $destPath);
-        $count++;
+        // If from new folder, move to cur folder
+        if (!$isCur) {
+            $destPath = $curDir . '/' . $f . ':2,S';
+            @rename($srcPath, $destPath);
+        }
     }
     return ['count' => $count, 'messages' => $newlySynced];
 }

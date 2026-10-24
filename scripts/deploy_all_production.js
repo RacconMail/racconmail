@@ -31,7 +31,9 @@ async function deployAll() {
     'stories.html',
     'index.html',
     'auth.html',
-    'news.html'
+    'news.html',
+    'raccoon-logo.png',
+    'raccoon-logo.svg'
   ];
 
   for (const f of rootFiles) {

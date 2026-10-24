@@ -290,7 +290,7 @@
         <button 
           type="button" 
           onclick="handleForumNotificationClick()" 
-          class="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer mr-1" 
+          class="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer mr-1 hidden md:inline-flex" 
           title="Notifications & Alerts"
           aria-label="Notifications"
         >
@@ -1348,6 +1348,33 @@
     // VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
     // =========================================================================
     window.openThreadView = function(id) { return openThreadReader(id); };
+
+    function toggleNotificationPanel() {
+      const modal = document.getElementById('forum-notifications-modal');
+      if (modal) modal.classList.toggle('hidden');
+    }
+    function handleForumNotificationClick(fromButton = false) {
+      if (!fromButton) toggleNotificationPanel();
+      if (window.RacconNotifications && typeof RacconNotifications.requestPermission === 'function') {
+        RacconNotifications.requestPermission().then(function(perm) {
+          if (perm === 'granted') {
+            RacconNotifications.show({
+              title: 'Raccoon Forum Alerts Active! 🔔',
+              body: 'Push alerts enabled for mentions, thread replies, and new topics.',
+              url: '/forum'
+            });
+          }
+        }).catch(function(err) {
+          console.warn('Notifications permission notice:', err);
+        });
+      }
+      if (typeof showToast === 'function') {
+        showToast('Notifications Active! 🔔');
+      }
+    }
+    window.toggleNotificationPanel = toggleNotificationPanel;
+    window.handleForumNotificationClick = handleForumNotificationClick;
+
     async function openThreadReader(postId) {
       currentNavView = 'thread';
       window.location.hash = `d/${postId}`;

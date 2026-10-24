@@ -142,7 +142,34 @@ try {
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Tailwind CSS & Google Fonts -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com">
+    function toggleInboxNotificationPanel() {
+      const modal = document.getElementById('inbox-notifications-modal');
+      if (modal) modal.classList.toggle('hidden');
+    }
+    function handleInboxNotificationClick(fromButton = false) {
+      if (!fromButton) toggleInboxNotificationPanel();
+      if (window.RacconNotifications && typeof RacconNotifications.requestPermission === 'function') {
+        RacconNotifications.requestPermission().then(function(perm) {
+          if (perm === 'granted') {
+            RacconNotifications.show({
+              title: 'Raccoon Mail Notifications Active! 🔔',
+              body: 'Real-time push alerts for incoming emails and productivity.',
+              url: '/inbox'
+            });
+          }
+        }).catch(function(err) {
+          console.warn('Notifications permission notice:', err);
+        });
+      }
+      if (typeof showToast === 'function') {
+        showToast('Notifications Active! 🔔');
+      }
+    }
+    window.toggleInboxNotificationPanel = toggleInboxNotificationPanel;
+    window.handleInboxNotificationClick = handleInboxNotificationClick;
+
+</script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -674,29 +701,29 @@ try {
 
       </div>
 
-      <!-- Section: ECOSYSTEM (Modern Gray Badges) -->
+      <!-- Section: ECOSYSTEM (Distinct Colors & Zero Shadow) -->
       <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-5">Ecosystem</div>
       <div class="space-y-1">
         <button onclick="openStoriesModal()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
-          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+          <div class="w-6 h-6 rounded-lg bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] flex items-center justify-center transition shrink-0 shadow-none">
             <i data-lucide="book-open" class="h-3.5 w-3.5"></i>
           </div>
           <span class="sidebar-text truncate">World Stories</span>
         </button>
         <button onclick="window.location.href='/news'" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
-          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+          <div class="w-6 h-6 rounded-lg bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center transition shrink-0 shadow-none">
             <i data-lucide="newspaper" class="h-3.5 w-3.5"></i>
           </div>
           <span class="sidebar-text truncate">News Wire</span>
         </button>
         <button onclick="window.location.href='/forum'" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
-          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+          <div class="w-6 h-6 rounded-lg bg-[#EFF4FF] text-[#3B66E0] border border-[#D5E2FF] flex items-center justify-center transition shrink-0 shadow-none">
             <i data-lucide="message-square" class="h-3.5 w-3.5"></i>
           </div>
           <span class="sidebar-text truncate">Forum</span>
         </button>
         <button onclick="openContactsModal()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
-          <div class="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200/80 transition shrink-0">
+          <div class="w-6 h-6 rounded-lg bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] flex items-center justify-center transition shrink-0 shadow-none">
             <i data-lucide="users" class="h-3.5 w-3.5"></i>
           </div>
           <span class="sidebar-text truncate">Address Book</span>
@@ -916,45 +943,44 @@ try {
     </div>
   </div>
 
-  <!-- 3. App Switcher Popover (Raccon Mail Ecosystem - Modern Gray Badges) -->
-  <div id="app-switcher-modal" class="hidden fixed top-16 left-4 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-4 z-50 w-80">
+  <!-- 3. App Switcher Popover (Raccon Mail Ecosystem - Distinct Colors & Zero Shadow) -->
+  <div id="app-switcher-modal" class="hidden fixed top-16 left-4 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 z-50 w-80">
     <div class="flex items-center justify-between mb-3 px-1">
       <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Raccon Mail Ecosystem</p>
-      <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full border border-slate-200/80">v2.0</span>
     </div>
     <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
       <a href="/inbox" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#FFEFEA] text-[#E06748] border border-[#FCD9CE] flex items-center justify-center transition shadow-none">
           <i data-lucide="mail" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">Mail</span>
       </a>
       <a href="/forum" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#EFF4FF] text-[#3B66E0] border border-[#D5E2FF] flex items-center justify-center transition shadow-none">
           <i data-lucide="message-square" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">Forum</span>
       </a>
       <a href="/news" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] flex items-center justify-center transition shadow-none">
           <i data-lucide="newspaper" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">News</span>
       </a>
       <a href="/stories" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] flex items-center justify-center transition shadow-none">
           <i data-lucide="book-open" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">Stories</span>
       </a>
       <button onclick="openContactsModal(); toggleAppSwitcher();" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group cursor-pointer w-full">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#F5F3FF] text-[#7C3AED] border border-[#DDD6FE] flex items-center justify-center transition shadow-none">
           <i data-lucide="users" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">Contacts</span>
       </button>
       <a href="/downloads/RacconMail-v2.0.apk" class="p-2.5 rounded-xl hover:bg-slate-50 flex flex-col items-center gap-2 text-slate-700 transition group">
-        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center text-slate-600 group-hover:bg-slate-200 transition shadow-2xs">
+        <div class="w-10 h-10 rounded-xl bg-[#F0FDFA] text-[#0D9488] border border-[#99F6E4] flex items-center justify-center transition shadow-none">
           <i data-lucide="smartphone" class="h-5 w-5"></i>
         </div>
         <span class="font-semibold text-[11px]">Android</span>
@@ -2434,7 +2460,7 @@ try {
     </a>
 
     <!-- Notifications Bell -->
-    <button onclick="if(window.RacconNotifications) { RacconNotifications.requestPermission().then(function(p){ if(p==='granted') RacconNotifications.show({ title: 'Raccoon Mail Notifications Active! 🔔', body: 'Real-time push alerts for incoming emails and productivity.', url: '/inbox' }); }); } showToast('Notifications are active! 🔔');" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+    <button onclick="handleInboxNotificationClick()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       </div>
@@ -3856,5 +3882,67 @@ try {
       }, 150);
     }
   </script>
+
+  <!-- Notification Center Modal (Mobile & Desktop) -->
+  <div 
+    id="inbox-notifications-modal" 
+    class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs select-none" 
+    onclick="if(event.target === this) toggleInboxNotificationPanel()"
+  >
+    <div class="relative w-full max-w-sm rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#FFEFEA] text-[#E06748] flex items-center justify-center">
+            <i class="fas fa-bell text-xs"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900">Notifications & Alerts</h3>
+            <p class="text-[11px] text-slate-400">Mailbox & Productivity</p>
+          </div>
+        </div>
+        <button onclick="toggleInboxNotificationPanel()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition cursor-pointer">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="fas fa-check-circle text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Push Notifications Enabled</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Instant alerts for new incoming emails, mentions, and urgent messages.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#EFF4FF] text-[#3B66E0] flex items-center justify-center shrink-0">
+            <i class="fas fa-envelope-open-text text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Real-Time Maildir Sync</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Nocturnal sync actively monitors your inbox and catch-all routes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center gap-2">
+        <button 
+          onclick="handleInboxNotificationClick(true)" 
+          class="flex-1 py-2.5 rounded-xl bg-[#F68D72] hover:bg-[#F57C60] text-white font-bold text-xs transition shadow-none cursor-pointer text-center"
+        >
+          Send Test Alert 🔔
+        </button>
+        <button 
+          onclick="toggleInboxNotificationPanel()" 
+          class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
