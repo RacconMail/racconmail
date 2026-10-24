@@ -3490,10 +3490,19 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       e.stopPropagation();
     }
     const val = (document.getElementById('global-search')?.value || '').trim();
+    if (!val) {
+      this.closeSearchSuggestions();
+      return;
+    }
     this.fetchSearchSuggestions(val);
   },
 
   onSearchFocus(e) {
+    const val = (document.getElementById('global-search')?.value || '').trim();
+    if (!val) {
+      this.closeSearchSuggestions();
+      return;
+    }
     this.onSearchClick(e);
   },
 
@@ -3510,9 +3519,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       }, 160);
     } else {
       clearBtn?.classList.add('hidden');
-      if (dropdown && !dropdown.classList.contains('hidden')) {
-        this.fetchSearchSuggestions('');
-      }
+      this.closeSearchSuggestions();
       this.loadMessages();
     }
   },
@@ -3673,11 +3680,17 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
   async fetchSearchSuggestions(query) {
     const dropdown = document.getElementById('search-suggestions-dropdown');
     if (!dropdown) return;
+    const cleanQ = (query || '').trim();
+    if (!cleanQ) {
+      this.closeSearchSuggestions();
+      return;
+    }
 
     try {
-      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query || '')}`);
+      const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(cleanQ)}`);
+      if (!res.ok) return;
       const data = await res.json();
-      this.renderSearchSuggestions(data, query || '');
+      this.renderSearchSuggestions(data, cleanQ);
     } catch (err) {
       console.error('Failed to fetch search suggestions:', err);
     }
@@ -3687,121 +3700,28 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const dropdown = document.getElementById('search-suggestions-dropdown');
     if (!dropdown) return;
 
+    const cleanQ = (query || '').trim();
+    if (!cleanQ) {
+      this.closeSearchSuggestions();
+      return;
+    }
+
     this._searchSelectedIndex = -1;
     this._searchSuggestionItems = [];
 
     const people = data.people || [];
     const messages = data.messages || [];
 
-    // Empty state: render quick filters, recent senders, and recent emails
-    if (data.is_empty || (!query && query.trim().length === 0)) {
-      let emptyHtml = `
-        <!-- Quick Search Filters (Solid Black Buttons, White Write) -->
-        <div class="p-3 bg-slate-50/80 border-b border-slate-200">
-          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-700 flex items-center justify-between">
-            <span class="flex items-center gap-1.5"><i data-lucide="zap" class="h-3.5 w-3.5 text-slate-900"></i> Quick Filters</span>
-            <span class="text-[9.5px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full">1-Tap</span>
-          </div>
-          <div class="flex flex-wrap gap-1.5 mt-2 px-1">
-            <button onclick="app.setQuickFilter('unread')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
-              <i data-lucide="mail-open" class="h-3.5 w-3.5 text-white"></i>
-              <span>Unread</span>
-            </button>
-            <button onclick="app.setQuickFilter('starred')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
-              <i data-lucide="star" class="h-3.5 w-3.5 text-amber-400 fill-amber-400"></i>
-              <span>Starred</span>
-            </button>
-            <button onclick="app.setQuickFilter('has_attachments')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
-              <i data-lucide="paperclip" class="h-3.5 w-3.5 text-white"></i>
-              <span>Attachments</span>
-            </button>
-            <button onclick="app.setQuickFilter('spam')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
-              <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-white"></i>
-              <span>Spam Box</span>
-            </button>
-            <button onclick="app.searchAllFolders('')" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white transition cursor-pointer active:scale-95 border border-slate-800 shadow-2xs">
-              <i data-lucide="layers" class="h-3.5 w-3.5 text-white"></i>
-              <span>All Mail</span>
-            </button>
-          </div>
-        </div>
-      `;
-
-      if (people.length > 0) {
-        emptyHtml += `
-          <div class="p-2">
-            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
-              <span>Recent Senders</span>
-              <span class="text-[9.5px] bg-slate-900 text-white px-2 py-0.2 rounded-full font-bold">${people.length}</span>
-            </div>
-            <div class="space-y-1 mt-1">
-        `;
-        people.forEach((p, idx) => {
-          const initial = (p.name || p.email || 'U')[0].toUpperCase();
-          this._searchSuggestionItems.push({
-            type: 'sender',
-            action: () => this.filterBySender(p.email, p.name)
-          });
-          emptyHtml += `
-            <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="search-suggestion-row flex items-center gap-2.5 p-2 rounded-2xl hover:bg-slate-100 cursor-pointer transition">
-              <div class="h-7 w-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
-                ${initial}
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="font-bold text-slate-900 text-xs truncate">${this.escapeHtml(p.name)}</p>
-                <p class="text-[11px] text-slate-500 truncate font-mono">${this.escapeHtml(p.email)}</p>
-              </div>
-              <span class="text-[11px] text-slate-900 font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full shrink-0">Filter ➔</span>
-            </div>
-          `;
-        });
-        emptyHtml += `</div></div>`;
-      }
-
-      if (messages.length > 0) {
-        emptyHtml += `
-          <div class="p-2 border-t border-slate-100">
-            <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              <span>Recent Messages</span>
-            </div>
-            <div class="space-y-1 mt-1">
-        `;
-        messages.forEach(m => {
-          this._searchSuggestionItems.push({
-            type: 'message',
-            action: () => this.selectSuggestionMessage(m.id)
-          });
-          emptyHtml += `
-            <div onclick="app.selectSuggestionMessage('${m.id}')" class="search-suggestion-row flex items-center justify-between gap-2 p-2 rounded-2xl hover:bg-slate-100 cursor-pointer transition">
-              <div class="min-w-0 flex-1">
-                <span class="font-bold text-slate-900 text-xs truncate">${this.escapeHtml(m.sender_name || m.sender_email)}</span>
-                <p class="text-[11px] text-slate-600 truncate">${this.escapeHtml(m.subject || '(no subject)')}</p>
-              </div>
-              <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-            </div>
-          `;
-        });
-        emptyHtml += `</div></div>`;
-      }
-
-      dropdown.innerHTML = emptyHtml;
-      dropdown.classList.remove('hidden');
-      dropdown.classList.add('flex', 'flex-col');
-      if (window.lucide) lucide.createIcons();
-      return;
-    }
-
     if (people.length === 0 && messages.length === 0) {
       this._searchSuggestionItems.push({
         type: 'search_all',
-        action: () => this.searchAllFolders(query)
+        action: () => this.searchAllFolders(cleanQ)
       });
       dropdown.innerHTML = `
-        <div class="p-5 text-center text-slate-600">
-          <p class="font-semibold text-slate-900 text-sm">No direct suggestion for "${this.escapeHtml(query)}"</p>
-          <p class="text-xs text-slate-500 mt-0.5">Try searching across all mail, attachments &amp; trash:</p>
-          <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="mt-3 px-4 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs cursor-pointer shadow-xs transition">
-            Search all folders for "${this.escapeHtml(query)}" ➔
+        <div class="px-4 py-3 text-center text-slate-600">
+          <p class="font-medium text-slate-800 text-xs">No direct suggestions for "${this.escapeHtml(cleanQ)}"</p>
+          <button onclick="app.searchAllFolders('${this.escapeHtml(cleanQ)}')" class="mt-2 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white font-medium text-xs cursor-pointer transition">
+            Search all mail for "${this.escapeHtml(cleanQ)}" ↵
           </button>
         </div>
       `;
@@ -3812,15 +3732,13 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     let html = '';
 
-    // 1. People / Contacts Section (Accurate matching with highlighted substring)
+    // 1. People / Contacts Section (Normal, Clean Dropdown List)
     if (people.length > 0) {
       html += `
-        <div class="p-2.5 bg-slate-50/70 border-b border-slate-100">
-          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
-            <span>People &amp; Contacts</span>
-            <span class="text-[9.5px] bg-slate-900 text-white px-2 py-0.2 rounded-full font-bold">${people.length}</span>
+        <div class="py-1">
+          <div class="px-3.5 py-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Contacts (${people.length})
           </div>
-          <div class="space-y-1 mt-1.5">
       `;
       people.forEach(p => {
         const initial = (p.name || p.email || 'U')[0].toUpperCase();
@@ -3829,34 +3747,31 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           action: () => this.filterBySender(p.email, p.name)
         });
         html += `
-          <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="search-suggestion-row flex items-center gap-2.5 p-2 rounded-2xl hover:bg-white hover:shadow-xs cursor-pointer transition border border-transparent hover:border-slate-200">
-            <div class="h-7 w-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+          <div onclick="app.filterBySender('${this.escapeHtml(p.email)}', '${this.escapeHtml(p.name)}')" class="search-suggestion-row flex items-center gap-3 px-3.5 py-2 hover:bg-slate-50 cursor-pointer transition">
+            <div class="h-6 w-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
               ${initial}
             </div>
             <div class="min-w-0 flex-1">
-              <p class="font-bold text-slate-900 truncate leading-snug">${this.highlightMatch(p.name, query)}</p>
-              <p class="text-[11px] text-slate-500 truncate font-mono">${this.highlightMatch(p.email, query)}</p>
+              <p class="text-xs font-semibold text-slate-900 truncate leading-snug">${this.highlightMatch(p.name, cleanQ)}</p>
+              <p class="text-[11px] text-slate-500 truncate font-mono">${this.highlightMatch(p.email, cleanQ)}</p>
             </div>
-            <span class="text-[10px] text-white bg-slate-900 hover:bg-black font-bold px-2.5 py-1 rounded-full shrink-0 shadow-2xs">Filter ➔</span>
+            <span class="text-[11px] text-slate-400 font-medium shrink-0">Filter</span>
           </div>
         `;
       });
-      html += `</div></div>`;
+      html += `</div>`;
     }
 
-    // 2. Emails Section (Across all folders: Inbox, Spam, Sent, Archive, Trash)
+    // 2. Emails Section (Normal Clean List)
     if (messages.length > 0) {
       html += `
-        <div class="p-2.5">
-          <div class="px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 flex items-center justify-between">
-            <span>Matching Messages</span>
-            <span class="text-[9.5px] bg-slate-200 text-slate-800 px-2 py-0.2 rounded-full font-bold">${messages.length}</span>
+        <div class="py-1">
+          <div class="px-3.5 py-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Messages (${messages.length})
           </div>
-          <div class="space-y-1 mt-1.5">
       `;
       messages.forEach(m => {
         const folder = m.folder_label || 'Inbox';
-        let folderBadgeColor = 'bg-slate-900 text-white';
 
         this._searchSuggestionItems.push({
           type: 'message',
@@ -3864,35 +3779,34 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         });
 
         html += `
-          <div onclick="app.selectSuggestionMessage('${m.id}')" class="search-suggestion-row flex items-start justify-between gap-2.5 p-2.5 rounded-2xl hover:bg-slate-50 cursor-pointer transition border border-transparent hover:border-slate-200">
+          <div onclick="app.selectSuggestionMessage('${m.id}')" class="search-suggestion-row flex items-center justify-between gap-3 px-3.5 py-2 hover:bg-slate-50 cursor-pointer transition">
             <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${folderBadgeColor}">${folder}</span>
-                <span class="font-bold text-slate-900 truncate">${this.highlightMatch(m.sender_name || m.sender_email, query)}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">${folder}</span>
+                <span class="text-xs font-semibold text-slate-900 truncate">${this.highlightMatch(m.sender_name || m.sender_email, cleanQ)}</span>
               </div>
-              <p class="text-xs text-slate-900 font-semibold truncate mt-1">${this.highlightMatch(m.subject || '(no subject)', query)}</p>
-              <p class="text-[11px] text-slate-500 truncate mt-0.5">${this.highlightMatch(m.body || '', query)}</p>
+              <p class="text-xs text-slate-700 truncate mt-0.5">${this.highlightMatch(m.subject || '(no subject)', cleanQ)}</p>
             </div>
-            <i data-lucide="chevron-right" class="h-4 w-4 text-slate-400 shrink-0 self-center"></i>
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
           </div>
         `;
       });
-      html += `</div></div>`;
+      html += `</div>`;
     }
 
-    // 3. Search Loop Footer (Solid Black Button, White Write)
+    // 3. Search Loop Footer
     this._searchSuggestionItems.push({
       type: 'search_all',
-      action: () => this.searchAllFolders(query)
+      action: () => this.searchAllFolders(cleanQ)
     });
 
     html += `
-      <div class="p-3 bg-slate-50 flex items-center justify-between border-t border-slate-200">
-        <button onclick="app.searchAllFolders('${this.escapeHtml(query)}')" class="px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition">
-          <i data-lucide="search" class="h-3.5 w-3.5 text-white"></i>
-          <span>Search in all mail for "${this.escapeHtml(query)}"</span>
+      <div class="px-3.5 py-2 bg-slate-50 flex items-center justify-between border-t border-slate-100">
+        <button onclick="app.searchAllFolders('${this.escapeHtml(cleanQ)}')" class="text-xs font-semibold text-slate-900 hover:text-slate-700 flex items-center gap-1.5 cursor-pointer">
+          <i data-lucide="search" class="h-3.5 w-3.5 text-slate-500"></i>
+          <span>Search in all mail for "${this.escapeHtml(cleanQ)}"</span>
         </button>
-        <span class="text-[10px] text-slate-500 font-mono hidden sm:inline">Press Enter ↵</span>
+        <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">Press Enter ↵</span>
       </div>
     `;
 

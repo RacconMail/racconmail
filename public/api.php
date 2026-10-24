@@ -170,10 +170,11 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
 
 // Session management (Require registration & login with top-tier cookie flags)
 if (session_status() === PHP_SESSION_NONE) {
+    $cookieDomain = (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'racconmail.eu')) ? '.racconmail.eu' : '';
     session_set_cookie_params([
         'lifetime' => 86400 * 30, // 30 days persistent session
         'path' => '/',
-        'domain' => '',
+        'domain' => $cookieDomain,
         'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
         'httponly' => true,
         'samesite' => 'Lax'
@@ -458,37 +459,14 @@ if ($route === 'auth/verify-phone-code' && $method === 'POST') {
     exit;
 }
 
-// 3. Complete Registration (Requires Verified Phone & Code)
+// 3. Complete Registration
 if ($route === 'auth/register' && $method === 'POST') {
     $name = trim($input['name'] ?? '');
     $email = strtolower(trim($input['email'] ?? ''));
-    $password = $input['password'] ?? '';
-    $phone = trim($input['phone'] ?? '');
-    $code = trim($input['phone_code'] ?? ($input['code'] ?? ''));
+    $password = (string)($input['password'] ?? '');
     $avatar = $input['avatar'] ?? '/raccoon-logo.png';
     $cover = $input['cover_photo'] ?? '';
-
-    if (!$name || !$email || !$password) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Please provide name, email, and password.']);
-        exit;
-    }
-
-    // Optional phone confirmation (Privacy-First: Phone verification is NO longer mandatory)
-    if ($phone && $code) {
-        $cleanPhone = preg_replace('/[^\d+]/', '', $phone);
-        if (!str_starts_with($cleanPhone, '+')) {
-            $cleanPhone = '+' . ltrim($cleanPhone, '0');
-        }
-        $stmtVerif = $db->prepare("SELECT * FROM phone_verifications WHERE phone = ? OR phone = ? ORDER BY id DESC LIMIT 1");
-        $stmtVerif->execute([$cleanPhone, ltrim($cleanPhone, '+')]);
-        $verif = $stmtVerif->fetch();
-        if ($verif && $verif['code'] === $code && strtotime($verif['expires_at']) >= time()) {
-            $db->prepare("DELETE FROM phone_verifications WHERE phone = ? OR phone = ?")->execute([$cleanPhone, ltrim($cleanPhone, '+')]);
-        }
-    } else {
-        $cleanPhone = '';
-    }
+    $cleanPhone = trim($input['phone'] ?? '');
 
     // Always normalize to username@racconmail.eu
     if (str_contains($email, '@')) {
@@ -501,10 +479,20 @@ if ($route === 'auth/register' && $method === 'POST') {
     $userPart = preg_replace('/[^a-z0-9._-]/i', '', $userPart);
     if (!$userPart) {
         http_response_code(400);
-        echo json_encode(['error' => 'Please provide a valid username for your email.']);
+        echo json_encode(['error' => 'Please provide a valid username (letters, numbers, dots, dashes).']);
         exit;
     }
     $email = $userPart . '@racconmail.eu';
+
+    if (!$name) {
+        $name = ucfirst($userPart);
+    }
+
+    if (strlen($password) < 5) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Password must be at least 5 characters long.']);
+        exit;
+    }
 
     $stmtCheck = $db->prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)');
     $stmtCheck->execute([$email]);
@@ -527,10 +515,11 @@ if ($route === 'auth/register' && $method === 'POST') {
 
     // Add Raccon Team welcome email
     $welcomeId = 'wel_' . uniqid();
+    $welcomeBody = "Welcome to Raccon Mail, {$name}!\n\nYour new masked postcard email account is all set up.\n\nEnjoy clever, secure email for web & mobile.\n\nThe Raccon Team 🐾";
     $db->prepare("
         INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, is_read, is_starred, is_draft)
-        VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', ?, 'Welcome to your clever new inbox! 💌', 'Welcome to Raccon Mail, ' || ? || '!\n\nYour new masked postcard email account is all set up with verified phone security (' || ? || ').\n\nEnjoy clever, secure email for web & mobile.\n\nThe Raccon Team 🐾', 0, 1, 0)
-    ")->execute([$welcomeId, $userId, $email, $name, $cleanPhone]);
+        VALUES (?, ?, 'Raccon Team', 'team@racconmail.eu', ?, 'Welcome to your clever new inbox! 💌', ?, 0, 1, 0)
+    ")->execute([$welcomeId, $userId, $email, $welcomeBody]);
 
     // Add default contacts
     $db->prepare("INSERT INTO contacts (id, user_id, name, email, notes) VALUES (?, ?, 'Rocky Raccoon', 'rocky@racconmail.eu', 'Midnight planner')")->execute(['c_' . uniqid(), $userId]);
@@ -546,42 +535,53 @@ if ($route === 'auth/register' && $method === 'POST') {
     exit;
 }
 
-// 4. Secure Login with Brute-Force Rate Limiting & Strict Password Verification
+// 4. Secure Login with Intelligent Rate Limiting & Forgiving Whitespace Matching
 if ($route === 'auth/login' && $method === 'POST') {
     $email = strtolower(trim($input['email'] ?? ''));
-    $password = $input['password'] ?? '';
-    $clientIp = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    $password = (string)($input['password'] ?? '');
+    $clientIp = $_SERVER['HTTP_CF_CONNECTING_IP'] 
+        ?? $_SERVER['HTTP_X_REAL_IP'] 
+        ?? (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]) : null) 
+        ?? $_SERVER['REMOTE_ADDR'] 
+        ?? '127.0.0.1';
 
-    if (!$email || !$password) {
+    if (!$email || $password === '') {
         http_response_code(400);
-        echo json_encode(['error' => 'Please provide both email and password.']);
+        echo json_encode(['error' => 'Please provide both username/email and password.']);
         exit;
     }
 
-    // Check brute-force attempts in past 15 minutes
+    // Clean up expired rate limits (5-minute sliding window)
     try {
-        $db->prepare("DELETE FROM login_rate_limits WHERE attempted_at < datetime('now', '-15 minutes')")->execute();
+        $db->prepare("DELETE FROM login_rate_limits WHERE attempted_at < datetime('now', '-5 minutes')")->execute();
         $stmtLimit = $db->prepare("SELECT COUNT(*) FROM login_rate_limits WHERE ip = ?");
         $stmtLimit->execute([$clientIp]);
-        if ((int)$stmtLimit->fetchColumn() >= 5) {
+        if ((int)$stmtLimit->fetchColumn() >= 25) {
             http_response_code(429);
-            echo json_encode(['error' => 'Too many failed login attempts. Account access is temporarily locked for 15 minutes.']);
+            echo json_encode(['error' => 'Too many failed attempts. Please wait 5 minutes before trying again.']);
             exit;
         }
     } catch (Throwable $e) {}
 
-    $fullEmail = str_contains($email, '@') ? $email : ($email . '@racconmail.eu');
-    $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(email) = LOWER(?)');
-    $stmt->execute([$email, $fullEmail]);
+    $userPart = str_contains($email, '@') ? explode('@', $email)[0] : $email;
+    $fullEmail = $userPart . '@racconmail.eu';
+    $stmt = $db->prepare('SELECT * FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(email) = LOWER(?) OR LOWER(email) LIKE ?');
+    $stmt->execute([$email, $fullEmail, $userPart . '@%']);
     $user = $stmt->fetch();
 
-    // Strict authentication: both user existence and password_verify must succeed
-    if (!$user || empty($user['password_hash']) || !password_verify($password, $user['password_hash'])) {
+    $passOk = false;
+    if ($user && !empty($user['password_hash'])) {
+        if (password_verify($password, $user['password_hash']) || password_verify(trim($password), $user['password_hash'])) {
+            $passOk = true;
+        }
+    }
+
+    if (!$user || !$passOk) {
         try {
             $db->prepare("INSERT INTO login_rate_limits (ip, email) VALUES (?, ?)")->execute([$clientIp, $email]);
         } catch (Throwable $e) {}
         http_response_code(401);
-        echo json_encode(['error' => 'Invalid email or password. Top-tier security protects this mailbox.']);
+        echo json_encode(['error' => 'Invalid email or password. Please check your credentials and try again.']);
         exit;
     }
 
@@ -1656,7 +1656,7 @@ try {
     }
 
     // 4. GET /api/messages
-    if ($route === 'messages') {
+    if ($route === 'messages' && $method === 'GET') {
         $folder = strtolower($_GET['folder'] ?? 'inbox');
         $filter = $_GET['filter'] ?? 'all';
         $sort = $_GET['sort'] ?? 'date_desc';
@@ -2049,7 +2049,7 @@ try {
     }
 
     // 8. Compose / Send Message
-    if ($route === 'messages/send' && $method === 'POST') {
+    if (($route === 'messages/send' || $route === 'messages') && $method === 'POST') {
         $to = $_POST['to'] ?? ($input['to'] ?? '');
         $cc = $_POST['cc'] ?? ($input['cc'] ?? '');
         $bcc = $_POST['bcc'] ?? ($input['bcc'] ?? '');

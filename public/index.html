@@ -210,7 +210,9 @@
       }
       modal.style.display = 'flex';
       modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
+      if (window.innerWidth >= 768) {
+        document.body.style.overflow = 'hidden';
+      }
       if (typeof window.setModalTab === 'function') {
         window.setModalTab(mode || 'login');
       }
@@ -227,6 +229,7 @@
         modal.classList.add('hidden');
       }
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       if (typeof window.hideModalError === 'function') {
         window.hideModalError();
       }
@@ -247,9 +250,11 @@
     /* Smooth Scroll and Viewport Unlocking */
     html {
       scroll-behavior: smooth;
-      height: auto !important;
+      height: 100%;
       overflow-x: hidden !important;
       overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
       max-width: 100vw !important;
     }
 
@@ -258,11 +263,11 @@
       background-color: #FFFFFF !important;
       color: #1E293B !important;
       font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-      height: auto !important;
-      min-height: 100vh !important;
+      min-height: 100%;
       overflow-x: hidden !important;
-      overflow-y: visible !important;
-      touch-action: auto !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
       max-width: 100vw !important;
       width: 100% !important;
       padding: 0 !important;
@@ -1133,7 +1138,10 @@
               type="password"
               required
               placeholder="••••••••••••"
-              autocomplete="current-password"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
               class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-slate-900 placeholder-slate-400"
             />
             <button
@@ -1212,7 +1220,10 @@
               required
               minlength="5"
               placeholder="At least 5 characters..."
-              autocomplete="new-password"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
               class="flex-1 min-w-0 bg-transparent py-2 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
             />
             <button
@@ -1277,26 +1288,10 @@
       }
     }
 
-    ['m-r-name', 'm-r-email', 'm-r-pass', 'm-l-email', 'm-l-pass'].forEach(id => {
+    ['m-r-name', 'm-r-email', 'm-l-email'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       el.addEventListener('input', () => toggleModalClearBtn(id));
-      el.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace' || e.keyCode === 8) {
-          const start = this.selectionStart;
-          const end = this.selectionEnd;
-          if (start === end && start > 0) {
-            setTimeout(() => {
-              if (this.selectionStart === start && this.value.length >= start) {
-                const val = this.value;
-                this.value = val.slice(0, start - 1) + val.slice(end);
-                this.setSelectionRange(start - 1, start - 1);
-                toggleModalClearBtn(id);
-              }
-            }, 15);
-          }
-        }
-      });
     });
 
     function openAuthModal(mode) {
@@ -1304,7 +1299,9 @@
       if (!modal) return;
       modal.style.display = 'flex';
       modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
+      if (window.innerWidth >= 768) {
+        document.body.style.overflow = 'hidden';
+      }
       setModalTab(mode || 'login');
       setTimeout(() => {
         const inp = mode === 'register' ? document.getElementById('m-r-name') : document.getElementById('m-l-email');
@@ -1319,6 +1316,7 @@
         modal.classList.add('hidden');
       }
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       hideModalError();
     }
 

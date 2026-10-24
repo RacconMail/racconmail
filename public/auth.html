@@ -268,7 +268,10 @@
               type="password"
               required
               placeholder="••••••••••••"
-              autocomplete="current-password"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
               class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-slate-900 placeholder-slate-400"
             />
             <button
@@ -351,7 +354,10 @@
                 required
                 minlength="5"
                 placeholder="At least 5 characters..."
-                autocomplete="new-password"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
                 class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-slate-900 placeholder-slate-400"
               />
               <button
@@ -420,6 +426,25 @@
     }).catch(() => {});
 
     let pendingReg = null;
+
+    function clearField(id) {
+      const inp = document.getElementById(id);
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+        const btn = document.getElementById('clear-' + id);
+        if (btn) btn.classList.add('hidden');
+      }
+    }
+
+    ['r-name', 'r-email'].forEach(id => {
+      const el = document.getElementById(id);
+      const btn = document.getElementById('clear-' + id);
+      if (!el || !btn) return;
+      el.addEventListener('input', () => {
+        btn.classList.toggle('hidden', el.value.length === 0);
+      });
+    });
 
     function togglePass(inputId, iconId) {
       const input = document.getElementById(inputId);

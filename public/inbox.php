@@ -1,9 +1,10 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
+    $cookieDomain = (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'racconmail.eu')) ? '.racconmail.eu' : '';
     session_set_cookie_params([
         'lifetime' => 86400 * 30, // 30 days persistent session
         'path' => '/',
-        'domain' => '',
+        'domain' => $cookieDomain,
         'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
         'httponly' => true,
         'samesite' => 'Lax'
@@ -397,8 +398,8 @@ if (empty($_SESSION['current_user_id'])) {
                 <i data-lucide="x" class="h-3.5 w-3.5"></i>
               </button>
             </div>
-            <!-- Search Suggestions Dropdown (Only appears when clicked) -->
-            <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden divide-y divide-slate-100 max-h-80 overflow-y-auto flex flex-col"></div>
+            <!-- Search Suggestions Dropdown (Only appears when typing query) -->
+            <div id="search-suggestions-dropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white rounded-xl border border-slate-200 shadow-xl z-50 overflow-hidden divide-y divide-slate-100 max-h-80 overflow-y-auto flex flex-col"></div>
           </div>
         </div>
 
