@@ -57,7 +57,16 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v18_billing_plans';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v19_reply_updates';
+    try {
+        $db->exec('ALTER TABLE messages ADD COLUMN category TEXT DEFAULT "primary"');
+    } catch (Throwable $e) {}
+    try {
+        $db->exec('ALTER TABLE messages ADD COLUMN is_reply INTEGER DEFAULT 0');
+    } catch (Throwable $e) {}
+    try {
+        $db->exec('UPDATE messages SET category = "updates", folder_id = "updates", is_reply = 1 WHERE (subject LIKE "Re:%" OR subject LIKE "RE:%" OR (in_reply_to IS NOT NULL AND in_reply_to != "") OR body LIKE "%a%scris:%" OR body LIKE "%wrote:%") AND is_trashed = 0');
+    } catch (Throwable $e) {}
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -1951,6 +1960,8 @@ try {
             $where[] = 'is_starred = 1 AND is_trashed = 0';
         } elseif ($folder === 'drafts') {
             $where[] = 'is_draft = 1 AND is_trashed = 0';
+        } elseif ($folder === 'updates') {
+            $where[] = '(category = "updates" OR folder_id = "updates" OR is_reply = 1 OR subject LIKE "Re:%" OR subject LIKE "RE:%" OR (in_reply_to IS NOT NULL AND in_reply_to != "") OR body LIKE "%a%scris:%" OR body LIKE "%wrote:%") AND is_trashed = 0';
         } elseif ($folder === 'sent') {
             $where[] = '(LOWER(sender_email) = LOWER(?) OR folder_id = "sent")';
             $params[] = $userEmail;
@@ -2000,6 +2011,17 @@ try {
         $messages = $stmt->fetchAll();
         foreach ($messages as &$m) {
             $m['body'] = cleanMimeEmailContent($m['body']);
+            $parsed = parseEmailReplyAndQuote($m['body']);
+            $isReply = (bool)($parsed['isReply'] || (stripos($m['subject'], 'Re:') === 0) || !empty($m['in_reply_to']));
+            $m['is_reply'] = $isReply;
+            $m['reply_text'] = $parsed['replyText'] ?: $m['body'];
+            $m['quoted_text'] = $parsed['quotedText'];
+            if ($isReply) {
+                $m['category'] = 'updates';
+                if (empty($m['folder_id']) || $m['folder_id'] === 'inbox') {
+                    $m['computed_folder'] = 'Updates';
+                }
+            }
         }
         unset($m);
         echo json_encode(['messages' => $messages]);
@@ -5147,6 +5169,60 @@ function extractImapBodyAndAttachments($mbox, $msgno, $structure, $uploadsDir) {
     return ['text' => $text, 'html' => $html, 'attachments' => $attachments];
 }
 
+
+function parseEmailReplyAndQuote($raw) {
+    if (!$raw) return ['isReply' => false, 'replyText' => '', 'quotedText' => ''];
+    $text = trim((string)$raw);
+
+    $quoteHeaderPatterns = [
+        '/\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i',
+        '/\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i',
+        '/\n\s*(_{20,})/i',
+        '/\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i'
+    ];
+
+    $splitIndex = -1;
+    foreach ($quoteHeaderPatterns as $pattern) {
+        if (preg_match($pattern, $text, $matches, PREG_OFFSET_CAPTURE)) {
+            $offset = $matches[0][1];
+            if ($splitIndex === -1 || $offset < $splitIndex) {
+                $splitIndex = $offset;
+            }
+        }
+    }
+
+    if ($splitIndex === -1) {
+        if (preg_match('/\n\s*(?:>|&gt;)\s*[^\n]*/', $text, $matches, PREG_OFFSET_CAPTURE)) {
+            $splitIndex = $matches[0][1];
+        }
+    }
+
+    if ($splitIndex !== -1 && $splitIndex > 0) {
+        $replyPart = trim(substr($text, 0, $splitIndex));
+        $quotedPart = trim(substr($text, $splitIndex));
+        if (!empty($replyPart)) {
+            return [
+                'isReply' => true,
+                'replyText' => $replyPart,
+                'quotedText' => $quotedPart
+            ];
+        }
+    }
+
+    if (str_starts_with($text, '>') || str_starts_with($text, '&gt;')) {
+        return [
+            'isReply' => true,
+            'replyText' => '',
+            'quotedText' => $text
+        ];
+    }
+
+    return [
+        'isReply' => false,
+        'replyText' => $text,
+        'quotedText' => ''
+    ];
+}
 
 function cleanMimeEmailContent($raw) {
     if (empty($raw) || !is_string($raw)) return '';

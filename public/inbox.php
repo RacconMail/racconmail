@@ -1369,7 +1369,78 @@ try {
 
 
     
-    function cleanMimeEmailContent(raw) {
+        function parseEmailReplyAndQuote(raw) {
+      if (!raw) return { isReply: false, replyText: '', quotedText: '' };
+      var text = String(raw).trim();
+      var quoteHeaderPatterns = [
+        /\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i,
+        /\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i,
+        /\n\s*(_{20,})/i,
+        /\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i
+      ];
+
+      var splitIndex = -1;
+      for (var i = 0; i < quoteHeaderPatterns.length; i++) {
+        var match = text.match(quoteHeaderPatterns[i]);
+        if (match && match.index !== undefined) {
+          if (splitIndex === -1 || match.index < splitIndex) {
+            splitIndex = match.index;
+          }
+        }
+      }
+
+      if (splitIndex === -1) {
+        var quoteLineMatch = text.match(/\n\s*(?:>|&gt;)\s*[^\n]*/);
+        if (quoteLineMatch && quoteLineMatch.index !== undefined) {
+          splitIndex = quoteLineMatch.index;
+        }
+      }
+
+      if (splitIndex !== -1 && splitIndex > 0) {
+        var replyPart = text.slice(0, splitIndex).trim();
+        var quotedPart = text.slice(splitIndex).trim();
+        if (replyPart.length > 0) {
+          return { isReply: true, replyText: replyPart, quotedText: quotedPart };
+        }
+      }
+
+      if (text.startsWith('>') || text.startsWith('&gt;')) {
+        return { isReply: true, replyText: '', quotedText: text };
+      }
+
+      return { isReply: false, replyText: text, quotedText: '' };
+    }
+    window.parseEmailReplyAndQuote = parseEmailReplyAndQuote;
+
+    window.toggleQuotedHistory = function(btn) {
+      var panel = btn.nextElementSibling;
+      var textSpan = btn.querySelector('span:nth-child(2)');
+      var chevron = btn.querySelector('[data-lucide="chevron-down"], svg');
+      if (!panel) return;
+      var isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        if (textSpan) textSpan.textContent = 'Hide quoted email history';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      } else {
+        panel.classList.add('hidden');
+        if (textSpan) textSpan.textContent = 'Show quoted email history';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+      }
+    };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    window.escapeHtml = escapeHtml;
+
+function cleanMimeEmailContent(raw) {
       if (!raw || typeof raw !== 'string') return '';
       let str = raw.trim();
       if (str.includes('--') || /content-type:\s*(text\/plain|text\/html|multipart)/i.test(str)) {
@@ -1511,6 +1582,8 @@ try {
         list = (mailDatabase['Inbox'] || []).filter(m => !m.isRead);
       } else if (currentFolder === 'Starred') {
         list = [].concat(...Object.values(mailDatabase)).filter(m => m.isStarred);
+      } else if (currentFolder === 'Updates') {
+        list = (mailDatabase['Updates'] && mailDatabase['Updates'].length > 0) ? mailDatabase['Updates'] : [].concat(...Object.values(mailDatabase)).filter(m => m.is_reply || m.category === 'updates' || (m.subject && m.subject.toLowerCase().startsWith('re:')));
       } else {
         list = mailDatabase[currentFolder] || [];
       }
@@ -1558,7 +1631,9 @@ try {
         const isActive = idx === currentSelectedThreadIndex;
         const isRead = !!msg.isRead;
         const rawSnippet = cleanMimeEmailContent(msg.thread && msg.thread.length > 0 ? (msg.thread[msg.thread.length - 1]?.body || "") : (msg.preview || ""));
-        const cleanSnippet = rawSnippet.replace(/<[^>]+>/g, '').slice(0, 95).trim() + (rawSnippet.length > 95 ? '...' : '');
+        const parsedReply = parseEmailReplyAndQuote(rawSnippet);
+        const snippetText = (parsedReply.isReply && parsedReply.replyText) ? parsedReply.replyText : (msg.reply_text || rawSnippet);
+        const cleanSnippet = snippetText.replace(/<[^>]+>/g, '').slice(0, 95).trim() + (snippetText.length > 95 ? '...' : '');
         const art = visualArtworks[idx % visualArtworks.length];
         const readMinutes = Math.max(1, Math.ceil((cleanSnippet.length + (msg.subject || '').length) / 25));
 
@@ -1627,6 +1702,8 @@ try {
         switchFolder('Starred');
       } else if (catName === 'Sent') {
         switchFolder('Sent');
+      } else if (catName === 'Updates') {
+        switchFolder('Updates');
       } else if (catName === 'All') {
         switchFolder('Inbox');
         setListFilter('all');
@@ -1655,6 +1732,7 @@ try {
       if (currentFolder === 'All') list = [].concat(...Object.values(mailDatabase));
       else if (currentFolder === 'Unread') list = (mailDatabase['Inbox'] || []).filter(m => !m.isRead);
       else if (currentFolder === 'Starred') list = [].concat(...Object.values(mailDatabase)).filter(m => m.isStarred);
+      else if (currentFolder === 'Updates') list = (mailDatabase['Updates'] && mailDatabase['Updates'].length > 0) ? mailDatabase['Updates'] : [].concat(...Object.values(mailDatabase)).filter(m => m.is_reply || m.category === 'updates' || (m.subject && m.subject.toLowerCase().startsWith('re:')));
       else list = mailDatabase[currentFolder] || [];
 
       if (currentFilter === 'unread') list = list.filter(m => !m.isRead);
@@ -1694,29 +1772,107 @@ try {
         starIcon.className = `h-4 w-4 ${msg.isStarred ? 'text-amber-500 fill-amber-500' : 'text-slate-400'}`;
       }
 
-      container.innerHTML = msg.thread.map((card, i) => `
-        <div class="border-b border-slate-100 pb-6">
-          <div class="flex items-start gap-3 mb-3">
-            <img src="${card.avatar}" class="h-9 w-9 rounded-full object-cover shrink-0 border border-slate-200" />
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-xs text-slate-900">${card.sender}</span>
+      container.innerHTML = msg.thread.map((card, i) => {
+        const cleanedBody = cleanMimeEmailContent(card.body);
+        const parsed = parseEmailReplyAndQuote(cleanedBody);
+        const isReply = Boolean(parsed.isReply || msg.is_reply || (msg.subject && msg.subject.toLowerCase().startsWith('re:')));
+        const replyText = parsed.replyText || msg.reply_text || cleanedBody;
+        const quotedText = parsed.quotedText || msg.quoted_text || '';
+
+        if (isReply && replyText) {
+          // Nice Modern Template Design for Reply Received
+          return `
+            <div class="mb-6 rounded-[28px] bg-gradient-to-b from-indigo-50/40 via-white to-slate-50/30 border border-indigo-100/90 p-5 sm:p-7 shadow-xs relative overflow-hidden">
+              <!-- Top Pill & Status Header -->
+              <div class="flex items-center justify-between pb-3.5 border-b border-indigo-100/60 mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#6c4ff5] text-white shadow-xs">
+                    <i data-lucide="corner-down-left" class="w-3.5 h-3.5 text-white"></i>
+                    <span>Reply Received</span>
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide">
+                    Updates
+                  </span>
+                </div>
                 <div class="flex items-center gap-2 text-slate-400">
-                  <span class="text-[11px]">${card.date}</span>
-                  <button class="hover:text-slate-700 p-0.5"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                  <span class="text-xs font-mono font-medium">${escapeHtml(card.date || 'Recently')}</span>
                 </div>
               </div>
-              <div class="text-[11px] text-slate-400 flex items-center gap-1">
-                <span>to ${card.to}</span>
-                <i data-lucide="chevron-down" class="h-3 w-3"></i>
+
+              <!-- Sender Profile Row -->
+              <div class="flex items-start gap-3.5 mb-4">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                  <img src="${card.avatar || '/raccoon-logo.svg'}" class="w-7 h-7 object-contain" alt="Avatar" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-extrabold text-sm sm:text-base text-slate-900 truncate">${escapeHtml(card.sender)}</h4>
+                    <button class="hover:text-slate-700 p-1 text-slate-400" title="Options"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                  </div>
+                  <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                    <span class="font-mono">to ${escapeHtml(card.to)}</span>
+                    <span>•</span>
+                    <span class="text-emerald-600 font-medium flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      Verified Delivery
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- The Clean Reply Content Box (JUST THE REPLY) -->
+              <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative">
+                <div class="text-[10px] font-extrabold text-[#6c4ff5] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <i data-lucide="message-square" class="w-3.5 h-3.5 text-[#6c4ff5]"></i>
+                  <span>Response Message</span>
+                </div>
+                <div class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed whitespace-pre-line selection:bg-[#6c4ff5] selection:text-white">
+                  ${escapeHtml(replyText)}
+                </div>
+              </div>
+
+              <!-- Collapsible Quoted Email History -->
+              ${quotedText ? `
+                <div class="mt-4 pt-3 border-t border-slate-100/80">
+                  <button type="button" onclick="toggleQuotedHistory(this)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/70 transition cursor-pointer border border-slate-200/50">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>Show quoted email history</span>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"></i>
+                  </button>
+                  <div class="quoted-history-panel hidden mt-3 p-4 sm:p-5 rounded-2xl bg-slate-50 border-l-4 border-indigo-400 text-xs text-slate-500 font-mono leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto select-text">
+                    ${escapeHtml(quotedText)}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        // Standard card if not a reply
+        return `
+          <div class="border-b border-slate-100 pb-6 mb-6">
+            <div class="flex items-start gap-3 mb-3">
+              <img src="${card.avatar || '/raccoon-logo.svg'}" class="h-9 w-9 rounded-full object-cover shrink-0 border border-slate-200" />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-slate-900">${escapeHtml(card.sender)}</span>
+                  <div class="flex items-center gap-2 text-slate-400">
+                    <span class="text-[11px]">${escapeHtml(card.date)}</span>
+                    <button class="hover:text-slate-700 p-0.5"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                  </div>
+                </div>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1">
+                  <span>to ${escapeHtml(card.to)}</span>
+                  <i data-lucide="chevron-down" class="h-3 w-3"></i>
+                </div>
               </div>
             </div>
+            <div class="pl-12 text-xs text-slate-700 leading-relaxed space-y-2 whitespace-pre-line">
+              ${cleanedBody}
+            </div>
           </div>
-          <div class="pl-12 text-xs text-slate-600 leading-relaxed space-y-2 whitespace-pre-line">
-            ${cleanMimeEmailContent(card.body)}
-          </div>
-        </div>
-      `).join('') + `
+        `;
+      }).join('') + `
         <!-- Quick Reply Box at bottom -->
         <div class="pt-4 flex items-center gap-3">
           <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full border border-slate-200" />

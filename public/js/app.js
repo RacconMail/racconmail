@@ -5433,3 +5433,47 @@ window.app = app;
 window.addEventListener('DOMContentLoaded', () => {
   app.init();
 });
+
+function parseEmailReplyAndQuote(raw) {
+  if (!raw) return { isReply: false, replyText: '', quotedText: '' };
+  var text = String(raw).trim();
+
+  var quoteHeaderPatterns = [
+    /\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i,
+    /\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i,
+    /\n\s*(_{20,})/i,
+    /\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i
+  ];
+
+  var splitIndex = -1;
+  for (var i = 0; i < quoteHeaderPatterns.length; i++) {
+    var match = text.match(quoteHeaderPatterns[i]);
+    if (match && match.index !== undefined) {
+      if (splitIndex === -1 || match.index < splitIndex) {
+        splitIndex = match.index;
+      }
+    }
+  }
+
+  if (splitIndex === -1) {
+    var quoteLineMatch = text.match(/\n\s*(?:>|&gt;)\s*[^\n]*/);
+    if (quoteLineMatch && quoteLineMatch.index !== undefined) {
+      splitIndex = quoteLineMatch.index;
+    }
+  }
+
+  if (splitIndex !== -1 && splitIndex > 0) {
+    var replyPart = text.slice(0, splitIndex).trim();
+    var quotedPart = text.slice(splitIndex).trim();
+    if (replyPart.length > 0) {
+      return { isReply: true, replyText: replyPart, quotedText: quotedPart };
+    }
+  }
+
+  if (text.startsWith('>') || text.startsWith('&gt;')) {
+    return { isReply: true, replyText: '', quotedText: text };
+  }
+
+  return { isReply: false, replyText: text, quotedText: '' };
+}
+window.parseEmailReplyAndQuote = parseEmailReplyAndQuote;
