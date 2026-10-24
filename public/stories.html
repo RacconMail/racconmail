@@ -239,6 +239,45 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #94A3B8;
     }
+  
+    /* Modern Warm Coral Card Design matching reference */
+    .story-card-modern, .forum-card-modern, .news-card-modern {
+      background: #F8F9FA !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(241, 245, 249, 0.95) !important;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .story-card-modern:hover, .forum-card-modern:hover, .news-card-modern:hover {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .category-filter-pill {
+      padding: 7px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .active-category-pill {
+      background: #F68D72 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 14px rgba(246, 141, 114, 0.35) !important;
+    }
+    .inactive-category-pill {
+      background: #F3F4F6 !important;
+      color: #374151 !important;
+    }
+    .inactive-category-pill:hover {
+      background: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
   </style>
   <script src="/js/notifications.js"></script>
 </head>
@@ -1286,11 +1325,11 @@
 
       if (!stories || stories.length === 0) {
         container.innerHTML = `
-          <div class="p-12 text-center bg-white rounded-2xl border border-slate-200 select-none">
+          <div class="p-12 text-center bg-white rounded-3xl border border-slate-100 select-none">
             <img src="/raccoon-logo.png" class="h-16 w-16 mx-auto mb-3 opacity-60" />
             <h3 class="font-bold text-base text-slate-800">No stories found in this category</h3>
             <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Be the first storyteller to post a novel or short story in this genre!</p>
-            <button onclick="openComposerModal()" class="mt-4 px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-xs shadow-xs hover:bg-black transition">
+            <button onclick="openComposerModal()" class="mt-4 px-5 py-2.5 rounded-xl bg-[#F68D72] text-white font-bold text-xs shadow-md hover:bg-[#F57C60] transition">
               Post a Story
             </button>
           </div>
@@ -1298,97 +1337,79 @@
         return;
       }
 
-      container.innerHTML = stories.map(st => {
+      const visualBadges = [
+        { badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-gem' },
+        { badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-star' },
+        { badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-sync-alt' },
+        { badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-bolt' }
+      ];
+
+      const sampleArtworks = [
+        '/images/abstract_1.svg',
+        '/images/abstract_2.svg',
+        '/images/abstract_3.svg',
+        '/images/abstract_4.svg'
+      ];
+
+      container.innerHTML = stories.map((st, idx) => {
         const authorName = st.author_name || st.author_email?.split('@')[0] || 'Storyteller';
-        const authorAvatar = st.author_avatar || '/raccoon-logo.png';
         const timeAgo = formatTimeAgo(st.created_at);
         const words = st.word_count || 1200;
         const readTime = st.reading_time || Math.max(1, Math.ceil(words / 220));
-        const hasLiked = !!st.has_liked;
-        const statusLabel = st.format_status === 'completed' ? 'Completed' : 'Ongoing';
-        const statusClass = st.format_status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200';
+        const badge = visualBadges[idx % visualBadges.length];
+        const artImg = st.cover_url || sampleArtworks[idx % sampleArtworks.length];
+        const cleanExcerpt = (st.synopsis || st.summary || st.content?.slice(0, 110) || 'An intriguing creative story crafted for the community.').replace(/<[^>]+>/g, '');
 
         return `
-          <article class="story-card-item bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-start gap-4">
-            
-            <!-- Book Cover Avatar Icon -->
-            <div class="relative shrink-0">
-              <div class="w-11 h-14 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 text-purple-300 flex flex-col items-center justify-center border border-slate-700 shadow-2xs">
-                <i class="fas fa-book-open text-xs"></i>
-                <span class="text-[8px] font-bold font-mono text-slate-400 mt-0.5">${readTime}m</span>
-              </div>
-            </div>
+          <article onclick="openStoryReader('${st.id}')" class="story-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
+            <div class="flex items-start justify-between gap-3.5">
+              <!-- Left Column: Details -->
+              <div class="flex-1 min-w-0 pr-1">
+                <!-- Metadata: Time & Read duration -->
+                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
+                  <span>${timeAgo || 'Today, 08:15 PM'}</span>
+                  <span class="text-slate-300">•</span>
+                  <span>${readTime} min read</span>
+                </div>
 
-            <!-- Story Body Details -->
-            <div class="flex-1 min-w-0">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <a href="#read/${st.id}" onclick="openStoryReader('${st.id}'); return false;" class="text-sm sm:text-base font-extrabold text-slate-900 hover:text-purple-600 transition tracking-tight leading-snug line-clamp-1">
+                <!-- Bold Headline -->
+                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-slate-700 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
                   ${st.title}
-                </a>
-                ${getGenreBadge(st.category)}
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${statusClass}">${statusLabel}</span>
+                </h3>
+
+                <!-- Excerpt -->
+                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                  ${cleanExcerpt}
+                </p>
+
+                <!-- Pastel Tag Chips Row -->
+                <div class="flex items-center flex-wrap gap-1.5">
+                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
+                    ${st.category || 'Fiction'}
+                  </span>
+                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
+                    ${authorName}
+                  </span>
+                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#F0F4FE] text-[#4A6FDC]">
+                    ${st.format_status === 'completed' ? 'Completed' : 'Ongoing'}
+                  </span>
+                </div>
               </div>
 
-              <!-- Author & Word Count Line -->
-              <p class="text-[11px] text-slate-500 font-medium mb-1.5 flex items-center gap-2">
-                <span>By <strong class="text-slate-800 font-bold">${authorName}</strong></span>
-                <span>&bull;</span>
-                <span>${words.toLocaleString()} words</span>
-                <span>&bull;</span>
-                <span>${timeAgo}</span>
-              </p>
-
-              <!-- Blurb / Summary -->
-              <p class="text-xs text-slate-600 leading-relaxed line-clamp-2 font-serif">
-                ${st.summary || st.content?.slice(0, 140) + '...'}
-              </p>
+              <!-- Right Column: Visual Thumbnail with floating badge -->
+              <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
+                <img src="${artImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Cover" />
+                <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${badge.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
+                  <i class="${badge.badgeIcon}"></i>
+                </div>
+              </div>
             </div>
-
-            <!-- Right Read & Like Counters -->
-            <div class="flex flex-col sm:flex-row items-center gap-2 shrink-0 self-center">
-              <button onclick="openStoryReader('${st.id}')" title="Read story" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-2xs">
-                <i class="fas fa-book-open text-purple-400 text-xs"></i>
-                <span>Read</span>
-              </button>
-
-              <button onclick="toggleLikeStory('${st.id}', this)" title="Like Story" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full ${hasLiked ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600'} text-xs font-bold transition cursor-pointer">
-                <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'} text-xs"></i>
-                <span class="like-cnt">${st.likes_count || 0}</span>
-              </button>
-            </div>
-
           </article>
         `;
       }).join('');
     }
 
-    // =========================================================================
-    // LOAD & RENDER STORY WALL ("POST A STORY")
-    // =========================================================================
-    async function loadWallFeed() {
-      const container = document.getElementById('wall-feed-container');
-      if (!container) return;
-
-      container.innerHTML = `
-        <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
-          <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
-          <p class="font-bold text-sm text-slate-600">Loading story wall...</p>
-        </div>
-      `;
-
-      try {
-        const res = await fetch('/api/community/stories?sort=latest');
-        if (res.ok) {
-          const data = await res.json();
-          renderWallFeed(data.stories || []);
-        } else {
-          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load wall.</div>`;
-        }
-      } catch (e) {
-        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to wall.</div>`;
-      }
-    }
-
+    // Wall Feed Rendering
     function renderWallFeed(stories) {
       const container = document.getElementById('wall-feed-container');
       if (!container) return;
@@ -2007,6 +2028,42 @@
       <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
     </button>
   </div>
+
+
+  <!-- Fixed Modern Bottom Navigation Bar (Matches Reference Image) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-3.5 px-6 flex items-center justify-around select-none">
+    <!-- Inbox Tray -->
+    <a href="/inbox" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Inbox">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </a>
+
+    <!-- Pencil / Post a Story -->
+    <button onclick="openComposerModal()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Post a Story">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </button>
+
+    <!-- Community (Active Coral) -->
+    <a href="/stories" class="flex flex-col items-center gap-1 cursor-pointer group" title="Stories & Community">
+      <div class="w-6 h-6 flex items-center justify-center text-[#F68D72]">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-[#F68D72]"></span>
+    </a>
+
+    <!-- Notifications Bell -->
+    <button onclick="if(window.RacconNotifications) RacconNotifications.requestPermission(); showToast('Notifications are active! 🔔');" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </button>
+  </nav>
 
 </body>
 </html>

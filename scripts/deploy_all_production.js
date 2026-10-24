@@ -100,7 +100,42 @@ async function deployAll() {
     req.end();
   });
 
-  console.log('All files uploaded to production successfully!');
+  // 3. Upload images/abstract_1.svg ... abstract_4.svg to /home/raccxuxv/public_html/images
+  const imageFiles = ['abstract_1.svg', 'abstract_2.svg', 'abstract_3.svg', 'abstract_4.svg'];
+  for (const img of imageFiles) {
+    console.log(`Uploading images/${img} to public_html/images...`);
+    const imgBuf = fs.readFileSync(path.join(workDir, 'public', 'images', img));
+    const bImg = '----WebKitFormBoundary' + Math.random().toString(36).substring(2);
+    let hImg = '--' + bImg + '\r\n';
+    hImg += `Content-Disposition: form-data; name="file-1"; filename="${img}"\r\n`;
+    hImg += 'Content-Type: image/svg+xml\r\n\r\n';
+    const fImg = '\r\n--' + bImg + '--\r\n';
+    const pImg = Buffer.concat([Buffer.from(hImg, 'utf8'), imgBuf, Buffer.from(fImg, 'utf8')]);
+
+    const imgUrl = 'https://premium252.web-hosting.com:2083' + secToken + '/execute/Fileman/upload_files?dir=' + encodeURIComponent('/home/raccxuxv/public_html/images') + '&overwrite=1';
+    await new Promise(resolve => {
+      const req = https.request(imgUrl, {
+        method: 'POST',
+        headers: { 'Cookie': cookie, 'Content-Type': 'multipart/form-data; boundary=' + bImg, 'Content-Length': pImg.length },
+        rejectUnauthorized: false
+      }, res => {
+        let d = ''; res.on('data', c => d += c);
+        res.on('end', () => {
+          try {
+            const parsed = JSON.parse(d);
+            console.log(`[Upload images/${img}] Status: ${parsed.status === 1 ? 'OK' : 'FAIL'}`);
+          } catch (_) {
+            console.log(`[Upload images/${img}] Raw: ${d.slice(0, 80)}`);
+          }
+          resolve();
+        });
+      });
+      req.write(pImg);
+      req.end();
+    });
+  }
+
+  console.log('All files & artworks deployed to production successfully!');
 }
 
 deployAll().catch(console.error);

@@ -99,6 +99,45 @@
       color: #0F172A !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
+  
+    /* Modern Warm Coral Card Design matching reference */
+    .story-card-modern, .forum-card-modern, .news-card-modern {
+      background: #F8F9FA !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(241, 245, 249, 0.95) !important;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .story-card-modern:hover, .forum-card-modern:hover, .news-card-modern:hover {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .category-filter-pill {
+      padding: 7px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .active-category-pill {
+      background: #F68D72 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 14px rgba(246, 141, 114, 0.35) !important;
+    }
+    .inactive-category-pill {
+      background: #F3F4F6 !important;
+      color: #374151 !important;
+    }
+    .inactive-category-pill:hover {
+      background: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
   </style>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
   <script src="/js/notifications.js"></script>
@@ -1123,75 +1162,62 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function renderArticleCard(item) {
-      const isBookmarked = bookmarks.includes(item.id);
-      const catEmoji = item.catEmoji || '📰';
-      const catLabel = item.catLabel || 'News';
+    function renderArticleCard(item, idx = 0) {
       const readTime = item.readTime || '3 min read';
       const time = item.time || 'Live';
-      const image = item.image || '/raccoon-logo.png';
+      const image = item.image || '/images/abstract_1.svg';
+      const cleanSnippet = (item.desc || 'Latest developments from Reuters and global tech feeds.').slice(0, 110);
+
+      const visualBadges = [
+        { badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-newspaper' },
+        { badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-globe' },
+        { badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-bolt' },
+        { badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-shield-alt' }
+      ];
+      const badge = visualBadges[idx % visualBadges.length];
 
       return `
-        <article class="rounded-3xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-md transition p-5 sm:p-6 space-y-4 group shadow-xl shadow-slate-900/5">
-          <!-- Card Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${item.catColor || 'text-slate-700 bg-slate-100 border-slate-200'}">
-              <span>${catEmoji}</span>
-              <span>${escapeHtml(catLabel)}</span>
-            </span>
-            <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-              <span class="bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200 text-slate-600">${time}</span>
-              <span>⏱️ ${readTime}</span>
+        <article onclick="openNewsReader('${item.id}')" class="news-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
+          <div class="flex items-start justify-between gap-3.5">
+            <!-- Left Column: Details -->
+            <div class="flex-1 min-w-0 pr-1">
+              <!-- Metadata: Time & Duration -->
+              <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
+                <span>${time}</span>
+                <span class="text-slate-300">•</span>
+                <span>${readTime}</span>
+              </div>
+
+              <!-- Bold Headline -->
+              <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-slate-700 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
+                ${escapeHtml(item.title)}
+              </h3>
+
+              <!-- Excerpt -->
+              <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                ${escapeHtml(cleanSnippet)}
+              </p>
+
+              <!-- Pastel Tag Chips Row -->
+              <div class="flex items-center flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
+                  ${escapeHtml(item.catLabel || 'News')}
+                </span>
+                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
+                  ${item.source || 'Reuters'}
+                </span>
+                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#F0F4FE] text-[#4A6FDC]">
+                  Verified Feed
+                </span>
+              </div>
             </div>
-          </div>
 
-          <!-- Headline & Description -->
-          <div class="space-y-1.5">
-            <h2
-              onclick="openNewsReader('${item.id}')"
-              class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug cursor-pointer"
-            >
-              ${escapeHtml(item.title)}
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2">
-              ${escapeHtml(item.desc)}
-            </p>
-          </div>
-
-          <!-- Cover Image -->
-          ${image ? `
-            <div onclick="openNewsReader('${item.id}')" class="rounded-2xl overflow-hidden aspect-video border border-slate-100 bg-slate-50 cursor-pointer">
-              <img src="${image}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-102 transition duration-300" loading="lazy" onerror="this.src='/raccoon-logo.png';" />
-            </div>
-          ` : ''}
-
-          <!-- Bottom Action Toolbar (Bubble White Pill Style) -->
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
-            <button
-              onclick="openNewsReader('${item.id}')"
-              class="rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs px-4 py-2 transition flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
-            >
-              <i data-lucide="book-open" class="h-3.5 w-3.5 text-white"></i>
-              <span>Read Full Article</span>
-            </button>
-
-            <div class="flex items-center gap-2">
-              <button
-                onclick="toggleBookmark('${item.id}', event)"
-                class="p-2 rounded-full border border-slate-200/80 transition cursor-pointer shadow-2xs ${isBookmarked ? 'bg-slate-900 text-white border-slate-900' : 'bg-white hover:bg-slate-50 text-slate-700'}"
-                title="${isBookmarked ? 'Saved to bookmarks' : 'Save bookmark'}"
-              >
-                <i data-lucide="${isBookmarked ? 'bookmark-check' : 'bookmark'}" class="h-3.5 w-3.5 ${isBookmarked ? 'text-white' : 'text-slate-400'}"></i>
-              </button>
-
-              <button
-                onclick="shareArticle('${escapeJsString(item.title)}', event)"
-                class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition flex items-center gap-1 text-[11px] cursor-pointer shadow-2xs"
-                title="Share article"
-              >
-                <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-400"></i>
-                <span>Share</span>
-              </button>
+            <!-- Right Column: Visual Thumbnail with floating badge -->
+            <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
+              <img src="${image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="News visual" onerror="this.src='/images/abstract_1.svg'" />
+              <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${badge.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
+                <i class="${badge.badgeIcon}"></i>
+              </div>
             </div>
           </div>
         </article>
@@ -1355,6 +1381,42 @@
       }, { passive: true });
     })();
   </script>
+
+
+  <!-- Fixed Modern Bottom Navigation Bar (Matches Reference Image) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-3.5 px-6 flex items-center justify-around select-none">
+    <!-- Inbox Tray -->
+    <a href="/inbox" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Inbox">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </a>
+
+    <!-- Pencil / Compose -->
+    <a href="/inbox" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Compose">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </a>
+
+    <!-- Community / Forum -->
+    <a href="/forum" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Community">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </a>
+
+    <!-- News (Active Coral) -->
+    <a href="/news" class="flex flex-col items-center gap-1 cursor-pointer group" title="News Feed">
+      <div class="w-6 h-6 flex items-center justify-center text-[#F68D72]">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-[#F68D72]"></span>
+    </a>
+  </nav>
 
 </body>
 </html>

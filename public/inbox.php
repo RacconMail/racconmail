@@ -168,6 +168,51 @@ try {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
+    
+    /* New Warm Modern Card Design matching reference */
+    .msg-card-active {
+      background: #FFFFFF !important;
+      border-radius: 24px !important;
+      border: 2px solid #F68D72 !important;
+      box-shadow: 0 10px 25px -4px rgba(246, 141, 114, 0.25), 0 4px 10px -2px rgba(0, 0, 0, 0.04) !important;
+    }
+    .msg-card-inactive {
+      background: #F8F9FA !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(241, 245, 249, 0.95) !important;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .msg-card-inactive:hover {
+      background: #FFFFFF !important;
+      border-color: #E2E8F0 !important;
+      box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .category-filter-pill {
+      padding: 7px 15px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .active-category-pill {
+      background: #F68D72 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 14px rgba(246, 141, 114, 0.35) !important;
+    }
+    .inactive-category-pill {
+      background: #F3F4F6 !important;
+      color: #374151 !important;
+    }
+    .inactive-category-pill:hover {
+      background: #E5E7EB !important;
+      color: #111827 !important;
+    }
+
     /* Active Message Card Elevation & Modern Turquoise Reading Glow */
     .msg-card-active {
       background: #FFFFFF !important;
@@ -726,62 +771,60 @@ try {
     <!-- ========================================================================= -->
     <!-- COLUMN 2: MIDDLE INBOX LIST PANEL (~360px)                                -->
     <!-- ========================================================================= -->
-    <section id="col-inbox" class="w-full md:w-[350px] lg:w-[380px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
+    <section id="col-inbox" class="w-full md:w-[370px] lg:w-[410px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
       
-      <!-- Middle Header: Folder Title + Badge + Subtitle + Action Buttons -->
-      <div class="p-5 pb-3 shrink-0">
-        <div class="flex items-center justify-between mb-1">
+      <!-- Top Header matching reference: Large Bold Title + Funnel Filter + User Avatar -->
+      <div class="px-5 pt-5 pb-3 shrink-0">
+        <div class="flex items-center justify-between mb-3.5">
           <div class="flex items-center gap-2.5">
-            <h1 id="current-folder-display-title" class="text-2xl font-bold text-slate-900 tracking-tight">Inbox</h1>
-            <span id="coral-inbox-badge" class="bg-slate-100 text-slate-700 border border-slate-200/90 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs"><?php echo $counts['inbox_unread']; ?></span>
+            <h1 id="current-folder-display-title" class="text-3xl font-black text-slate-900 tracking-tight">Inbox</h1>
+            <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs"><?php echo $counts['inbox_unread']; ?></span>
           </div>
 
-          <!-- Mark all read and refresh buttons -->
-          <div class="flex items-center gap-1 text-slate-400">
-            <button onclick="refreshMailbox()" class="p-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer" title="Refresh">
-              <i data-lucide="rotate-cw" class="h-4 w-4"></i>
+          <!-- Top Right Controls: Funnel Filter + User Profile Picture -->
+          <div class="flex items-center gap-3">
+            <button onclick="toggleAppSwitcher()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Filter & Tools">
+              <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
             </button>
-            <button onclick="markAllAsReadAction()" class="p-1.5 rounded-xl hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer" title="Mark all as read">
-              <i data-lucide="check-check" class="h-4 w-4"></i>
+            <button onclick="toggleUserDropdown(event)" class="relative cursor-pointer" title="User Profile">
+              <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="w-9 h-9 rounded-xl object-cover ring-2 ring-slate-100 shadow-xs" alt="User Avatar" />
             </button>
           </div>
         </div>
 
-        <p class="text-xs text-slate-400 leading-normal mb-3 font-normal">
-          Maximizing Efficiency, and Achieving Email Zen.
-        </p>
-
-        <!-- Quick Filter Tabs: All, Unread, Starred -->
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-1.5">
-            <button onclick="setListFilter('all')" id="filter-btn-all" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer transition">All</button>
-            <button onclick="setListFilter('unread')" id="filter-btn-unread" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition">Unread</button>
-            <button onclick="setListFilter('starred')" id="filter-btn-starred" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition">Starred</button>
-          </div>
-          <!-- Unified Inbox Status Indicator -->
-          <div id="unified-status-badge" class="hidden items-center gap-1 text-[10px] font-bold text-cyan-600 bg-cyan-50 border border-cyan-200/80 px-2 py-0.5 rounded-full">
-            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
-            <span>Unified (3)</span>
-          </div>
+        <!-- Search Bar: Full width rounded-2xl bg-[#F3F4F6] with right search magnifying glass -->
+        <div class="relative w-full mb-3.5">
+          <input
+            id="global-search"
+            type="text"
+            placeholder="Search"
+            oninput="handleSearch(this.value)"
+            class="w-full bg-[#F3F4F6] hover:bg-slate-100 focus:bg-white rounded-2xl pl-4 pr-11 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 border border-transparent focus:border-slate-300 transition outline-none font-medium shadow-2xs"
+          />
+          <button type="button" onclick="document.getElementById('global-search').focus()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+            <i class="fas fa-search text-sm"></i>
+          </button>
         </div>
 
-        <!-- Smart Categories Tabs: Primary, Promotions, Social, Updates -->
-        <div class="grid grid-cols-4 gap-1 p-1 bg-slate-100/80 rounded-xl mb-2.5 select-none text-[11px] font-medium text-slate-600">
-          <button onclick="setSmartCategory('primary')" id="smart-tab-primary" class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white text-slate-900 font-bold shadow-2xs transition cursor-pointer">
-            <i data-lucide="inbox" class="h-3.5 w-3.5 text-cyan-500"></i>
-            <span class="truncate">Primary</span>
+        <!-- Category Filter Chips Row: All, Primary, Updates, Promotions, Starred, Sent -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 select-none">
+          <button onclick="switchCategoryFilter('All')" id="pill-filter-all" class="category-filter-pill active-category-pill">
+            All
           </button>
-          <button onclick="setSmartCategory('promotions')" id="smart-tab-promotions" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
-            <i data-lucide="tag" class="h-3.5 w-3.5 text-amber-500"></i>
-            <span class="truncate">Promos</span>
+          <button onclick="switchCategoryFilter('Primary')" id="pill-filter-primary" class="category-filter-pill inactive-category-pill">
+            Primary
           </button>
-          <button onclick="setSmartCategory('social')" id="smart-tab-social" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
-            <i data-lucide="users" class="h-3.5 w-3.5 text-purple-500"></i>
-            <span class="truncate">Social</span>
+          <button onclick="switchCategoryFilter('Updates')" id="pill-filter-updates" class="category-filter-pill inactive-category-pill">
+            Updates
           </button>
-          <button onclick="setSmartCategory('updates')" id="smart-tab-updates" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
-            <i data-lucide="bell" class="h-3.5 w-3.5 text-emerald-500"></i>
-            <span class="truncate">Updates</span>
+          <button onclick="switchCategoryFilter('Promotions')" id="pill-filter-promotions" class="category-filter-pill inactive-category-pill">
+            Promotions
+          </button>
+          <button onclick="switchCategoryFilter('Starred')" id="pill-filter-starred" class="category-filter-pill inactive-category-pill">
+            Starred
+          </button>
+          <button onclick="switchCategoryFilter('Sent')" id="pill-filter-sent" class="category-filter-pill inactive-category-pill">
+            Sent
           </button>
         </div>
       </div>
@@ -1436,9 +1479,9 @@ try {
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         list = list.filter(m => 
-          m.senderName.toLowerCase().includes(q) ||
-          m.subject.toLowerCase().includes(q) ||
-          m.sender.toLowerCase().includes(q)
+          (m.senderName || '').toLowerCase().includes(q) ||
+          (m.subject || '').toLowerCase().includes(q) ||
+          (m.sender || '').toLowerCase().includes(q)
         );
       }
 
@@ -1448,53 +1491,105 @@ try {
 
       if (list.length === 0) {
         container.innerHTML = `
-          <div class="p-8 text-center text-slate-400 select-none">
-            <i data-lucide="inbox" class="h-10 w-10 mx-auto mb-2 opacity-50"></i>
-            <p class="font-bold text-sm text-slate-600">No messages in ${currentFolder}</p>
-            <p class="text-xs text-slate-400 mt-1">Achieving Email Zen.</p>
+          <div class="p-10 text-center text-slate-400 select-none">
+            <div class="w-16 h-16 rounded-3xl bg-[#F8F9FA] flex items-center justify-center mx-auto mb-3 text-slate-300">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+            </div>
+            <p class="font-bold text-sm text-slate-700">No messages in ${currentFolder}</p>
+            <p class="text-xs text-slate-400 mt-1">Your inbox is clear and up to date.</p>
           </div>
         `;
-        lucide.createIcons();
         renderEmptyConversation();
         return;
       }
+
+      const visualArtworks = [
+        { img: '/images/abstract_1.svg', badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-gem' },
+        { img: '/images/abstract_2.svg', badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-star' },
+        { img: '/images/abstract_3.svg', badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-sync-alt' },
+        { img: '/images/abstract_4.svg', badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-bolt' }
+      ];
 
       container.innerHTML = list.map((msg, idx) => {
         const isActive = idx === currentSelectedThreadIndex;
         const isRead = !!msg.isRead;
         const rawSnippet = (msg.thread && msg.thread.length > 0 ? (msg.thread[msg.thread.length - 1]?.body || '') : (msg.preview || ''));
-        const cleanSnippet = rawSnippet.replace(/<[^>]+>/g, '').slice(0, 75).trim() + (rawSnippet.length > 75 ? '...' : '');
+        const cleanSnippet = rawSnippet.replace(/<[^>]+>/g, '').slice(0, 95).trim() + (rawSnippet.length > 95 ? '...' : '');
+        const art = visualArtworks[idx % visualArtworks.length];
+        const readMinutes = Math.max(1, Math.ceil((cleanSnippet.length + (msg.subject || '').length) / 25));
 
         return `
-          <div onclick="selectThreadItem(${idx})" id="thread-item-${idx}" class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-3.5 transition cursor-pointer">
-            <div class="flex items-start gap-3">
-              <img src="${msg.avatar}" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-100" />
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between mb-0.5">
-                  <div class="flex items-center gap-1.5 truncate min-w-0">
-                    ${isRead ? '<span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.95)] ring-2 ring-cyan-400/20 shrink-0 inline-block mr-0.5" title="Read message"></span>' : ''}
-                    <span class="${isRead ? 'font-normal text-xs text-slate-600' : 'font-black text-sm text-black tracking-tight'} truncate">${msg.senderName}</span>
-                  </div>
-                  <span class="text-[11px] ${isRead ? 'font-normal text-slate-400' : 'font-bold text-slate-900'} shrink-0 font-mono">${msg.time}</span>
+          <div onclick="selectThreadItem(${idx})" id="thread-item-${idx}" class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group">
+            <div class="flex items-start justify-between gap-3.5">
+              <!-- Left Column: Content -->
+              <div class="flex-1 min-w-0 pr-1">
+                <!-- Metadata Row: Date & Reading indicator -->
+                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
+                  <span>${msg.time || 'Today, 08:15 PM'}</span>
+                  <span class="text-slate-300">•</span>
+                  <span>${readMinutes} min read</span>
                 </div>
-                <p class="${isRead ? 'text-xs font-normal text-slate-500' : 'text-xs sm:text-sm font-black text-black leading-snug'} truncate mb-0.5">${msg.subject}</p>
-                <p class="${isRead ? 'text-[11px] font-normal text-slate-400' : 'text-xs font-bold text-slate-800'} line-clamp-1 truncate">${cleanSnippet}</p>
+
+                <!-- Bold Title -->
+                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 leading-snug tracking-tight mb-1.5 line-clamp-2">
+                  ${msg.subject || '(no subject)'}
+                </h3>
+
+                <!-- Body / Snippet Text -->
+                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                  ${cleanSnippet || 'Dive into the email thread to review communication and attachments.'}
+                </p>
+
+                <!-- Tags / Category Chips Row -->
+                <div class="flex items-center flex-wrap gap-1.5">
+                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
+                    ${msg.senderName || 'Raccon Mail'}
+                  </span>
+                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
+                    ${currentFolder}
+                  </span>
+                  ${msg.isStarred ? '<span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFF4ED] text-[#D96B43] flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> Starred</span>' : ''}
+                </div>
               </div>
-              <div class="flex items-center gap-0.5 shrink-0">
-                <button onclick="event.stopPropagation(); deleteMessageById('${msg.id}')" title="Delete" class="p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
-                  <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
-                </button>
-                <button onclick="event.stopPropagation(); toggleStarItem('${msg.id}')" title="Star" class="p-1 text-slate-300 hover:text-amber-500 transition cursor-pointer">
-                  <i data-lucide="star" class="h-3.5 w-3.5 ${msg.isStarred ? 'text-amber-500 fill-amber-500' : ''}"></i>
-                </button>
+
+              <!-- Right Column: Visual Thumbnail with floating badge -->
+              <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
+                <img src="${art.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Artwork visual" />
+                <!-- Floating Colorful Corner Icon Badge -->
+                <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${art.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
+                  <i class="${art.badgeIcon}"></i>
+                </div>
               </div>
             </div>
           </div>
         `;
       }).join('');
 
-      lucide.createIcons();
       renderConversationThread(list[currentSelectedThreadIndex] || list[0]);
+    }
+
+    function switchCategoryFilter(catName) {
+      document.querySelectorAll('.category-filter-pill').forEach(btn => {
+        btn.classList.remove('active-category-pill');
+        btn.classList.add('inactive-category-pill');
+      });
+      const activeBtn = document.getElementById('pill-filter-' + catName.toLowerCase());
+      if (activeBtn) {
+        activeBtn.classList.remove('inactive-category-pill');
+        activeBtn.classList.add('active-category-pill');
+      }
+
+      if (catName === 'Starred') {
+        switchFolder('Starred');
+      } else if (catName === 'Sent') {
+        switchFolder('Sent');
+      } else if (catName === 'All') {
+        switchFolder('Inbox');
+        setListFilter('all');
+      } else {
+        switchFolder('Inbox');
+        setListFilter('all');
+      }
     }
 
     // Select Thread Item (Instant Zero-Lag Class Swap)
@@ -2360,6 +2455,42 @@ try {
   <!-- FLOATING MOBILE COMPOSE BUTTON (PENCIL IN BOTTOM RIGHT CORNER)            -->
   <!-- ========================================================================= -->
   <!-- ========================================================================= -->
+  
+  <!-- Fixed Modern Bottom Navigation Bar (Matches Reference Image) -->
+  <nav id="mobile-app-bottom-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-3.5 px-6 flex items-center justify-around select-none">
+    <!-- Inbox Tray (Active Coral) -->
+    <button onclick="switchFolder('Inbox'); backToMobileInbox();" class="flex flex-col items-center gap-1 cursor-pointer group" title="Inbox">
+      <div class="w-6 h-6 flex items-center justify-center text-[#F68D72]">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-[#F68D72]"></span>
+    </button>
+
+    <!-- Pencil / Compose -->
+    <button onclick="openComposeCard()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Compose Email">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </button>
+
+    <!-- Community / Forum & Stories -->
+    <a href="/forum" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Community Forum">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </a>
+
+    <!-- Notifications Bell -->
+    <button onclick="if(window.RacconNotifications) RacconNotifications.requestPermission(); showToast('Notifications are active! 🔔');" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </div>
+      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+    </button>
+  </nav>
+
   <!-- MODERN COLORED MOBILE FLOATING DOCK (CENTERED WITH SEARCH & PENCIL ICONS)  -->
   <!-- ========================================================================= -->
   <div
