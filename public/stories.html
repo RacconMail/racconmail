@@ -31,6 +31,24 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#FFFFFF" />
+  <!-- Early Theme & Native App Initializer (Strict Clean Modern White) -->
+  <script>
+    (function() {
+      localStorage.setItem('raccon_theme', 'light');
+      document.documentElement.className = 'theme-light';
+      document.documentElement.classList.remove('dark', 'theme-dark');
+
+      // Native App Mode: Detect Desktop app or Android APK
+      if (window.location.search.includes('app=desktop') || 
+          window.location.search.includes('app=android') || 
+          window.location.search.includes('app=1') || 
+          navigator.userAgent.includes('SWVAndroid') || 
+          navigator.userAgent.includes('RacconMailDesktop') || 
+          navigator.userAgent.includes('Electron')) {
+        document.documentElement.classList.add('is-native-app');
+      }
+    })();
+  </script>
 
   <!-- Google Fonts Preconnect & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -714,11 +732,22 @@
              =================================================================== -->
         <div id="view-reader" class="hidden space-y-6">
           
-          <!-- Back to Library & Category Breadcrumb -->
-          <div class="flex items-center justify-between gap-4">
+          <!-- Back to Library, Menu Toggle & Category Breadcrumb -->
+          <div class="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
             <button onclick="setNavView('all')" class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-2xs hover:bg-slate-50 transition cursor-pointer">
               <i class="fas fa-arrow-left"></i>
               <span>Back to Library</span>
+            </button>
+
+            <!-- Hide / Show Menu Toggle Button (Prominent for Mobile & APK) -->
+            <button 
+              id="btn-toggle-reader-menu" 
+              onclick="toggleReaderMenu()" 
+              class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer"
+              title="Toggle reading menu (Text Size & Canvas)"
+            >
+              <i class="fas fa-sliders text-purple-500" id="toggle-menu-icon"></i>
+              <span id="toggle-menu-text">Hide Menu</span>
             </button>
 
             <div class="flex items-center gap-2">
@@ -747,11 +776,21 @@
             </div>
           </div>
 
-          <!-- Reader Layout: Left Sticky Controls & Right Story Canvas -->
+          <!-- Reader Layout: Left Controls & Right Story Canvas -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             
-            <!-- Left Sticky Reader Controls -->
-            <div class="md:col-span-3 space-y-3 sticky top-24">
+            <!-- Left Reader Controls Panel (Collapsible & Non-Sticky on Mobile) -->
+            <div id="reader-controls-panel" class="md:col-span-3 space-y-3 md:sticky md:top-24 transition-all duration-200">
+              <!-- Mobile Header with Hide Button -->
+              <div class="flex items-center justify-between pb-2 border-b border-slate-100 md:hidden bg-white p-2.5 rounded-xl border border-slate-200">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <i class="fas fa-sliders text-purple-500"></i>
+                  <span>Reading Options</span>
+                </span>
+                <button onclick="toggleReaderMenu(false)" class="p-1 px-2.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold flex items-center gap-1">
+                  <i class="fas fa-times"></i> Hide
+                </button>
+              </div>
               <!-- Font Size Controls -->
               <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between text-xs font-bold text-slate-700">
                 <span>Text Size</span>
@@ -792,8 +831,8 @@
               </div>
             </div>
 
-            <!-- Right Reading Canvas & Reviews -->
-            <div class="md:col-span-9 space-y-6">
+            <!-- Right Reading Canvas & Reviews (Expands to 12 cols when menu hidden) -->
+            <div id="reader-canvas-column" class="md:col-span-9 space-y-6 transition-all duration-200">
               
               <!-- Story Text Canvas -->
               <article id="reader-canvas-box" class="reader-theme-light rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6 transition">
@@ -1160,6 +1199,12 @@
       document.getElementById('view-reader')?.classList.add('hidden');
       document.getElementById('stories-hero')?.classList.remove('hidden');
 
+      // Restore main sidebar and column layouts
+      document.querySelector('main > div > aside')?.classList.remove('hidden');
+      document.querySelector('main > div > section')?.classList.remove('col-span-12');
+      document.querySelector('main > div > section')?.classList.add('lg:col-span-9');
+      document.getElementById('mobile-reader-toggle-pill')?.classList.add('hidden');
+
       document.getElementById('nav-btn-all')?.classList.add('nav-item-active');
       document.getElementById('nav-btn-wall')?.classList.remove('nav-item-active');
 
@@ -1173,6 +1218,12 @@
       document.getElementById('view-wall')?.classList.remove('hidden');
       document.getElementById('view-reader')?.classList.add('hidden');
       document.getElementById('stories-hero')?.classList.remove('hidden');
+
+      // Restore main sidebar and column layouts
+      document.querySelector('main > div > aside')?.classList.remove('hidden');
+      document.querySelector('main > div > section')?.classList.remove('col-span-12');
+      document.querySelector('main > div > section')?.classList.add('lg:col-span-9');
+      document.getElementById('mobile-reader-toggle-pill')?.classList.add('hidden');
 
       document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
       document.getElementById('nav-btn-wall')?.classList.add('nav-item-active');
@@ -1467,8 +1518,42 @@
     }
 
     // =========================================================================
-    // VIEW 3: DEDICATED STORY READER (#read/:id)
+    // VIEW 3: DEDICATED STORY READER (#read/:id) & MENU HIDE/SHOW LOGIC
     // =========================================================================
+    let isReaderMenuVisible = true;
+
+    function toggleReaderMenu(forceState = null) {
+      const panel = document.getElementById('reader-controls-panel');
+      const canvasCol = document.getElementById('reader-canvas-column');
+      const btnText = document.getElementById('toggle-menu-text');
+      const btnIcon = document.getElementById('toggle-menu-icon');
+      const mobileText = document.getElementById('mobile-toggle-text');
+
+      if (forceState !== null) {
+        isReaderMenuVisible = forceState;
+      } else {
+        isReaderMenuVisible = !isReaderMenuVisible;
+      }
+
+      if (isReaderMenuVisible) {
+        panel?.classList.remove('hidden');
+        canvasCol?.classList.remove('md:col-span-12');
+        canvasCol?.classList.add('md:col-span-9');
+        if (btnText) btnText.innerText = 'Hide Menu';
+        if (btnIcon) btnIcon.className = 'fas fa-eye-slash text-purple-500';
+        if (mobileText) mobileText.innerText = 'Hide Menu';
+      } else {
+        panel?.classList.add('hidden');
+        canvasCol?.classList.remove('md:col-span-9');
+        canvasCol?.classList.add('md:col-span-12');
+        if (btnText) btnText.innerText = 'Show Menu';
+        if (btnIcon) btnIcon.className = 'fas fa-sliders text-purple-500';
+        if (mobileText) mobileText.innerText = 'Show Menu';
+      }
+
+      localStorage.setItem('raccon_reader_menu_hidden', isReaderMenuVisible ? '0' : '1');
+    }
+
     async function openStoryReader(storyId) {
       currentNavView = 'reader';
       window.location.hash = `read/${storyId}`;
@@ -1477,6 +1562,35 @@
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.remove('hidden');
       document.getElementById('stories-hero')?.classList.add('hidden');
+
+      // Detect mobile view or Android APK / Native mode
+      const isMobileOrApk = (window.innerWidth < 1024) || 
+                            document.documentElement.classList.contains('is-native-app') || 
+                            window.location.search.includes('app=android') || 
+                            window.location.search.includes('app=1') ||
+                            navigator.userAgent.includes('SWVAndroid') ||
+                            navigator.userAgent.includes('Android');
+
+      // On mobile view / Android APK: hide the main 22-category sidebar for full focus
+      if (isMobileOrApk) {
+        document.querySelector('main > div > aside')?.classList.add('hidden');
+        document.querySelector('main > div > section')?.classList.remove('lg:col-span-9');
+        document.querySelector('main > div > section')?.classList.add('col-span-12');
+
+        // Show floating quick-access button on mobile/APK
+        document.getElementById('mobile-reader-toggle-pill')?.classList.remove('hidden');
+
+        // On mobile view and Android APK: auto-hide the menu so it never overlaps the canvas
+        toggleReaderMenu(false);
+      } else {
+        document.getElementById('mobile-reader-toggle-pill')?.classList.add('hidden');
+        const pref = localStorage.getItem('raccon_reader_menu_hidden');
+        if (pref === '1') {
+          toggleReaderMenu(false);
+        } else {
+          toggleReaderMenu(true);
+        }
+      }
 
       const bodyContainer = document.getElementById('reader-story-body');
       if (bodyContainer) {
@@ -1875,6 +1989,19 @@
       }, { passive: true });
     })();
   </script>
+
+
+  <!-- Floating Mobile & Android APK Quick Reading Settings Pill -->
+  <div id="mobile-reader-toggle-pill" class="hidden md:hidden fixed bottom-6 right-4 z-40 transition">
+    <button 
+      onclick="toggleReaderMenu()" 
+      class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/95 hover:bg-black text-white text-xs font-bold shadow-2xl backdrop-blur-md border border-white/20 active:scale-95 transition cursor-pointer"
+      title="Toggle reading settings"
+    >
+      <i class="fas fa-sliders text-purple-400"></i>
+      <span id="mobile-toggle-text">Menu</span>
+    </button>
+  </div>
 
 </body>
 </html>
