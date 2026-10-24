@@ -1,4 +1,4 @@
-# 🦝 RacconMail
+# 🦝 Raccon Mail
 
 > **Clever, Masked & Nocturnal Webmail Platform**  
 > *Official Open Source Codebase for [racconmail.eu](https://racconmail.eu)*
@@ -15,7 +15,7 @@
 
 ## 📖 Global Overview
 
-**RacconMail** is an independent, transparent, and audited open-source communication platform engineered for privacy-conscious individuals, developers, and night owls worldwide. Built from the ground up to eliminate invasive surveillance, behavioral ad profiling, and telemetry scripts, RacconMail delivers an ultra-fast webmail client, an interactive developer forum, an international news wire, native Android APK, and Windows desktop application.
+**Raccon Mail** is an independent, transparent, and audited open-source communication platform engineered for privacy-conscious individuals, developers, and night owls worldwide. Built from the ground up to eliminate invasive surveillance, behavioral ad profiling, and telemetry scripts, Raccon Mail delivers an ultra-fast webmail client, an interactive developer forum, an international news wire, native Android APK, and Windows desktop application.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -34,7 +34,7 @@
 
 ## 🛡️ Enterprise Domain Authentication & Security (100% Configured)
 
-RacconMail enforces strict domain authentication across all outbound and inbound email pipelines to eliminate spoofing, guarantee high inbox placement, and present verified branding:
+Raccon Mail enforces strict domain authentication across all outbound and inbound email pipelines to eliminate spoofing, guarantee high inbox placement, and present verified branding:
 
 1. **SPF (Sender Policy Framework)**:
    - Configured via DNS TXT with authorized IP addresses and secure hosting relay:
@@ -45,7 +45,7 @@ RacconMail enforces strict domain authentication across all outbound and inbound
    - Strict enterprise quarantine policy actively protecting user trust:
      `v=DMARC1; p=quarantine; sp=quarantine; pct=100; rua=mailto:dmarc-reports@racconmail.eu; ruf=mailto:dmarc-forensics@racconmail.eu; fo=1; aspf=r; adkim=r`
 4. **BIMI (Brand Indicators for Message Identification)**:
-   - Official SVG indicator published at `default._bimi.racconmail.eu` displaying the verified RacconMail avatar directly in Apple Mail, Gmail, and Yahoo inboxes:
+   - Official SVG indicator published at `default._bimi.racconmail.eu` displaying the verified Raccon Mail avatar directly in Apple Mail, Gmail, and Yahoo inboxes:
      `v=BIMI1; l=https://racconmail.eu/raccoon-logo.svg; a=;`
 5. **Authenticode Code Signing**:
    - Desktop executable releases (`RacconMail-Setup.exe`) are digitally signed with RFC 3161 SHA-256 DigiCert timestamping, eliminating untrusted publisher prompts.
@@ -65,7 +65,7 @@ RacconMail enforces strict domain authentication across all outbound and inbound
 
 ## 🌍 Internationalization (i18n) & Global SEO Architecture
 
-RacconMail is architected for top-tier indexing across all global regions and search engines:
+Raccon Mail is architected for top-tier indexing across all global regions and search engines:
 
 | Region | Primary Search Engines | Target Language / Hreflang | Regional Gateway |
 | :--- | :--- | :---: | :--- |
@@ -87,7 +87,7 @@ RacconMail is architected for top-tier indexing across all global regions and se
 
 ## 🔒 Global Privacy & Legal Compliance
 
-RacconMail guarantees strict data sovereignty and zero commercial surveillance:
+Raccon Mail guarantees strict data sovereignty and zero commercial surveillance:
 
 - **European Union**: Regulation (EU) 2016/679 (GDPR) Articles 15–20 compliance. Complete right of access, rectification, and 1-click permanent erasure.
 - **United States**: California Consumer Privacy Act (CCPA) and CPRA compliance. Zero sale or sharing of user information; no tracking cookies.
@@ -168,4 +168,4 @@ Please report any security findings to `security@racconmail.eu` in accordance wi
 
 ## 📄 License
 
-RacconMail is open-source software licensed under the [MIT License](LICENSE).
+Raccon Mail is open-source software licensed under the [MIT License](LICENSE).

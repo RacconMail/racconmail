@@ -58,5 +58,17 @@ Allow: /
 User-agent: PetalBot
 Allow: /
 
+User-agent: 360Spider
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 # Canonical XML Sitemap & IndexNow Directives
 Sitemap: https://racconmail.eu/sitemap.xml

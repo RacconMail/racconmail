@@ -128,10 +128,10 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="RacconMail" />
+  <meta name="apple-mobile-web-app-title" content="Raccon Mail" />
   <meta name="theme-color" content="#FFFFFF" />
   <meta name="google" content="notranslate" />
-  <title>RacconMail &mdash; All Emails</title>
+  <title>Raccon Mail &mdash; All Emails</title>
   <meta name="description" content="Clever, minimal, encrypted email inbox with email zen precision." />
 
   <!-- Favicon Suite -->
@@ -349,14 +349,14 @@ try {
     <!-- Left Section: App Switcher + Logo + Brand + Sidebar Toggle -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
       <!-- App Switcher (Proton Waffle 9-dots) -->
-      <button onclick="toggleAppSwitcher()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="RacconMail Apps">
+      <button onclick="toggleAppSwitcher()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Raccon Mail Apps">
         <i data-lucide="layout-grid" class="h-4 w-4"></i>
       </button>
 
       <!-- Brand Mascot Logo & Name: Clicking refreshes the mail without logging out -->
-      <a href="/inbox" onclick="window.location.reload(); return false;" class="flex items-center gap-2 group cursor-pointer mr-1" title="RacconMail (Click to refresh)">
-        <img src="/raccoon-logo.png" alt="RacconMail" class="h-7 w-7 object-contain group-hover:scale-105 transition" />
-        <span class="font-bold text-base tracking-tight hidden sm:inline" style="color: #64748B !important;">RacconMail</span>
+      <a href="/inbox" onclick="window.location.reload(); return false;" class="flex items-center gap-2 group cursor-pointer mr-1" title="Raccon Mail (Click to refresh)">
+        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-7 w-7 object-contain group-hover:scale-105 transition" />
+        <span class="font-bold text-base tracking-tight hidden sm:inline" style="color: #64748B !important;">Raccon Mail</span>
       </a>
 
       <!-- ProtonMail Sidebar Toggle Button -->
@@ -437,7 +437,7 @@ try {
           </button>
           <button onclick="window.location.href='/forum'" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
             <i data-lucide="message-square" class="h-4 w-4 text-slate-400"></i>
-            <span>RacconMail Community</span>
+            <span>Raccon Mail Community</span>
           </button>
           <button onclick="logoutNow()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition cursor-pointer text-left font-medium">
             <i data-lucide="log-out" class="h-4 w-4 text-rose-500"></i>
@@ -721,7 +721,7 @@ try {
       <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
           <i data-lucide="settings" class="h-5 w-5 text-slate-500"></i>
-          <span>RacconMail Settings</span>
+          <span>Raccon Mail Settings</span>
         </h3>
         <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="h-4 w-4"></i></button>
       </div>
@@ -769,10 +769,10 @@ try {
     </div>
   </div>
 
-  <!-- 3. App Switcher Popover (RacconMail Ecosystem - Modern Gray Badges) -->
+  <!-- 3. App Switcher Popover (Raccon Mail Ecosystem - Modern Gray Badges) -->
   <div id="app-switcher-modal" class="hidden fixed top-16 left-4 bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-4 z-50 w-80">
     <div class="flex items-center justify-between mb-3 px-1">
-      <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">RacconMail Ecosystem</p>
+      <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Raccon Mail Ecosystem</p>
       <span class="text-[10px] font-mono font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full border border-slate-200/80">v2.0</span>
     </div>
     <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
@@ -2073,7 +2073,7 @@ try {
     <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none">
       <div class="flex items-center gap-2">
         <span class="font-bold text-xs text-slate-900 tracking-tight">New Email</span>
-        <span class="text-[10px] text-slate-400 font-mono">RacconMail</span>
+        <span class="text-[10px] text-slate-400 font-mono">Raccon Mail</span>
       </div>
       <div class="flex items-center gap-1">
         <button onclick="minimizeComposeCard()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Minimize">
