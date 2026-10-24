@@ -2706,14 +2706,18 @@ try {
             $location = 'Bucharest, Romania';
         }
 
+        if (!$title && $content) {
+            $title = mb_substr(strip_tags($content), 0, 50) . (mb_strlen($content) > 50 ? '...' : '');
+        }
+
         if (!$title || !$content) {
             http_response_code(400);
-            echo json_encode(['error' => 'Please provide both a discussion title and message content.']);
+            echo json_encode(['error' => 'Please provide message content.']);
             exit;
         }
 
-        $validCats = ['tech', 'coding', 'webdesign', 'sharing', 'help', 'explaining'];
-        if (!in_array($category, $validCats)) $category = 'tech';
+        $validCats = ['general', 'announcements', 'security', 'tech', 'coding', 'webdesign', 'feedback', 'wall', 'sharing', 'help', 'explaining'];
+        if (!in_array($category, $validCats)) $category = 'general';
 
         $postId = 'post_' . uniqid();
         $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, location, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");

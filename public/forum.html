@@ -2,10 +2,10 @@
 <html lang="en" class="theme-light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raccon Forum &bull; Tech, Coding, Web Design &amp; Discussions</title>
-  <meta name="description" content="Raccon Nocturnal Forum — Exclusive developer, designer, and tech community for registered Raccon Mail members. Share coding tips, web design tricks, tech explanations, and get help." />
-  <meta name="keywords" content="raccon community, developer forum, tech discussions, web design tricks, coding tips, racconmail forum" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Raccon Forum &bull; Community Discussions &amp; Activity Wall</title>
+  <meta name="description" content="Raccon Forum — A clean, modern community forum and integrated activity wall for discussions, announcements, security, and developer updates." />
+  <meta name="keywords" content="raccon forum, flarum, developer community, encrypted email, discussions, activity wall, tech forum" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <link rel="canonical" href="https://racconmail.eu/forum" />
 
@@ -13,35 +13,30 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://racconmail.eu/forum" />
   <meta property="og:site_name" content="Raccon Mail" />
-  <meta property="og:title" content="Raccon Forum — Tech, Coding &amp; Web Design" />
-  <meta property="og:description" content="Exclusive developer, designer, and tech community. Share coding tips, web design tricks, and get nocturnal help." />
+  <meta property="og:title" content="Raccon Forum &bull; Community Discussions &amp; Activity Wall" />
+  <meta property="og:description" content="A clean, modern community forum and integrated activity wall for discussions, announcements, security, and developer updates." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://racconmail.eu/forum" />
-  <meta name="twitter:title" content="Raccon Forum — Tech, Coding &amp; Web Design" />
-  <meta name="twitter:description" content="Exclusive developer, designer, and tech community. Share coding tips and web design tricks." />
+  <meta name="twitter:title" content="Raccon Forum &bull; Community Discussions &amp; Activity Wall" />
+  <meta name="twitter:description" content="A clean, modern community forum and integrated activity wall for discussions, announcements, security, and developer updates." />
   <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
-  
-  <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+
+  <!-- Comprehensive Favicon Suite -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#0F172A" />
+  <meta name="theme-color" content="#FFFFFF" />
 
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
-  <script>
-    (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
-    })();
-  </script>
+  <!-- Google Fonts Preconnect & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -51,22 +46,19 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             display: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-            fun: ['"Fredoka"', 'sans-serif']
+            mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            obsidian: '#080c14',
-            surface: {
-              DEFAULT: '#0f172a',
-              card: '#111c33',
-              hover: '#172545',
-              border: 'rgba(255, 255, 255, 0.08)',
-              borderLight: 'rgba(255, 255, 255, 0.16)'
-            },
-            raccoon: {
-              slate: '#64748b'
+            flarum: {
+              bg: '#F2F4F7',
+              card: '#FFFFFF',
+              border: '#E2E8F0',
+              text: '#1E293B',
+              muted: '#64748B',
+              primary: '#0F172A',
+              accent: '#3B82F6'
             }
           }
         }
@@ -74,1129 +66,1610 @@
     }
   </script>
 
-  <!-- Lucide Icons & FontAwesome -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="/css/raccoon-mail.css" />
-
   <style>
+    /* Custom Flarum Precision Styles */
     html, body {
+      background-color: #F2F4F7;
+      color: #1E293B;
+      font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, sans-serif;
       min-height: 100%;
-      height: auto;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
     }
-    body {
-      background-color: #FFFFFF !important;
-      color: #0F172A !important;
-      transition: background-color 0.2s ease, color 0.2s ease;
+
+    * {
+      -webkit-tap-highlight-color: transparent;
     }
-    .glass-nav {
-      background: #FFFFFF !important;
-      border-bottom: 1px solid var(--border, #E2E8F0);
+
+    /* Tag Badge Colors (Flarum Iconic Tag Aesthetics) */
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      transition: all 0.15s ease;
+      cursor: pointer;
     }
-    .glass-card {
-      background: #FFFFFF !important;
-      border: 1px solid var(--border, #E2E8F0);
-      color: #0F172A !important;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    .tag-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      flex-shrink: 0;
     }
+
+    .tag-announcements { background-color: #FEE2E2; color: #DC2626; }
+    .tag-announcements .tag-badge-dot { background-color: #DC2626; }
+
+    .tag-security { background-color: #D1FAE5; color: #059669; }
+    .tag-security .tag-badge-dot { background-color: #059669; }
+
+    .tag-tech { background-color: #CCFBF1; color: #0D9488; }
+    .tag-tech .tag-badge-dot { background-color: #0D9488; }
+
+    .tag-coding { background-color: #DBEAFE; color: #2563EB; }
+    .tag-coding .tag-badge-dot { background-color: #2563EB; }
+
+    .tag-webdesign { background-color: #F3E8FF; color: #7C3AED; }
+    .tag-webdesign .tag-badge-dot { background-color: #7C3AED; }
+
+    .tag-feedback { background-color: #FEF3C7; color: #D97706; }
+    .tag-feedback .tag-badge-dot { background-color: #D97706; }
+
+    .tag-general { background-color: #F1F5F9; color: #475569; }
+    .tag-general .tag-badge-dot { background-color: #475569; }
+
+    .tag-wall { background-color: #E0E7FF; color: #4F46E5; }
+    .tag-wall .tag-badge-dot { background-color: #4F46E5; }
+
+    /* Flarum Discussion Row Card */
+    .flarum-discussion-item {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateZ(0);
+      will-change: transform, box-shadow;
+    }
+    .flarum-discussion-item:hover {
+      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08);
+      border-color: #CBD5E1;
+      transform: translateY(-1px);
+    }
+
+    /* Active Nav Item */
+    .nav-item-active {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
+    .nav-item-active i {
+      color: #FFFFFF !important;
+    }
+
+    /* Code blocks in posts */
     pre code {
       font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    /* Timeline Scrubber in Discussion Reader */
+    .scrubber-track {
+      width: 4px;
+      background: #E2E8F0;
+      border-radius: 9999px;
+      position: relative;
+    }
+    .scrubber-handle {
+      width: 14px;
+      height: 14px;
+      background: #0F172A;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 0 0 1px #0F172A;
+      border-radius: 9999px;
+      position: absolute;
+      left: -5px;
+      cursor: pointer;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* Floating slide-up composer drawer */
+    #composer-drawer {
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+    }
+    #composer-drawer.composer-hidden {
+      transform: translateY(110%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #composer-drawer.composer-minimized {
+      height: 48px !important;
+      overflow: hidden;
     }
   </style>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
 </head>
-<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white font-sans">
+<body class="min-h-screen flex flex-col bg-[#F2F4F7] text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
 
-  <!-- TOP NAVIGATION HEADER (Matching Inbox Bubble White Design) -->
-  <header class="w-full sticky top-0 z-40 bg-white border-b border-slate-200/80 shadow-xs" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
-      <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
-      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
-        <a href="/inbox" class="flex items-center gap-2 group shrink-0" title="Return to Raccon Mail Inbox">
-          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
-          <div class="leading-none shrink-0">
-            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-500 tracking-tight flex items-center gap-1.5" style="color: #64748b !important;">
-              <span>Raccon Forum</span>
-              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Members</span>
-            </span>
-            <span class="text-[10px] text-slate-400 hidden sm:inline">Tech &bull; Code &bull; Design Burrow</span>
-          </div>
+  <!-- =========================================================================
+       FLARUM HEADER NAVIGATION
+       ========================================================================= -->
+  <header class="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Shortcuts -->
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="/forum" class="flex items-center gap-2.5 font-display text-lg sm:text-xl font-extrabold text-slate-900 hover:opacity-90 transition" title="Raccon Forum Home">
+          <img src="/raccoon-logo.png" alt="Raccon Mascot" class="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-xs" />
+          <span class="tracking-tight font-extrabold text-slate-900">Raccon <span class="text-blue-600 font-bold">Forum</span></span>
+        </a>
+        <a href="/inbox" class="hidden sm:inline-flex items-center gap-1.5 ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Webmail Inbox">
+          <i class="fas fa-inbox text-[10px]"></i>
+          <span>Webmail</span>
         </a>
       </div>
 
-      <!-- Live Forum Search -->
-      <div class="flex-1 max-w-md mx-2 hidden md:block">
-        <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.3)]"></i>
-          <input
-            id="forum-search-input"
-            type="text"
-            oninput="handleForumSearch(this.value)"
-            placeholder="Search discussions, code snippets, tags..."
-            class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
-            style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
+      <!-- Flarum Global Search Bar -->
+      <div class="flex-1 max-w-xl mx-auto relative hidden md:block">
+        <div class="relative w-full">
+          <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input 
+            type="text" 
+            id="flarum-search-input" 
+            placeholder="Search all discussions, topics, and authors... (Ctrl + K)" 
+            class="w-full bg-slate-100/90 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-slate-300 rounded-full pl-10 pr-10 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
+            oninput="handleLiveSearch(this.value)"
           />
+          <button id="clear-search-btn" onclick="clearLiveSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+            <i class="fas fa-times-circle text-xs"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Action Navigation & Auth Status (Compact, No-Overlap Mobile Sizing) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="forum-auth-bar">
-        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Webmail</span>
-        </a>
-        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">News</span>
-        </a>
-        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Stories</span>
-        </a>
-        <a href="/forum" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-semibold transition items-center justify-center gap-1.5 shrink-0 shadow-xs" title="Raccon Forum">
-          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span>Forum</span>
-        </a>
-        <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
-          <!-- Populated by JS -->
+      <!-- Auth & User Actions -->
+      <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
+        <!-- Guest View (Default) -->
+        <div id="auth-guest-group" class="flex items-center gap-2">
+          <a href="/auth?tab=login"  class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
+            Sign In
+          </a>
+          <a href="/auth?tab=register"  class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <i class="fas fa-user-plus text-[11px]"></i>
+            <span>Sign Up</span>
+          </a>
         </div>
+
+        <!-- Authenticated User View (Dynamic) -->
+        <div id="auth-user-group" class="hidden items-center gap-3">
+          <div class="relative">
+            <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-2 p-1 pl-2 bg-slate-100 hover:bg-slate-200/80 rounded-full border border-slate-200 transition cursor-pointer">
+              <span id="user-display-name" class="text-xs font-bold text-slate-800 max-w-[110px] truncate">User</span>
+              <img id="user-display-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs" />
+            </button>
+            
+            <!-- User Dropdown Menu -->
+            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs">
+              <div class="px-4 py-2 border-b border-slate-100">
+                <p class="font-bold text-slate-900 truncate" id="dropdown-user-name">User Name</p>
+                <p class="text-[11px] text-slate-500 truncate" id="dropdown-user-email">user@racconmail.eu</p>
+              </div>
+              <a href="/inbox" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-medium">
+                <i class="fas fa-envelope text-slate-400 w-4"></i> Webmail Inbox
+              </a>
+              <button onclick="filterMyPosts()" class="w-full text-left flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-medium">
+                <i class="fas fa-comment-dots text-slate-400 w-4"></i> My Discussions
+              </button>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button onclick="logoutForum()" class="w-full text-left flex items-center gap-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-bold">
+                <i class="fas fa-sign-out-alt text-rose-400 w-4"></i> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
+
     </div>
   </header>
 
-  <!-- MAIN WRAPPER: 2-COLUMN MODERN COMMUNITY LAYOUT -->
-  <div class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-    <!-- LEFT / MAIN COLUMN (Feed & Forum) -->
-    <main class="lg:col-span-8 space-y-5">
-
-      <!-- WELCOME HERO BANNER -->
-      <div class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-2 flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
-              <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>NOCTURNAL DEVELOPER BURROW</span>
-            </div>
-            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Share Code, Web Design &amp; Tech Insights
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xl">
-              An exclusive nocturnal forum for registered Raccon Mail members. Post questions, code snippets, UI designs, and deep technical explanations with fellow owls.
-            </p>
-          </div>
-          <button
-            onclick="focusComposer()"
-            class="rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
-          >
-            <i data-lucide="plus" class="h-4 w-4"></i>
-            <span>Start Discussion</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- CATEGORY PILL FILTER BAR (Bubble Capsule Design) -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterForumCat('all')" data-cat="all" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
-          All Forum Posts
-        </button>
-        <button onclick="filterForumCat('tech')" data-cat="tech" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>💻</span><span>Tech &amp; AI</span>
-        </button>
-        <button onclick="filterForumCat('coding')" data-cat="coding" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>⚡</span><span>Coding</span>
-        </button>
-        <button onclick="filterForumCat('webdesign')" data-cat="webdesign" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🎨</span><span>Web Design</span>
-        </button>
-        <button onclick="filterForumCat('sharing')" data-cat="sharing" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🎁</span><span>Sharing</span>
-        </button>
-        <button onclick="filterForumCat('help')" data-cat="help" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>❓</span><span>Help</span>
-        </button>
-        <button onclick="filterForumCat('explaining')" data-cat="explaining" class="cat-filter-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>📖</span><span>Explaining</span>
-        </button>
-      </div>
-
-      <!-- INTERACTIVE POST COMPOSER (Members Only) -->
-      <div id="post-composer-card" class="rounded-3xl p-5 sm:p-6 border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5 space-y-4">
-        <div class="flex items-center gap-3">
-          <img id="composer-avatar" src="/raccoon-logo.png" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" />
-          <div class="flex-1">
-            <input
-              id="c-post-title"
-              type="text"
-              placeholder="What tech, coding or webdesign topic are you working on?"
-              class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
-            />
-          </div>
-        </div>
-
-        <!-- Topic Category Selector (Organized Clean Grid) -->
-        <div class="pt-1 space-y-1.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-500 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1">
-              <i data-lucide="tag" class="h-3 w-3 text-slate-500"></i> Category
-            </span>
-            <span id="selected-cat-label" class="text-slate-800 font-bold text-[11px]">💻 Tech &amp; AI</span>
-          </div>
-          <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-xs">
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="tech" checked onchange="updateCatLabel('💻 Tech & AI')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>💻</span><span class="truncate">Tech</span>
-              </span>
-            </label>
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="coding" onchange="updateCatLabel('⚡ Coding')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>⚡</span><span class="truncate">Coding</span>
-              </span>
-            </label>
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="webdesign" onchange="updateCatLabel('🎨 Web Design')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>🎨</span><span class="truncate">Design</span>
-              </span>
-            </label>
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="sharing" onchange="updateCatLabel('🎁 Sharing')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>🎁</span><span class="truncate">Sharing</span>
-              </span>
-            </label>
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="help" onchange="updateCatLabel('❓ Help & Q&A')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>❓</span><span class="truncate">Help</span>
-              </span>
-            </label>
-            <label class="cursor-pointer select-none">
-              <input type="radio" name="post-cat" value="explaining" onchange="updateCatLabel('📖 Explaining')" class="peer sr-only" />
-              <span class="w-full h-8 px-2 rounded-xl border border-slate-200 bg-white text-slate-700 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 font-semibold transition text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:bg-slate-50">
-                <span>📖</span><span class="truncate">Guides</span>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Content Area -->
-        <textarea
-          id="c-post-content"
-          rows="3"
-          placeholder="Explain your idea, share your technique, or ask for guidance..."
-          class="w-full bg-white border border-slate-200 rounded-2xl p-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition resize-none leading-relaxed"
-        ></textarea>
-
-        <!-- Optional Expandable Code Block Container -->
-        <div id="composer-code-box" class="hidden space-y-2 pt-1">
-          <div class="flex items-center justify-between text-xs text-slate-500">
-            <span class="flex items-center gap-1 font-mono text-[11px]">
-              <i data-lucide="code-2" class="h-3.5 w-3.5 text-slate-600"></i>
-              <span>Code Snippet</span>
-            </span>
-            <select id="c-post-lang" class="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] text-slate-900 focus:outline-none focus:border-slate-400">
-              <option value="javascript">JavaScript / TypeScript</option>
-              <option value="php">PHP</option>
-              <option value="python">Python</option>
-              <option value="css">CSS / Tailwind</option>
-              <option value="html">HTML</option>
-              <option value="sql">SQL / SQLite</option>
-              <option value="bash">Bash / Shell</option>
-            </select>
-          </div>
-          <textarea
-            id="c-post-code"
-            rows="4"
-            placeholder="// Paste your code snippet here..."
-            class="w-full bg-slate-900 font-mono text-xs text-slate-100 border border-slate-700 rounded-2xl p-3 focus:outline-none focus:border-slate-500 transition leading-relaxed resize-y"
-          ></textarea>
-        </div>
-
-        <!-- Bottom Action Row of Composer with Auto-Location & Tags -->
-        <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 flex-wrap gap-2 text-xs">
-          <div class="flex items-center gap-2 flex-wrap">
-            <button
-              type="button"
-              onclick="toggleCodeBox()"
-              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px] shadow-2xs"
-            >
-              <i data-lucide="code-2" class="h-3.5 w-3.5 text-slate-600"></i>
-              <span>Add Code</span>
-            </button>
-
-            <!-- Share Location Button & Auto-Detected Badge -->
-            <button
-              type="button"
-              id="btn-location-toggle"
-              onclick="toggleLocationPrompt()"
-              class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium transition flex items-center gap-1 cursor-pointer text-[11px] shadow-2xs"
-              title="Share Location"
-            >
-              <i data-lucide="map-pin" class="h-3.5 w-3.5 text-slate-600"></i>
-              <span id="btn-location-text">Share Location</span>
-            </button>
-            <span id="composer-location-badge" class="hidden items-center gap-1 text-[11px] font-semibold text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-full shadow-2xs">
-              <i data-lucide="map-pin" class="h-3 w-3 text-slate-600"></i>
-              <span id="composer-location-val"></span>
-              <button type="button" onclick="clearLocation(event)" class="text-slate-400 hover:text-slate-900 ml-0.5 text-xs font-bold leading-none cursor-pointer" title="Remove location">&times;</button>
-            </span>
-            <input type="hidden" id="c-post-location" value="" />
-
-            <input
-              id="c-post-tags"
-              type="text"
-              placeholder="Tags (e.g. #sqlite, #css)"
-              class="bg-white border border-slate-200 rounded-full px-3 py-1 text-[11px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-32 sm:w-44"
-            />
-          </div>
-
-          <button
-            type="button"
-            id="btn-publish-post"
-            onclick="publishForumPost()"
-            class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 transition flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer border border-slate-900 ml-auto"
-          >
-            <i data-lucide="send" class="h-3.5 w-3.5"></i>
-            <span>Publish to Forum</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- FORUM FEED CARDS CONTAINER -->
-      <div id="forum-feed-container" class="space-y-4">
-        <!-- Dynamically rendered via JS -->
-      </div>
-
-      <!-- Empty state -->
-      <div id="forum-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-slate-200 bg-white space-y-3">
-        <div class="h-16 w-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">🦝</div>
-        <h3 class="font-display text-lg font-bold text-slate-900">No discussions found</h3>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto">Be the first nocturnal owl to post in this category!</p>
-        <button onclick="focusComposer()" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 mt-2">Create First Post</button>
-      </div>
-
-    </main>
-
-    <!-- RIGHT SIDEBAR (Community Hub, Trending, Online Owls) -->
-    <aside class="lg:col-span-4 space-y-5">
-
-      <!-- Member Burrow Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <div class="flex items-center gap-3">
-          <img src="/raccoon-logo.png" class="h-10 w-10 object-contain drop-shadow" />
-          <div>
-            <h3 class="font-display font-bold text-sm text-slate-900">Nocturnal Community</h3>
-            <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>Encrypted Forum Feed</span>
-            </p>
-          </div>
-        </div>
-        <p class="text-xs text-slate-600 leading-relaxed">
-          Zero data harvesting, respectful engineering discussions, and peer mentoring. Every registered member with a <span class="text-slate-900 font-mono font-semibold">@racconmail.eu</span> account has full publishing rights.
-        </p>
-        <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600">
-          <span>Active Nocturnal Owls</span>
-          <span class="font-bold text-slate-900 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full font-mono">84 Online</span>
-        </div>
-      </div>
-
-      <!-- Trending Topic Tags -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="trending-up" class="h-4 w-4 text-slate-600"></i>
-          <span>Trending Burrow Tags</span>
-        </h3>
-        <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-          <button onclick="searchByTag('#sqlite')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#sqlite</button>
-          <button onclick="searchByTag('#cryptography')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#cryptography</button>
-          <button onclick="searchByTag('#css')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#css</button>
-          <button onclick="searchByTag('#javascript')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#javascript</button>
-          <button onclick="searchByTag('#uiux')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#uiux</button>
-          <button onclick="searchByTag('#security')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#security</button>
-        </div>
-      </div>
-
-      <!-- Burrow Community Guidelines -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="shield-check" class="h-4 w-4 text-slate-600"></i>
-          <span>Burrow Guidelines</span>
-        </h3>
-        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-slate-600">
-          <li>Be constructive and encourage fellow developers.</li>
-          <li>Format code snippets with correct language tags.</li>
-          <li>Zero spam or unsolicited marketing allowed.</li>
-          <li>Help beginners understand technical concepts.</li>
-        </ul>
-      </div>
-
-      <!-- Quick Navigation Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="compass" class="h-4 w-4 text-slate-600"></i>
-          <span>Raccon Hub Navigation</span>
-        </h3>
-        <div class="space-y-1.5 pt-1">
-          <a href="/news" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600"></i> Raccon News Wire</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/stories" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600"></i> World Stories Library</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i> Private Webmail</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-        </div>
-      </div>
-
-    </aside>
-
-  </div>
-
-  <!-- AUTH REQUIRED MODAL (For Unregistered Visitors) -->
-  <div id="forum-auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-    <div class="w-full max-w-md rounded-3xl bg-white p-6 sm:p-7 relative border border-slate-200 text-center space-y-4 shadow-2xl">
-      <button onclick="closeForumAuthModal()" class="absolute top-4 right-4 p-1.5 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition cursor-pointer">
-        <i data-lucide="x" class="h-5 w-5"></i>
-      </button>
-
-      <img src="/raccoon-logo.png" alt="Raccon" class="h-16 w-16 mx-auto object-contain drop-shadow" />
-
+  <!-- =========================================================================
+       FLARUM HERO WELCOME BANNER (INDEX ONLY)
+       ========================================================================= -->
+  <section id="flarum-hero" class="w-full bg-white border-b border-slate-200/80 py-6 sm:py-8 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h2 class="font-display text-xl font-bold text-slate-900">Registered Burrow Members Only</h2>
-        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-          To publish discussions, share code, leave paws 🐾, and reply to fellow tech owls, please sign in or create your free encrypted account!
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <span>Welcome to Raccon Forum</span>
+          <span class="text-xl">🦝</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl font-medium">
+          The public developer community and live activity wall for nocturnal hackers, developers, and designers. Share ideas, post code snippets, and discuss encrypted email architecture.
         </p>
       </div>
 
-      <div class="space-y-2 pt-2">
-        <a href="/auth?tab=register" class="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-2 shadow-xs cursor-pointer border border-slate-900">
-          <span>Create Free Burrow Account</span>
-          <i data-lucide="arrow-right" class="h-4 w-4"></i>
-        </a>
-        <a href="/auth?tab=login" class="w-full rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs sm:text-sm py-2.5 transition flex items-center justify-center gap-1.5 cursor-pointer">
-          <span>Sign In to Existing Mailbox</span>
-        </a>
+      <!-- Quick Action Badges -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="switchToWallView()" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition flex items-center gap-1.5 cursor-pointer">
+          <i class="fas fa-cubes text-blue-500"></i>
+          <span>Open Community Wall</span>
+        </button>
+        <button onclick="openComposerModal()" class="px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+          <i class="fas fa-pen text-emerald-400 text-xs"></i>
+          <span>New Discussion</span>
+        </button>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="forum-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 text-slate-800 text-xs font-semibold shadow-2xl flex items-center gap-2">
-      <i data-lucide="check-circle" class="h-4 w-4 text-slate-600"></i>
-      <span id="forum-toast-text">Message</span>
-    </div>
-  </div>
+  <!-- =========================================================================
+       MAIN 2-COLUMN FORUM LAYOUT (FLARUM ARCHITECTURE)
+       ========================================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-  <!-- SCRIPT ENGINE FOR RACCON FORUM -->
-  <script>
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let currentUser = null;
-    let isLoggedIn = false;
-    let activeOpenComments = new Set();
+      <!-- =====================================================================
+           LEFT SIDEBAR (FLARUM CONTROLS & TAGS)
+           ===================================================================== -->
+      <aside class="lg:col-span-3 space-y-6">
+        
+        <!-- Primary "Start a Discussion" CTA -->
+        <button 
+          onclick="openComposerModal()" 
+          class="w-full py-3 px-4 rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-sm shadow-md hover:shadow-lg transition transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <i class="fas fa-pen-to-square text-emerald-400"></i>
+          <span>Start a Discussion</span>
+        </button>
 
-    function showToast(msg) {
-      const toast = document.getElementById('forum-toast');
-      const text = document.getElementById('forum-toast-text');
-      if (!toast || !text) return;
-      text.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
-    }
+        <!-- Navigation Views -->
+        <nav class="bg-white rounded-2xl border border-slate-200 p-2 shadow-2xs space-y-1">
+          <button 
+            onclick="setNavView('all')" 
+            id="nav-btn-all" 
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer nav-item-active"
+          >
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-comments text-slate-400 w-4 text-center"></i>
+              <span>All Discussions</span>
+            </div>
+            <span id="badge-all-count" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-white">0</span>
+          </button>
 
-    function toggleCodeBox() {
-      const box = document.getElementById('composer-code-box');
-      if (box) {
-        box.classList.toggle('hidden');
-        if (!box.classList.contains('hidden')) {
-          document.getElementById('c-post-code')?.focus();
-        }
-      }
-    }
+          <button 
+            onclick="setNavView('wall')" 
+            id="nav-btn-wall" 
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+          >
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-cubes text-blue-500 w-4 text-center"></i>
+              <span>Community Wall</span>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 tracking-wide">Live</span>
+          </button>
+        </nav>
 
-    function focusComposer() {
-      if (!isLoggedIn) {
-        openForumAuthModal();
-        return;
-      }
-      const title = document.getElementById('c-post-title');
-      if (title) {
-        title.focus();
-        title.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    function openForumAuthModal() {
-      document.getElementById('forum-auth-modal')?.classList.remove('hidden');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function closeForumAuthModal() {
-      document.getElementById('forum-auth-modal')?.classList.add('hidden');
-    }
-
-    function filterForumCat(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
-        if (btn.dataset.cat === cat) {
-          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer';
-        } else {
-          btn.className = 'cat-filter-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
-        }
-      });
-      loadForumPosts();
-    }
-
-    function handleForumSearch(val) {
-      searchQuery = val.trim();
-      loadForumPosts();
-    }
-
-    function searchByTag(tag) {
-      const input = document.getElementById('forum-search-input');
-      if (input) input.value = tag;
-      searchQuery = tag;
-      loadForumPosts();
-    }
-
-    // Check user session
-    async function checkAuthSession() {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        isLoggedIn = !!data.loggedIn;
-        currentUser = data.user || null;
-        renderUserStatusPill();
-      } catch (err) {
-        isLoggedIn = false;
-        currentUser = null;
-        renderUserStatusPill();
-      }
-    }
-
-    function renderUserStatusPill() {
-      const pill = document.getElementById('user-status-pill');
-      if (!pill) return;
-      if (isLoggedIn && currentUser) {
-        pill.innerHTML = `
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs text-slate-800 shadow-2xs">
-            <img src="${currentUser.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
-            <span class="font-bold text-slate-900 hidden sm:inline">${escapeHtml(currentUser.name)}</span>
-            <span class="text-slate-400 font-mono text-[10px]">●</span>
+        <!-- Flarum Iconic Tags & Categories -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Categories</span>
+            <span class="text-[10px] font-bold text-slate-400">Filter</span>
           </div>
-        `;
-        const compAvatar = document.getElementById('composer-avatar');
-        if (compAvatar) compAvatar.src = currentUser.avatar || '/raccoon-logo.png';
-      } else {
-        pill.innerHTML = `
-          <a href="/auth?tab=login" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition cursor-pointer shadow-2xs whitespace-nowrap">
-            Sign In / Join
-          </a>
-        `;
-      }
-    }
 
-    // Load & Render Feed
-    async function loadForumPosts() {
-      const feed = document.getElementById('forum-feed-container');
-      const empty = document.getElementById('forum-empty');
-      if (!feed) return;
+          <div class="space-y-1" id="categories-list-container">
+            <!-- Dynamically populated or static fast categories -->
+            <button onclick="filterByCategory('all')" id="cat-btn-all" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-800 bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                <span>All Topics</span>
+              </div>
+              <span id="cat-count-all" class="text-[11px] text-slate-400">6</span>
+            </button>
 
-      const params = new URLSearchParams();
-      if (currentCategory !== 'all') params.append('category', currentCategory);
-      if (searchQuery) params.append('search', searchQuery);
+            <button onclick="filterByCategory('announcements')" id="cat-btn-announcements" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span>Announcements</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
 
-      try {
-        const res = await fetch(`/api/forum/posts?${params.toString()}`);
-        const data = await res.json();
-        const posts = data.posts || [];
+            <button onclick="filterByCategory('security')" id="cat-btn-security" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Security &amp; PGP</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
 
-        if (posts.length === 0) {
-          feed.innerHTML = '';
-          empty?.classList.remove('hidden');
-          return;
-        }
+            <button onclick="filterByCategory('tech')" id="cat-btn-tech" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                <span>Technology</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
 
-        empty?.classList.add('hidden');
-        feed.innerHTML = posts.map(p => renderPostCard(p)).join('');
-        if (window.lucide) lucide.createIcons();
+            <button onclick="filterByCategory('coding')" id="cat-btn-coding" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>Coding &amp; Scripts</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
 
-        // Restore open comments drawers
-        activeOpenComments.forEach(postId => {
-          loadComments(postId);
-        });
-      } catch (err) {
-        console.error('Failed to load forum posts:', err);
-      }
-    }
+            <button onclick="filterByCategory('webdesign')" id="cat-btn-webdesign" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span>Web Design &amp; UI</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
 
-    function formatPostContent(str) {
-      if (!str) return '';
-      // Strip any leaked aggregator metadata or comments URLs
-      let clean = str.replace(/Comments\s+URL:\s*https?:\/\/[^\s]+/gi, '')
-                     .replace(/Article\s+URL:\s*https?:\/\/[^\s]+/gi, '')
-                     .replace(/Points:\s*\d+/gi, '')
-                     .replace(/#\s*Comments:\s*\d+/gi, '')
-                     .replace(/https?:\/\/news\.ycombinator\.com[^\s]*/gi, '')
-                     .trim();
+            <button onclick="filterByCategory('feedback')" id="cat-btn-feedback" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>Feedback &amp; Q&amp;A</span>
+              </div>
+              <span class="text-[11px] text-slate-400">&bull;</span>
+            </button>
+          </div>
+        </div>
 
-      const escaped = escapeHtml(clean);
-      const urlRegex = /(https?:\/\/[^\s<]+)/g;
-      return escaped.replace(urlRegex, (url) => {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-slate-900 font-semibold underline underline-offset-2 hover:text-slate-600 break-all [overflow-wrap:anywhere]">${url}</a>`;
-      });
-    }
+        <!-- Sidebar Resource Links -->
+        <div class="text-[11px] text-slate-400 px-3 space-y-1">
+          <div class="flex items-center gap-3 font-semibold">
+            <a href="/" class="hover:text-slate-700">Home</a>
+            <span>&bull;</span>
+            <a href="/legal/terms" class="hover:text-slate-700">Terms</a>
+            <span>&bull;</span>
+            <a href="/legal/privacy" class="hover:text-slate-700">Privacy</a>
+            <span>&bull;</span>
+            <a href="https://github.com/RacconMail/racconmail" target="_blank" class="hover:text-slate-700">GitHub</a>
+          </div>
+          <p>&copy; 2026 Raccon Mail. Powered by Flarum-inspired architecture.</p>
+        </div>
 
-    function renderPostCard(p) {
-      const catBadges = {
-        tech: { label: 'Tech & AI', emoji: '💻', color: 'text-slate-700 bg-slate-100 border-slate-200' },
-        coding: { label: 'Coding', emoji: '⚡', color: 'text-slate-700 bg-slate-100 border-slate-200' },
-        webdesign: { label: 'Web Design', emoji: '🎨', color: 'text-slate-700 bg-slate-100 border-slate-200' },
-        sharing: { label: 'Sharing', emoji: '🎁', color: 'text-slate-700 bg-slate-100 border-slate-200' },
-        help: { label: 'Help', emoji: '❓', color: 'text-slate-700 bg-slate-100 border-slate-200' },
-        explaining: { label: 'Explaining', emoji: '📖', color: 'text-slate-700 bg-slate-100 border-slate-200' }
-      };
+      </aside>
 
-      const cat = catBadges[p.category] || catBadges.tech;
-      const formattedDate = formatTime(p.created_at);
+      <!-- =====================================================================
+           RIGHT MAIN STAGE (DISCUSSIONS LIST / WALL / THREAD READER)
+           ===================================================================== -->
+      <section class="lg:col-span-9 min-h-[600px] space-y-6">
 
-      return `
-        <article id="post-${p.id}" class="rounded-2xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-sm transition p-4 sm:p-5 space-y-3 group shadow-lg shadow-slate-900/5 max-w-full overflow-hidden">
-          <!-- Post Author Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-wrap gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <img src="${p.author_avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0" onerror="this.src='/raccoon-logo.png';" />
-              <div class="min-w-0">
-                <div class="flex items-center gap-1.5 leading-none flex-wrap">
-                  <span class="font-bold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(p.author_name || 'Nocturnal Owl')}</span>
-                  ${p.author_is_admin ? '<span class="text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.2 rounded-full shrink-0">ADMIN</span>' : '<span class="text-[9px] bg-slate-100 text-slate-700 border border-slate-200 font-mono px-2 py-0.2 rounded-full shrink-0">MEMBER</span>'}
-                  ${p.location ? `
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 shrink-0" title="Posted from ${escapeHtml(p.location)}">
-                      <i data-lucide="map-pin" class="h-2.5 w-2.5 text-slate-400 shrink-0"></i>
-                      <span class="truncate max-w-[120px] sm:max-w-[200px]">${escapeHtml(p.location)}</span>
-                    </span>
-                  ` : ''}
+        <!-- ===================================================================
+             VIEW 1: DISCUSSIONS STREAM (FLARUM CLASSIC INDEX)
+             =================================================================== -->
+        <div id="view-discussions" class="space-y-4">
+          
+          <!-- Stream Controls Bar (Sort, Tag Filter, Refresh) -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 flex items-center justify-between gap-4 shadow-2xs">
+            <div class="flex items-center gap-2">
+              <span id="current-view-title" class="text-sm font-extrabold text-slate-900">All Discussions</span>
+              <span id="active-tag-indicator" class="hidden tag-badge tag-general">All</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <!-- Sort Dropdown -->
+              <div class="relative">
+                <select 
+                  id="forum-sort-select" 
+                  onchange="changeSorting(this.value)" 
+                  class="bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-xl border border-slate-200 outline-none cursor-pointer transition"
+                >
+                  <option value="latest">Latest Activity</option>
+                  <option value="popular">Top Liked</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </div>
+
+              <!-- Refresh Button -->
+              <button 
+                onclick="loadForumFeed(true)" 
+                title="Refresh Feed" 
+                class="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+              >
+                <i class="fas fa-arrows-rotate text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Discussions List Container -->
+          <div id="discussions-container" class="space-y-3">
+            <!-- Loading Skeleton -->
+            <div class="p-8 text-center text-slate-400 select-none bg-white rounded-2xl border border-slate-200">
+              <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+              <p class="font-bold text-sm text-slate-600">Loading discussions...</p>
+              <p class="text-xs text-slate-400 mt-1">Connecting to Raccon Forum cluster.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===================================================================
+             VIEW 2: INTEGRATED COMMUNITY WALL (LIVE ACTIVITY & MICRO-POSTINGS)
+             =================================================================== -->
+        <div id="view-wall" class="hidden space-y-6">
+          
+          <!-- Wall Posting Widget -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex items-start gap-3">
+              <img id="wall-composer-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-2xs" />
+              <div class="flex-1 min-w-0">
+                <textarea 
+                  id="wall-post-content" 
+                  rows="3" 
+                  placeholder="What's on your mind? Share an update, code snippet, or thought with the community wall..." 
+                  class="w-full text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 focus:border-slate-400 rounded-2xl p-3.5 outline-none transition resize-none"
+                ></textarea>
+
+                <!-- Wall Post Quick Options -->
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
+                  <div class="flex items-center gap-2">
+                    <!-- Category Selector -->
+                    <select id="wall-post-category" class="bg-slate-100 text-slate-700 text-xs font-semibold py-1.5 px-2.5 rounded-xl border border-slate-200 outline-none cursor-pointer">
+                      <option value="wall">🧱 Community Wall</option>
+                      <option value="tech">Tech Updates</option>
+                      <option value="coding">Code Snippets</option>
+                      <option value="security">Security</option>
+                      <option value="general">General</option>
+                    </select>
+
+                    <!-- Code Snippet Toggle Button -->
+                    <button type="button" onclick="toggleWallCodeBox()" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition flex items-center gap-1.5">
+                      <i class="fas fa-code text-slate-400"></i>
+                      <span>Add Code</span>
+                    </button>
+                  </div>
+
+                  <button 
+                    onclick="submitWallPost()" 
+                    id="btn-wall-publish" 
+                    class="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i class="fas fa-paper-plane text-xs"></i>
+                    <span>Share to Wall</span>
+                  </button>
                 </div>
-                <div class="text-[10px] text-slate-400 mt-1 font-mono">${formattedDate}</div>
+
+                <!-- Hidden Code Snippet Box for Wall -->
+                <div id="wall-code-snippet-box" class="hidden mt-3 p-3 bg-slate-900 rounded-xl text-slate-200 space-y-2">
+                  <div class="flex items-center justify-between text-xs font-mono text-slate-400">
+                    <span>Code Snippet</span>
+                    <select id="wall-code-lang" class="bg-slate-800 text-xs text-slate-300 rounded px-2 py-0.5 border border-slate-700 outline-none">
+                      <option value="javascript">JavaScript</option>
+                      <option value="php">PHP</option>
+                      <option value="python">Python</option>
+                      <option value="css">CSS</option>
+                      <option value="html">HTML</option>
+                      <option value="sql">SQL</option>
+                      <option value="bash">Bash</option>
+                    </select>
+                  </div>
+                  <textarea id="wall-code-content" rows="4" placeholder="// Paste code snippet here..." class="w-full bg-transparent font-mono text-xs text-emerald-400 outline-none resize-none"></textarea>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Wall Feed Stream -->
+          <div id="wall-feed-container" class="space-y-4">
+            <!-- Dynamically Populated -->
+          </div>
+
+        </div>
+
+        <!-- ===================================================================
+             VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
+             =================================================================== -->
+        <div id="view-thread" class="hidden space-y-6">
+          
+          <!-- Back to Discussions Button & Category Breadcrumb -->
+          <div class="flex items-center justify-between gap-4">
+            <button onclick="setNavView('all')" class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-2xs hover:bg-slate-50 transition cursor-pointer">
+              <i class="fas fa-arrow-left"></i>
+              <span>Back to Discussions</span>
+            </button>
+
+            <span id="thread-category-badge" class="tag-badge tag-general">Category</span>
+          </div>
+
+          <!-- Discussion Title Header -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+            <h1 id="thread-title" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
+              Discussion Title
+            </h1>
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 font-medium">
+              <span id="thread-author-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-user-circle text-slate-400"></i> Started by <strong class="text-slate-800">Author</strong>
+              </span>
+              <span>&bull;</span>
+              <span id="thread-date-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-clock text-slate-400"></i> Just now
+              </span>
+              <span>&bull;</span>
+              <span id="thread-replies-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-comments text-slate-400"></i> 0 replies
+              </span>
+            </div>
+          </div>
+
+          <!-- Thread Layout: Left Sticky Controls & Right Post Stream -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left Sticky Discussion Controls (Flarum Scrubber & Actions) -->
+            <div class="md:col-span-3 space-y-3 sticky top-24">
+              <button onclick="focusThreadReply()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fas fa-reply text-xs"></i>
+                <span>Reply</span>
+              </button>
+
+              <button id="btn-follow-thread" onclick="toggleFollowThread()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fas fa-bell text-slate-400"></i>
+                <span id="btn-follow-text">Follow</span>
+              </button>
+
+              <!-- Discussion Timeline / Scrubber Box -->
+              <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs text-xs space-y-2">
+                <div class="flex items-center justify-between text-slate-500 font-bold text-[11px]">
+                  <span>Timeline</span>
+                  <span id="scrubber-post-counter">Post 1 of 1</span>
+                </div>
+                <div class="py-2 flex items-center justify-center">
+                  <div class="scrubber-track h-24 flex items-center justify-center">
+                    <div class="scrubber-handle top-2"></div>
+                  </div>
+                </div>
+                <p class="text-center text-[10px] text-slate-400">Latest activity recently</p>
               </div>
             </div>
 
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${cat.color} shrink-0">
-              <span>${cat.emoji}</span>
-              <span>${cat.label}</span>
-            </span>
-          </div>
-
-          <!-- Post Title -->
-          <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug break-words max-w-full">
-            ${escapeHtml(p.title)}
-          </h2>
-
-          <!-- Post Body Content (Strict Boundaries - never exceeds chenar) -->
-          <div class="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line break-words [overflow-wrap:break-word] max-w-full overflow-hidden">
-            ${formatPostContent(p.content)}
-          </div>
-
-          <!-- Code Snippet Block (If Provided) -->
-          ${p.code_snippet ? `
-            <div class="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 p-3.5 space-y-2">
-              <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono border-b border-slate-800 pb-2">
-                <span class="text-slate-300 font-bold">${p.code_lang.toUpperCase()}</span>
-                <button onclick="copySnippet(this, \`${escapeJsString(p.code_snippet)}\`)" class="hover:text-white transition flex items-center gap-1 cursor-pointer">
-                  <i data-lucide="copy" class="h-3 w-3"></i>
-                  <span>Copy Code</span>
-                </button>
+            <!-- Right Post Stream (Sequential Posts & Replies) -->
+            <div class="md:col-span-9 space-y-4">
+              
+              <!-- Original Post (#1) & Sequential Replies -->
+              <div id="thread-posts-stream" class="space-y-4">
+                <!-- Dynamically rendered -->
               </div>
-              <pre class="overflow-x-auto text-xs text-slate-200 font-mono leading-relaxed py-1"><code>${escapeHtml(p.code_snippet)}</code></pre>
-            </div>
-          ` : ''}
 
-          <!-- Image Attachment (If Provided) -->
-          ${p.image_url ? `
-            <div class="rounded-2xl overflow-hidden aspect-video border border-slate-200 bg-slate-50">
-              <img src="${p.image_url}" alt="Attachment" class="w-full h-full object-cover" onerror="this.style.display='none';" />
-            </div>
-          ` : ''}
-
-          <!-- Tags -->
-          ${p.tags ? `
-            <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-mono text-slate-500">
-              ${p.tags.split(',').map(t => `<span class="bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">${escapeHtml(t.trim())}</span>`).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Bottom Action Buttons: Like, Comment, Social Share -->
-          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
-            <div class="flex items-center gap-2 sm:gap-2.5">
-              <!-- Paw / Like Button -->
-              <button
-                onclick="togglePostLike('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition cursor-pointer border shadow-2xs ${p.has_liked ? 'bg-slate-200 text-slate-900 border-slate-300 font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/80'}"
-              >
-                <span>🐾</span>
-                <span id="like-cnt-${p.id}">${p.likes_count || 0}</span>
-                <span class="text-[11px]">Paws</span>
-              </button>
-
-              <!-- Comment Drawer Toggle -->
-              <button
-                onclick="toggleCommentsDrawer('${p.id}')"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition cursor-pointer shadow-2xs"
-              >
-                <i data-lucide="message-square" class="h-3.5 w-3.5 text-slate-600"></i>
-                <span id="comment-cnt-${p.id}">${p.comments_count || 0}</span>
-                <span class="text-[11px]">Replies</span>
-              </button>
-            </div>
-
-            <!-- Social Networks Share Dropdown Trigger -->
-            <div class="relative">
-              <button
-                onclick="toggleSharePopover(event, '${p.id}')"
-                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 transition flex items-center gap-1.5 text-[11px] font-semibold cursor-pointer shadow-2xs"
-                title="Share to social networks"
-              >
-                <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-600"></i>
-                <span>Share</span>
-              </button>
-
-              <!-- Social Networks Share Popover Card -->
-              <div id="share-popover-${p.id}" class="hidden absolute right-0 bottom-full mb-2 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-30 w-72 animate-in fade-in zoom-in-95 duration-150">
-                <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Share Discussion</span>
-                  <span class="text-[10px] text-slate-400 font-mono">Social Networks</span>
+              <!-- Stream Bottom Reply Composer Box -->
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
+                <div class="flex items-center gap-3">
+                  <img id="reply-box-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-8 w-8 rounded-full border border-slate-200" />
+                  <span class="text-xs font-bold text-slate-800">Write a reply...</span>
                 </div>
-                <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                  <!-- X (Twitter) -->
-                  <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(p.title)}&url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-xs"><i class="fab fa-x-twitter"></i></div>
-                    <span class="text-[10px] font-medium">X</span>
-                  </a>
-                  <!-- WhatsApp -->
-                  <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(p.title + ' https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-[#25D366] text-white flex items-center justify-center text-xs"><i class="fab fa-whatsapp"></i></div>
-                    <span class="text-[10px] font-medium">WhatsApp</span>
-                  </a>
-                  <!-- LinkedIn -->
-                  <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-[#0A66C2] text-white flex items-center justify-center text-xs"><i class="fab fa-linkedin-in"></i></div>
-                    <span class="text-[10px] font-medium">LinkedIn</span>
-                  </a>
-                  <!-- Facebook -->
-                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center text-xs"><i class="fab fa-facebook-f"></i></div>
-                    <span class="text-[10px] font-medium">Facebook</span>
-                  </a>
-                  <!-- Telegram -->
-                  <a href="https://t.me/share/url?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}&text=${encodeURIComponent(p.title)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-[#229ED9] text-white flex items-center justify-center text-xs"><i class="fab fa-telegram-plane"></i></div>
-                    <span class="text-[10px] font-medium">Telegram</span>
-                  </a>
-                  <!-- Reddit -->
-                  <a href="https://reddit.com/submit?url=${encodeURIComponent('https://racconmail.eu/forum#' + p.id)}&title=${encodeURIComponent(p.title)}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-xl hover:bg-slate-50 border border-slate-100 flex flex-col items-center gap-1 text-slate-700 transition">
-                    <div class="w-8 h-8 rounded-lg bg-[#FF4500] text-white flex items-center justify-center text-xs"><i class="fab fa-reddit-alien"></i></div>
-                    <span class="text-[10px] font-medium">Reddit</span>
-                  </a>
-                </div>
-                <div class="mt-2.5 pt-2 border-t border-slate-100">
-                  <button onclick="copyDirectPostLink(this, '${p.id}')" class="w-full py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer">
-                    <i data-lucide="link" class="h-3.5 w-3.5 text-slate-500"></i>
-                    <span>Copy Direct Link</span>
+
+                <textarea 
+                  id="thread-reply-input" 
+                  rows="4" 
+                  placeholder="Write your response to this discussion... (Markdown supported)" 
+                  class="w-full bg-slate-50 rounded-xl border border-slate-200 p-3.5 text-xs sm:text-sm text-slate-800 outline-none focus:border-slate-400 focus:bg-white transition resize-y font-sans"
+                ></textarea>
+
+                <div class="flex items-center justify-between pt-2">
+                  <div class="flex items-center gap-2 text-slate-400 text-xs">
+                    <button type="button" onclick="insertMarkdownToReply('**bold**')" class="p-1 hover:text-slate-800" title="Bold"><i class="fas fa-bold"></i></button>
+                    <button type="button" onclick="insertMarkdownToReply('*italic*')" class="p-1 hover:text-slate-800" title="Italic"><i class="fas fa-italic"></i></button>
+                    <button type="button" onclick="insertMarkdownToReply('`code`')" class="p-1 hover:text-slate-800" title="Inline Code"><i class="fas fa-code"></i></button>
+                    <button type="button" onclick="insertMarkdownToReply('> quote')" class="p-1 hover:text-slate-800" title="Quote"><i class="fas fa-quote-right"></i></button>
+                  </div>
+
+                  <button 
+                    onclick="submitThreadReply()" 
+                    id="btn-submit-reply" 
+                    class="px-5 py-2 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-extrabold shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i class="fas fa-reply text-xs"></i>
+                    <span>Post Reply</span>
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-          <!-- Threaded Comments Drawer -->
-          <div id="comments-drawer-${p.id}" class="hidden pt-3 border-t border-slate-200 space-y-3">
-            <div id="comments-list-${p.id}" class="space-y-2">
-              <div class="p-3 text-center text-xs text-slate-400">Loading replies...</div>
+
             </div>
 
-            <!-- New Comment Input (Seamless for Members and Guests) -->
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <div class="flex items-center justify-between text-[11px] text-slate-500">
-                <span class="font-semibold flex items-center gap-1">
-                  <i data-lucide="message-circle" class="h-3.5 w-3.5 text-slate-500"></i>
-                  <span>Leave a Reply</span>
-                </span>
-                <input
-                  id="comment-author-${p.id}"
-                  type="text"
-                  placeholder="Your Name / Handle"
-                  class="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] text-slate-700 placeholder-slate-400 focus:outline-none focus:border-slate-400 w-36"
-                />
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       FLARUM FLOATING / SLIDE-UP COMPOSER DRAWER
+       ========================================================================= -->
+  <div 
+    id="composer-drawer" 
+    class="fixed bottom-0 right-0 sm:right-6 w-full sm:w-[620px] max-w-full bg-white rounded-t-2xl sm:rounded-2xl border border-slate-300 shadow-2xl z-50 p-5 composer-hidden"
+  >
+    <!-- Composer Header Bar -->
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-pen-nib text-emerald-600 text-sm"></i>
+        <span class="font-extrabold text-sm text-slate-900">Start a Discussion</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="minimizeComposer()" title="Minimize" class="p-1 text-slate-400 hover:text-slate-700">
+          <i class="fas fa-minus text-xs"></i>
+        </button>
+        <button onclick="closeComposerModal()" title="Close" class="p-1 text-slate-400 hover:text-rose-600">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Composer Form -->
+    <div class="mt-3 space-y-3">
+      <!-- Discussion Title Input -->
+      <input 
+        type="text" 
+        id="c-post-title" 
+        placeholder="Discussion Title..." 
+        class="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:bg-white rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition"
+      />
+
+      <!-- Category Tag Selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold text-slate-500">Tag:</span>
+        <select id="c-post-category" class="bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-3 py-1.5 outline-none cursor-pointer">
+          <option value="announcements">● Announcements</option>
+          <option value="security">● Security &amp; PGP</option>
+          <option value="tech" selected>● Technology</option>
+          <option value="coding">● Coding &amp; Scripts</option>
+          <option value="webdesign">● Web Design &amp; UI</option>
+          <option value="feedback">● Feedback &amp; Ideas</option>
+          <option value="wall">● Community Wall</option>
+        </select>
+      </div>
+
+      <!-- Main Body Editor -->
+      <textarea 
+        id="c-post-content" 
+        rows="5" 
+        placeholder="Write your discussion post here... (Markdown supported)" 
+        class="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:bg-white rounded-xl p-3.5 text-xs sm:text-sm text-slate-800 outline-none transition resize-y font-sans"
+      ></textarea>
+
+      <!-- Optional Code Snippet Toggle Box -->
+      <div id="c-code-box" class="hidden p-3 bg-slate-900 rounded-xl text-slate-200 space-y-2">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400">
+          <span>Code Block</span>
+          <select id="c-code-lang" class="bg-slate-800 text-xs text-slate-300 rounded px-2 py-0.5 border border-slate-700 outline-none">
+            <option value="javascript">JavaScript</option>
+            <option value="php">PHP</option>
+            <option value="python">Python</option>
+            <option value="css">CSS</option>
+            <option value="sql">SQL</option>
+          </select>
+        </div>
+        <textarea id="c-code-content" rows="3" placeholder="// Paste code snippet here..." class="w-full bg-transparent font-mono text-xs text-emerald-400 outline-none resize-none"></textarea>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-between pt-2">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="toggleComposerCodeBox()" class="px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl border border-slate-200 transition flex items-center gap-1">
+            <i class="fas fa-code text-slate-400"></i>
+            <span>Code</span>
+          </button>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="publishDiscussion()" 
+          id="btn-publish-discussion" 
+          class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-paper-plane text-emerald-400 text-xs"></i>
+          <span>Post Discussion</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="forum-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xl border border-slate-700 opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center gap-2">
+    <i class="fas fa-info-circle text-emerald-400" id="toast-icon"></i>
+    <span id="toast-message">Notification message</span>
+  </div>
+
+  <!-- =========================================================================
+       FLARUM FORUM CLIENT ENGINE SCRIPT
+       ========================================================================= -->
+  <script>
+    // State
+    let currentNavView = 'all'; // 'all', 'wall', 'thread'
+    let currentCategoryFilter = 'all';
+    let currentSort = 'latest';
+    let currentSearchTerm = '';
+    let currentUser = null;
+    let allPostsData = [];
+    let currentActiveThread = null;
+    let isFollowingActiveThread = false;
+
+    // Category Color & Label Helper
+    const CATEGORY_MAP = {
+      'announcements': { label: 'Announcements', class: 'tag-announcements' },
+      'security': { label: 'Security & PGP', class: 'tag-security' },
+      'tech': { label: 'Technology', class: 'tag-tech' },
+      'coding': { label: 'Coding & Scripts', class: 'tag-coding' },
+      'webdesign': { label: 'Web Design & UI', class: 'tag-webdesign' },
+      'feedback': { label: 'Feedback & Q&A', class: 'tag-feedback' },
+      'wall': { label: 'Community Wall', class: 'tag-wall' },
+      'general': { label: 'General', class: 'tag-general' },
+      'sharing': { label: 'Code Sharing', class: 'tag-coding' },
+      'help': { label: 'Help & Q&A', class: 'tag-feedback' },
+      'explaining': { label: 'Explaining', class: 'tag-tech' }
+    };
+
+    function getCategoryBadge(cat) {
+      const c = (cat || 'general').toLowerCase();
+      const meta = CATEGORY_MAP[c] || { label: c.charAt(0).toUpperCase() + c.slice(1), class: 'tag-general' };
+      return `<span class="tag-badge ${meta.class}"><span class="tag-badge-dot"></span><span>${meta.label}</span></span>`;
+    }
+
+    // Format Relative Time
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return 'Recently';
+      const d = new Date(dateStr.replace(' ', 'T') + 'Z');
+      const now = new Date();
+      const diffSec = Math.floor((now - d) / 1000);
+      if (isNaN(diffSec) || diffSec < 60) return 'Just now';
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+      if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+      if (diffSec < 2592000) return `${Math.floor(diffSec / 86400)}d ago`;
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Toast Notice
+    function showToast(msg, icon = 'fa-check-circle') {
+      const toast = document.getElementById('forum-toast');
+      const text = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
+      if (!toast || !text) return;
+      text.innerText = msg;
+      if (iconEl) iconEl.className = `fas ${icon} text-emerald-400`;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // Initialize Forum Application
+    async function initForum() {
+      await checkAuthStatus();
+      handleHashRouting();
+      window.addEventListener('hashchange', handleHashRouting);
+
+      // Keyboard shortcut Ctrl+K or / to focus search
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey && e.key.toLowerCase() === 'k') || (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName))) {
+          e.preventDefault();
+          document.getElementById('flarum-search-input')?.focus();
+        }
+      });
+    }
+
+    // Check Current User Auth Status
+    async function checkAuthStatus() {
+      try {
+        const res = await fetch('/api/user');
+        if (res.ok) {
+          const user = await res.json();
+          if (user && user.id) {
+            currentUser = user;
+            renderAuthHeader(true, user);
+            return;
+          }
+        }
+      } catch (_) {}
+      renderAuthHeader(false);
+    }
+
+    function renderAuthHeader(isLoggedIn, user = null) {
+      const guestGroup = document.getElementById('auth-guest-group');
+      const userGroup = document.getElementById('auth-user-group');
+      if (isLoggedIn && user) {
+        guestGroup?.classList.add('hidden');
+        userGroup?.classList.remove('hidden');
+        userGroup?.classList.add('flex');
+
+        const nameEl = document.getElementById('user-display-name');
+        const avatarEl = document.getElementById('user-display-avatar');
+        const dropName = document.getElementById('dropdown-user-name');
+        const dropEmail = document.getElementById('dropdown-user-email');
+        const wallAvatar = document.getElementById('wall-composer-avatar');
+        const replyAvatar = document.getElementById('reply-box-avatar');
+
+        const displayName = user.name || user.email?.split('@')[0] || 'User';
+        const avatarSrc = user.avatar || '/raccoon-logo.png';
+
+        if (nameEl) nameEl.innerText = displayName;
+        if (avatarEl) avatarEl.src = avatarSrc;
+        if (dropName) dropName.innerText = displayName;
+        if (dropEmail) dropEmail.innerText = user.email || '';
+        if (wallAvatar) wallAvatar.src = avatarSrc;
+        if (replyAvatar) replyAvatar.src = avatarSrc;
+      } else {
+        guestGroup?.classList.remove('hidden');
+        userGroup?.classList.add('hidden');
+      }
+    }
+
+    function toggleUserDropdown() {
+      const menu = document.getElementById('user-dropdown-menu');
+      menu?.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('user-dropdown-menu');
+      const btn = document.getElementById('user-menu-btn');
+      if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    async function logoutForum() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (_) {}
+      window.location.href = '/forum';
+    }
+
+    // Hash Routing Handler (#all, #wall, #tag-*, #d/:id)
+    function handleHashRouting() {
+      const hash = window.location.hash.replace('#', '') || 'all';
+      if (hash.startsWith('d/')) {
+        const threadId = hash.replace('d/', '').split('-')[0];
+        openThreadReader(threadId);
+      } else if (hash === 'wall') {
+        switchToWallView();
+      } else if (hash.startsWith('tag-')) {
+        const tag = hash.replace('tag-', '');
+        filterByCategory(tag);
+      } else {
+        switchToDiscussionsView();
+      }
+    }
+
+    // Switch View Functions
+    function switchToDiscussionsView() {
+      currentNavView = 'all';
+      document.getElementById('view-discussions')?.classList.remove('hidden');
+      document.getElementById('view-wall')?.classList.add('hidden');
+      document.getElementById('view-thread')?.classList.add('hidden');
+      document.getElementById('flarum-hero')?.classList.remove('hidden');
+
+      document.getElementById('nav-btn-all')?.classList.add('nav-item-active');
+      document.getElementById('nav-btn-wall')?.classList.remove('nav-item-active');
+
+      loadForumFeed();
+    }
+
+    function switchToWallView() {
+      currentNavView = 'wall';
+      window.location.hash = 'wall';
+      document.getElementById('view-discussions')?.classList.add('hidden');
+      document.getElementById('view-wall')?.classList.remove('hidden');
+      document.getElementById('view-thread')?.classList.add('hidden');
+      document.getElementById('flarum-hero')?.classList.remove('hidden');
+
+      document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
+      document.getElementById('nav-btn-wall')?.classList.add('nav-item-active');
+
+      loadWallFeed();
+    }
+
+    function setNavView(view) {
+      if (view === 'all') {
+        window.location.hash = 'all';
+        currentCategoryFilter = 'all';
+        switchToDiscussionsView();
+      } else if (view === 'wall') {
+        switchToWallView();
+      }
+    }
+
+    // =========================================================================
+    // LOAD & RENDER DISCUSSIONS (FLARUM INDEX)
+    // =========================================================================
+    async function loadForumFeed(forceRefresh = false) {
+      const container = document.getElementById('discussions-container');
+      if (!container) return;
+
+      if (forceRefresh || allPostsData.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+            <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+            <p class="font-bold text-sm text-slate-600">Loading discussions...</p>
+          </div>
+        `;
+      }
+
+      try {
+        let url = `/api/forum/posts?category=${encodeURIComponent(currentCategoryFilter)}&sort=${encodeURIComponent(currentSort)}`;
+        if (currentSearchTerm) {
+          url += `&search=${encodeURIComponent(currentSearchTerm)}`;
+        }
+
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          allPostsData = data.posts || [];
+          renderDiscussionsList(allPostsData);
+
+          // Update count badge
+          const countBadge = document.getElementById('badge-all-count');
+          if (countBadge) countBadge.innerText = allPostsData.length;
+        } else {
+          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load discussions. Please try again.</div>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to forum.</div>`;
+      }
+    }
+
+    function renderDiscussionsList(posts) {
+      const container = document.getElementById('discussions-container');
+      if (!container) return;
+
+      if (!posts || posts.length === 0) {
+        container.innerHTML = `
+          <div class="p-12 text-center bg-white rounded-2xl border border-slate-200 select-none">
+            <img src="/raccoon-logo.png" class="h-16 w-16 mx-auto mb-3 opacity-60" />
+            <h3 class="font-bold text-base text-slate-800">No discussions found</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Be the first community member to start a discussion in this category!</p>
+            <button onclick="openComposerModal()" class="mt-4 px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-xs shadow-xs hover:bg-black transition">
+              Start a Discussion
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = posts.map(post => {
+        const authorName = post.author_name || post.author_email?.split('@')[0] || 'Community Member';
+        const authorAvatar = post.author_avatar || '/raccoon-logo.png';
+        const timeAgo = formatTimeAgo(post.created_at);
+        const replyCount = post.comments_count || 0;
+        const likeCount = post.likes_count || 0;
+        const hasLiked = !!post.has_liked;
+        const snippet = (post.content || '').replace(/<[^>]+>/g, '').slice(0, 110) + ((post.content || '').length > 110 ? '...' : '');
+
+        return `
+          <article class="flarum-discussion-item bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-start gap-4">
+            
+            <!-- Author Avatar with Badge Ring -->
+            <div class="relative shrink-0">
+              <img src="${authorAvatar}" alt="${authorName}" class="h-11 w-11 rounded-full object-cover border border-slate-100 shadow-2xs" />
+              ${post.author_is_admin ? '<span class="absolute -bottom-1 -right-1 bg-slate-900 text-emerald-400 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold" title="Verified Staff">✓</span>' : ''}
+            </div>
+
+            <!-- Discussion Content & Title -->
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <a href="#d/${post.id}" onclick="openThreadReader('${post.id}'); return false;" class="text-sm sm:text-base font-extrabold text-slate-900 hover:text-blue-600 transition tracking-tight leading-snug line-clamp-1">
+                  ${post.title}
+                </a>
+                ${getCategoryBadge(post.category)}
               </div>
-              <div class="flex items-start gap-2">
-                <textarea
-                  id="comment-input-${p.id}"
-                  rows="2"
-                  placeholder="Share your feedback, coding tips, or explanation..."
-                  class="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition resize-none leading-relaxed"
-                ></textarea>
-                <button
-                  id="comment-btn-${p.id}"
-                  onclick="submitComment('${p.id}')"
-                  class="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs active:scale-95 self-end"
-                >
-                  <span>Reply</span>
-                  <i data-lucide="send" class="h-3 w-3"></i>
+
+              <!-- Metadata Line -->
+              <p class="text-[11px] text-slate-500 font-medium mb-1.5">
+                Started by <strong class="text-slate-800 font-bold">${authorName}</strong> &bull; <span>${timeAgo}</span>
+              </p>
+
+              <!-- Content Preview Snippet -->
+              <p class="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                ${snippet}
+              </p>
+            </div>
+
+            <!-- Right Reply & Like Counters -->
+            <div class="flex flex-col sm:flex-row items-center gap-2 shrink-0 self-center">
+              <button onclick="openThreadReader('${post.id}')" title="${replyCount} replies" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold transition">
+                <i class="fas fa-comment text-slate-400 text-xs"></i>
+                <span>${replyCount}</span>
+              </button>
+
+              <button onclick="toggleLikePost('${post.id}', this)" title="Like Discussion" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full ${hasLiked ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600'} text-xs font-bold transition cursor-pointer">
+                <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'} text-xs"></i>
+                <span class="like-cnt">${likeCount}</span>
+              </button>
+            </div>
+
+          </article>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // LOAD & RENDER COMMUNITY WALL
+    // =========================================================================
+    async function loadWallFeed() {
+      const container = document.getElementById('wall-feed-container');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+          <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+          <p class="font-bold text-sm text-slate-600">Loading activity wall...</p>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/api/forum/posts?sort=latest');
+        if (res.ok) {
+          const data = await res.json();
+          renderWallFeed(data.posts || []);
+        } else {
+          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load wall.</div>`;
+        }
+      } catch (e) {
+        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to wall.</div>`;
+      }
+    }
+
+    function renderWallFeed(posts) {
+      const container = document.getElementById('wall-feed-container');
+      if (!container) return;
+
+      if (!posts || posts.length === 0) {
+        container.innerHTML = `
+          <div class="p-10 text-center bg-white rounded-2xl border border-slate-200">
+            <i class="fas fa-cubes text-3xl text-slate-300 mb-2"></i>
+            <p class="font-bold text-sm text-slate-700">The community wall is quiet</p>
+            <p class="text-xs text-slate-400 mt-1">Post the first update above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = posts.map(post => {
+        const authorName = post.author_name || post.author_email?.split('@')[0] || 'Member';
+        const authorAvatar = post.author_avatar || '/raccoon-logo.png';
+        const timeAgo = formatTimeAgo(post.created_at);
+        const hasLiked = !!post.has_liked;
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+            
+            <!-- Wall Card Header -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <img src="${authorAvatar}" class="h-10 w-10 rounded-full object-cover border border-slate-200" />
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-xs sm:text-sm text-slate-900">${authorName}</span>
+                    ${post.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
+                  </div>
+                  <span class="text-[11px] text-slate-400 font-medium">${timeAgo}</span>
+                </div>
+              </div>
+              ${getCategoryBadge(post.category)}
+            </div>
+
+            <!-- Wall Card Body -->
+            <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+              ${post.content}
+            </div>
+
+            <!-- Optional Code Block -->
+            ${post.code_snippet ? `
+              <div class="p-3 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
+                <div class="flex items-center justify-between text-[10px] text-slate-400 mb-2 pb-1 border-b border-slate-800">
+                  <span>${post.code_lang || 'code'}</span>
+                  <span>Syntax</span>
+                </div>
+                <pre><code>${escapeHtml(post.code_snippet)}</code></pre>
+              </div>
+            ` : ''}
+
+            <!-- Wall Card Footer Actions -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
+              <div class="flex items-center gap-4">
+                <button onclick="toggleLikePost('${post.id}', this)" class="flex items-center gap-1.5 hover:text-rose-600 transition cursor-pointer ${hasLiked ? 'text-rose-600' : ''}">
+                  <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'}"></i>
+                  <span class="like-cnt">${post.likes_count || 0}</span> Likes
+                </button>
+
+                <button onclick="openThreadReader('${post.id}')" class="flex items-center gap-1.5 hover:text-slate-900 transition cursor-pointer">
+                  <i class="fas fa-comment text-slate-400"></i>
+                  <span>${post.comments_count || 0}</span> Comments
                 </button>
               </div>
+
+              <button onclick="copyPostLink('${post.id}')" class="flex items-center gap-1 hover:text-slate-900 text-slate-400 transition" title="Share Link">
+                <i class="fas fa-share-nodes"></i>
+                <span class="hidden sm:inline">Share</span>
+              </button>
             </div>
+
           </div>
-        </article>
-      `;
+        `;
+      }).join('');
     }
 
-    // Toggle Comments Drawer
-    async function toggleCommentsDrawer(postId) {
-      const drawer = document.getElementById(`comments-drawer-${postId}`);
-      if (!drawer) return;
-      if (drawer.classList.contains('hidden')) {
-        drawer.classList.remove('hidden');
-        activeOpenComments.add(postId);
-        await loadComments(postId);
-      } else {
-        drawer.classList.add('hidden');
-        activeOpenComments.delete(postId);
-      }
-      if (window.lucide) lucide.createIcons();
+    // Toggle Wall Code Box
+    function toggleWallCodeBox() {
+      const box = document.getElementById('wall-code-snippet-box');
+      box?.classList.toggle('hidden');
     }
 
-    // Load Comments for Post
-    async function loadComments(postId) {
-      const list = document.getElementById(`comments-list-${postId}`);
-      if (!list) return;
-      try {
-        const res = await fetch(`/api/forum/posts/${postId}`);
-        const data = await res.json();
-        const comments = data.comments || [];
-        if (comments.length === 0) {
-          list.innerHTML = `<p class="text-[11px] text-muted-foreground italic">No replies yet. Start the conversation!</p>`;
-          return;
-        }
+    // Submit Post to Wall
+    async function submitWallPost() {
+      const contentEl = document.getElementById('wall-post-content');
+      const catEl = document.getElementById('wall-post-category');
+      const codeEl = document.getElementById('wall-code-content');
+      const langEl = document.getElementById('wall-code-lang');
+      const btn = document.getElementById('btn-wall-publish');
 
-        list.innerHTML = comments.map(c => `
-          <div class="p-2.5 rounded-2xl bg-slate-50 border border-slate-200 flex gap-2.5 items-start">
-            <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover shrink-0 mt-0.5 border border-slate-200" />
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-1 text-[11px] mb-0.5">
-                <span class="font-bold text-slate-900">${escapeHtml(c.author_name || 'Owl')}</span>
-                <span class="text-[10px] text-slate-500 font-mono">${formatTime(c.created_at)}</span>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed break-words [overflow-wrap:break-word] max-w-full overflow-hidden">${formatPostContent(c.content)}</p>
-            </div>
-          </div>
-        `).join('');
-      } catch (err) {
-        console.error('Failed to load comments:', err);
-      }
-    }
-
-    // Submit Comment (Members Only)
-    async function submitComment(postId) {
-      if (!isLoggedIn) {
-        openForumAuthModal();
-        return;
-      }
-      const inp = document.getElementById(`comment-input-${postId}`);
-      const content = inp?.value?.trim();
-      if (!content) return;
-
-      try {
-        const res = await fetch(`/api/forum/posts/${postId}/comments`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to post reply');
-
-        inp.value = '';
-        showToast('Reply published to the burrow! 🐾');
-        await loadComments(postId);
-
-        // Update comment counter
-        const cntEl = document.getElementById(`comment-cnt-${postId}`);
-        if (cntEl) {
-          cntEl.textContent = parseInt(cntEl.textContent || '0') + 1;
-        }
-      } catch (err) {
-        showToast(err.message);
-      }
-    }
-
-    // Toggle Post Like / Paw (Members Only)
-    async function togglePostLike(postId) {
-      if (!isLoggedIn) {
-        openForumAuthModal();
-        return;
-      }
-      try {
-        const res = await fetch(`/api/forum/posts/${postId}/like`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to toggle like');
-
-        const cntEl = document.getElementById(`like-cnt-${postId}`);
-        if (cntEl) cntEl.textContent = data.likes_count;
-
-        showToast(data.liked ? 'Paw left on post! 🐾' : 'Paw removed.');
-        loadForumPosts();
-      } catch (err) {
-        showToast(err.message);
-      }
-    }
-
-    // Publish New Post (Members Only)
-    async function publishForumPost() {
-      if (!isLoggedIn) {
-        openForumAuthModal();
+      const content = contentEl?.value.trim();
+      if (!content) {
+        showToast('Please type a message before posting to the wall.', 'fa-exclamation-circle');
+        contentEl?.focus();
         return;
       }
 
-      const title = document.getElementById('c-post-title')?.value?.trim();
-      const content = document.getElementById('c-post-content')?.value?.trim();
-      const codeSnippet = document.getElementById('c-post-code')?.value?.trim() || '';
-      const codeLang = document.getElementById('c-post-lang')?.value || 'javascript';
-      const tags = document.getElementById('c-post-tags')?.value?.trim() || '';
-      const location = document.getElementById('c-post-location')?.value?.trim() || userLocation || '';
-      const categoryRadio = document.querySelector('input[name="post-cat"]:checked');
-      const category = categoryRadio ? categoryRadio.value : 'tech';
-
-      if (!title || !content) {
-        alert('Please fill in both a discussion title and content.');
-        return;
-      }
-
-      const btn = document.getElementById('btn-publish-post');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Publishing...</span>`;
-        if (window.lucide) lucide.createIcons();
-      }
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
 
       try {
+        const payload = {
+          title: content.slice(0, 45) + (content.length > 45 ? '...' : ''),
+          category: catEl?.value || 'wall',
+          content: content,
+          code_snippet: codeEl?.value.trim() || '',
+          code_lang: langEl?.value || 'javascript'
+        };
+
         const res = await fetch('/api/forum/posts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title,
-            category,
-            content,
-            code_snippet: codeSnippet,
-            code_lang: codeLang,
-            tags,
-            location
-          })
+          body: JSON.stringify(payload)
         });
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to publish post');
-
-        // Reset composer
-        document.getElementById('c-post-title').value = '';
-        document.getElementById('c-post-content').value = '';
-        document.getElementById('c-post-code').value = '';
-        document.getElementById('c-post-tags').value = '';
-        document.getElementById('composer-code-box')?.classList.add('hidden');
-
-        showToast(data.message || 'Post is now live on the forum! 🦝🚀');
-        loadForumPosts();
+        if (res.ok && data.success) {
+          contentEl.value = '';
+          if (codeEl) codeEl.value = '';
+          document.getElementById('wall-code-snippet-box')?.classList.add('hidden');
+          showToast('Your update has been published to the wall! 🧱🚀');
+          loadWallFeed();
+        } else {
+          showToast(data.error || 'Failed to publish post. Please sign in.', 'fa-exclamation-triangle');
+        }
       } catch (err) {
-        alert(err.message);
+        showToast('Network error while posting.', 'fa-exclamation-triangle');
       } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Publish to Forum</span>`;
-          if (window.lucide) lucide.createIcons();
-        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Share to Wall</span>';
       }
     }
 
-    // Auto-Location Detection & Management
-    let userLocation = '';
+    // =========================================================================
+    // VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
+    // =========================================================================
+    async function openThreadReader(postId) {
+      currentNavView = 'thread';
+      window.location.hash = `d/${postId}`;
 
-    async function autoDetectLocation() {
+      document.getElementById('view-discussions')?.classList.add('hidden');
+      document.getElementById('view-wall')?.classList.add('hidden');
+      document.getElementById('view-thread')?.classList.remove('hidden');
+      document.getElementById('flarum-hero')?.classList.add('hidden');
+
+      const streamContainer = document.getElementById('thread-posts-stream');
+      if (streamContainer) {
+        streamContainer.innerHTML = `
+          <div class="p-10 text-center bg-white rounded-2xl border border-slate-200">
+            <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+            <p class="font-bold text-sm text-slate-700">Loading conversation thread...</p>
+          </div>
+        `;
+      }
+
       try {
-        const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
+        const res = await fetch(`/api/forum/posts/${postId}`);
         if (res.ok) {
-          const d = await res.json();
-          if (d && (d.city || d.country_name)) {
-            const loc = d.city ? `${d.city}, ${d.country_code || d.country_name}` : d.country_name;
-            applyLocation(loc);
-            return loc;
-          }
+          const data = await res.json();
+          currentActiveThread = data;
+          renderThreadView(data.post, data.comments || []);
+        } else {
+          streamContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Discussion not found or deleted.</div>`;
         }
-      } catch (_) {}
+      } catch (e) {
+        streamContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error loading thread.</div>`;
+      }
+    }
+
+    function renderThreadView(post, comments) {
+      if (!post) return;
+
+      // Update Header & Breadcrumb
+      const titleEl = document.getElementById('thread-title');
+      const badgeEl = document.getElementById('thread-category-badge');
+      const authorMeta = document.getElementById('thread-author-meta');
+      const dateMeta = document.getElementById('thread-date-meta');
+      const repliesMeta = document.getElementById('thread-replies-meta');
+      const counterEl = document.getElementById('scrubber-post-counter');
+
+      if (titleEl) titleEl.innerText = post.title;
+      if (badgeEl) badgeEl.outerHTML = getCategoryBadge(post.category);
+      if (authorMeta) authorMeta.innerHTML = `<i class="fas fa-user-circle text-slate-400"></i> Started by <strong class="text-slate-800 font-bold">${post.author_name || 'Member'}</strong>`;
+      if (dateMeta) dateMeta.innerHTML = `<i class="fas fa-clock text-slate-400"></i> ${formatTimeAgo(post.created_at)}`;
+      if (repliesMeta) repliesMeta.innerHTML = `<i class="fas fa-comments text-slate-400"></i> ${comments.length} replies`;
+      if (counterEl) counterEl.innerText = `Post 1 of ${comments.length + 1}`;
+
+      const streamContainer = document.getElementById('thread-posts-stream');
+      if (!streamContainer) return;
+
+      // Original Post (#1) HTML
+      let html = `
+        <!-- Original Post (#1) -->
+        <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <img src="${post.author_avatar || '/raccoon-logo.png'}" class="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-2xs" />
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-extrabold text-sm text-slate-900">${post.author_name || 'Member'}</span>
+                  ${post.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
+                </div>
+                <span class="text-xs text-slate-400">${formatTimeAgo(post.created_at)}</span>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-slate-400">#1</span>
+          </div>
+
+          <!-- Body Content -->
+          <div class="text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+            ${post.content}
+          </div>
+
+          <!-- Optional Code Snippet -->
+          ${post.code_snippet ? `
+            <div class="p-4 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
+              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-2 pb-1 border-b border-slate-800">
+                <span>${post.code_lang || 'code'}</span>
+                <span>Post Snippet</span>
+              </div>
+              <pre><code>${escapeHtml(post.code_snippet)}</code></pre>
+            </div>
+          ` : ''}
+
+          <!-- Post Footer -->
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
+            <button onclick="toggleLikePost('${post.id}', this)" class="flex items-center gap-1.5 text-slate-500 hover:text-rose-600 transition cursor-pointer ${post.has_liked ? 'text-rose-600' : ''}">
+              <i class="fas fa-heart ${post.has_liked ? 'text-rose-600' : 'text-slate-400'}"></i>
+              <span class="like-cnt">${post.likes_count || 0}</span> Likes
+            </button>
+            <button onclick="focusThreadReply()" class="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 transition cursor-pointer">
+              <i class="fas fa-reply text-slate-400"></i>
+              <span>Reply</span>
+            </button>
+          </div>
+        </article>
+      `;
+
+      // Comments List (#2, #3, ...)
+      comments.forEach((comment, idx) => {
+        const cAuthor = comment.author_name || comment.author_email?.split('@')[0] || 'Member';
+        const cAvatar = comment.author_avatar || '/raccoon-logo.png';
+        const cTime = formatTimeAgo(comment.created_at);
+
+        html += `
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <img src="${cAvatar}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-xs sm:text-sm text-slate-900">${cAuthor}</span>
+                    ${comment.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
+                  </div>
+                  <span class="text-[11px] text-slate-400">${cTime}</span>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-slate-400">#${idx + 2}</span>
+            </div>
+
+            <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+              ${comment.content}
+            </div>
+
+            ${comment.code_snippet ? `
+              <div class="p-3 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
+                <pre><code>${escapeHtml(comment.code_snippet)}</code></pre>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      streamContainer.innerHTML = html;
+    }
+
+    function focusThreadReply() {
+      const input = document.getElementById('thread-reply-input');
+      input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      input?.focus();
+    }
+
+    function toggleFollowThread() {
+      isFollowingActiveThread = !isFollowingActiveThread;
+      const btn = document.getElementById('btn-follow-thread');
+      const text = document.getElementById('btn-follow-text');
+      if (btn && text) {
+        if (isFollowingActiveThread) {
+          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+          text.innerText = 'Following';
+          showToast('You are now following this discussion! 🔔');
+        } else {
+          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+          text.innerText = 'Follow';
+          showToast('Unfollowed discussion.');
+        }
+      }
+    }
+
+    function insertMarkdownToReply(syntax) {
+      const input = document.getElementById('thread-reply-input');
+      if (!input) return;
+      input.value += syntax;
+      input.focus();
+    }
+
+    async function submitThreadReply() {
+      if (!currentActiveThread || !currentActiveThread.post) return;
+      const input = document.getElementById('thread-reply-input');
+      const btn = document.getElementById('btn-submit-reply');
+      const content = input?.value.trim();
+
+      if (!content) {
+        showToast('Please type a reply.', 'fa-exclamation-circle');
+        input?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
 
       try {
-        const res2 = await fetch('https://api.country.is/', { signal: AbortSignal.timeout(2000) });
-        if (res2.ok) {
-          const d2 = await res2.json();
-          if (d2 && d2.country) {
-            applyLocation(d2.country);
-            return d2.country;
-          }
+        const res = await fetch(`/api/forum/posts/${currentActiveThread.post.id}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: content })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          input.value = '';
+          showToast('Reply posted successfully! 💬');
+          openThreadReader(currentActiveThread.post.id);
+        } else {
+          showToast(data.error || 'Failed to post reply. Please sign in.', 'fa-exclamation-triangle');
         }
-      } catch (_) {}
-
-      return '';
+      } catch (err) {
+        showToast('Network error while posting reply.', 'fa-exclamation-triangle');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-reply text-xs"></i> <span>Post Reply</span>';
+      }
     }
 
-    function applyLocation(loc) {
-      if (!loc) return;
-      userLocation = loc;
-      const input = document.getElementById('c-post-location');
-      const badge = document.getElementById('composer-location-badge');
-      const val = document.getElementById('composer-location-val');
-      const btn = document.getElementById('btn-location-toggle');
-      const btnText = document.getElementById('btn-location-text');
+    // =========================================================================
+    // SEARCH & FILTERING HELPERS
+    // =========================================================================
+    let searchDebounceTimer = null;
+    function handleLiveSearch(query) {
+      currentSearchTerm = query.trim();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        if (currentSearchTerm) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
 
-      if (input) input.value = loc;
-      if (val) val.textContent = loc;
-      if (badge) {
-        badge.classList.remove('hidden');
-        badge.classList.add('inline-flex');
-      }
-      if (btn) {
-        btn.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-900');
-        if (btnText) btnText.textContent = 'Location Active';
-      }
-      if (window.lucide) lucide.createIcons();
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        loadForumFeed();
+      }, 200);
     }
 
-    function clearLocation(e) {
-      if (e) e.stopPropagation();
-      userLocation = '';
-      const input = document.getElementById('c-post-location');
-      const badge = document.getElementById('composer-location-badge');
-      const btn = document.getElementById('btn-location-toggle');
-      const btnText = document.getElementById('btn-location-text');
-
+    function clearLiveSearch() {
+      const input = document.getElementById('flarum-search-input');
       if (input) input.value = '';
-      if (badge) {
-        badge.classList.add('hidden');
-        badge.classList.remove('inline-flex');
-      }
-      if (btn) {
-        btn.classList.remove('bg-slate-100', 'border-slate-300', 'text-slate-900');
-        if (btnText) btnText.textContent = 'Share Location';
-      }
+      currentSearchTerm = '';
+      document.getElementById('clear-search-btn')?.classList.add('hidden');
+      loadForumFeed();
     }
 
-    async function toggleLocationPrompt() {
-      const input = document.getElementById('c-post-location');
-      if (input && input.value) {
-        if (confirm(`Current location attached: "${input.value}".\n\nClick OK to update with exact GPS coordinates, or Cancel to remove location.`)) {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-              try {
-                const { latitude, longitude } = pos.coords;
-                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-                if (geoRes.ok) {
-                  const geoData = await geoRes.json();
-                  const city = geoData.address.city || geoData.address.town || geoData.address.village || geoData.address.county || '';
-                  const country = geoData.address.country || '';
-                  const loc = city ? `${city}, ${country}` : country;
-                  if (loc) {
-                    applyLocation(loc);
-                    showToast('Location updated: ' + loc);
-                    return;
-                  }
-                }
-              } catch (_) {}
-            });
+    function filterByCategory(category) {
+      currentCategoryFilter = category;
+      window.location.hash = category === 'all' ? 'all' : `tag-${category}`;
+
+      // Update sidebar category active styles
+      document.querySelectorAll('#categories-list-container button').forEach(btn => {
+        btn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition';
+      });
+      const activeBtn = document.getElementById(`cat-btn-${category}`);
+      if (activeBtn) {
+        activeBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 bg-slate-100 transition';
+      }
+
+      // Update main title
+      const titleEl = document.getElementById('current-view-title');
+      if (titleEl) {
+        titleEl.innerText = category === 'all' ? 'All Discussions' : `Discussions in ${CATEGORY_MAP[category]?.label || category}`;
+      }
+
+      switchToDiscussionsView();
+    }
+
+    function changeSorting(sortVal) {
+      currentSort = sortVal;
+      loadForumFeed();
+    }
+
+    function filterMyPosts() {
+      if (!currentUser) return;
+      currentSearchTerm = currentUser.name || currentUser.email;
+      loadForumFeed();
+    }
+
+    // Like / Heart Toggle
+    async function toggleLikePost(postId, buttonEl) {
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/like`, { method: 'POST' });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const cntEl = buttonEl.querySelector('.like-cnt');
+          const heart = buttonEl.querySelector('.fa-heart');
+          if (cntEl) cntEl.innerText = data.likes_count;
+          if (data.action === 'liked') {
+            heart?.classList.add('text-rose-600');
+            heart?.classList.remove('text-slate-400');
+            buttonEl.classList.add('text-rose-600');
+            showToast('You liked this discussion! ❤️');
+          } else {
+            heart?.classList.remove('text-rose-600');
+            heart?.classList.add('text-slate-400');
+            buttonEl.classList.remove('text-rose-600');
           }
         } else {
-          clearLocation();
+          showToast(data.error || 'Please sign in to like discussions.', 'fa-exclamation-triangle');
         }
-      } else {
-        const loc = await autoDetectLocation();
-        if (loc) {
-          showToast('Location attached: ' + loc);
-        } else {
-          const manual = prompt('Enter your City, Country to attach to this post:', 'Bucharest, Romania');
-          if (manual && manual.trim()) {
-            applyLocation(manual.trim());
+      } catch (e) {
+        showToast('Error recording like.', 'fa-exclamation-triangle');
+      }
+    }
+
+    function copyPostLink(postId) {
+      const url = `${window.location.origin}/forum#d/${postId}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Discussion link copied to clipboard! 📋');
+      }).catch(() => {
+        prompt('Copy discussion link:', url);
+      });
+    }
+
+    // =========================================================================
+    // FLARUM COMPOSER DRAWER CONTROLS
+    // =========================================================================
+    function openComposerModal() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.remove('composer-hidden', 'composer-minimized');
+      document.getElementById('c-post-title')?.focus();
+    }
+
+    function closeComposerModal() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.add('composer-hidden');
+    }
+
+    function minimizeComposer() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.toggle('composer-minimized');
+    }
+
+    function toggleComposerCodeBox() {
+      const box = document.getElementById('c-code-box');
+      box?.classList.toggle('hidden');
+    }
+
+    async function publishDiscussion() {
+      const titleEl = document.getElementById('c-post-title');
+      const catEl = document.getElementById('c-post-category');
+      const contentEl = document.getElementById('c-post-content');
+      const codeEl = document.getElementById('c-code-content');
+      const langEl = document.getElementById('c-code-lang');
+      const btn = document.getElementById('btn-publish-discussion');
+
+      const title = titleEl?.value.trim();
+      const content = contentEl?.value.trim();
+
+      if (!title) {
+        showToast('Please enter a discussion title.', 'fa-exclamation-circle');
+        titleEl?.focus();
+        return;
+      }
+      if (!content) {
+        showToast('Please enter discussion content.', 'fa-exclamation-circle');
+        contentEl?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Publishing...';
+
+      try {
+        const payload = {
+          title: title,
+          category: catEl?.value || 'tech',
+          content: content,
+          code_snippet: codeEl?.value.trim() || '',
+          code_lang: langEl?.value || 'javascript'
+        };
+
+        const res = await fetch('/api/forum/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          titleEl.value = '';
+          contentEl.value = '';
+          if (codeEl) codeEl.value = '';
+          closeComposerModal();
+          showToast('Discussion published successfully! 🚀');
+          loadForumFeed(true);
+          if (data.id) {
+            window.location.hash = `d/${data.id}`;
           }
+        } else {
+          showToast(data.error || 'Failed to publish discussion. Please sign in.', 'fa-exclamation-triangle');
         }
+      } catch (err) {
+        showToast('Network error publishing discussion.', 'fa-exclamation-triangle');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane text-emerald-400 text-xs"></i> <span>Post Discussion</span>';
       }
-    }
-
-    function updateCatLabel(label) {
-      const el = document.getElementById('selected-cat-label');
-      if (el) el.textContent = label;
-    }
-
-    // Copy Code Helper
-    function copySnippet(btn, code) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(code);
-        const originalText = btn.innerHTML;
-        btn.innerHTML = `<span class="text-slate-900 font-bold">✓ Copied!</span>`;
-        setTimeout(() => btn.innerHTML = originalText, 1500);
-      }
-    }
-
-    function shareForumPost(id, title) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${title} - Read and discuss on Raccon Forum: ${window.location.origin}/forum`);
-        showToast('Discussion link copied to clipboard!');
-      }
-    }
-
-    function formatTime(isoStr) {
-      if (!isoStr) return 'Just now';
-      const d = new Date(isoStr);
-      const now = new Date();
-      const diffMs = now - d;
-      const diffMins = Math.floor(diffMs / 60000);
-      if (diffMins < 1) return 'Just now';
-      if (diffMins < 60) return `${diffMins}m ago`;
-      const diffHrs = Math.floor(diffMins / 60);
-      if (diffHrs < 24) return `${diffHrs}h ago`;
-      return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function escapeJsString(str) {
-      if (!str) return '';
-      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+      return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
     }
 
     // Startup
-    window.addEventListener('DOMContentLoaded', async () => {
-      await checkAuthSession();
-      await loadForumPosts();
-      autoDetectLocation(); // Automatically detect client location for forum sharing
-      if (window.lucide) lucide.createIcons();
-    });
+    document.addEventListener('DOMContentLoaded', initForum);
   </script>
 
   <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
