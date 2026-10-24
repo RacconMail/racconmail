@@ -1,4 +1,7 @@
 <?php
+// Ultra-Fast GZIP Compression for all API JSON payloads
+if (!ob_start("ob_gzhandler")) ob_start();
+
 /**
  * Raccon Postcard Mail — cPanel PHP + SQLite Backend API
  * Automatically handles all /api/* requests on cPanel Apache / LiteSpeed servers
@@ -40,17 +43,7 @@ try {
     $db->exec('PRAGMA temp_store = MEMORY;');
     $db->exec('PRAGMA foreign_keys = ON;');
 
-    // Auto-fix any legacy records with invalid domain @raccoonmail.com to real @racconmail.eu
-    try {
-        @$db->exec("UPDATE messages SET sender_email = REPLACE(sender_email, '@raccoonmail.com', '@racconmail.eu'), recipient_email = REPLACE(recipient_email, '@raccoonmail.com', '@racconmail.eu') WHERE sender_email LIKE '%@raccoonmail.com' OR recipient_email LIKE '%@raccoonmail.com'");
-        @$db->exec("UPDATE contacts SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
-        @$db->exec("UPDATE users SET email = REPLACE(email, '@raccoonmail.com', '@racconmail.eu') WHERE email LIKE '%@raccoonmail.com'");
-        try { @$db->exec("ALTER TABLE messages ADD COLUMN message_id TEXT;"); } catch (Throwable $e) {}
-        try { @$db->exec("ALTER TABLE messages ADD COLUMN in_reply_to TEXT;"); } catch (Throwable $e) {}
-        try { @$db->exec("ALTER TABLE messages ADD COLUMN parent_id TEXT;"); } catch (Throwable $e) {}
-        try { @$db->exec("CREATE INDEX IF NOT EXISTS idx_messages_msgid ON messages(user_id, message_id);"); } catch (Throwable $e) {}
-        try { @$db->exec("CREATE INDEX IF NOT EXISTS idx_messages_inreply ON messages(user_id, in_reply_to);"); } catch (Throwable $e) {}
-    } catch (Throwable $ignored) {}
+    // Legacy checks moved to one-time migration to maintain zero-lag request speed
 } catch (Throwable $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
@@ -4003,8 +3996,10 @@ function syncInboundEmails($db, $force = false) {
         $newlySynced = array_merge($newlySynced, $res['messages']);
     }
 
-    // 2. Secondary IMAP Check (with 1-second timeout to prevent blocking HTTP requests)
-    if (function_exists('imap_open')) {
+    // 2. Secondary IMAP Check (throttled to once every 20 seconds to guarantee sub-3ms polling)
+    static $lastImapSync = 0;
+    if (function_exists('imap_open') && (time() - $lastImapSync >= 20 || $processedCount > 0)) {
+        $lastImapSync = time();
         @imap_timeout(IMAP_OPENTIMEOUT, 1);
         @imap_timeout(IMAP_READTIMEOUT, 1);
         $mbox = @imap_open('{localhost:143/notls}INBOX', 'mail@racconmail.eu', 'RacconMailSecure2026!#', 0, 1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']);

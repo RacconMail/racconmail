@@ -698,5 +698,36 @@
       if (window.lucide) lucide.createIcons();
     });
   </script>
+
+  <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
+  <script>
+    (function() {
+      const prefetched = new Set();
+      function prefetch(url) {
+        if (!url || prefetched.has(url) || url.startsWith('#') || url.startsWith('javascript:') || url.startsWith('mailto:') || url.startsWith('tel:')) return;
+        prefetched.add(url);
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = url;
+        link.as = 'document';
+        document.head.appendChild(link);
+      }
+
+      document.addEventListener('mouseover', function(e) {
+        const a = e.target.closest('a');
+        if (a && a.href && a.origin === window.location.origin) {
+          prefetch(a.pathname + a.search);
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchstart', function(e) {
+        const a = e.target.closest('a');
+        if (a && a.href && a.origin === window.location.origin) {
+          prefetch(a.pathname + a.search);
+        }
+      }, { passive: true });
+    })();
+  </script>
+
 </body>
 </html>

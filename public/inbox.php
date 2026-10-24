@@ -303,6 +303,28 @@ try {
       background-color: #F8FAFC;
     }
 
+    
+    /* Fluid Hardware Acceleration & 60-120fps Smooth Momentum */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, [role="button"], a {
+      touch-action: manipulation;
+    }
+    .msg-card-active, .msg-card-inactive, .nav-pill-active, .nav-pill-inactive {
+      transform: translateZ(0);
+      will-change: transform, background-color;
+      transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, box-shadow 0.16s ease !important;
+    }
+    .msg-card-active:active, .msg-card-inactive:active {
+      transform: scale(0.99) translateZ(0) !important;
+    }
+    #col-messages, #col-reader, #sidebar, #col-inbox {
+      -webkit-overflow-scrolling: touch !important;
+      scroll-behavior: smooth !important;
+      overscroll-behavior: contain;
+    }
+
     /* Collapsed Sidebar Rail Style */
     .sidebar-collapsed {
       width: 68px !important;
@@ -1332,10 +1354,41 @@ try {
       renderConversationThread(list[currentSelectedThreadIndex] || list[0]);
     }
 
-    // Select Thread Item
+    // Select Thread Item (Instant Zero-Lag Class Swap)
     function selectThreadItem(index) {
+      const prevActive = document.querySelector('.msg-card-active');
+      if (prevActive) {
+        prevActive.classList.remove('msg-card-active');
+        prevActive.classList.add('msg-card-inactive');
+      }
+      const nextActive = document.getElementById('thread-item-' + index);
+      if (nextActive) {
+        nextActive.classList.remove('msg-card-inactive');
+        nextActive.classList.add('msg-card-active');
+      }
       currentSelectedThreadIndex = index;
-      renderMessageList(document.getElementById('global-search')?.value || '');
+      
+      const q = (document.getElementById('global-search')?.value || '').toLowerCase().trim();
+      let list = [];
+      if (currentFolder === 'All') list = [].concat(...Object.values(mailDatabase));
+      else if (currentFolder === 'Unread') list = (mailDatabase['Inbox'] || []).filter(m => !m.isRead);
+      else if (currentFolder === 'Starred') list = [].concat(...Object.values(mailDatabase)).filter(m => m.isStarred);
+      else list = mailDatabase[currentFolder] || [];
+
+      if (currentFilter === 'unread') list = list.filter(m => !m.isRead);
+      if (currentFilter === 'starred') list = list.filter(m => m.isStarred);
+      if (q) list = list.filter(m => (m.senderName||'').toLowerCase().includes(q) || (m.subject||'').toLowerCase().includes(q) || (m.sender||'').toLowerCase().includes(q));
+
+      const selected = list[index];
+      if (selected) {
+        if (!selected.isRead) {
+          selected.isRead = true;
+          // Optimistically show dot as read
+          const dot = nextActive?.querySelector('.ring-cyan-400\/20');
+          if (dot) dot.classList.add('opacity-0');
+        }
+        renderConversationThread(selected);
+      }
 
       // On mobile view: show reading pane and hide middle column
       if (window.innerWidth < 768) {
