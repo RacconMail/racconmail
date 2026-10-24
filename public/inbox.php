@@ -860,17 +860,17 @@ try {
     <main id="col-reader" class="hidden md:flex flex-1 flex-col bg-white h-full overflow-hidden relative">
       
       <!-- Right Top Bar: All Emails + Top Actions + [ Compose ] + [ + New Identity ] -->
-      <header class="h-16 px-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none z-20">
-        <div class="flex items-center gap-3">
-          <button onclick="backToMobileInbox()" class="md:hidden p-1.5 rounded-lg border border-slate-200 text-slate-600">
+      <header class="h-16 px-4 sm:px-6 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white select-none z-20 gap-2">
+        <div class="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+          <button onclick="backToMobileInbox()" class="md:hidden p-1.5 rounded-lg border border-slate-200 text-slate-600 shrink-0 hover:bg-slate-50 transition" title="Back to Inbox">
             <i data-lucide="arrow-left" class="h-4 w-4"></i>
           </button>
-          <h2 id="reader-top-title" class="text-lg font-bold text-slate-900 tracking-tight">All Emails</h2>
+          <h2 id="reader-top-title" class="text-xs sm:text-sm font-bold text-slate-800 tracking-tight truncate max-w-[130px] sm:max-w-xs md:max-w-md">All Emails</h2>
         </div>
 
-        <!-- Action Buttons: Reply, Star, Trash, Archive, Compose, New Identity -->
-        <div class="flex items-center gap-2">
-          <div class="flex items-center gap-1 text-slate-400">
+        <!-- Action Buttons: Reply, Star, Trash, Archive -->
+        <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-0.5 sm:gap-1 text-slate-400">
             <button onclick="replyCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Reply">
               <i data-lucide="reply" class="h-4 w-4"></i>
             </button>
@@ -880,7 +880,7 @@ try {
             <button onclick="archiveCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Archive">
               <i data-lucide="archive" class="h-4 w-4"></i>
             </button>
-            <button onclick="trashCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-rose-600 transition cursor-pointer" title="Delete / Move to Trash">
+            <button onclick="trashCurrentThread()" class="p-2 rounded-xl hover:bg-slate-100 hover:text-rose-600 text-rose-500 transition cursor-pointer" title="Delete Email">
               <i data-lucide="trash-2" class="h-4 w-4"></i>
             </button>
           </div>
@@ -1372,43 +1372,77 @@ try {
         function parseEmailReplyAndQuote(raw) {
       if (!raw) return { isReply: false, replyText: '', quotedText: '' };
       var text = String(raw).trim();
-      var quoteHeaderPatterns = [
-        /\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i,
-        /\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i,
-        /\n\s*(_{20,})/i,
-        /\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i
-      ];
+      var norm = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      var lines = norm.split('\n');
+      var count = lines.length;
 
-      var splitIndex = -1;
-      for (var i = 0; i < quoteHeaderPatterns.length; i++) {
-        var match = text.match(quoteHeaderPatterns[i]);
-        if (match && match.index !== undefined) {
-          if (splitIndex === -1 || match.index < splitIndex) {
-            splitIndex = match.index;
+      var quoteStartLine = -1;
+
+      for (var i = 0; i < count; i++) {
+        var line = lines[i].trim();
+
+        // Check for quote header endings like "a scris:", "wrote:", "schrieb:", etc.
+        if (/(?:a\s*scris|wrote|a\s*écrit|schrieb)\s*:$/i.test(line)) {
+          quoteStartLine = i;
+          // Walk backwards up to 6 lines to capture author, date, and email tokens
+          for (var j = i - 1; j >= Math.max(0, i - 6); j--) {
+            var prev = lines[j].trim();
+            if (prev === '') break;
+            quoteStartLine = j;
+          }
+          break;
+        }
+
+        // Standard headers
+        if (/^-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,}$/i.test(line) ||
+            /^_{20,}$/.test(line) ||
+            /^From:\s+/i.test(line)) {
+          quoteStartLine = i;
+          break;
+        }
+      }
+
+      // Fallback: lines starting with > or &gt;
+      if (quoteStartLine === -1) {
+        for (var i = 0; i < count; i++) {
+          var line = lines[i].trim();
+          if (line.startsWith('>') || line.startsWith('&gt;')) {
+            quoteStartLine = i;
+            if (i > 0 && lines[i - 1].trim() !== '') {
+              if (/:\s*$/.test(lines[i - 1].trim())) {
+                quoteStartLine = i - 1;
+              }
+            }
+            break;
           }
         }
       }
 
-      if (splitIndex === -1) {
-        var quoteLineMatch = text.match(/\n\s*(?:>|&gt;)\s*[^\n]*/);
-        if (quoteLineMatch && quoteLineMatch.index !== undefined) {
-          splitIndex = quoteLineMatch.index;
-        }
-      }
-
-      if (splitIndex !== -1 && splitIndex > 0) {
-        var replyPart = text.slice(0, splitIndex).trim();
-        var quotedPart = text.slice(splitIndex).trim();
+      if (quoteStartLine > 0) {
+        var replyPart = lines.slice(0, quoteStartLine).join('\n').trim();
+        var quotedPart = lines.slice(quoteStartLine).join('\n').trim();
         if (replyPart.length > 0) {
-          return { isReply: true, replyText: replyPart, quotedText: quotedPart };
+          return {
+            isReply: true,
+            replyText: replyPart,
+            quotedText: quotedPart
+          };
         }
       }
 
       if (text.startsWith('>') || text.startsWith('&gt;')) {
-        return { isReply: true, replyText: '', quotedText: text };
+        return {
+          isReply: true,
+          replyText: '',
+          quotedText: text
+        };
       }
 
-      return { isReply: false, replyText: text, quotedText: '' };
+      return {
+        isReply: false,
+        replyText: text,
+        quotedText: ''
+      };
     }
     window.parseEmailReplyAndQuote = parseEmailReplyAndQuote;
 
@@ -1638,34 +1672,49 @@ function cleanMimeEmailContent(raw) {
         const readMinutes = Math.max(1, Math.ceil((cleanSnippet.length + (msg.subject || '').length) / 25));
 
         return `
-          <div onclick="selectThreadItem(${idx})" id="thread-item-${idx}" class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group">
+          <div onclick="selectThreadItem(${idx})" 
+               ontouchstart="handleCardTouchStart(event, '${msg.id}', ${idx})"
+               ontouchmove="handleCardTouchMove(event)"
+               ontouchend="handleCardTouchEnd(event)"
+               oncontextmenu="handleCardContextMenu(event, '${msg.id}', ${idx})"
+               id="thread-item-${idx}" 
+               class="${isActive ? 'msg-card-active' : 'msg-card-inactive'} p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group select-none">
             <div class="flex items-start justify-between gap-3.5">
               <!-- Left Column: Content -->
               <div class="flex-1 min-w-0 pr-1">
-                <!-- Metadata Row: Date & Reading indicator -->
-                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
-                  <span>${msg.time || 'Today, 08:15 PM'}</span>
-                  <span class="text-slate-300">•</span>
-                  <span>${readMinutes} min read</span>
+                <!-- Metadata Row: Date & Reading indicator & Quick Delete -->
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold font-mono">
+                    <span>${msg.time || 'Today, 08:15 PM'}</span>
+                    <span class="text-slate-300">•</span>
+                    <span>${readMinutes} min read</span>
+                  </div>
+                  <!-- Quick delete button for smartphone & desktop -->
+                  <button type="button" 
+                          onclick="event.stopPropagation(); triggerCardDelete('${msg.id}', ${idx});" 
+                          class="p-1.5 -mr-1 text-slate-300 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer" 
+                          title="${currentFolder.toLowerCase() === 'trash' ? 'Delete Permanently' : 'Delete / Move to Trash'}">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
                 </div>
 
                 <!-- Bold Title -->
                 <h3 class="font-bold text-[15px] sm:text-base text-slate-900 leading-snug tracking-tight mb-1.5 line-clamp-2">
-                  ${msg.subject || '(no subject)'}
+                  ${escapeHtml(msg.subject || '(no subject)')}
                 </h3>
 
                 <!-- Body / Snippet Text -->
                 <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                  ${cleanSnippet || 'Dive into the email thread to review communication and attachments.'}
+                  ${escapeHtml(cleanSnippet || 'Dive into the email thread to review communication and attachments.')}
                 </p>
 
                 <!-- Tags / Category Chips Row -->
                 <div class="flex items-center flex-wrap gap-1.5">
                   <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
-                    ${msg.senderName || 'Raccon Mail'}
+                    ${escapeHtml(msg.senderName || 'Raccon Mail')}
                   </span>
                   <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
-                    ${currentFolder}
+                    ${escapeHtml(currentFolder)}
                   </span>
                   ${msg.isStarred ? '<span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFF4ED] text-[#D96B43] flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> Starred</span>' : ''}
                 </div>
@@ -1684,6 +1733,7 @@ function cleanMimeEmailContent(raw) {
         `;
       }).join('');
 
+      try { lucide.createIcons(); } catch (_) {}
       renderConversationThread(list[currentSelectedThreadIndex] || list[0]);
     }
 
@@ -1715,6 +1765,7 @@ function cleanMimeEmailContent(raw) {
 
     // Select Thread Item (Instant Zero-Lag Class Swap)
     function selectThreadItem(index) {
+      if (cardLongPressFired) return;
       const prevActive = document.querySelector('.msg-card-active');
       if (prevActive) {
         prevActive.classList.remove('msg-card-active');
@@ -1772,7 +1823,7 @@ function cleanMimeEmailContent(raw) {
         starIcon.className = `h-4 w-4 ${msg.isStarred ? 'text-amber-500 fill-amber-500' : 'text-slate-400'}`;
       }
 
-      container.innerHTML = msg.thread.map((card, i) => {
+      const cardsHtml = (msg.thread || []).map((card, i) => {
         const cleanedBody = cleanMimeEmailContent(card.body);
         const parsed = parseEmailReplyAndQuote(cleanedBody);
         const isReply = Boolean(parsed.isReply || msg.is_reply || (msg.subject && msg.subject.toLowerCase().startsWith('re:')));
@@ -1780,13 +1831,13 @@ function cleanMimeEmailContent(raw) {
         const quotedText = parsed.quotedText || msg.quoted_text || '';
 
         if (isReply && replyText) {
-          // Nice Modern Template Design for Reply Received
+          // Centered, Responsive, Non-overflowing Reply Template
           return `
-            <div class="mb-6 rounded-[28px] bg-gradient-to-b from-indigo-50/40 via-white to-slate-50/30 border border-indigo-100/90 p-5 sm:p-7 shadow-xs relative overflow-hidden">
+            <div class="mb-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-indigo-50/50 via-white to-slate-50/40 border border-indigo-100/90 p-4 sm:p-6 shadow-xs relative overflow-hidden break-words w-full">
               <!-- Top Pill & Status Header -->
-              <div class="flex items-center justify-between pb-3.5 border-b border-indigo-100/60 mb-4">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#6c4ff5] text-white shadow-xs">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-indigo-100/60 mb-4">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#6c4ff5] text-white shadow-2xs">
                     <i data-lucide="corner-down-left" class="w-3.5 h-3.5 text-white"></i>
                     <span>Reply Received</span>
                   </span>
@@ -1794,25 +1845,25 @@ function cleanMimeEmailContent(raw) {
                     Updates
                   </span>
                 </div>
-                <div class="flex items-center gap-2 text-slate-400">
-                  <span class="text-xs font-mono font-medium">${escapeHtml(card.date || 'Recently')}</span>
+                <div class="flex items-center gap-2 text-slate-400 shrink-0">
+                  <span class="text-xs font-mono font-medium">${escapeHtml(card.date || msg.date || 'Recently')}</span>
                 </div>
               </div>
 
               <!-- Sender Profile Row -->
-              <div class="flex items-start gap-3.5 mb-4">
+              <div class="flex items-start gap-3 mb-4 min-w-0">
                 <div class="w-10 h-10 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                   <img src="${card.avatar || '/raccoon-logo.svg'}" class="w-7 h-7 object-contain" alt="Avatar" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between">
+                  <div class="flex items-center justify-between gap-2">
                     <h4 class="font-extrabold text-sm sm:text-base text-slate-900 truncate">${escapeHtml(card.sender)}</h4>
-                    <button class="hover:text-slate-700 p-1 text-slate-400" title="Options"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                    <button onclick="trashCurrentThread()" class="hover:text-rose-600 p-1 text-slate-300 transition" title="Delete"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
                   </div>
-                  <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
-                    <span class="font-mono">to ${escapeHtml(card.to)}</span>
+                  <div class="text-[11px] text-slate-400 flex flex-wrap items-center gap-1.5 mt-0.5 break-all">
+                    <span class="font-mono truncate max-w-full">to ${escapeHtml(card.to)}</span>
                     <span>•</span>
-                    <span class="text-emerald-600 font-medium flex items-center gap-1">
+                    <span class="text-emerald-600 font-medium inline-flex items-center gap-1 shrink-0">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       Verified Delivery
                     </span>
@@ -1820,26 +1871,26 @@ function cleanMimeEmailContent(raw) {
                 </div>
               </div>
 
-              <!-- The Clean Reply Content Box (JUST THE REPLY) -->
-              <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative">
-                <div class="text-[10px] font-extrabold text-[#6c4ff5] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <!-- Clean Reply Content Box (ONLY THE ACTUAL REPLY - "Chenar") -->
+              <div class="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs relative overflow-hidden break-words w-full">
+                <div class="text-[10px] font-extrabold text-[#6c4ff5] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                   <i data-lucide="message-square" class="w-3.5 h-3.5 text-[#6c4ff5]"></i>
                   <span>Response Message</span>
                 </div>
-                <div class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed whitespace-pre-line selection:bg-[#6c4ff5] selection:text-white">
+                <div class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed whitespace-pre-wrap break-words [word-break:break-word] overflow-hidden selection:bg-[#6c4ff5] selection:text-white select-text">
                   ${escapeHtml(replyText)}
                 </div>
               </div>
 
               <!-- Collapsible Quoted Email History -->
               ${quotedText ? `
-                <div class="mt-4 pt-3 border-t border-slate-100/80">
-                  <button type="button" onclick="toggleQuotedHistory(this)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/70 transition cursor-pointer border border-slate-200/50">
+                <div class="mt-4 pt-3 border-t border-slate-100/90 w-full overflow-hidden">
+                  <button type="button" onclick="toggleQuotedHistory(this)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/70 transition cursor-pointer border border-slate-200/60 active:scale-98">
                     <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
                     <span>Show quoted email history</span>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"></i>
                   </button>
-                  <div class="quoted-history-panel hidden mt-3 p-4 sm:p-5 rounded-2xl bg-slate-50 border-l-4 border-indigo-400 text-xs text-slate-500 font-mono leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto select-text">
+                  <div class="quoted-history-panel hidden mt-3 p-3.5 sm:p-5 rounded-2xl bg-slate-50 border-l-4 border-indigo-400 text-xs text-slate-600 font-mono leading-relaxed whitespace-pre-wrap break-words [word-break:break-word] max-h-96 overflow-y-auto overflow-x-hidden select-text w-full">
                     ${escapeHtml(quotedText)}
                   </div>
                 </div>
@@ -1848,42 +1899,62 @@ function cleanMimeEmailContent(raw) {
           `;
         }
 
-        // Standard card if not a reply
+        // Standard card if not a reply (Centered, non-overflowing)
         return `
-          <div class="border-b border-slate-100 pb-6 mb-6">
-            <div class="flex items-start gap-3 mb-3">
+          <div class="mb-6 rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-2xs relative overflow-hidden break-words w-full">
+            <div class="flex items-start gap-3 mb-3.5 min-w-0">
               <img src="${card.avatar || '/raccoon-logo.svg'}" class="h-9 w-9 rounded-full object-cover shrink-0 border border-slate-200" />
               <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-xs text-slate-900">${escapeHtml(card.sender)}</span>
-                  <div class="flex items-center gap-2 text-slate-400">
-                    <span class="text-[11px]">${escapeHtml(card.date)}</span>
-                    <button class="hover:text-slate-700 p-0.5"><i data-lucide="more-vertical" class="h-3.5 w-3.5"></i></button>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-bold text-sm text-slate-900 truncate">${escapeHtml(card.sender)}</span>
+                  <div class="flex items-center gap-2 text-slate-400 shrink-0">
+                    <span class="text-[11px] font-mono">${escapeHtml(card.date)}</span>
+                    <button onclick="trashCurrentThread()" class="hover:text-rose-600 p-0.5 text-slate-300 transition" title="Delete"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
                   </div>
                 </div>
-                <div class="text-[11px] text-slate-400 flex items-center gap-1">
-                  <span>to ${escapeHtml(card.to)}</span>
-                  <i data-lucide="chevron-down" class="h-3 w-3"></i>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                  <span class="truncate">to ${escapeHtml(card.to)}</span>
                 </div>
               </div>
             </div>
-            <div class="pl-12 text-xs text-slate-700 leading-relaxed space-y-2 whitespace-pre-line">
+            <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2 whitespace-pre-wrap break-words [word-break:break-word] overflow-hidden select-text">
               ${cleanedBody}
             </div>
           </div>
         `;
-      }).join('') + `
-        <!-- Quick Reply Box at bottom -->
-        <div class="pt-4 flex items-center gap-3">
-          <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full border border-slate-200" />
-          <div class="flex-1 relative flex items-center">
-            <input id="quick-reply-input" type="text" placeholder="Write a quick reply..." class="w-full bg-slate-50 rounded-full border border-slate-200 pl-4 pr-24 py-2 text-xs text-slate-800 outline-none focus:border-slate-400" />
-            <button onclick="sendQuickReply()" class="absolute right-1.5 px-3 py-1 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-semibold cursor-pointer">Reply</button>
+      }).join('');
+
+      container.innerHTML = `
+        <div class="max-w-3xl mx-auto w-full px-1 sm:px-4 py-2">
+          <!-- Prominent Centered Subject Title -->
+          <div class="mb-5 text-center sm:text-left">
+            <h1 class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug break-words [word-break:break-word] overflow-hidden">
+              ${escapeHtml(msg.subject || '(no subject)')}
+            </h1>
+            <div class="flex items-center justify-center sm:justify-start gap-2 mt-2 text-xs text-slate-400 font-mono">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase bg-slate-100 text-slate-600 border border-slate-200">
+                ${escapeHtml(currentFolder)}
+              </span>
+              <span>•</span>
+              <span>${escapeHtml(msg.date || msg.time || 'Recently')}</span>
+            </div>
+          </div>
+
+          <!-- Email Thread Cards -->
+          ${cardsHtml}
+
+          <!-- Quick Reply Box at bottom -->
+          <div class="pt-4 flex items-center gap-3">
+            <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full border border-slate-200 shrink-0" />
+            <div class="flex-1 relative flex items-center min-w-0">
+              <input id="quick-reply-input" type="text" placeholder="Write a quick reply..." class="w-full bg-slate-50 rounded-full border border-slate-200 pl-4 pr-24 py-2 text-xs text-slate-800 outline-none focus:border-slate-400" />
+              <button onclick="sendQuickReply()" class="absolute right-1.5 px-3 py-1 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-semibold cursor-pointer">Reply</button>
+            </div>
           </div>
         </div>
       `;
 
-      lucide.createIcons();
+      try { lucide.createIcons(); } catch (_) {}
     }
 
     function renderEmptyConversation() {
@@ -1982,6 +2053,7 @@ function cleanMimeEmailContent(raw) {
     }
 
     // Delete single message permanently or move to trash
+    // Delete single message permanently from trash or move to trash
     async function deleteMessageById(msgId) {
       let removedMsg = null;
       for (const f in mailDatabase) {
@@ -1993,7 +2065,7 @@ function cleanMimeEmailContent(raw) {
         }
       }
 
-      const isCurrentlyTrash = (currentFolder.toLowerCase() === 'trash');
+      const isCurrentlyTrash = (currentFolder.toLowerCase() === 'trash' || (removedMsg && (removedMsg.is_trashed === 1 || removedMsg.computed_folder === 'Trash')));
       if (!isCurrentlyTrash && removedMsg) {
         if (!mailDatabase['Trash']) mailDatabase['Trash'] = [];
         mailDatabase['Trash'].unshift(removedMsg);
@@ -2014,6 +2086,220 @@ function cleanMimeEmailContent(raw) {
       }
       refreshFolderCounts();
     }
+
+    async function trashCurrentThread() {
+      const list = (currentFolder === 'All') ? [].concat(...Object.values(mailDatabase)) :
+                   (currentFolder === 'Updates') ? (mailDatabase['Updates'] || []) :
+                   (mailDatabase[currentFolder] || mailDatabase['Inbox']);
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) {
+        const isTrash = (currentFolder.toLowerCase() === 'trash' || msg.is_trashed === 1 || msg.computed_folder === 'Trash');
+        if (isTrash) {
+          if (!confirm('Permanently delete this email from Trash?')) return;
+        }
+        await deleteMessageById(msg.id);
+        showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+        if (window.innerWidth < 768) {
+          backToMobileInbox();
+        }
+      }
+    }
+
+
+    // Mobile Hold-to-Delete Touch Engine & Toast Notification
+    let cardLongPressTimer = null;
+    let cardTouchStartX = 0;
+    let cardTouchStartY = 0;
+    let cardTouchMoved = false;
+    let cardLongPressFired = false;
+    let activeActionMsgId = null;
+    let activeActionMsgIndex = -1;
+
+    function handleCardTouchStart(e, msgId, idx) {
+      if (e.touches && e.touches.length > 1) return;
+      const touch = e.touches ? e.touches[0] : e;
+      cardTouchStartX = touch.clientX;
+      cardTouchStartY = touch.clientY;
+      cardTouchMoved = false;
+      cardLongPressFired = false;
+      activeActionMsgId = msgId;
+      activeActionMsgIndex = idx;
+
+      clearTimeout(cardLongPressTimer);
+      cardLongPressTimer = setTimeout(() => {
+        if (!cardTouchMoved) {
+          cardLongPressFired = true;
+          if (navigator.vibrate) {
+            try { navigator.vibrate(60); } catch (_) {}
+          }
+          openMobileActionSheet(msgId, idx);
+        }
+      }, 450); // 450ms smooth hold
+    }
+
+    function handleCardTouchMove(e) {
+      if (!cardTouchMoved && e.touches && e.touches[0]) {
+        const dx = Math.abs(e.touches[0].clientX - cardTouchStartX);
+        const dy = Math.abs(e.touches[0].clientY - cardTouchStartY);
+        if (dx > 10 || dy > 10) {
+          cardTouchMoved = true;
+          clearTimeout(cardLongPressTimer);
+        }
+      }
+    }
+
+    function handleCardTouchEnd(e) {
+      clearTimeout(cardLongPressTimer);
+      if (cardLongPressFired) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        setTimeout(() => { cardLongPressFired = false; }, 200);
+      }
+    }
+
+    function handleCardContextMenu(e, msgId, idx) {
+      e.preventDefault();
+      openMobileActionSheet(msgId, idx);
+    }
+
+    function openMobileActionSheet(msgId, idx) {
+      activeActionMsgId = msgId;
+      activeActionMsgIndex = idx;
+
+      let msg = null;
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          msg = mailDatabase[f].find(m => m.id === msgId);
+          if (msg) break;
+        }
+      }
+
+      const isTrash = (currentFolder.toLowerCase() === 'trash' || (msg && (msg.is_trashed === 1 || msg.computed_folder === 'Trash')));
+
+      const sheetSub = document.getElementById('sheet-msg-subject');
+      const sheetSender = document.getElementById('sheet-msg-sender');
+      const sheetFolder = document.getElementById('sheet-folder-name');
+      const sheetDelLabel = document.getElementById('sheet-delete-label');
+      const sheetDelSub = document.getElementById('sheet-delete-sub');
+      const sheetStarLabel = document.getElementById('sheet-star-label');
+      const sheetReadLabel = document.getElementById('sheet-read-label');
+
+      if (sheetSub) sheetSub.innerText = msg ? (msg.subject || '(no subject)') : 'Selected Email';
+      if (sheetSender) sheetSender.innerText = msg ? (msg.senderName || msg.sender || '') : '';
+      if (sheetFolder) sheetFolder.innerText = isTrash ? 'Trash Folder Options' : 'Email Options';
+
+      if (sheetDelLabel) {
+        sheetDelLabel.innerText = isTrash ? 'Delete Permanently' : 'Delete / Move to Trash';
+      }
+      if (sheetDelSub) {
+        sheetDelSub.innerText = isTrash ? 'Purge permanently from Trash' : 'Move to Trash folder';
+      }
+      if (sheetStarLabel) {
+        sheetStarLabel.innerText = (msg && msg.isStarred) ? 'Unstar Message' : 'Star Message';
+      }
+      if (sheetReadLabel) {
+        sheetReadLabel.innerText = (msg && msg.isRead) ? 'Mark as Unread' : 'Mark as Read';
+      }
+
+      const backdrop = document.getElementById('mobile-action-sheet-backdrop');
+      const panel = document.getElementById('mobile-action-sheet-panel');
+      if (backdrop && panel) {
+        backdrop.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          backdrop.classList.remove('opacity-0');
+          panel.classList.remove('translate-y-full');
+          panel.classList.remove('sm:translate-y-4');
+        });
+        try { lucide.createIcons(); } catch (_) {}
+      }
+    }
+
+    function closeMobileActionSheet() {
+      const backdrop = document.getElementById('mobile-action-sheet-backdrop');
+      const panel = document.getElementById('mobile-action-sheet-panel');
+      if (backdrop && panel) {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('translate-y-full');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+          activeActionMsgId = null;
+          activeActionMsgIndex = -1;
+        }, 250);
+      }
+    }
+
+    async function handleSheetDelete() {
+      const msgId = activeActionMsgId;
+      closeMobileActionSheet();
+      if (!msgId) return;
+      const isTrash = (currentFolder.toLowerCase() === 'trash');
+      if (isTrash) {
+        if (!confirm('Permanently delete this email from Trash?')) return;
+      }
+      await deleteMessageById(msgId);
+      showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+    }
+
+    async function handleSheetStar() {
+      const msgId = activeActionMsgId;
+      closeMobileActionSheet();
+      if (!msgId) return;
+      await toggleStarItem(msgId);
+    }
+
+    async function handleSheetToggleRead() {
+      const msgId = activeActionMsgId;
+      closeMobileActionSheet();
+      if (!msgId) return;
+      let target = null;
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          target = mailDatabase[f].find(m => m.id === msgId);
+          if (target) break;
+        }
+      }
+      if (target) {
+        target.isRead = !target.isRead;
+        renderMessageList(document.getElementById('global-search')?.value || '');
+        try {
+          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_read: target.isRead ? 1 : 0 })
+          });
+        } catch (_) {}
+        refreshFolderCounts();
+      }
+    }
+
+    async function triggerCardDelete(msgId, idx) {
+      const isTrash = (currentFolder.toLowerCase() === 'trash');
+      if (isTrash) {
+        if (!confirm('Permanently delete this email from Trash?')) return;
+      }
+      await deleteMessageById(msgId);
+      showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('inbox-live-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'inbox-live-toast';
+        toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full bg-slate-900/90 text-white text-xs font-semibold shadow-lg backdrop-blur-md transition-all duration-300 pointer-events-none opacity-0 translate-y-3 flex items-center gap-2';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = '<span>' + escapeHtml(message) + '</span>';
+      toast.classList.remove('hidden', 'opacity-0', 'translate-y-3');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(window._toastTimeout);
+      window._toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-3');
+      }, 2500);
+    }
+    window.showToast = showToast;
 
     // Toggle Star
     async function toggleStarItem(msgId) {
@@ -4172,6 +4458,81 @@ function cleanMimeEmailContent(raw) {
           Close
         </button>
       </div>
+    </div>
+  </div>
+
+
+  <!-- Mobile Action Bottom Sheet for Hold-to-Delete -->
+  <div id="mobile-action-sheet-backdrop" onclick="closeMobileActionSheet()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity duration-300 opacity-0 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div id="mobile-action-sheet-panel" onclick="event.stopPropagation()" class="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 transform translate-y-full sm:translate-y-4 transition-transform duration-300 ease-out border border-slate-200/80">
+      
+      <!-- Drag indicator bar for mobile -->
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden"></div>
+      
+      <!-- Sheet Header: Subject & Sender -->
+      <div class="flex items-start gap-3 pb-4 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
+          <img src="/raccoon-logo.svg" class="w-6 h-6 object-contain" alt="Raccoon Logo" />
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-[#6c4ff5]" id="sheet-folder-name">Email Options</div>
+          <h3 id="sheet-msg-subject" class="text-sm font-bold text-slate-900 truncate">Subject</h3>
+          <p id="sheet-msg-sender" class="text-xs text-slate-400 truncate">Sender</p>
+        </div>
+        <button onclick="closeMobileActionSheet()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Action Options -->
+      <div class="py-3 space-y-2">
+        <!-- Delete Option (Permanently or Trash) -->
+        <button id="sheet-btn-delete" onclick="handleSheetDelete()" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-rose-50/80 hover:bg-rose-100 text-rose-600 transition font-bold text-sm cursor-pointer border border-rose-200/60 active:scale-98">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </div>
+            <div class="text-left">
+              <div id="sheet-delete-label" class="font-extrabold text-rose-700">Delete Permanently</div>
+              <div id="sheet-delete-sub" class="text-[11px] text-rose-500/80 font-normal">Purge permanently from Trash</div>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-rose-400"></i>
+        </button>
+
+        <!-- Toggle Star -->
+        <button id="sheet-btn-star" onclick="handleSheetStar()" class="w-full flex items-center justify-between p-3.5 rounded-2xl hover:bg-slate-50 text-slate-700 transition font-bold text-sm cursor-pointer border border-slate-100 active:scale-98">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 border border-amber-200/60 flex items-center justify-center">
+              <i data-lucide="star" class="w-4 h-4"></i>
+            </div>
+            <div class="text-left">
+              <div id="sheet-star-label" class="font-bold text-slate-800">Star Message</div>
+              <div class="text-[11px] text-slate-400 font-normal">Mark as important</div>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+        </button>
+
+        <!-- Mark Unread/Read -->
+        <button id="sheet-btn-read" onclick="handleSheetToggleRead()" class="w-full flex items-center justify-between p-3.5 rounded-2xl hover:bg-slate-50 text-slate-700 transition font-bold text-sm cursor-pointer border border-slate-100 active:scale-98">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 flex items-center justify-center">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </div>
+            <div class="text-left">
+              <div id="sheet-read-label" class="font-bold text-slate-800">Mark as Unread</div>
+              <div class="text-[11px] text-slate-400 font-normal">Keep for later review</div>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+        </button>
+      </div>
+
+      <!-- Cancel Button -->
+      <button type="button" onclick="closeMobileActionSheet()" class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-sm transition mt-1 active:scale-98 cursor-pointer">
+        Cancel
+      </button>
     </div>
   </div>
 

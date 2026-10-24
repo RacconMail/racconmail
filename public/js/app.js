@@ -5437,43 +5437,76 @@ window.addEventListener('DOMContentLoaded', () => {
 function parseEmailReplyAndQuote(raw) {
   if (!raw) return { isReply: false, replyText: '', quotedText: '' };
   var text = String(raw).trim();
+  var norm = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  var lines = norm.split('\n');
+  var count = lines.length;
 
-  var quoteHeaderPatterns = [
-    /\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i,
-    /\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i,
-    /\n\s*(_{20,})/i,
-    /\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i
-  ];
+  var quoteStartLine = -1;
 
-  var splitIndex = -1;
-  for (var i = 0; i < quoteHeaderPatterns.length; i++) {
-    var match = text.match(quoteHeaderPatterns[i]);
-    if (match && match.index !== undefined) {
-      if (splitIndex === -1 || match.index < splitIndex) {
-        splitIndex = match.index;
+  for (var i = 0; i < count; i++) {
+    var line = lines[i].trim();
+
+    // Check for quote header endings like "a scris:", "wrote:", "schrieb:", etc.
+    if (/(?:a\s*scris|wrote|a\s*écrit|schrieb)\s*:$/i.test(line)) {
+      quoteStartLine = i;
+      // Walk backwards up to 6 lines to capture author, date, and email tokens
+      for (var j = i - 1; j >= Math.max(0, i - 6); j--) {
+        var prev = lines[j].trim();
+        if (prev === '') break;
+        quoteStartLine = j;
+      }
+      break;
+    }
+
+    // Standard headers
+    if (/^-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,}$/i.test(line) ||
+        /^_{20,}$/.test(line) ||
+        /^From:\s+/i.test(line)) {
+      quoteStartLine = i;
+      break;
+    }
+  }
+
+  // Fallback: lines starting with > or &gt;
+  if (quoteStartLine === -1) {
+    for (var i = 0; i < count; i++) {
+      var line = lines[i].trim();
+      if (line.startsWith('>') || line.startsWith('&gt;')) {
+        quoteStartLine = i;
+        if (i > 0 && lines[i - 1].trim() !== '') {
+          if (/:\s*$/.test(lines[i - 1].trim())) {
+            quoteStartLine = i - 1;
+          }
+        }
+        break;
       }
     }
   }
 
-  if (splitIndex === -1) {
-    var quoteLineMatch = text.match(/\n\s*(?:>|&gt;)\s*[^\n]*/);
-    if (quoteLineMatch && quoteLineMatch.index !== undefined) {
-      splitIndex = quoteLineMatch.index;
-    }
-  }
-
-  if (splitIndex !== -1 && splitIndex > 0) {
-    var replyPart = text.slice(0, splitIndex).trim();
-    var quotedPart = text.slice(splitIndex).trim();
+  if (quoteStartLine > 0) {
+    var replyPart = lines.slice(0, quoteStartLine).join('\n').trim();
+    var quotedPart = lines.slice(quoteStartLine).join('\n').trim();
     if (replyPart.length > 0) {
-      return { isReply: true, replyText: replyPart, quotedText: quotedPart };
+      return {
+        isReply: true,
+        replyText: replyPart,
+        quotedText: quotedPart
+      };
     }
   }
 
   if (text.startsWith('>') || text.startsWith('&gt;')) {
-    return { isReply: true, replyText: '', quotedText: text };
+    return {
+      isReply: true,
+      replyText: '',
+      quotedText: text
+    };
   }
 
-  return { isReply: false, replyText: text, quotedText: '' };
+  return {
+    isReply: false,
+    replyText: text,
+    quotedText: ''
+  };
 }
 window.parseEmailReplyAndQuote = parseEmailReplyAndQuote;

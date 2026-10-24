@@ -2279,33 +2279,33 @@ try {
         exit;
     }
 
-    if (preg_match('#^messages/([^/]+)/trash$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
-        $msgId = trim(explode('?', $matches[1])[0]);
-        $db->prepare('UPDATE messages SET is_trashed = 1 WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
-        echo json_encode(['success' => true]);
-        exit;
-    }
-
-    // Delete single message permanently or move to trash
+    // Unified Delete & Trash Handler (Permanent purge if already in Trash or forced)
     if ((preg_match('#^messages/([^/]+)$#', $route, $matches) && $method === 'DELETE') ||
-        (preg_match('#^messages/([^/]+)/delete$#', $route, $matches) && ($method === 'POST' || $method === 'DELETE'))) {
+        (preg_match('#^messages/([^/]+)/(?:delete|trash)$#', $route, $matches) && ($method === 'POST' || $method === 'DELETE' || $method === 'PUT'))) {
         $msgId = trim(explode('?', $matches[1])[0]);
         $isForce = !empty($_GET['force']) || !empty($input['force']) || !empty($_GET['permanent']) || !empty($input['permanent']);
-        if (!$isForce) {
-            $stmtTr = $db->prepare('SELECT is_trashed FROM messages WHERE id = ? AND user_id = ?');
-            $stmtTr->execute([$msgId, $currentUserId]);
-            $isTrashed = (int)$stmtTr->fetchColumn();
-            if ($isTrashed === 1) {
-                $isForce = true;
-            }
-        }
 
-        if ($isForce) {
-            $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+        $stmtTr = $db->prepare('SELECT is_trashed, folder_id FROM messages WHERE id = ? AND user_id = ?');
+        $stmtTr->execute([$msgId, $currentUserId]);
+        $rowTr = $stmtTr->fetch(PDO::FETCH_ASSOC);
+
+        if ($rowTr) {
+            $alreadyTrashed = ((int)$rowTr['is_trashed'] === 1 || strtolower((string)$rowTr['folder_id']) === 'trash');
+            if ($alreadyTrashed || $isForce) {
+                // Permanently delete message from SQLite and disk
+                $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+                @$db->prepare('DELETE FROM attachments WHERE message_id = ?')->execute([$msgId]);
+                echo json_encode(['success' => true, 'deleted' => 'permanent', 'id' => $msgId]);
+            } else {
+                // Move to trash
+                $db->prepare("UPDATE messages SET is_trashed = 1, folder_id = 'trash' WHERE id = ? AND user_id = ?")->execute([$msgId, $currentUserId]);
+                echo json_encode(['success' => true, 'deleted' => 'trash', 'id' => $msgId]);
+            }
         } else {
-            $db->prepare('UPDATE messages SET is_trashed = 1 WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+            // If already deleted or id passed directly
+            $db->prepare('DELETE FROM messages WHERE id = ? AND user_id = ?')->execute([$msgId, $currentUserId]);
+            echo json_encode(['success' => true, 'deleted' => 'permanent', 'id' => $msgId]);
         }
-        echo json_encode(['success' => true, 'deleted' => $isForce ? 'permanent' : 'trashed']);
         exit;
     }
 
@@ -2362,12 +2362,12 @@ try {
         exit;
     }
 
-    if ($route === 'messages/empty-folder' && $method === 'POST') {
-        $folder = strtolower($input['folder'] ?? '');
+    if (($route === 'messages/empty-folder' || $route === 'messages/empty-trash') && $method === 'POST') {
+        $folder = strtolower($input['folder'] ?? ($route === 'messages/empty-trash' ? 'trash' : ''));
         if ($folder === 'trash') {
-            $db->prepare('DELETE FROM messages WHERE user_id = ? AND is_trashed = 1')->execute([$currentUserId]);
+            $db->prepare("DELETE FROM messages WHERE user_id = ? AND (is_trashed = 1 OR folder_id = 'trash')")->execute([$currentUserId]);
         } elseif ($folder === 'spam') {
-            $db->prepare('DELETE FROM messages WHERE user_id = ? AND is_spam = 1')->execute([$currentUserId]);
+            $db->prepare("DELETE FROM messages WHERE user_id = ? AND (is_spam = 1 OR folder_id = 'spam')")->execute([$currentUserId]);
         }
         echo json_encode(['success' => true]);
         exit;
@@ -5173,33 +5173,55 @@ function extractImapBodyAndAttachments($mbox, $msgno, $structure, $uploadsDir) {
 function parseEmailReplyAndQuote($raw) {
     if (!$raw) return ['isReply' => false, 'replyText' => '', 'quotedText' => ''];
     $text = trim((string)$raw);
+    $norm = str_replace(["\r\n", "\r"], "\n", $text);
+    $lines = explode("\n", $norm);
+    $count = count($lines);
 
-    $quoteHeaderPatterns = [
-        '/\n\s*([^\n]+(?:a\s*\n?\s*scris|wrote|a\s*\n?\s*écrit|schrieb)\s*:)/i',
-        '/\n\s*(-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,})/i',
-        '/\n\s*(_{20,})/i',
-        '/\n\s*(From:\s+[^\n]+\n(?:Sent|Date):\s+[^\n]+)/i'
-    ];
+    $quoteStartLine = -1;
 
-    $splitIndex = -1;
-    foreach ($quoteHeaderPatterns as $pattern) {
-        if (preg_match($pattern, $text, $matches, PREG_OFFSET_CAPTURE)) {
-            $offset = $matches[0][1];
-            if ($splitIndex === -1 || $offset < $splitIndex) {
-                $splitIndex = $offset;
+    for ($i = 0; $i < $count; $i++) {
+        $line = trim($lines[$i]);
+
+        // Check for quote indicator ending (e.g. "a scris:", "wrote:", "schrieb:", etc.)
+        if (preg_match('/(?:a\s*scris|wrote|a\s*écrit|schrieb)\s*:$/i', $line)) {
+            $quoteStartLine = $i;
+            // Walk backwards up to 6 lines to capture author, date, and email tokens
+            for ($j = $i - 1; $j >= max(0, $i - 6); $j--) {
+                $prev = trim($lines[$j]);
+                if ($prev === '') break;
+                $quoteStartLine = $j;
+            }
+            break;
+        }
+
+        // Standard message delimiter headers
+        if (preg_match('/^-{3,}\s*(?:Original Message|Forwarded message)\s*-{3,}$/i', $line) ||
+            preg_match('/^_{20,}$/', $line) ||
+            preg_match('/^From:\s+/i', $line)) {
+            $quoteStartLine = $i;
+            break;
+        }
+    }
+
+    // Fallback: lines starting with > or &gt;
+    if ($quoteStartLine === -1) {
+        for ($i = 0; $i < $count; $i++) {
+            $line = trim($lines[$i]);
+            if (substr($line, 0, 1) === '>' || substr($line, 0, 4) === '&gt;') {
+                $quoteStartLine = $i;
+                if ($i > 0 && trim($lines[$i - 1]) !== '') {
+                    if (preg_match('/:\s*$/', trim($lines[$i - 1]))) {
+                        $quoteStartLine = $i - 1;
+                    }
+                }
+                break;
             }
         }
     }
 
-    if ($splitIndex === -1) {
-        if (preg_match('/\n\s*(?:>|&gt;)\s*[^\n]*/', $text, $matches, PREG_OFFSET_CAPTURE)) {
-            $splitIndex = $matches[0][1];
-        }
-    }
-
-    if ($splitIndex !== -1 && $splitIndex > 0) {
-        $replyPart = trim(substr($text, 0, $splitIndex));
-        $quotedPart = trim(substr($text, $splitIndex));
+    if ($quoteStartLine > 0) {
+        $replyPart = trim(implode("\n", array_slice($lines, 0, $quoteStartLine)));
+        $quotedPart = trim(implode("\n", array_slice($lines, $quoteStartLine)));
         if (!empty($replyPart)) {
             return [
                 'isReply' => true,
@@ -5209,7 +5231,7 @@ function parseEmailReplyAndQuote($raw) {
         }
     }
 
-    if (str_starts_with($text, '>') || str_starts_with($text, '&gt;')) {
+    if (substr($text, 0, 1) === '>' || substr($text, 0, 4) === '&gt;') {
         return [
             'isReply' => true,
             'replyText' => '',
