@@ -2094,7 +2094,7 @@ try {
 
         // 1. Save Sender's copy into Sent Folder
         $msgId = 'msg_' . uniqid();
-        $stmt = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, "sent", ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
+        $stmt = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, "sent", ?, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))');
         $stmt->execute([$msgId, $currentUserId, $user['name'], $user['email'], $to, $cc, $bcc, $subject, $body, $bodyHtml, $inReplyTo ?: null, $parentId ?: null]);
 
         // 2. Process file attachments
@@ -2179,7 +2179,7 @@ try {
             if ($localRecip) {
                 // Deliver to recipient's Inbox in SQLite (guaranteed is_spam = 0 for registered members)
                 $inId = 'in_' . uniqid();
-                $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))')
+                $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))')
                    ->execute([$inId, $localRecip['id'], $user['name'], $user['email'], $localRecip['email'], $cc, $bcc, $subject, $body, $postcardHtml, $inReplyTo ?: null, $parentId ?: null]);
 
                 // Copy attachments for recipient
@@ -2201,7 +2201,7 @@ try {
                     $botReplySubj = str_starts_with($subject, 'Re:') ? $subject : 'Re: ' . $subject;
                     $replyHtml = buildRacconMailPostcardHtml($botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], $botReplySubj, $replyText, '', []);
                     $botReplyId = 'in_' . uniqid();
-                    $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, "", "", ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, gmdate("Y-m-d\\TH:i:s\\Z"))')
+                    $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, cc, bcc, subject, body, body_html, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, parent_id, created_at) VALUES (?, ?, ?, ?, ?, "", "", ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))')
                        ->execute([$botReplyId, $user['id'], $botProfiles[$targetEmail]['name'], $targetEmail, $user['email'], $botReplySubj, $replyText, $replyHtml, $msgId, $msgId]);
                 }
             } else {
@@ -3902,7 +3902,7 @@ function syncInboundEmails($db, $force = false) {
                         $inId = 'in_' . uniqid();
                         $targetEmail = $targetUser['email'];
 
-                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
+                        $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))');
                         $stmtIns->execute([
                             $inId,
                             $targetUser['id'],
@@ -4099,7 +4099,7 @@ function syncMaildirFolder($db, $newDir, $uploadsDir) {
             $bodyText = strip_tags($rawBody);
             $bodyHtml = (stripos($rawHeaders, 'text/html') !== false) ? $rawBody : '';
 
-            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, gmdate("Y-m-d\\TH:i:s\\Z"))');
+            $stmtIns = $db->prepare('INSERT INTO messages (id, user_id, sender_name, sender_email, recipient_email, subject, body, body_html, message_id, is_read, is_draft, is_starred, is_archived, is_spam, is_trashed, folder_id, in_reply_to, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, NULL, ?, strftime(\'%Y-%m-%dT%H:%M:%SZ\', \'now\'))');
             $stmtIns->execute([
                 $inId,
                 $targetUser['id'],

@@ -1193,6 +1193,9 @@
               autocomplete="username"
               class="flex-1 min-w-0 bg-transparent py-2 px-2 text-sm outline-none text-[#1E293B] placeholder-[#94A3B8]"
             />
+            <button type="button" onclick="clearModalField('m-r-email')" id="clear-m-r-email" class="hidden px-2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer" title="Delete text">
+              <i class="fas fa-times-circle text-xs"></i>
+            </button>
             <span class="px-3 py-2 text-xs font-semibold text-[#64748B] bg-[#F6F6F6] select-none border-l border-[#CBD5E1] shrink-0">
               @racconmail.eu
             </span>
@@ -1256,6 +1259,46 @@
 
   <!-- SCRIPTS -->
   <script>
+    function clearModalField(id) {
+      const inp = document.getElementById(id);
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+        toggleModalClearBtn(id);
+      }
+    }
+
+    function toggleModalClearBtn(id) {
+      const inp = document.getElementById(id);
+      const btn = document.getElementById('clear-' + id);
+      if (inp && btn) {
+        if (inp.value.length > 0) btn.classList.remove('hidden');
+        else btn.classList.add('hidden');
+      }
+    }
+
+    ['m-r-name', 'm-r-email', 'm-r-pass', 'm-l-email', 'm-l-pass'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => toggleModalClearBtn(id));
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' || e.keyCode === 8) {
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          if (start === end && start > 0) {
+            setTimeout(() => {
+              if (this.selectionStart === start && this.value.length >= start) {
+                const val = this.value;
+                this.value = val.slice(0, start - 1) + val.slice(end);
+                this.setSelectionRange(start - 1, start - 1);
+                toggleModalClearBtn(id);
+              }
+            }, 15);
+          }
+        }
+      });
+    });
+
     function openAuthModal(mode) {
       const modal = document.getElementById('auth-modal');
       if (!modal) return;
