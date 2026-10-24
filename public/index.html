@@ -342,11 +342,18 @@
     @keyframes phoneFloat {
       0%, 100% {
         transform: translateY(0px);
-        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22);
       }
       50% {
         transform: translateY(-8px);
-        box-shadow: 0 35px 60px -12px rgba(15, 23, 42, 0.3);
+      }
+    }
+
+    @keyframes chassisLevitate {
+      0%, 100% {
+        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+      50% {
+        box-shadow: 0 38px 75px -12px rgba(15, 23, 42, 0.38), 0 0 0 1px rgba(255, 255, 255, 0.12);
       }
     }
 
@@ -370,16 +377,29 @@
 
     @keyframes phoneBadgeBounce {
       0%, 100% {
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
       }
       50% {
-        transform: translateY(-5px);
+        transform: translateX(-50%) translateY(-5px);
       }
     }
 
     .phone-device-container {
       animation: phoneFloat 5s ease-in-out infinite;
-      will-change: transform, box-shadow;
+      will-change: transform;
+    }
+
+    .phone-chassis {
+      border-radius: 52px;
+      animation: chassisLevitate 5s ease-in-out infinite;
+      will-change: box-shadow;
+    }
+
+    .phone-inner-screen {
+      border-radius: 42px;
+      overflow: hidden;
+      transform: translateZ(0);
+      -webkit-mask-image: -webkit-radial-gradient(white, black);
     }
 
     .phone-gleam-overlay {
@@ -388,6 +408,17 @@
 
     .phone-toast-anim {
       animation: phoneBadgeBounce 4s ease-in-out infinite;
+    }
+
+    .phone-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .phone-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .phone-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
     }
   </style>
 
@@ -918,29 +949,33 @@
           </div>
 
           <!-- Right Column: Ultra-Sleek Modern Smartphone Mockup (5 Cols) -->
-          <div class="lg:col-span-5 flex justify-center relative bg-transparent">
+          <div class="lg:col-span-5 flex justify-center relative bg-transparent pt-6 sm:pt-8">
             
-            <div class="phone-device-container relative w-full max-w-[320px] select-none">
+            <div class="phone-device-container relative w-full max-w-[325px] select-none">
               
-              <!-- Floating Notification Toast Pill (Top Left) -->
-              <div class="phone-toast-anim absolute -top-4 -left-6 z-20 hidden sm:flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-2xl shadow-xl border border-slate-200">
+              <!-- Floating Notification Toast Pill (Centered Above Device - Completely Clears Corners & Screen) -->
+              <div class="phone-toast-anim absolute -top-12 left-1/2 z-20 flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-xl border border-slate-200/90 whitespace-nowrap">
                 <img src="/raccoon-logo.png" class="h-6 w-6 object-contain" alt="RacconMail" />
                 <div class="text-left text-xs">
-                  <div class="font-bold text-slate-900 flex items-center gap-1">Sealed Postcard 🐾 <span class="text-[9px] text-slate-400 font-normal">Now</span></div>
-                  <div class="text-slate-500 text-[10px] truncate max-w-[130px]">Encrypted with zero trackers 🛡️</div>
+                  <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                    <span>Sealed Postcard 🐾</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[9px] text-slate-400 font-mono font-normal">Just now</span>
+                  </div>
+                  <div class="text-slate-500 text-[10px]">Encrypted with zero trackers 🛡️</div>
                 </div>
               </div>
 
               <!-- Flagship Smartphone Hardware Chassis (Clean Concentric Curved Titanium Frame) -->
-              <div class="relative rounded-[50px] p-[10px] bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 shadow-2xl border border-slate-700/80 ring-1 ring-white/10">
+              <div class="phone-chassis relative rounded-[52px] p-[10px] bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80">
                 
                 <!-- Side Hardware Buttons: Volume Rockers & Power Button on Edges -->
-                <div class="absolute -right-[4px] top-24 w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
-                <div class="absolute -right-[4px] top-36 w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
-                <div class="absolute -left-[4px] top-28 w-[3px] h-12 bg-slate-600 rounded-l-md"></div>
+                <div class="absolute -right-[3px] top-24 w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
+                <div class="absolute -right-[3px] top-[152px] w-[3px] h-10 bg-slate-600 rounded-r-md"></div>
+                <div class="absolute -left-[3px] top-28 w-[3px] h-12 bg-slate-600 rounded-l-md"></div>
 
-                <!-- Inner Screen Bezel with Flawless 40px Concentric Curved Corners (50px - 10px = 40px) -->
-                <div class="relative rounded-[40px] bg-white overflow-hidden border border-black/30 text-slate-900 flex flex-col min-h-[580px] shadow-inner">
+                <!-- Inner Screen Bezel with Flawless 42px Concentric Curved Corners (52px - 10px = 42px) -->
+                <div class="phone-inner-screen relative rounded-[42px] bg-white text-slate-900 flex flex-col min-h-[590px]">
                   
                   <!-- Diagonal Glass Gleam Light Reflection (Animated) -->
                   <div class="pointer-events-none absolute inset-0 overflow-hidden z-30">
@@ -948,7 +983,7 @@
                   </div>
 
                   <!-- Smartphone Top Status Bar & Centered Punch-Hole Camera -->
-                  <div class="bg-white pt-2.5 px-5 pb-1 flex items-center justify-between text-[11px] font-bold text-slate-900 relative z-20 select-none">
+                  <div class="bg-white pt-3 px-5 pb-1 flex items-center justify-between text-[11px] font-bold text-slate-900 relative z-20 select-none">
                     <span>9:41</span>
                     
                     <!-- Centered Micro Punch-Hole Camera -->
@@ -968,7 +1003,7 @@
                   </div>
 
                   <!-- In-App Header -->
-                  <div class="p-3 bg-white border-b border-slate-100 flex items-center justify-between relative z-10">
+                  <div class="px-3.5 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between relative z-10">
                     <div class="flex items-center gap-2">
                       <img src="/raccoon-logo.png" alt="RacconMail" class="h-6 w-6 raccoon-anim object-contain" />
                       <span class="font-display font-extrabold text-xs text-slate-900">RacconMail <span class="text-[9px] font-mono text-cyan-600 font-bold">Mobile v2.0</span></span>
@@ -979,46 +1014,96 @@
                     </div>
                   </div>
 
-                  <!-- Real Clean Mobile Messages List (No Fake Demo Text) -->
-                  <div class="p-3 space-y-2 text-left flex-1 bg-slate-50/60 relative z-10">
-                    <!-- Message 1 -->
-                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-slate-200 hover:border-slate-900 transition">
+                  <!-- In-App Quick Search Bar -->
+                  <div class="px-3 py-1.5 bg-white border-b border-slate-100 flex items-center gap-2 relative z-10">
+                    <div class="flex-1 flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80 text-[11px] text-slate-400">
+                      <i class="fas fa-search text-cyan-500 text-[10px]"></i>
+                      <span class="truncate">Search postcards, tags...</span>
+                    </div>
+                    <span class="w-5 h-5 rounded-full bg-cyan-50 border border-cyan-200 text-cyan-600 text-[10px] font-bold flex items-center justify-center">6</span>
+                  </div>
+
+                  <!-- Real Mobile Messages List (6 Rich Email Examples with Smooth Scroll) -->
+                  <div class="p-2.5 space-y-1.5 text-left flex-1 bg-slate-50/70 relative z-10 overflow-y-auto max-h-[385px] phone-scroll">
+                    
+                    <!-- Message 1: Raccon Security (Unread / Turquoise Dot) -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-200/90 hover:border-slate-800 transition">
                       <div class="flex justify-between items-center text-xs font-bold text-slate-900">
-                        <span class="flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                          Raccon Security
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] shrink-0"></span>
+                          <span class="truncate">Raccon Security</span>
                         </span>
-                        <span class="text-[10px] text-slate-400 font-mono">Just now</span>
+                        <span class="text-[10px] text-cyan-600 font-mono font-bold shrink-0">Just now</span>
                       </div>
-                      <div class="text-xs text-slate-900 font-semibold mt-1">Masked Postal Routing Active 🛡️</div>
-                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Zero trackers &bull; Complete anonymous stealth.</div>
+                      <div class="text-xs text-slate-900 font-bold mt-1 truncate">Masked Postal Routing Active 🛡️</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Zero trackers &bull; 14 nocturnal relay nodes shielding inbox.</div>
                     </div>
 
-                    <!-- Message 2 -->
-                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-slate-100">
+                    <!-- Message 2: GitHub Releases (Unread / Turquoise Dot) -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-200/90 hover:border-slate-800 transition">
                       <div class="flex justify-between items-center text-xs font-bold text-slate-900">
-                        <span class="flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                          Nocturnal Vault
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] shrink-0"></span>
+                          <span class="truncate">GitHub &bull; RacconMail v2.0</span>
                         </span>
-                        <span class="text-[10px] text-slate-400 font-mono">11:05</span>
+                        <span class="text-[10px] text-cyan-600 font-mono font-bold shrink-0">10:42</span>
                       </div>
-                      <div class="text-xs text-slate-900 font-semibold mt-1">Sealed Envelope Stored 💌</div>
-                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Postcard delivered with hardware encryption.</div>
+                      <div class="text-xs text-slate-900 font-bold mt-1 truncate">Desktop &amp; Android APK Published 🚀</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Windows .exe &amp; Android APK signed and ready to download.</div>
                     </div>
 
-                    <!-- Message 3 -->
-                    <div class="rounded-2xl bg-white p-3 shadow-xs border border-slate-100">
+                    <!-- Message 3: Elena Rostova (Sealed Postcard) -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-100 hover:border-slate-300 transition">
                       <div class="flex justify-between items-center text-xs font-bold text-slate-900">
-                        <span class="flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                          System Status
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-slate-300 shrink-0"></span>
+                          <span class="truncate text-slate-700">Elena Rostova</span>
                         </span>
-                        <span class="text-[10px] text-slate-400 font-mono">Yesterday</span>
+                        <span class="text-[10px] text-slate-400 font-mono shrink-0">09:15</span>
                       </div>
-                      <div class="text-xs text-slate-900 font-semibold mt-1">Universal Sync v2.0 Ready ⚡</div>
-                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">High-speed delivery on modern mobile devices.</div>
+                      <div class="text-xs text-slate-800 font-semibold mt-1 truncate">Sealed Postcard: Vienna Meetup 💌</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Decrypted hardware key seamlessly. Looking forward to it!</div>
                     </div>
+
+                    <!-- Message 4: Raccon Community Forum -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-100 hover:border-slate-300 transition">
+                      <div class="flex justify-between items-center text-xs font-bold text-slate-900">
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-slate-300 shrink-0"></span>
+                          <span class="truncate text-slate-700">Raccon Developer Forum</span>
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono shrink-0">Yesterday</span>
+                      </div>
+                      <div class="text-xs text-slate-800 font-semibold mt-1 truncate">New Comment: IMAP Proxy Tuning 🐾</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">14 developers commented on SQLite cache optimizations.</div>
+                    </div>
+
+                    <!-- Message 5: Nocturnal Vault -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-100 hover:border-slate-300 transition">
+                      <div class="flex justify-between items-center text-xs font-bold text-slate-900">
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-slate-300 shrink-0"></span>
+                          <span class="truncate text-slate-700">Nocturnal Vault Backup</span>
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono shrink-0">Oct 23</span>
+                      </div>
+                      <div class="text-xs text-slate-800 font-semibold mt-1 truncate">Zero-Knowledge Key Pair Backed Up 🔐</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Client SQLite backup verified with zero cloud leakage.</div>
+                    </div>
+
+                    <!-- Message 6: Reuters News Wire -->
+                    <div class="rounded-2xl bg-white p-2.5 shadow-xs border border-slate-100 hover:border-slate-300 transition">
+                      <div class="flex justify-between items-center text-xs font-bold text-slate-900">
+                        <span class="flex items-center gap-1.5 truncate">
+                          <span class="w-2 h-2 rounded-full bg-slate-300 shrink-0"></span>
+                          <span class="truncate text-slate-700">Reuters Technology Wire</span>
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono shrink-0">Oct 22</span>
+                      </div>
+                      <div class="text-xs text-slate-800 font-semibold mt-1 truncate">EU Mandate: Strict Email Privacy ⚡</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">Zero-telemetry European mail platforms see surge in adoption.</div>
+                    </div>
+
                   </div>
 
                   <!-- Mock Compose Floating Bar with Working Pencil -->
@@ -1031,7 +1116,7 @@
                   </div>
 
                   <!-- Curved Home Gesture Bar -->
-                  <div class="bg-white pb-2.5 pt-1 flex justify-center relative z-10">
+                  <div class="bg-white pb-3 pt-1 flex justify-center relative z-10">
                     <div class="h-1 w-28 rounded-full bg-slate-900/40"></div>
                   </div>
 
