@@ -229,6 +229,58 @@ try {
       animation: turquoiseRadarHalo10s 2s cubic-bezier(0, 0, 0.2, 1) 5 !important;
     }
 
+    /* Ultra-Modern Luminous Turquoise Primary Counter Pill */
+    .turq-counter-pill {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+      color: #FFFFFF !important;
+      font-weight: 800 !important;
+      font-size: 11px !important;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      letter-spacing: -0.02em !important;
+      padding: 2px 9px !important;
+      border-radius: 9999px !important;
+      border: 1px solid rgba(255, 255, 255, 0.45) !important;
+      box-shadow: 0 2px 10px -1px rgba(6, 182, 212, 0.55), 0 0 0 1px rgba(6, 182, 212, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1.15 !important;
+      text-shadow: 0 1px 2px rgba(8, 145, 178, 0.4) !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .turq-counter-pill:hover {
+      box-shadow: 0 4px 16px -1px rgba(6, 182, 212, 0.8), 0 0 0 1.5px rgba(34, 211, 238, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+      transform: translateY(-1px) scale(1.05);
+    }
+
+    /* Ultra-Modern Frosted Glass Turquoise Counter Pill */
+    .turq-counter-soft {
+      background: rgba(6, 182, 212, 0.09) !important;
+      color: #0e7490 !important;
+      font-weight: 700 !important;
+      font-size: 11px !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+      letter-spacing: -0.01em !important;
+      padding: 1.5px 8px !important;
+      border-radius: 9999px !important;
+      border: 1px solid rgba(6, 182, 212, 0.26) !important;
+      box-shadow: 0 1px 2px rgba(6, 182, 212, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      line-height: 1.2 !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .turq-counter-soft:hover {
+      background: rgba(6, 182, 212, 0.18) !important;
+      border-color: rgba(6, 182, 212, 0.45) !important;
+      color: #0891b2 !important;
+      box-shadow: 0 2px 6px rgba(6, 182, 212, 0.18) !important;
+      transform: translateY(-0.5px);
+    }
+
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
     html, body {
@@ -480,7 +532,7 @@ try {
             <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Inbox</span>
           </div>
-          <span id="badge-inbox" class="sidebar-badge bg-cyan-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.6)]"><?php echo $counts['inbox_unread']; ?></span>
+          <span id="badge-inbox" class="sidebar-badge turq-counter-pill"><?php echo $counts['inbox_unread']; ?></span>
         </button>
 
         <!-- 2. UNREAD -->
@@ -489,7 +541,7 @@ try {
             <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Unread</span>
           </div>
-          <span id="badge-unread" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['unread_total']; ?></span>
+          <span id="badge-unread" class="sidebar-badge turq-counter-soft"><?php echo $counts['unread_total']; ?></span>
         </button>
 
         <!-- 3. STARRED / FAVORITES -->
@@ -498,7 +550,7 @@ try {
             <i data-lucide="star" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Starred</span>
           </div>
-          <span id="badge-starred" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['starred_total']; ?></span>
+          <span id="badge-starred" class="sidebar-badge turq-counter-soft"><?php echo $counts['starred_total']; ?></span>
         </button>
 
         <!-- 4. DRAFTS -->
@@ -507,7 +559,7 @@ try {
             <i data-lucide="file-edit" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Drafts</span>
           </div>
-          <span id="badge-drafts" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['drafts_total']; ?></span>
+          <span id="badge-drafts" class="sidebar-badge turq-counter-soft"><?php echo $counts['drafts_total']; ?></span>
         </button>
 
         <!-- 5. SENT -->
@@ -516,7 +568,7 @@ try {
             <i data-lucide="send" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Sent</span>
           </div>
-          <span id="badge-sent" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['sent_total']; ?></span>
+          <span id="badge-sent" class="sidebar-badge turq-counter-soft"><?php echo $counts['sent_total']; ?></span>
         </button>
 
         <!-- 6. ARCHIVE -->
@@ -525,7 +577,7 @@ try {
             <i data-lucide="archive" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Archive</span>
           </div>
-          <span id="badge-archive" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['archive_total']; ?></span>
+          <span id="badge-archive" class="sidebar-badge turq-counter-soft"><?php echo $counts['archive_total']; ?></span>
         </button>
 
         <!-- 7. SPAM -->
@@ -534,7 +586,7 @@ try {
             <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Spam</span>
           </div>
-          <span id="badge-spam" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['spam_total']; ?></span>
+          <span id="badge-spam" class="sidebar-badge turq-counter-soft"><?php echo $counts['spam_total']; ?></span>
         </button>
 
         <!-- 8. TRASH -->
@@ -544,7 +596,7 @@ try {
               <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
               <span class="sidebar-text truncate">Trash</span>
             </div>
-            <span id="badge-trash" class="sidebar-badge text-xs font-mono font-bold text-cyan-600 bg-cyan-50/80 px-2 py-0.5 rounded-full border border-cyan-200/60"><?php echo $counts['trash_total']; ?></span>
+            <span id="badge-trash" class="sidebar-badge turq-counter-soft"><?php echo $counts['trash_total']; ?></span>
           </button>
           <button onclick="emptyTrashAction()" title="Empty Trash" class="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer">
             <i data-lucide="eraser" class="h-3.5 w-3.5"></i>
@@ -637,7 +689,7 @@ try {
         <div class="flex items-center justify-between mb-1">
           <div class="flex items-center gap-2.5">
             <h1 id="current-folder-display-title" class="text-2xl font-bold text-slate-900 tracking-tight">Inbox</h1>
-            <span id="coral-inbox-badge" class="bg-cyan-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.6)]"><?php echo $counts['inbox_unread']; ?></span>
+            <span id="coral-inbox-badge" class="turq-counter-pill"><?php echo $counts['inbox_unread']; ?></span>
           </div>
 
           <!-- Mark all read and refresh buttons -->
