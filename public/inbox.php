@@ -2637,13 +2637,14 @@ try {
     let cachedRssArticles = [];
 
     // 1. Drawer Opening & Tab Switching
-    function openProductivityDrawer(tabName = 'calendar') {
+    function openProductivityDrawer(tabName) {
+      tabName = tabName || 'calendar';
       const drawer = document.getElementById('productivity-drawer');
       const backdrop = document.getElementById('productivity-drawer-backdrop');
       if (!drawer) return;
 
       drawer.classList.remove('translate-x-full');
-      backdrop.classList.remove('hidden');
+      if (backdrop) backdrop.classList.remove('hidden');
       switchDrawerTab(tabName);
     }
 
@@ -2653,14 +2654,14 @@ try {
       if (!drawer) return;
 
       drawer.classList.add('translate-x-full');
-      backdrop.classList.add('hidden');
+      if (backdrop) backdrop.classList.add('hidden');
     }
 
     function switchDrawerTab(tabName) {
       currentDrawerTab = tabName;
       
       // Update top button styles
-      ['calendar', 'notes', 'tasks', 'attachments', 'rss', 'templates'].forEach(t => {
+      ['calendar', 'notes', 'tasks', 'attachments', 'rss', 'templates'].forEach(function(t) {
         const btn = document.getElementById('drawer-tab-' + t);
         if (btn) {
           if (t === tabName) {
@@ -2677,7 +2678,7 @@ try {
       const iconEl = document.getElementById('drawer-header-icon');
 
       const meta = {
-        calendar: { title: 'Calendar & Schedule', sub: 'Integrated event planner linked to dates and reminders', icon: 'calendar', color: 'bg-cyan-100 text-cyan-700' },
+        calendar: { title: 'Calendar & Schedule', sub: 'Integrated events and smart reminders', icon: 'calendar', color: 'bg-cyan-100 text-cyan-700' },
         notes: { title: 'Keep Notes & Ideas', sub: 'Modern pastel sticky notes with checklists & tags', icon: 'sticky-note', color: 'bg-amber-100 text-amber-700' },
         tasks: { title: 'Actionable Tasks / To-Do', sub: 'Turn correspondence into prioritized milestones', icon: 'check-square', color: 'bg-emerald-100 text-emerald-700' },
         attachments: { title: 'Attachments & Media Gallery', sub: 'Visual dashboard for images, PDFs, spreadsheets & code', icon: 'paperclip', color: 'bg-purple-100 text-purple-700' },
@@ -2718,7 +2719,7 @@ try {
           await loadTemplatesView(container);
         }
       } catch (err) {
-        container.innerHTML = '<div class="p-4 rounded-xl bg-rose-50 text-rose-700 text-xs">Error loading ' + tabName + ': ' + err.message + '</div>';
+        container.innerHTML = '<div class="p-4 rounded-xl bg-rose-50 text-rose-700 text-xs">Error loading ' + tabName + ': ' + (err.message || err) + '</div>';
       }
 
       if (window.lucide) lucide.createIcons();
@@ -2732,7 +2733,6 @@ try {
       const data = await res.json();
       cachedCalendarEvents = data.events || [];
 
-      // Calendar month header & mini grid
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.toLocaleString('default', { month: 'long' });
@@ -2743,115 +2743,93 @@ try {
       for (let d = 1; d <= daysInMonth; d++) {
         const dStr = String(d).padStart(2, '0');
         const mStr = String(now.getMonth() + 1).padStart(2, '0');
-        const fullDate = \`\${currentYear}-\${mStr}-\${dStr}\`;
+        const fullDate = currentYear + '-' + mStr + '-' + dStr;
         const isToday = (d === todayDate);
         const isSelected = (fullDate === selectedCalendarDate);
-        const hasEvents = cachedCalendarEvents.some(ev => ev.event_date === fullDate);
+        const hasEvents = cachedCalendarEvents.some(function(ev) { return ev.event_date === fullDate; });
 
-        daysHtml += \`
-          <button onclick="selectCalendarDate('\${fullDate}')" class="h-8 rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition cursor-pointer relative \${
-            isSelected ? 'bg-cyan-600 text-white font-bold shadow-2xs' : (isToday ? 'bg-cyan-50 text-cyan-800 font-bold border border-cyan-300' : 'hover:bg-slate-100 text-slate-700')
-          }">
-            <span>\${d}</span>
-            \${hasEvents ? '<span class="w-1 h-1 rounded-full ' + (isSelected ? 'bg-white' : 'bg-cyan-500') + ' absolute bottom-1"></span>' : ''}
-          </button>
-        \`;
+        daysHtml += '<button onclick="selectCalendarDate(\'' + fullDate + '\')" class="h-8 rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition cursor-pointer relative ' +
+          (isSelected ? 'bg-cyan-600 text-white font-bold shadow-2xs' : (isToday ? 'bg-cyan-50 text-cyan-800 font-bold border border-cyan-300' : 'hover:bg-slate-100 text-slate-700')) + '">' +
+          '<span>' + d + '</span>' +
+          (hasEvents ? '<span class="w-1 h-1 rounded-full ' + (isSelected ? 'bg-white' : 'bg-cyan-500') + ' absolute bottom-1"></span>' : '') +
+          '</button>';
       }
 
-      // Filter events for selected date
-      const dayEvents = cachedCalendarEvents.filter(ev => ev.event_date === selectedCalendarDate);
+      const dayEvents = cachedCalendarEvents.filter(function(ev) { return ev.event_date === selectedCalendarDate; });
 
       let eventsListHtml = '';
       if (dayEvents.length === 0) {
-        eventsListHtml = \`
-          <div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
-            <i data-lucide="calendar-x" class="h-6 w-6 mx-auto mb-1.5 opacity-60"></i>
-            <p class="text-xs font-medium">No events scheduled for \${selectedCalendarDate}</p>
-            <button onclick="showQuickAddEvent()" class="mt-2 text-xs font-bold text-cyan-600 hover:underline">+ Schedule Event</button>
-          </div>
-        \`;
+        eventsListHtml = '<div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">' +
+          '<i data-lucide="calendar-x" class="h-6 w-6 mx-auto mb-1.5 opacity-60"></i>' +
+          '<p class="text-xs font-medium">No events scheduled for ' + selectedCalendarDate + '</p>' +
+          '<button onclick="showQuickAddEvent()" class="mt-2 text-xs font-bold text-cyan-600 hover:underline cursor-pointer">+ Schedule Event</button>' +
+          '</div>';
       } else {
-        eventsListHtml = dayEvents.map(ev => \`
-          <div class="p-3 rounded-2xl bg-white border border-slate-100 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group">
-            <div class="flex items-start gap-2.5 min-w-0">
-              <span class="w-2.5 h-2.5 rounded-full mt-1 shrink-0" style="background-color: \${ev.color || '#06b6d4'}"></span>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-900 truncate leading-snug">\${escapeHtml(ev.title)}</p>
-                <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
-                  <span class="font-mono font-medium text-slate-600">\${ev.start_time} - \${ev.end_time}</span>
-                  \${ev.location ? '<span>• ' + escapeHtml(ev.location) + '</span>' : ''}
-                </div>
-                \${ev.notes ? '<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">' + escapeHtml(ev.notes) + '</p>' : ''}
-              </div>
-            </div>
-            <button onclick="deleteCalendarEvent('\${ev.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
-              <i data-lucide="trash" class="h-3.5 w-3.5"></i>
-            </button>
-          </div>
-        \`).join('');
+        eventsListHtml = dayEvents.map(function(ev) {
+          return '<div class="p-3 rounded-2xl bg-white border border-slate-100 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group">' +
+            '<div class="flex items-start gap-2.5 min-w-0">' +
+              '<span class="w-2.5 h-2.5 rounded-full mt-1 shrink-0" style="background-color: ' + (ev.color || '#06b6d4') + '"></span>' +
+              '<div class="min-w-0">' +
+                '<p class="text-xs font-bold text-slate-900 truncate leading-snug">' + escapeHtml(ev.title) + '</p>' +
+                '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
+                  '<span class="font-mono font-medium text-slate-600">' + ev.start_time + ' - ' + ev.end_time + '</span>' +
+                  (ev.location ? '<span>• ' + escapeHtml(ev.location) + '</span>' : '') +
+                '</div>' +
+                (ev.notes ? '<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">' + escapeHtml(ev.notes) + '</p>' : '') +
+              '</div>' +
+            '</div>' +
+            '<button onclick="deleteCalendarEvent(\'' + ev.id + '\')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">' +
+              '<i data-lucide="trash" class="h-3.5 w-3.5"></i>' +
+            '</button>' +
+          '</div>';
+        }).join('');
       }
 
-      container.innerHTML = \`
-        <!-- Mini Calendar Header -->
-        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <i data-lucide="calendar" class="h-4 w-4 text-cyan-500"></i>
-              <span>\${currentMonth} \${currentYear}</span>
-            </h3>
-            <span class="text-[10px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">Today: \${todayDate} \${currentMonth}</span>
-          </div>
-
-          <div class="grid grid-cols-7 gap-1 text-[10px] font-bold text-slate-400 text-center mb-1">
-            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-          </div>
-
-          <div class="grid grid-cols-7 gap-1">
-            \${daysHtml}
-          </div>
-        </div>
-
-        <!-- Schedule for selected date -->
-        <div class="flex items-center justify-between pt-1">
-          <h4 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-            <i data-lucide="clock" class="h-3.5 w-3.5 text-cyan-600"></i>
-            <span>Schedule for \${selectedCalendarDate}</span>
-          </h4>
-          <button onclick="showQuickAddEvent()" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 transition flex items-center gap-1 cursor-pointer">
-            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-            <span>Add Event</span>
-          </button>
-        </div>
-
-        <!-- Quick Add Event Drawer Card -->
-        <div id="quick-add-event-form" class="hidden p-3.5 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-2.5 animate-in fade-in duration-100">
-          <input type="text" id="ev-input-title" placeholder="Event title or meeting..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
-          <div class="grid grid-cols-2 gap-2">
-            <input type="time" id="ev-input-start" value="10:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />
-            <input type="time" id="ev-input-end" value="11:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />
-          </div>
-          <input type="text" id="ev-input-loc" placeholder="Location or Zoom / Meet URL" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
-          
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-1.5">
-              <label class="text-[10px] text-slate-400 font-bold uppercase">Color:</label>
-              <button onclick="setEventColor('#06b6d4')" class="w-3.5 h-3.5 rounded-full bg-cyan-500 border border-white shadow-2xs"></button>
-              <button onclick="setEventColor('#a855f7')" class="w-3.5 h-3.5 rounded-full bg-purple-500 border border-white shadow-2xs"></button>
-              <button onclick="setEventColor('#10b981')" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white shadow-2xs"></button>
-              <button onclick="setEventColor('#ef4444')" class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-white shadow-2xs"></button>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="hideQuickAddEvent()" class="px-2.5 py-1 rounded-lg text-xs text-slate-500 hover:bg-slate-200/60 font-semibold">Cancel</button>
-              <button onclick="saveCalendarEventAction()" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs">Save</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Day Events List -->
-        <div class="space-y-2">
-          \${eventsListHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">' +
+        '<div class="flex items-center justify-between mb-3">' +
+          '<h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">' +
+            '<i data-lucide="calendar" class="h-4 w-4 text-cyan-500"></i>' +
+            '<span>' + currentMonth + ' ' + currentYear + '</span>' +
+          '</h3>' +
+          '<span class="text-[10px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">Today: ' + todayDate + ' ' + currentMonth + '</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-7 gap-1 text-[10px] font-bold text-slate-400 text-center mb-1">' +
+          '<span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-7 gap-1">' + daysHtml + '</div>' +
+      '</div>' +
+      '<div class="flex items-center justify-between pt-1">' +
+        '<h4 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">' +
+          '<i data-lucide="clock" class="h-3.5 w-3.5 text-cyan-600"></i>' +
+          '<span>Schedule for ' + selectedCalendarDate + '</span>' +
+        '</h4>' +
+        '<button onclick="showQuickAddEvent()" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 transition flex items-center gap-1 cursor-pointer">' +
+          '<i data-lucide="plus" class="h-3.5 w-3.5"></i>' +
+          '<span>Add Event</span>' +
+        '</button>' +
+      '</div>' +
+      '<div id="quick-add-event-form" class="hidden p-3.5 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-2.5 animate-in fade-in duration-100">' +
+        '<input type="text" id="ev-input-title" placeholder="Event title or meeting..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />' +
+        '<div class="grid grid-cols-2 gap-2">' +
+          '<input type="time" id="ev-input-start" value="10:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />' +
+          '<input type="time" id="ev-input-end" value="11:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />' +
+        '</div>' +
+        '<input type="text" id="ev-input-loc" placeholder="Location or Zoom / Meet URL" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />' +
+        '<div class="flex items-center justify-between pt-1">' +
+          '<div class="flex items-center gap-1.5">' +
+            '<label class="text-[10px] text-slate-400 font-bold uppercase">Color:</label>' +
+            '<button onclick="setEventColor(\'#06b6d4\')" class="w-3.5 h-3.5 rounded-full bg-cyan-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#a855f7\')" class="w-3.5 h-3.5 rounded-full bg-purple-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#10b981\')" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#ef4444\')" class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-white shadow-2xs"></button>' +
+          '</div>' +
+          '<div class="flex items-center gap-1.5">' +
+            '<button onclick="hideQuickAddEvent()" class="px-2.5 py-1 rounded-lg text-xs text-slate-500 hover:bg-slate-200/60 font-semibold cursor-pointer">Cancel</button>' +
+            '<button onclick="saveCalendarEventAction()" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs cursor-pointer">Save</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="space-y-2">' + eventsListHtml + '</div>';
     }
 
     function selectCalendarDate(dateStr) {
@@ -2908,70 +2886,60 @@ try {
     }
 
     // =========================================================================
-    // NOTES SECTION (Modern Pastel Sticky Notes with Pins & Search)
+    // NOTES SECTION
     // =========================================================================
     async function loadNotesView(container) {
       const res = await fetch('/api/notes');
       const data = await res.json();
       cachedUserNotes = data.notes || [];
 
-      const notesHtml = cachedUserNotes.map(n => \`
-        <div class="p-3.5 rounded-2xl shadow-2xs border border-slate-200/70 space-y-2 group transition hover:shadow-xs relative" style="background-color: \${n.color || '#fef08a'}">
-          <div class="flex items-start justify-between gap-2">
-            <h4 class="text-xs font-bold text-slate-900 leading-snug truncate">\${escapeHtml(n.title)}</h4>
-            <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-              \${n.is_pinned ? '<span title="Pinned Note">📌</span>' : ''}
-              <button onclick="deleteNoteAction('\${n.id}')" class="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer">
-                <i data-lucide="trash" class="h-3 w-3"></i>
-              </button>
-            </div>
-          </div>
-          <p class="text-xs text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">\${escapeHtml(n.content)}</p>
-          <div class="flex items-center justify-between text-[10px] text-slate-500/80 pt-1 border-t border-black/5">
-            <span class="font-mono">\${n.category || 'general'}</span>
-            <span>\${new Date(n.created_at || Date.now()).toLocaleDateString()}</span>
-          </div>
-        </div>
-      \`).join('');
+      const notesHtml = cachedUserNotes.map(function(n) {
+        return '<div class="p-3.5 rounded-2xl shadow-2xs border border-slate-200/70 space-y-2 group transition hover:shadow-xs relative" style="background-color: ' + (n.color || '#fef08a') + '">' +
+          '<div class="flex items-start justify-between gap-2">' +
+            '<h4 class="text-xs font-bold text-slate-900 leading-snug truncate">' + escapeHtml(n.title) + '</h4>' +
+            '<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">' +
+              (n.is_pinned ? '<span title="Pinned Note">📌</span>' : '') +
+              '<button onclick="deleteNoteAction(\'' + n.id + '\')" class="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer">' +
+                '<i data-lucide="trash" class="h-3 w-3"></i>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<p class="text-xs text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">' + escapeHtml(n.content) + '</p>' +
+          '<div class="flex items-center justify-between text-[10px] text-slate-500/80 pt-1 border-t border-black/5">' +
+            '<span class="font-mono">' + (n.category || 'general') + '</span>' +
+            '<span>' + new Date(n.created_at || Date.now()).toLocaleDateString() + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
 
-      container.innerHTML = \`
-        <!-- Notes Top Bar -->
-        <div class="flex items-center justify-between">
-          <div class="relative flex-1 mr-2">
-            <i data-lucide="search" class="h-3.5 w-3.5 text-slate-400 absolute left-3 top-2.5"></i>
-            <input type="text" oninput="filterNotesLive(this.value)" placeholder="Search sticky notes..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white" />
-          </div>
-          <button onclick="showQuickAddNote()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer">
-            <i data-lucide="plus" class="h-3.5 w-3.5 text-white"></i>
-            <span>New Note</span>
-          </button>
-        </div>
-
-        <!-- Quick New Note Composer -->
-        <div id="quick-add-note-card" class="hidden p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-2.5 animate-in fade-in duration-100">
-          <input type="text" id="note-input-title" placeholder="Note Title..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 font-bold" />
-          <textarea id="note-input-body" rows="3" placeholder="Write thoughts, checklists, or key details..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 leading-normal"></textarea>
-          
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-1">
-              <button onclick="setNoteColor('#fef08a')" title="Sunny Yellow" class="w-4 h-4 rounded-full bg-amber-200 border border-amber-300"></button>
-              <button onclick="setNoteColor('#bbf7d0')" title="Mint Green" class="w-4 h-4 rounded-full bg-emerald-200 border border-emerald-300"></button>
-              <button onclick="setNoteColor('#fed7aa')" title="Peach Coral" class="w-4 h-4 rounded-full bg-orange-200 border border-orange-300"></button>
-              <button onclick="setNoteColor('#e9d5ff')" title="Lavender Purple" class="w-4 h-4 rounded-full bg-purple-200 border border-purple-300"></button>
-              <button onclick="setNoteColor('#bae6fd')" title="Sky Blue" class="w-4 h-4 rounded-full bg-sky-200 border border-sky-300"></button>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button onclick="hideQuickAddNote()" class="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-200/60 rounded-lg">Cancel</button>
-              <button onclick="saveNoteAction()" class="px-3 py-1 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg shadow-2xs">Save Note</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notes Grid -->
-        <div id="notes-grid-list" class="space-y-3">
-          \${notesHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="flex items-center justify-between">' +
+        '<div class="relative flex-1 mr-2">' +
+          '<i data-lucide="search" class="h-3.5 w-3.5 text-slate-400 absolute left-3 top-2.5"></i>' +
+          '<input type="text" oninput="filterNotesLive(this.value)" placeholder="Search sticky notes..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white" />' +
+        '</div>' +
+        '<button onclick="showQuickAddNote()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer">' +
+          '<i data-lucide="plus" class="h-3.5 w-3.5 text-white"></i>' +
+          '<span>New Note</span>' +
+        '</button>' +
+      '</div>' +
+      '<div id="quick-add-note-card" class="hidden p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-2.5 animate-in fade-in duration-100">' +
+        '<input type="text" id="note-input-title" placeholder="Note Title..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 font-bold" />' +
+        '<textarea id="note-input-body" rows="3" placeholder="Write thoughts, checklists, or key details..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 leading-normal"></textarea>' +
+        '<div class="flex items-center justify-between pt-1">' +
+          '<div class="flex items-center gap-1">' +
+            '<button onclick="setNoteColor(\'#fef08a\')" title="Sunny Yellow" class="w-4 h-4 rounded-full bg-amber-200 border border-amber-300"></button>' +
+            '<button onclick="setNoteColor(\'#bbf7d0\')" title="Mint Green" class="w-4 h-4 rounded-full bg-emerald-200 border border-emerald-300"></button>' +
+            '<button onclick="setNoteColor(\'#fed7aa\')" title="Peach Coral" class="w-4 h-4 rounded-full bg-orange-200 border border-orange-300"></button>' +
+            '<button onclick="setNoteColor(\'#e9d5ff\')" title="Lavender Purple" class="w-4 h-4 rounded-full bg-purple-200 border border-purple-300"></button>' +
+            '<button onclick="setNoteColor(\'#bae6fd\')" title="Sky Blue" class="w-4 h-4 rounded-full bg-sky-200 border border-sky-300"></button>' +
+          '</div>' +
+          '<div class="flex items-center gap-1.5">' +
+            '<button onclick="hideQuickAddNote()" class="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-200/60 rounded-lg cursor-pointer">Cancel</button>' +
+            '<button onclick="saveNoteAction()" class="px-3 py-1 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg shadow-2xs cursor-pointer">Save Note</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div id="notes-grid-list" class="space-y-3">' + notesHtml + '</div>';
     }
 
     function showQuickAddNote() {
@@ -3016,6 +2984,15 @@ try {
       renderDrawerContent('notes');
     }
 
+    function filterNotesLive(q) {
+      const term = (q || '').toLowerCase();
+      const cards = document.querySelectorAll('#notes-grid-list > div');
+      cards.forEach(function(c) {
+        const text = c.innerText.toLowerCase();
+        c.style.display = text.includes(term) ? '' : 'none';
+      });
+    }
+
     // =========================================================================
     // TASKS / TO-DO INTEGRATION
     // =========================================================================
@@ -3024,54 +3001,45 @@ try {
       const data = await res.json();
       cachedUserTasks = data.tasks || [];
 
-      const tasksHtml = cachedUserTasks.map(t => \`
-        <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group \${t.is_completed ? 'opacity-50' : ''}">
-          <div class="flex items-start gap-2.5 min-w-0">
-            <input type="checkbox" onchange="toggleTaskAction('\${t.id}', this.checked)" \${t.is_completed ? 'checked' : ''} class="mt-1 h-4 w-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer" />
-            <div class="min-w-0">
-              <p class="text-xs font-bold text-slate-900 leading-snug truncate \${t.is_completed ? 'line-through text-slate-400' : ''}">\${escapeHtml(t.title)}</p>
-              <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
-                <span class="px-1.5 py-0.5 rounded font-bold uppercase tracking-wider \${
-                  t.priority === 'high' ? 'bg-rose-50 text-rose-600 border border-rose-200/80' : (t.priority === 'medium' ? 'bg-amber-50 text-amber-600 border border-amber-200/80' : 'bg-slate-100 text-slate-600')
-                }">\${t.priority}</span>
-                \${t.due_date ? '<span>📅 ' + t.due_date + '</span>' : ''}
-                \${t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">✉️ ' + escapeHtml(t.linked_email_subject) + '</span>' : ''}
-              </div>
-            </div>
-          </div>
-          <button onclick="deleteTaskAction('\${t.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
-            <i data-lucide="trash" class="h-3.5 w-3.5"></i>
-          </button>
-        </div>
-      \`).join('');
+      const tasksHtml = cachedUserTasks.map(function(t) {
+        return '<div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group ' + (t.is_completed ? 'opacity-50' : '') + '">' +
+          '<div class="flex items-start gap-2.5 min-w-0">' +
+            '<input type="checkbox" onchange="toggleTaskAction(\'' + t.id + '\', this.checked)" ' + (t.is_completed ? 'checked' : '') + ' class="mt-1 h-4 w-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer" />' +
+            '<div class="min-w-0">' +
+              '<p class="text-xs font-bold text-slate-900 leading-snug truncate ' + (t.is_completed ? 'line-through text-slate-400' : '') + '">' + escapeHtml(t.title) + '</p>' +
+              '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">' +
+                '<span class="px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ' +
+                  (t.priority === 'high' ? 'bg-rose-50 text-rose-600 border border-rose-200/80' : (t.priority === 'medium' ? 'bg-amber-50 text-amber-600 border border-amber-200/80' : 'bg-slate-100 text-slate-600')) + '">' + t.priority + '</span>' +
+                (t.due_date ? '<span>📅 ' + t.due_date + '</span>' : '') +
+                (t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">✉️ ' + escapeHtml(t.linked_email_subject) + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<button onclick="deleteTaskAction(\'' + t.id + '\')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">' +
+            '<i data-lucide="trash" class="h-3.5 w-3.5"></i>' +
+          '</button>' +
+        '</div>';
+      }).join('');
 
-      container.innerHTML = \`
-        <!-- Quick Add Task Bar -->
-        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-          <input type="text" id="task-input-title" placeholder="Add actionable task or milestone..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <select id="task-input-priority" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600">
-                <option value="medium">Medium Priority</option>
-                <option value="high">High Priority</option>
-                <option value="low">Low Priority</option>
-              </select>
-              <input type="date" id="task-input-due" value="\${new Date().toISOString().split('T')[0]}" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-mono" />
-            </div>
-            <button onclick="saveTaskAction()" class="px-3 py-1 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-lg shadow-2xs">Add Task</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between text-xs font-bold text-slate-700 pt-1">
-          <span>Active Tasks (\${cachedUserTasks.filter(t => !t.is_completed).length})</span>
-          <span class="text-[10px] text-slate-400 font-mono">\${cachedUserTasks.filter(t => t.is_completed).length} Done</span>
-        </div>
-
-        <!-- Task List -->
-        <div class="space-y-2">
-          \${tasksHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">' +
+        '<input type="text" id="task-input-title" placeholder="Add actionable task or milestone..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />' +
+        '<div class="flex items-center justify-between">' +
+          '<div class="flex items-center gap-2">' +
+            '<select id="task-input-priority" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600">' +
+              '<option value="medium">Medium Priority</option>' +
+              '<option value="high">High Priority</option>' +
+              '<option value="low">Low Priority</option>' +
+            '</select>' +
+            '<input type="date" id="task-input-due" value="' + new Date().toISOString().split('T')[0] + '" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-mono" />' +
+          '</div>' +
+          '<button onclick="saveTaskAction()" class="px-3 py-1 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-lg shadow-2xs cursor-pointer">Add Task</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="flex items-center justify-between text-xs font-bold text-slate-700 pt-1">' +
+        '<span>Active Tasks (' + cachedUserTasks.filter(function(t) { return !t.is_completed; }).length + ')</span>' +
+        '<span class="text-[10px] text-slate-400 font-mono">' + cachedUserTasks.filter(function(t) { return t.is_completed; }).length + ' Done</span>' +
+      '</div>' +
+      '<div class="space-y-2">' + tasksHtml + '</div>';
     }
 
     async function saveTaskAction() {
@@ -3112,44 +3080,36 @@ try {
       const data = await res.json();
       cachedAttachments = data.attachments || [];
 
-      const itemsHtml = cachedAttachments.map(att => {
+      const itemsHtml = cachedAttachments.map(function(att) {
         const isImg = (att.mime_type || '').startsWith('image/');
         const isPdf = (att.mime_type || '').includes('pdf');
         const sizeMb = (att.size_bytes / 1024 / 1024).toFixed(1) + ' MB';
 
-        return \`
-          <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-center justify-between gap-3 group">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 \${
-                isImg ? 'bg-amber-50 text-amber-600' : (isPdf ? 'bg-rose-50 text-rose-600' : 'bg-cyan-50 text-cyan-600')
-              }">
-                <i data-lucide="\${isImg ? 'image' : (isPdf ? 'file-text' : 'file')}" class="h-5 w-5"></i>
-              </div>
-              <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-800 truncate">\${escapeHtml(att.original_name || att.filename)}</p>
-                <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
-                  <span class="font-mono">\${sizeMb}</span>
-                  \${att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : ''}
-                </div>
-              </div>
-            </div>
-            <a href="/api/attachments/\${att.id}/download" download class="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition shrink-0" title="Download File">
-              <i data-lucide="download" class="h-4 w-4"></i>
-            </a>
-          </div>
-        \`;
+        return '<div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-center justify-between gap-3 group">' +
+          '<div class="flex items-center gap-3 min-w-0">' +
+            '<div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ' +
+              (isImg ? 'bg-amber-50 text-amber-600' : (isPdf ? 'bg-rose-50 text-rose-600' : 'bg-cyan-50 text-cyan-600')) + '">' +
+              '<i data-lucide="' + (isImg ? 'image' : (isPdf ? 'file-text' : 'file')) + '" class="h-5 w-5"></i>' +
+            '</div>' +
+            '<div class="min-w-0">' +
+              '<p class="text-xs font-bold text-slate-800 truncate">' + escapeHtml(att.original_name || att.filename) + '</p>' +
+              '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
+                '<span class="font-mono">' + sizeMb + '</span>' +
+                (att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<a href="/api/attachments/' + att.id + '/download" download class="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition shrink-0" title="Download File">' +
+            '<i data-lucide="download" class="h-4 w-4"></i>' +
+          '</a>' +
+        '</div>';
       }).join('');
 
-      container.innerHTML = \`
-        <div class="flex items-center justify-between">
-          <p class="text-xs font-bold text-slate-800">Mailbox Attachments (\${cachedAttachments.length})</p>
-          <span class="text-[10px] text-slate-400 font-mono">Visual Index</span>
-        </div>
-
-        <div class="space-y-2">
-          \${itemsHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="flex items-center justify-between">' +
+        '<p class="text-xs font-bold text-slate-800">Mailbox Attachments (' + cachedAttachments.length + ')</p>' +
+        '<span class="text-[10px] text-slate-400 font-mono">Visual Index</span>' +
+      '</div>' +
+      '<div class="space-y-2">' + itemsHtml + '</div>';
     }
 
     // =========================================================================
@@ -3160,90 +3120,80 @@ try {
       const data = await res.json();
       const articles = data.articles || [];
 
-      const articlesHtml = articles.map(art => \`
-        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-rose-200 transition">
-          <div class="flex items-center justify-between text-[10px] text-slate-400">
-            <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/60">\${escapeHtml(art.source)}</span>
-            <span>\${art.date}</span>
-          </div>
-          <h4 class="text-xs font-bold text-slate-900 leading-snug">\${escapeHtml(art.title)}</h4>
-          <p class="text-[11px] text-slate-500 leading-relaxed">\${escapeHtml(art.snippet)}</p>
-          <div class="flex items-center justify-between pt-1 text-[11px]">
-            <span class="text-slate-400">By \${escapeHtml(art.author || 'Editorial')}</span>
-            <a href="\${art.url}" target="_blank" class="text-cyan-600 hover:underline font-bold flex items-center gap-1">
-              <span>Read Source</span>
-              <i data-lucide="external-link" class="h-3 w-3"></i>
-            </a>
-          </div>
-        </div>
-      \`).join('');
+      const articlesHtml = articles.map(function(art) {
+        return '<div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-rose-200 transition">' +
+          '<div class="flex items-center justify-between text-[10px] text-slate-400">' +
+            '<span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/60">' + escapeHtml(art.source) + '</span>' +
+            '<span>' + art.date + '</span>' +
+          '</div>' +
+          '<h4 class="text-xs font-bold text-slate-900 leading-snug">' + escapeHtml(art.title) + '</h4>' +
+          '<p class="text-[11px] text-slate-500 leading-relaxed">' + escapeHtml(art.snippet) + '</p>' +
+          '<div class="flex items-center justify-between pt-1 text-[11px]">' +
+            '<span class="text-slate-400">By ' + escapeHtml(art.author || 'Editorial') + '</span>' +
+            '<a href="' + art.url + '" target="_blank" class="text-cyan-600 hover:underline font-bold flex items-center gap-1">' +
+              '<span>Read Source</span>' +
+              '<i data-lucide="external-link" class="h-3 w-3"></i>' +
+            '</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
 
-      container.innerHTML = \`
-        <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-800">Subscribed Feeds</h3>
-          <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live Sync</span>
-        </div>
-
-        <div class="space-y-3">
-          \${articlesHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="flex items-center justify-between">' +
+        '<h3 class="text-xs font-bold text-slate-800">Subscribed Feeds</h3>' +
+        '<span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live Sync</span>' +
+      '</div>' +
+      '<div class="space-y-3">' + articlesHtml + '</div>';
     }
 
     // =========================================================================
-    // TEMPLATES & CANNED RESPONSES
+    // TEMPLATES & CANNED RESPONSES (Clean by ID)
     // =========================================================================
     async function loadTemplatesView(container) {
       const res = await fetch('/api/templates');
       const data = await res.json();
       cachedTemplates = data.templates || [];
 
-      const templatesHtml = cachedTemplates.map(tpl => \`
-        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-indigo-200 transition">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-              <h4 class="text-xs font-bold text-slate-900">\${escapeHtml(tpl.title)}</h4>
-            </div>
-            <span class="text-[10px] font-mono text-slate-400 uppercase">\${tpl.category}</span>
-          </div>
-          \${tpl.subject ? '<p class="text-[11px] text-slate-500 font-medium">Subject: ' + escapeHtml(tpl.subject) + '</p>' : ''}
-          <p class="text-[11px] text-slate-600 line-clamp-3 bg-slate-50 p-2 rounded-xl whitespace-pre-wrap font-sans">\${escapeHtml(tpl.body)}</p>
-          <div class="flex items-center justify-end gap-2 pt-1">
-            <button onclick="copyTemplateText(\\\`\${escapeJsString(tpl.body)}\\\`)" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition cursor-pointer">Copy</button>
-            <button onclick="insertTemplateToCompose(\\\`\${escapeJsString(tpl.subject || '')}\\\`, \\\`\${escapeJsString(tpl.body)}\\\`)" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs transition cursor-pointer">Insert into Email</button>
-          </div>
-        </div>
-      \`).join('');
+      const templatesHtml = cachedTemplates.map(function(tpl) {
+        return '<div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-indigo-200 transition">' +
+          '<div class="flex items-center justify-between">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="w-2 h-2 rounded-full bg-indigo-500"></span>' +
+              '<h4 class="text-xs font-bold text-slate-900">' + escapeHtml(tpl.title) + '</h4>' +
+            '</div>' +
+            '<span class="text-[10px] font-mono text-slate-400 uppercase">' + tpl.category + '</span>' +
+          '</div>' +
+          (tpl.subject ? '<p class="text-[11px] text-slate-500 font-medium">Subject: ' + escapeHtml(tpl.subject) + '</p>' : '') +
+          '<p class="text-[11px] text-slate-600 line-clamp-3 bg-slate-50 p-2 rounded-xl whitespace-pre-wrap font-sans">' + escapeHtml(tpl.body) + '</p>' +
+          '<div class="flex items-center justify-end gap-2 pt-1">' +
+            '<button onclick="copyTemplateById(\'' + tpl.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition cursor-pointer">Copy</button>' +
+            '<button onclick="insertTemplateById(\'' + tpl.id + '\')" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs transition cursor-pointer">Insert into Email</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
 
-      container.innerHTML = \`
-        <div class="flex items-center justify-between">
-          <h3 class="text-xs font-bold text-slate-800">Canned Responses</h3>
-          <span class="text-[10px] text-slate-400 font-mono">\${cachedTemplates.length} Saved</span>
-        </div>
-
-        <div class="space-y-3">
-          \${templatesHtml}
-        </div>
-      \`;
+      container.innerHTML = '<div class="flex items-center justify-between">' +
+        '<h3 class="text-xs font-bold text-slate-800">Canned Responses</h3>' +
+        '<span class="text-[10px] text-slate-400 font-mono">' + cachedTemplates.length + ' Saved</span>' +
+      '</div>' +
+      '<div class="space-y-3">' + templatesHtml + '</div>';
     }
 
-    function insertTemplateToCompose(subj, body) {
+    function insertTemplateById(tplId) {
+      const tpl = cachedTemplates.find(function(t) { return t.id === tplId; });
+      if (!tpl) return;
       openComposeCard();
       const bodyEl = document.getElementById('compose-body');
       const subjEl = document.getElementById('compose-subject');
-      if (bodyEl) bodyEl.value = body;
-      if (subjEl && subj && !subjEl.value) subjEl.value = subj;
+      if (bodyEl) bodyEl.value = tpl.body;
+      if (subjEl && tpl.subject && !subjEl.value) subjEl.value = tpl.subject;
       closeProductivityDrawer();
     }
 
-    function copyTemplateText(text) {
-      navigator.clipboard.writeText(text);
+    function copyTemplateById(tplId) {
+      const tpl = cachedTemplates.find(function(t) { return t.id === tplId; });
+      if (!tpl) return;
+      navigator.clipboard.writeText(tpl.body);
       alert('Template copied to clipboard!');
-    }
-
-    function escapeJsString(str) {
-      return (str || '').replace(/\\\\/g, '\\\\\\\\').replace(/\`/g, '\\\\\`').replace(/\\$/g, '\\\\$');
     }
 
     // =========================================================================
@@ -3313,7 +3263,7 @@ try {
     let activeSmartTab = 'primary';
     function setSmartCategory(cat) {
       activeSmartTab = cat;
-      ['primary', 'promotions', 'social', 'updates'].forEach(c => {
+      ['primary', 'promotions', 'social', 'updates'].forEach(function(c) {
         const btn = document.getElementById('smart-tab-' + c);
         if (btn) {
           if (c === cat) {
@@ -3323,7 +3273,6 @@ try {
           }
         }
       });
-      // Filter the threads container
       refreshMailbox();
     }
 
@@ -3344,7 +3293,7 @@ try {
     }
 
     function switchProTab(tabKey) {
-      ['infra', 'security', 'productivity', 'business'].forEach(k => {
+      ['infra', 'security', 'productivity', 'business'].forEach(function(k) {
         const btn = document.getElementById('pro-tab-' + k);
         if (btn) {
           if (k === tabKey) {
@@ -3363,144 +3312,120 @@ try {
       if (!container) return;
 
       if (tabKey === 'infra') {
-        container.innerHTML = \`
-          <!-- 1. Infrastructure & Storage Extensions -->
-          <div class="space-y-4">
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
-              <div>
-                <h4 class="text-xs font-bold text-slate-900">Expanded Cloud Storage (2TB Tier)</h4>
-                <p class="text-[11px] text-slate-400">High-speed SSD storage for messages, logs, and database files</p>
-              </div>
-              <span class="text-xs font-mono font-bold text-cyan-600 bg-cyan-50 border border-cyan-200 px-2.5 py-1 rounded-full">14.2 GB / 2,000 GB</span>
-            </div>
-
-            <!-- Custom Domain Support -->
-            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="text-xs font-bold text-slate-900">Custom Domain Support (name@yourdomain.com)</h4>
-                  <p class="text-[11px] text-slate-400">Automated DNS MX, SPF, DKIM & DMARC configuration</p>
-                </div>
-                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
-              </div>
-              <div class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-[11px] space-y-1">
-                <p>MX 10 mail.yourdomain.com.</p>
-                <p>TXT "v=spf1 include:racconmail.eu ~all"</p>
-                <p>TXT default._domainkey "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."</p>
-              </div>
-            </div>
-
-            <!-- Large File Sending & Multi-Account Syncing -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Large File Sending (>25MB)</h4>
-                <p class="text-[11px] text-slate-500">Auto-generates encrypted cloud download links with expiry dates and password protection.</p>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Multi-Account IMAP/POP3 Sync</h4>
-                <p class="text-[11px] text-slate-500">Aggregate unlimited mailboxes into a single synchronized dashboard with 0ms local caching.</p>
-              </div>
-            </div>
-          </div>
-        \`;
+        container.innerHTML = '<div class="space-y-4">' +
+          '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">' +
+            '<div>' +
+              '<h4 class="text-xs font-bold text-slate-900">Expanded Cloud Storage (2TB Tier)</h4>' +
+              '<p class="text-[11px] text-slate-400">High-speed SSD storage for messages, logs, and database files</p>' +
+            '</div>' +
+            '<span class="text-xs font-mono font-bold text-cyan-600 bg-cyan-50 border border-cyan-200 px-2.5 py-1 rounded-full">14.2 GB / 2,000 GB</span>' +
+          '</div>' +
+          '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">' +
+            '<div class="flex items-center justify-between">' +
+              '<div>' +
+                '<h4 class="text-xs font-bold text-slate-900">Custom Domain Support (name@yourdomain.com)</h4>' +
+                '<p class="text-[11px] text-slate-400">Automated DNS MX, SPF, DKIM & DMARC configuration</p>' +
+              '</div>' +
+              '<span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Active</span>' +
+            '</div>' +
+            '<div class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-[11px] space-y-1">' +
+              '<p>MX 10 mail.yourdomain.com.</p>' +
+              '<p>TXT "v=spf1 include:racconmail.eu ~all"</p>' +
+              '<p>TXT default._domainkey "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Large File Sending (&gt;25MB)</h4>' +
+              '<p class="text-[11px] text-slate-500">Auto-generates encrypted cloud download links with expiry dates and password protection.</p>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Multi-Account IMAP/POP3 Sync</h4>' +
+              '<p class="text-[11px] text-slate-500">Aggregate unlimited mailboxes into a single synchronized dashboard with 0ms local caching.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       } else if (tabKey === 'security') {
-        container.innerHTML = \`
-          <!-- 2. Privacy & Advanced Security -->
-          <div class="space-y-4">
-            <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 flex items-center justify-between">
-              <div>
-                <h4 class="text-xs font-bold text-emerald-950">End-to-End Encryption (E2EE) & PGP Keys</h4>
-                <p class="text-[11px] text-emerald-700">Client-side zero-knowledge encryption key vault active</p>
-              </div>
-              <span class="text-[10px] font-bold text-white bg-emerald-600 px-3 py-1 rounded-full shadow-2xs">PGP 4096-bit</span>
-            </div>
-
-            <!-- Email Aliases & Masking -->
-            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="text-xs font-bold text-slate-900">Email Aliases & Burner Masking</h4>
-                  <p class="text-[11px] text-slate-400">Generate disposable addresses to stop tracking and spam</p>
-                </div>
-                <button onclick="generateBurnerAlias()" class="text-xs font-bold text-cyan-600 hover:underline">+ Generate Mask</button>
-              </div>
-              <div class="space-y-1.5">
-                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">
-                  <span class="font-mono text-slate-700">mask.shopping.4829@racconmail.eu</span>
-                  <span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>
-                </div>
-                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">
-                  <span class="font-mono text-slate-700">mask.newsletters.9102@racconmail.eu</span>
-                  <span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Audit Logs & Security Radar -->
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <h4 class="text-xs font-bold text-slate-900">Security Audit Logs & Active Sessions</h4>
-              <p class="text-[11px] text-slate-400">Full IP address logging, suspicious login alerts, and remote session termination.</p>
-              <div class="text-[10px] text-slate-600 font-mono space-y-1 pt-1">
-                <p>• \${new Date().toLocaleDateString()} 20:54 &mdash; Webmail Authorized &mdash; 178.132.24.11 (Chrome Win11)</p>
-                <p>• Yesterday 14:12 &mdash; Android APK Token Handshake &mdash; Verified</p>
-              </div>
-            </div>
-          </div>
-        \`;
+        container.innerHTML = '<div class="space-y-4">' +
+          '<div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 flex items-center justify-between">' +
+            '<div>' +
+              '<h4 class="text-xs font-bold text-emerald-950">End-to-End Encryption (E2EE) & PGP Keys</h4>' +
+              '<p class="text-[11px] text-emerald-700">Client-side zero-knowledge encryption key vault active</p>' +
+            '</div>' +
+            '<span class="text-[10px] font-bold text-white bg-emerald-600 px-3 py-1 rounded-full shadow-2xs">PGP 4096-bit</span>' +
+          '</div>' +
+          '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">' +
+            '<div class="flex items-center justify-between">' +
+              '<div>' +
+                '<h4 class="text-xs font-bold text-slate-900">Email Aliases & Burner Masking</h4>' +
+                '<p class="text-[11px] text-slate-400">Generate disposable addresses to stop tracking and spam</p>' +
+              '</div>' +
+              '<button onclick="generateBurnerAlias()" class="text-xs font-bold text-cyan-600 hover:underline cursor-pointer">+ Generate Mask</button>' +
+            '</div>' +
+            '<div class="space-y-1.5">' +
+              '<div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">' +
+                '<span class="font-mono text-slate-700">mask.shopping.4829@racconmail.eu</span>' +
+                '<span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>' +
+              '</div>' +
+              '<div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">' +
+                '<span class="font-mono text-slate-700">mask.newsletters.9102@racconmail.eu</span>' +
+                '<span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">' +
+            '<h4 class="text-xs font-bold text-slate-900">Security Audit Logs & Active Sessions</h4>' +
+            '<p class="text-[11px] text-slate-400">Full IP address logging, suspicious login alerts, and remote session termination.</p>' +
+            '<div class="text-[10px] text-slate-600 font-mono space-y-1 pt-1">' +
+              '<p>• ' + new Date().toLocaleDateString() + ' 20:54 &mdash; Webmail Authorized &mdash; 178.132.24.11 (Chrome Win11)</p>' +
+              '<p>• Yesterday 14:12 &mdash; Android APK Token Handshake &mdash; Verified</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       } else if (tabKey === 'productivity') {
-        container.innerHTML = \`
-          <!-- 3. Professional Productivity Tools -->
-          <div class="space-y-4">
-            <div class="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 flex items-center justify-between">
-              <div>
-                <h4 class="text-xs font-bold text-cyan-950">AI Writing Assistant & Summarizer</h4>
-                <p class="text-[11px] text-cyan-700">Draft replies, adjust professional tone, and summarize long multi-nested threads</p>
-              </div>
-              <span class="text-[10px] font-bold text-white bg-cyan-600 px-3 py-1 rounded-full shadow-2xs">Integrated</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Email Tracking & Read Receipts</h4>
-                <p class="text-[11px] text-slate-500">Real-time open tracking and link analytics so you know precisely when recipients open your proposals.</p>
-              </div>
-              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Send Later & 30s Undo Send</h4>
-                <p class="text-[11px] text-slate-500">Scheduled delivery matching recipient time zones, plus an extended 30-second cancellation safety window.</p>
-              </div>
-            </div>
-
-            <!-- Automation & Sequences -->
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-              <h4 class="text-xs font-bold text-slate-900">Advanced Automation Rules & Sequences</h4>
-              <p class="text-[11px] text-slate-500">Build conditional triggers: "If sender is client, apply Priority tag, create Calendar reminder, and auto-reply confirmation."</p>
-            </div>
-          </div>
-        \`;
+        container.innerHTML = '<div class="space-y-4">' +
+          '<div class="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 flex items-center justify-between">' +
+            '<div>' +
+              '<h4 class="text-xs font-bold text-cyan-950">AI Writing Assistant & Summarizer</h4>' +
+              '<p class="text-[11px] text-cyan-700">Draft replies, adjust professional tone, and summarize long multi-nested threads</p>' +
+            '</div>' +
+            '<span class="text-[10px] font-bold text-white bg-cyan-600 px-3 py-1 rounded-full shadow-2xs">Integrated</span>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+            '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Email Tracking & Read Receipts</h4>' +
+              '<p class="text-[11px] text-slate-500">Real-time open tracking and link analytics so you know precisely when recipients open your proposals.</p>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Send Later & 30s Undo Send</h4>' +
+              '<p class="text-[11px] text-slate-500">Scheduled delivery matching recipient time zones, plus an extended 30-second cancellation safety window.</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">' +
+            '<h4 class="text-xs font-bold text-slate-900">Advanced Automation Rules & Sequences</h4>' +
+            '<p class="text-[11px] text-slate-500">Build conditional triggers: \'If sender is client, apply Priority tag, create Calendar reminder, and auto-reply confirmation.\'</p>' +
+          '</div>' +
+        '</div>';
       } else if (tabKey === 'business') {
-        container.innerHTML = \`
-          <!-- 4. Business & Collaborative Features -->
-          <div class="space-y-4">
-            <div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between">
-              <div>
-                <h4 class="text-xs font-bold text-purple-950">Shared Inboxes (support@ & team@)</h4>
-                <p class="text-[11px] text-purple-700">Team collaboration with internal comments, assignment queues, and ticket statuses</p>
-              </div>
-              <span class="text-[10px] font-bold text-white bg-purple-600 px-3 py-1 rounded-full shadow-2xs">Multi-Agent</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Full CRM Two-Way Sync</h4>
-                <p class="text-[11px] text-slate-500">Direct integration with Salesforce, HubSpot, and Pipedrive to sync contacts, leads, and deal history.</p>
-              </div>
-              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-                <h4 class="text-xs font-bold text-slate-900">Premium Webhooks</h4>
-                <p class="text-[11px] text-slate-500">Live webhooks for Slack notifications, Jira ticket creation, Asana milestones, and Zoom video meetings.</p>
-              </div>
-            </div>
-          </div>
-        \`;
+        container.innerHTML = '<div class="space-y-4">' +
+          '<div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between">' +
+            '<div>' +
+              '<h4 class="text-xs font-bold text-purple-950">Shared Inboxes (support@ & team@)</h4>' +
+              '<p class="text-[11px] text-purple-700">Team collaboration with internal comments, assignment queues, and ticket statuses</p>' +
+            '</div>' +
+            '<span class="text-[10px] font-bold text-white bg-purple-600 px-3 py-1 rounded-full shadow-2xs">Multi-Agent</span>' +
+          '</div>' +
+          '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+            '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Full CRM Two-Way Sync</h4>' +
+              '<p class="text-[11px] text-slate-500">Direct integration with Salesforce, HubSpot, and Pipedrive to sync contacts, leads, and deal history.</p>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">' +
+              '<h4 class="text-xs font-bold text-slate-900">Premium Webhooks</h4>' +
+              '<p class="text-[11px] text-slate-500">Live webhooks for Slack notifications, Jira ticket creation, Asana milestones, and Zoom video meetings.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       }
     }
 
@@ -3514,7 +3439,45 @@ try {
       alert('Created Alias: ' + data.alias_email);
       renderProTabContent('security');
     }
-  </script>
 
+    // Helper actions to link Email -> Calendar, Tasks, Notes
+    function addCurrentEmailToCalendar() {
+      const activeMsg = (window.activeThreadMessage) || (window.messages && window.messages[0]);
+      openProductivityDrawer('calendar');
+      setTimeout(function() {
+        showQuickAddEvent();
+        const titleEl = document.getElementById('ev-input-title');
+        if (titleEl && activeMsg) {
+          titleEl.value = 'Discussion: ' + (activeMsg.subject || 'Email Review');
+        }
+      }, 150);
+    }
+
+    function addCurrentEmailToTask() {
+      const activeMsg = (window.activeThreadMessage) || (window.messages && window.messages[0]);
+      openProductivityDrawer('tasks');
+      setTimeout(function() {
+        const titleEl = document.getElementById('task-input-title');
+        if (titleEl && activeMsg) {
+          titleEl.value = 'Follow up: ' + (activeMsg.subject || 'Correspondence');
+          titleEl.focus();
+        }
+      }, 150);
+    }
+
+    function saveCurrentEmailToNote() {
+      const activeMsg = (window.activeThreadMessage) || (window.messages && window.messages[0]);
+      openProductivityDrawer('notes');
+      setTimeout(function() {
+        showQuickAddNote();
+        const titleEl = document.getElementById('note-input-title');
+        const bodyEl = document.getElementById('note-input-body');
+        if (activeMsg) {
+          if (titleEl) titleEl.value = 'Note: ' + (activeMsg.subject || 'Email Thought');
+          if (bodyEl) bodyEl.value = 'From: ' + (activeMsg.sender || activeMsg.sender_email || '') + '\n\n' + (activeMsg.snippet || activeMsg.body || '');
+        }
+      }, 150);
+    }
+  </script>
 </body>
 </html>

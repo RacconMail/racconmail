@@ -164,6 +164,10 @@
       <button onclick="adminApp.setTab('system')" id="tab-system" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
         ⚡ Maintenance &amp; Health
       </button>
+      <button onclick="adminApp.setTab('plans')" id="tab-plans" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer flex items-center gap-1.5">
+        <span>💳</span>
+        <span>Pro Plans &amp; PayPal</span>
+      </button>
     </nav>
 
     <!-- MAIN BODY -->
@@ -459,6 +463,191 @@
         </div>
       </section>
 
+      <!-- 6. PRO PLANS & PAYPAL BILLING GATEWAY -->
+      <section id="view-plans" class="hidden space-y-6 animate-in fade-in duration-150">
+        
+        <!-- Top Overview Banner -->
+        <div class="p-6 rounded-3xl bg-linear-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-amber-500/20">
+              💳
+            </div>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900">Subscription Plans &amp; PayPal Payment Gateway</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Configure your PayPal seller account, manage pricing tiers, storage quotas, and monetization.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="adminApp.openNewPlanModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
+              <span>+</span>
+              <span>Create New Plan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 1: PAYPAL ACCOUNT & PAYMENT GATEWAY -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                🅿️
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">PayPal Business Gateway Credentials</h3>
+                <p class="text-[11px] text-slate-400">Buyers subscribe directly to your PayPal account with automatic IPN/Webhook activation</p>
+              </div>
+            </div>
+            <span id="paypal-mode-badge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+              Sandbox Mode
+            </span>
+          </div>
+
+          <form onsubmit="adminApp.savePayPalSettings(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
+              <!-- PayPal Mode -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Environment Mode</label>
+                <select id="paypal-mode" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-semibold">
+                  <option value="sandbox">Sandbox (Testing / Simulator)</option>
+                  <option value="live">Live (Real Payments / Production)</option>
+                </select>
+              </div>
+
+              <!-- Currency -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Billing Currency</label>
+                <select id="paypal-currency" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-semibold">
+                  <option value="USD">USD ($) - US Dollar</option>
+                  <option value="EUR">EUR (€) - Euro</option>
+                  <option value="GBP">GBP (£) - British Pound</option>
+                  <option value="CAD">CAD ($) - Canadian Dollar</option>
+                  <option value="AUD">AUD ($) - Australian Dollar</option>
+                </select>
+              </div>
+
+              <!-- PayPal Email -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Business / Merchant Email</label>
+                <input type="email" id="paypal-email" placeholder="e.g. merchant@yourdomain.com" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-medium" required />
+              </div>
+
+              <!-- Webhook ID -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Webhook ID (Optional)</label>
+                <input type="text" id="paypal-webhook" placeholder="e.g. 8JH92049AL10294" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
+              </div>
+
+              <!-- Client ID -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">REST API Client ID</label>
+                <input type="text" id="paypal-client-id" placeholder="Client ID from developer.paypal.com" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
+              </div>
+
+              <!-- Client Secret -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">REST API Secret Key</label>
+                <input type="password" id="paypal-secret" placeholder="••••••••••••••••••••••••" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
+              </div>
+
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+              <span class="text-[11px] text-slate-400">Credentials are stored encrypted in your private SQLite database.</span>
+              <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition shadow-xs cursor-pointer">
+                💾 Save PayPal Settings
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- CARD 2: SUBSCRIPTION PLANS MANAGER -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Manage Subscription Tiers</h3>
+              <p class="text-[11px] text-slate-400">Customize plan pricing, storage quotas, accounts limits, and highlighted features.</p>
+            </div>
+            <span id="plans-count-badge" class="text-xs font-bold text-slate-500 font-mono">3 Plans</span>
+          </div>
+
+          <!-- Plans Grid Container -->
+          <div id="admin-plans-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Dynamically loaded by adminApp.loadBilling() -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- EDIT / CREATE PLAN MODAL -->
+      <div id="plan-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+            <h3 id="plan-modal-title" class="text-sm font-bold text-slate-900">Edit Subscription Plan</h3>
+            <button onclick="adminApp.closePlanModal()" class="p-1 text-slate-400 hover:text-slate-700">✕</button>
+          </div>
+
+          <form onsubmit="adminApp.savePlanForm(event)" class="space-y-3.5">
+            <input type="hidden" id="plan-id" />
+            
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Plan Title</label>
+              <input type="text" id="plan-name" placeholder="e.g. Pro Creator" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-bold" required />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Badge Text (Optional)</label>
+              <input type="text" id="plan-badge" placeholder="e.g. Most Popular / Best Value" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Monthly Price ($)</label>
+                <input type="number" step="0.01" id="plan-price-monthly" placeholder="9.99" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Yearly Price ($)</label>
+                <input type="number" step="0.01" id="plan-price-yearly" placeholder="99.00" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Storage Quota (GB)</label>
+                <input type="number" id="plan-storage" placeholder="200" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Max Accounts (999=Unlimited)</label>
+                <input type="number" id="plan-accounts" placeholder="5" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Features (One per line)</label>
+              <textarea id="plan-features" rows="4" placeholder="200 GB NVMe Storage&#10;5 Mailbox Connections&#10;Custom Domain Setup&#10;End-to-End PGP Encryption&#10;AI Writing Assistant" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-sans"></textarea>
+            </div>
+
+            <div class="flex items-center gap-4 pt-1">
+              <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                <input type="checkbox" id="plan-is-active" checked class="rounded text-cyan-600 focus:ring-cyan-500" />
+                <span>Active (Visible to users)</span>
+              </label>
+              <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+                <input type="checkbox" id="plan-is-popular" class="rounded text-amber-500 focus:ring-amber-500" />
+                <span>Highlight as "Popular"</span>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+              <button type="button" onclick="adminApp.closePlanModal()" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100">Cancel</button>
+              <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs">Save Plan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
     </main>
   </div>
 
@@ -578,7 +767,7 @@
 
       setTab(tab) {
         this.currentTab = tab;
-        ['overview', 'users', 'forum', 'broadcast', 'system'].forEach(t => {
+        ['overview', 'users', 'forum', 'broadcast', 'system', 'plans'].forEach(t => {
           const btn = document.getElementById(`tab-${t}`);
           const view = document.getElementById(`view-${t}`);
           if (!btn || !view) return;

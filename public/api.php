@@ -57,7 +57,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v17_productivity_suite';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v18_billing_plans';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -228,7 +228,36 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )");
 
-                $db->exec("CREATE TABLE IF NOT EXISTS security_audit_logs (
+                
+                // Billing & Pro Plans Tables
+                $db->exec("CREATE TABLE IF NOT EXISTS billing_settings (
+                    id INTEGER PRIMARY KEY,
+                    paypal_email TEXT DEFAULT 'billing@racconmail.eu',
+                    paypal_client_id TEXT DEFAULT '',
+                    paypal_secret TEXT DEFAULT '',
+                    paypal_mode TEXT DEFAULT 'sandbox',
+                    currency TEXT DEFAULT 'USD',
+                    webhook_id TEXT DEFAULT '',
+                    auto_activation INTEGER DEFAULT 1,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS subscription_plans (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    badge TEXT DEFAULT '',
+                    price_monthly REAL NOT NULL,
+                    price_yearly REAL NOT NULL,
+                    storage_gb INTEGER NOT NULL,
+                    max_accounts INTEGER NOT NULL,
+                    features_json TEXT NOT NULL,
+                    is_active INTEGER DEFAULT 1,
+                    is_popular INTEGER DEFAULT 0,
+                    sort_order INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+  
+$db->exec("CREATE TABLE IF NOT EXISTS security_audit_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id TEXT NOT NULL,
                     event_type TEXT NOT NULL,
@@ -2907,6 +2936,152 @@ Alex"]
         ];
         echo json_encode(['success' => true, 'logs' => $logs]);
         exit;
+    }
+  
+
+    // ==========================================
+    // 15. ADMIN BILLING & PRO PLANS API
+    // ==========================================
+    if ($route === 'admin/billing') {
+        if ($method === 'GET') {
+            // Get PayPal settings
+            $stmtPaypal = $db->query("SELECT * FROM billing_settings WHERE id = 1");
+            $paypal = $stmtPaypal ? $stmtPaypal->fetch() : null;
+
+            if (!$paypal) {
+                $db->exec("INSERT OR IGNORE INTO billing_settings (id, paypal_email, paypal_client_id, paypal_secret, paypal_mode, currency, webhook_id) VALUES (1, 'billing@racconmail.eu', 'sb-client-demo-racconmail-2026', 'sb-secret-racconmail-key-7729', 'sandbox', 'USD', 'WH-89214798')");
+                $stmtPaypal = $db->query("SELECT * FROM billing_settings WHERE id = 1");
+                $paypal = $stmtPaypal->fetch();
+            }
+
+            // Get Subscription Plans
+            $stmtPlans = $db->query("SELECT * FROM subscription_plans ORDER BY sort_order ASC, price_monthly ASC");
+            $plans = $stmtPlans ? $stmtPlans->fetchAll() : [];
+
+            if (empty($plans)) {
+                $seeds = [
+                    [
+                        'plan_free', 'Starter Free', 'Free Forever', 0.00, 0.00, 15, 1,
+                        json_encode([
+                            '15 GB Secure SSD Storage',
+                            '1 Primary Raccon Mailbox',
+                            'Standard Spam & Phishing Shield',
+                            'Community Forum & Support',
+                            'Responsive Web & Mobile APK'
+                        ]), 1, 0, 1
+                    ],
+                    [
+                        'plan_pro', 'Pro Creator', 'Most Popular', 9.99, 99.00, 200, 5,
+                        json_encode([
+                            '200 GB High-Speed NVMe Storage',
+                            '5 Connected Mailbox Accounts (Unified Inbox)',
+                            'Custom Domain Support (name@yourdomain.com)',
+                            'End-to-End Encryption (E2EE PGP Vault)',
+                            'Built-in AI Assistant & Email Summarizer',
+                            'Real-time Read Receipts & Email Tracking',
+                            'Send Later & 30-Second Undo Send',
+                            'Calendar, Notes & Actionable Tasks'
+                        ]), 1, 1, 2
+                    ],
+                    [
+                        'plan_business', 'Business / Enterprise', 'Maximum Power', 29.99, 299.00, 2000, 999,
+                        json_encode([
+                            '2,000 GB (2TB) Enterprise Storage',
+                            'Unlimited Mailbox & IMAP Connections',
+                            'Shared Inboxes (support@, team@) with Assignees',
+                            'Full CRM 2-Way Sync (Salesforce, HubSpot)',
+                            'Webhooks (Slack, Zoom, Asana, Jira)',
+                            'Large File Cloud Links (>25MB Transfers)',
+                            'Security Audit Logs & IP Tracking',
+                            'Dedicated SLA & 24/7 Priority Support'
+                        ]), 1, 0, 3
+                    ]
+                ];
+
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO subscription_plans (id, name, badge, price_monthly, price_yearly, storage_gb, max_accounts, features_json, is_active, is_popular, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmtPlans = $db->query("SELECT * FROM subscription_plans ORDER BY sort_order ASC, price_monthly ASC");
+                $plans = $stmtPlans->fetchAll();
+            }
+
+            // Decode features JSON for frontend ease
+            foreach ($plans as &$p) {
+                $p['features'] = json_decode($p['features_json'] ?? '[]', true);
+            }
+
+            echo json_encode([
+                'success' => true,
+                'paypal' => $paypal,
+                'plans' => $plans
+            ]);
+            exit;
+        } elseif ($method === 'POST') {
+            // Check Admin Authorization
+            if (!$isAdmin) {
+                http_response_code(403);
+                echo json_encode(['error' => 'Admin privileges required']);
+                exit;
+            }
+
+            $action = $input['action'] ?? '';
+
+            if ($action === 'save_paypal') {
+                $email = trim($input['paypal_email'] ?? '');
+                $clientId = trim($input['paypal_client_id'] ?? '');
+                $secret = trim($input['paypal_secret'] ?? '');
+                $mode = trim($input['paypal_mode'] ?? 'sandbox');
+                $currency = trim($input['currency'] ?? 'USD');
+                $webhook = trim($input['webhook_id'] ?? '');
+
+                $db->prepare("
+                    INSERT INTO billing_settings (id, paypal_email, paypal_client_id, paypal_secret, paypal_mode, currency, webhook_id, updated_at)
+                    VALUES (1, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT(id) DO UPDATE SET
+                        paypal_email = excluded.paypal_email,
+                        paypal_client_id = excluded.paypal_client_id,
+                        paypal_secret = excluded.paypal_secret,
+                        paypal_mode = excluded.paypal_mode,
+                        currency = excluded.currency,
+                        webhook_id = excluded.webhook_id,
+                        updated_at = CURRENT_TIMESTAMP
+                ")->execute([$email, $clientId, $secret, $mode, $currency, $webhook]);
+
+                echo json_encode(['success' => true, 'message' => 'PayPal credentials updated successfully']);
+                exit;
+            } elseif ($action === 'save_plan') {
+                $id = trim($input['id'] ?? ('plan_' . uniqid()));
+                $name = trim($input['name'] ?? 'Custom Plan');
+                $badge = trim($input['badge'] ?? '');
+                $priceMonthly = floatval($input['price_monthly'] ?? 0);
+                $priceYearly = floatval($input['price_yearly'] ?? 0);
+                $storageGb = intval($input['storage_gb'] ?? 50);
+                $maxAccounts = intval($input['max_accounts'] ?? 5);
+                $features = is_array($input['features']) ? json_encode($input['features']) : json_encode(array_filter(array_map('trim', explode("
+", $input['features'] ?? ''))));
+                $isActive = !empty($input['is_active']) ? 1 : 0;
+                $isPopular = !empty($input['is_popular']) ? 1 : 0;
+
+                $stmtCheck = $db->prepare("SELECT id FROM subscription_plans WHERE id = ?");
+                $stmtCheck->execute([$id]);
+                if ($stmtCheck->fetch()) {
+                    $db->prepare("UPDATE subscription_plans SET name = ?, badge = ?, price_monthly = ?, price_yearly = ?, storage_gb = ?, max_accounts = ?, features_json = ?, is_active = ?, is_popular = ? WHERE id = ?")
+                       ->execute([$name, $badge, $priceMonthly, $priceYearly, $storageGb, $maxAccounts, $features, $isActive, $isPopular, $id]);
+                } else {
+                    $db->prepare("INSERT INTO subscription_plans (id, name, badge, price_monthly, price_yearly, storage_gb, max_accounts, features_json, is_active, is_popular) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute([$id, $name, $badge, $priceMonthly, $priceYearly, $storageGb, $maxAccounts, $features, $isActive, $isPopular]);
+                }
+
+                echo json_encode(['success' => true, 'id' => $id, 'message' => 'Plan saved successfully']);
+                exit;
+            } elseif ($action === 'delete_plan') {
+                $id = trim($input['id'] ?? '');
+                $db->prepare("DELETE FROM subscription_plans WHERE id = ?")->execute([$id]);
+                echo json_encode(['success' => true, 'message' => 'Plan deleted']);
+                exit;
+            }
+        }
     }
   
 // 10. Simulate Incoming Mail
