@@ -1067,30 +1067,39 @@ try {
     // Database of messages across all folders initialized from real SQLite database
     const initialDbMessages = <?php echo json_encode($initialInboxMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?> || [];
 
-    // Real-time Inbound Mail Monitor (Polls every 12 seconds with afraid raccoon sound)
+    // Real-Time High-Speed Inbound Mail Engine (Fast 3-Second Cycle + Instant Focus Triggers)
     const knownMessageIds = new Set(initialDbMessages.map(m => m.id));
+    let isPollingActive = false;
 
     async function pollForIncomingEmails() {
+      if (isPollingActive) return;
+      isPollingActive = true;
+
       try {
         let hasNew = false;
         let newSender = '';
         let newSubject = '';
         let newMsgId = null;
 
+        // 1. Direct Inbound Sync API
         try {
           const syncRes = await fetch('/api/messages/sync');
           if (syncRes.ok) {
             const syncData = await syncRes.json();
-            if (syncData && syncData.synced > 0 && Array.isArray(syncData.messages) && syncData.messages.length > 0) {
-              const first = syncData.messages[0];
-              newSender = first.sender_name || first.sender_email || 'New Sender';
-              newSubject = first.subject || '(no subject)';
-              newMsgId = first.id;
+            const newCount = (typeof syncData.synced === 'number' ? syncData.synced : (syncData.synced?.count || syncData.count || 0));
+            const msgsList = Array.isArray(syncData.messages) ? syncData.messages : (syncData.synced?.messages || []);
+
+            if (newCount > 0 || msgsList.length > 0) {
+              const first = msgsList[0];
+              newSender = first ? (first.sender_name || first.sender_email || 'New Sender') : 'A friend';
+              newSubject = first ? (first.subject || '(no subject)') : 'Incoming email';
+              newMsgId = first ? first.id : null;
               hasNew = true;
             }
           }
         } catch (_) {}
 
+        // 2. Catch-all SQLite verification for folder=inbox
         const res = await fetch('/api/messages?folder=inbox');
         if (res.ok) {
           const data = await res.json();
@@ -1109,21 +1118,30 @@ try {
         }
 
         if (hasNew) {
-          // Play Afraid Raccoon notification sound!
+          // Play Afraid Raccoon notification sound immediately!
           playRaccoonSound('afraid');
           showIncomingToast(newSender, newSubject, newMsgId);
           await fetchFolderMessages(currentFolder);
           await refreshFolderCounts();
         }
       } catch (err) {
-        console.warn('Inbound polling warning:', err);
+        console.warn('Inbound polling notice:', err);
+      } finally {
+        isPollingActive = false;
       }
     }
 
-    // Start background inbound polling after 4 seconds
-    setTimeout(() => {
-      setInterval(pollForIncomingEmails, 12000);
-    }, 4000);
+    // Instant initial check (0ms delay) + 3-second rapid cycle
+    pollForIncomingEmails();
+    setInterval(pollForIncomingEmails, 3000);
+
+    // Instant triggers on tab focus & window visibility
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) pollForIncomingEmails();
+    });
+    window.addEventListener('focus', () => {
+      pollForIncomingEmails();
+    });
 
 
     const mailDatabase = {

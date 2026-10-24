@@ -1355,8 +1355,15 @@ if (strpos($route, 'admin/') === 0) {
 
 // Allow cron or background sync with secret key
 if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' || !empty($_SESSION['current_user_id']))) {
-    $count = syncInboundEmails($db, true);
-    echo json_encode(['success' => true, 'synced' => $count]);
+    $res = syncInboundEmails($db, true);
+    $count = is_array($res) ? ($res['count'] ?? 0) : (int)$res;
+    $msgs = is_array($res) ? ($res['messages'] ?? []) : [];
+    echo json_encode([
+        'success' => true,
+        'synced' => $count,
+        'count' => $count,
+        'messages' => $msgs
+    ]);
     exit;
 }
 
@@ -3958,9 +3965,9 @@ function extractImapBodyAndAttachments($mbox, $msgno, $structure, $uploadsDir) {
 }
 
 function syncInboundEmails($db, $force = false) {
-    // Avoid running too frequently unless force is requested (e.g. manual refresh or sync endpoint)
+    // Ultra-Fast Zero-Lag Inbound Sync
     static $lastSync = 0;
-    if (!$force && (time() - $lastSync < 3)) return 0;
+    if (!$force && (time() - $lastSync < 1)) return ['count' => 0, 'messages' => []];
     $lastSync = time();
 
     $uploadsDir = __DIR__ . '/uploads';
@@ -3971,8 +3978,35 @@ function syncInboundEmails($db, $force = false) {
     $processedCount = 0;
     $newlySynced = [];
 
-    // 1. Process IMAP inbox if PHP IMAP extension is available
+    // 1. INSTANT LOCAL MAILDIR SCAN FIRST (< 1ms on local SSD/NVMe)
+    // Directly ingests all incoming Exim catch-all & mailbox deliveries without network lag
+    $foldersToScan = [
+        '/home/raccxuxv/mail/new',
+        '/home/raccxuxv/mail/racconmail.eu/mail/new',
+        '/home/raccxuxv/mail/.mail@racconmail_eu/new'
+    ];
+    $domDir = '/home/raccxuxv/mail/racconmail.eu';
+    if (is_dir($domDir)) {
+        $subDirs = @scandir($domDir) ?: [];
+        foreach ($subDirs as $sd) {
+            if ($sd === '.' || $sd === '..') continue;
+            $userNew = "$domDir/$sd/new";
+            if (is_dir($userNew) && !in_array($userNew, $foldersToScan)) {
+                $foldersToScan[] = $userNew;
+            }
+        }
+    }
+
+    foreach ($foldersToScan as $fDir) {
+        $res = syncMaildirFolder($db, $fDir, $uploadsDir);
+        $processedCount += $res['count'];
+        $newlySynced = array_merge($newlySynced, $res['messages']);
+    }
+
+    // 2. Secondary IMAP Check (with 1-second timeout to prevent blocking HTTP requests)
     if (function_exists('imap_open')) {
+        @imap_timeout(IMAP_OPENTIMEOUT, 1);
+        @imap_timeout(IMAP_READTIMEOUT, 1);
         $mbox = @imap_open('{localhost:143/notls}INBOX', 'mail@racconmail.eu', 'RacconMailSecure2026!#', 0, 1, ['DISABLE_AUTHENTICATOR' => 'GSSAPI']);
         @imap_errors();
         if ($mbox) {
@@ -4135,30 +4169,6 @@ function syncInboundEmails($db, $force = false) {
             @imap_close($mbox);
             @imap_errors();
         }
-    }
-
-    // 2. Scan all local Maildir directories (Catches direct Exim catch-all delivery reliably)
-    $foldersToScan = [
-        '/home/raccxuxv/mail/new',
-        '/home/raccxuxv/mail/racconmail.eu/mail/new',
-        '/home/raccxuxv/mail/.mail@racconmail_eu/new'
-    ];
-    $domDir = '/home/raccxuxv/mail/racconmail.eu';
-    if (is_dir($domDir)) {
-        $subDirs = @scandir($domDir) ?: [];
-        foreach ($subDirs as $sd) {
-            if ($sd === '.' || $sd === '..') continue;
-            $userNew = "$domDir/$sd/new";
-            if (is_dir($userNew) && !in_array($userNew, $foldersToScan)) {
-                $foldersToScan[] = $userNew;
-            }
-        }
-    }
-
-    foreach ($foldersToScan as $fDir) {
-        $res = syncMaildirFolder($db, $fDir, $uploadsDir);
-        $processedCount += $res['count'];
-        $newlySynced = array_merge($newlySynced, $res['messages']);
     }
 
     return ['count' => $processedCount, 'messages' => $newlySynced];
