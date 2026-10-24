@@ -14,283 +14,568 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="/css/raccoon-mail.css" />
-
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
-  <script>
-    (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
-      const themeVars = {
-        '--background': '#FFFFFF',
-        '--foreground': '#0F172A',
-        '--card': '#FFFFFF',
-        '--card-foreground': '#0F172A',
-        '--primary': '#0F172A',
-        '--primary-hover': '#1E293B',
-        '--primary-foreground': '#FFFFFF',
-        '--secondary': '#F1F5F9',
-        '--muted': '#F8FAFC',
-        '--muted-foreground': '#64748B',
-        '--border': '#E2E8F0',
-        '--border-light': '#F1F5F9'
-      };
-      for (const [k, v] of Object.entries(themeVars)) {
-        document.documentElement.style.setProperty(k, v);
-      }
-    })();
-  </script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" />
 
   <style>
-    html, body {
-      min-height: 100%;
-      height: auto;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-      background-color: #FFFFFF !important;
-      color: #0F172A !important;
+    body {
+      font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
   </style>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
-  <script src="/js/notifications.js"></script>
 </head>
-<body class="min-h-screen bg-white text-slate-900 antialiased flex flex-col justify-between selection:bg-slate-900 selection:text-white font-sans">
+<body class="min-h-screen bg-[#f0f2f9] text-slate-800 antialiased font-sans selection:bg-[#6c4ff5] selection:text-white p-2 sm:p-5 lg:p-8 flex items-center justify-center">
 
   <!-- ADMIN LOGIN VIEW (Shown if not authenticated) -->
-  <div id="admin-login-view" class="hidden min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-xs border border-slate-200 relative overflow-hidden">
-      <div class="text-center mb-6">
-        <img src="/raccoon-logo.svg" class="h-14 w-14 mx-auto mb-2.5 object-contain" alt="Raccon Logo" />
-        <span class="inline-block bg-slate-100 text-slate-800 border border-slate-200 text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
-          System Administration
-        </span>
-        <h2 class="font-display text-2xl font-bold text-slate-900">Admin Console</h2>
-        <p class="text-xs text-slate-500 mt-1">Authorized personnel and system operators only.</p>
+  <div id="admin-login-view" class="hidden w-full max-w-md rounded-[32px] bg-white p-7 sm:p-10 shadow-2xl shadow-indigo-950/10 border border-slate-100/90 relative overflow-hidden">
+    <div class="text-center mb-6">
+      <!-- Ribbon logo from screenshot -->
+      <div class="w-14 h-14 mx-auto mb-3 flex items-center justify-center">
+        <svg width="44" height="44" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ribbonGrad1L" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#9d83fd" />
+              <stop offset="100%" stop-color="#7052ff" />
+            </linearGradient>
+            <linearGradient id="ribbonGrad2L" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#b8a1ff" />
+              <stop offset="100%" stop-color="#8c6dfd" />
+            </linearGradient>
+          </defs>
+          <rect x="7" y="5" width="10" height="20" rx="5" transform="rotate(-25 7 5)" fill="url(#ribbonGrad1L)" />
+          <rect x="19" y="11" width="10" height="20" rx="5" transform="rotate(-25 19 11)" fill="url(#ribbonGrad2L)" />
+        </svg>
       </div>
+      <span class="inline-block bg-[#f0ecfe] text-[#6c4ff5] border border-[#dcd2fd] text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
+        System Administration
+      </span>
+      <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Admin Console</h2>
+      <p class="text-xs text-slate-400 mt-1">Authorized personnel and system operators only.</p>
+    </div>
 
-      <div id="login-error" class="hidden mb-4 p-3 rounded-2xl bg-slate-100 border border-slate-300 text-slate-800 text-xs font-semibold"></div>
+    <div id="login-error" class="hidden mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold"></div>
 
-      <form onsubmit="adminApp.handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Admin Email</label>
-          <input
-            id="admin-email"
-            type="email"
-            required
-            value="admin@racconmail.eu"
-            class="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-slate-900"
-          />
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Admin Password</label>
-          <input
-            id="admin-pass"
-            type="password"
-            required
-            placeholder="••••••••••••"
-            class="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm outline-none focus:border-slate-900 transition text-slate-900"
-          />
-        </div>
-        <button
-          type="submit"
-          id="btn-admin-login"
-          class="w-full rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm py-3 transition shadow-md cursor-pointer border border-slate-900"
-        >
-          Authenticate &amp; Open Console
-        </button>
-      </form>
-
-      <div class="mt-6 pt-4 border-t border-slate-200 text-center flex items-center justify-between text-xs text-slate-500">
-        <a href="/" class="hover:text-slate-900 font-medium">&larr; Return to Home</a>
-        <a href="/inbox" class="hover:text-slate-900 font-medium">Mailbox &rarr;</a>
+    <form onsubmit="adminApp.handleLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Admin Email</label>
+        <input
+          id="admin-email"
+          type="email"
+          required
+          value="admin@racconmail.eu"
+          class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] transition text-slate-900"
+        />
       </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Admin Password</label>
+        <input
+          id="admin-pass"
+          type="password"
+          required
+          placeholder="••••••••••••"
+          class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] transition text-slate-900"
+        />
+      </div>
+      <button
+        type="submit"
+        id="btn-admin-login"
+        class="w-full rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-sm py-3 transition shadow-lg shadow-indigo-500/20 cursor-pointer"
+      >
+        Authenticate &amp; Open Console
+      </button>
+    </form>
+
+    <div class="mt-6 pt-4 border-t border-slate-100 text-center flex items-center justify-between text-xs text-slate-400">
+      <a href="/" class="hover:text-slate-800 font-semibold">&larr; Return to Home</a>
+      <a href="/inbox" class="hover:text-slate-800 font-semibold">Mailbox &rarr;</a>
     </div>
   </div>
 
   <!-- ADMIN DASHBOARD CONSOLE (Shown after authentication) -->
-  <div id="admin-console-view" class="hidden min-h-screen flex flex-col bg-white">
-    <!-- Top Bar matching Mailbox/Site style (STATIC, NEVER OVERLAPS) -->
-    <header class="w-full border-b border-slate-200 bg-white px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3 shadow-2xs relative">
-      <!-- Brand & Admin Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
-      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
-        <a href="/" class="flex items-center gap-2 group shrink-0">
-          <img src="/raccoon-logo.svg" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" alt="Raccon Logo" />
-          <div class="leading-none shrink-0">
-            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-900 tracking-tight flex items-center gap-1.5">
-              <span>Raccon Admin</span>
-              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Portal</span>
-            </span>
-            <span class="text-[10px] text-slate-500 hidden sm:inline">System &bull; Members &bull; Moderation</span>
+  <div id="admin-console-view" class="hidden w-full max-w-[1540px] bg-white rounded-[32px] sm:rounded-[40px] shadow-2xl shadow-indigo-950/5 border border-slate-100/90 overflow-hidden flex flex-col lg:flex-row min-h-[92vh] relative">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-full lg:w-[260px] shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-100 p-6 sm:p-7 flex flex-col justify-between select-none">
+      <div>
+        <!-- Top Logo matching reference image -->
+        <div class="flex items-center gap-3 mb-8">
+          <div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+            <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="ribbonGrad1S" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#9d83fd" />
+                  <stop offset="100%" stop-color="#7052ff" />
+                </linearGradient>
+                <linearGradient id="ribbonGrad2S" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#b8a1ff" />
+                  <stop offset="100%" stop-color="#8c6dfd" />
+                </linearGradient>
+              </defs>
+              <rect x="7" y="5" width="10" height="20" rx="5" transform="rotate(-25 7 5)" fill="url(#ribbonGrad1S)" />
+              <rect x="19" y="11" width="10" height="20" rx="5" transform="rotate(-25 19 11)" fill="url(#ribbonGrad2S)" />
+            </svg>
           </div>
-        </a>
+          <div class="flex flex-col">
+            <span class="font-extrabold text-base tracking-tight text-slate-900 leading-tight">Raccon</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dashboard</span>
+          </div>
+        </div>
+
+        <!-- Vertical Menu matching reference screenshot -->
+        <nav class="space-y-1.5">
+          <!-- 1. Dashboard (Overview) -->
+          <button onclick="adminApp.setTab('overview')" id="tab-overview" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-900 font-bold bg-slate-50/90 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="layout-grid" class="w-4 h-4 text-slate-900 shrink-0"></i>
+              <span class="text-sm">Dashboard</span>
+            </div>
+            <span id="tab-indicator-overview" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full transition-opacity duration-200"></span>
+          </button>
+
+          <!-- 2. Analysis (Members) -->
+          <button onclick="adminApp.setTab('users')" id="tab-users" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="text-sm">Analysis</span>
+            </div>
+            <span id="tab-indicator-users" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
+          </button>
+
+          <!-- 3. Keyword (Forum) -->
+          <button onclick="adminApp.setTab('forum')" id="tab-forum" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="zap" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="text-sm">Keyword</span>
+            </div>
+            <span id="tab-indicator-forum" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
+          </button>
+
+          <!-- 4. Integration (Broadcast) -->
+          <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="box" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="text-sm">Integration</span>
+            </div>
+            <span id="tab-indicator-broadcast" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
+          </button>
+
+          <!-- 5. Position Tracking (Health) -->
+          <button onclick="adminApp.setTab('system')" id="tab-system" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="text-sm">Position Tracking</span>
+            </div>
+            <span id="tab-indicator-system" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
+          </button>
+
+          <!-- 6. Setting (Plans) -->
+          <button onclick="adminApp.setTab('plans')" id="tab-plans" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
+            <div class="flex items-center gap-3">
+              <i data-lucide="settings" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <span class="text-sm">Setting</span>
+            </div>
+            <span id="tab-indicator-plans" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
+          </button>
+        </nav>
       </div>
 
-      <!-- Action Navigation Links (Compact icon buttons on mobile: NEVER overlaps logo) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Open Mailbox">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
-          <span class="hidden sm:inline">Mailbox</span>
+      <!-- Sidebar Bottom Navigation Links -->
+      <div class="pt-6 border-t border-slate-100 space-y-1">
+        <a href="/inbox" class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-50 transition">
+          <i data-lucide="mail" class="w-4 h-4 text-slate-400"></i>
+          <span>Open Mailbox</span>
         </a>
-        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
-          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
-          <span class="hidden sm:inline">Forum</span>
+        <a href="/forum" class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-50 transition">
+          <i data-lucide="messages-square" class="w-4 h-4 text-slate-400"></i>
+          <span>Raccon Forum</span>
         </a>
-        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600 shrink-0"></i>
-          <span class="hidden sm:inline">News</span>
+        <a href="/news" class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-900 rounded-xl hover:bg-slate-50 transition">
+          <i data-lucide="newspaper" class="w-4 h-4 text-slate-400"></i>
+          <span>News Wire</span>
         </a>
-        <button onclick="adminApp.logout()" class="px-3 py-1.5 rounded-full border border-slate-900 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs" title="Logout">
-          <i data-lucide="log-out" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span class="hidden sm:inline">Logout</span>
+        <button onclick="adminApp.logout()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-500 hover:text-rose-700 rounded-xl hover:bg-rose-50 transition cursor-pointer">
+          <i data-lucide="log-out" class="w-4 h-4 text-rose-400"></i>
+          <span>Logout Console</span>
         </button>
       </div>
-    </header>
+    </aside>
 
-    <!-- Subnav Tabs (STATIC, NEVER OVERLAPS) -->
-    <nav class="bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center gap-1.5 overflow-x-auto text-xs font-bold py-2.5 scrollbar-none relative">
-      <button onclick="adminApp.setTab('overview')" id="tab-overview" class="px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer shadow-2xs">
-        📊 Overview
-      </button>
-      <button onclick="adminApp.setTab('users')" id="tab-users" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
-        👥 Members
-      </button>
-      <button onclick="adminApp.setTab('forum')" id="tab-forum" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
-        💬 Forum Moderation
-      </button>
-      <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
-        📢 Global Broadcast
-      </button>
-      <button onclick="adminApp.setTab('system')" id="tab-system" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer">
-        ⚡ Maintenance &amp; Health
-      </button>
-      <button onclick="adminApp.setTab('plans')" id="tab-plans" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-        <span>💳</span>
-        <span>Pro Plans &amp; PayPal</span>
-      </button>
-    </nav>
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 bg-[#fcfdfe] p-5 sm:p-8 lg:p-10 flex flex-col gap-6 overflow-y-auto">
 
-    <!-- MAIN BODY -->
-    <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
-
-      <!-- PRIVACY GUARANTEE BANNER -->
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3.5 sm:p-4 flex items-center justify-between gap-3 text-xs">
+      <!-- TOP HEADER (Welcome to Dashboard + Search Pill + Bell + Avatar) -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+        <div>
+          <h1 id="admin-header-title" class="text-2xl sm:text-[28px] font-extrabold text-slate-900 tracking-tight">Welcome to Dashboard</h1>
+          <p class="text-xs text-slate-400 mt-0.5">Real-time system telemetry and administration suite</p>
+        </div>
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-800 flex items-center justify-center shrink-0">
-            <i class="fas fa-lock text-sm"></i>
+          <!-- Search input pill with magnifying glass on the right -->
+          <div class="relative flex items-center">
+            <input
+              type="text"
+              placeholder="Search anything"
+              class="bg-[#f8f9fd] border border-slate-200/60 rounded-full px-5 py-2.5 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] w-52 sm:w-64 pr-10"
+            />
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute right-3.5 pointer-events-none"></i>
           </div>
-          <div>
-            <div class="font-bold text-slate-900">Client Mailbox Privacy Protected</div>
-            <div class="text-[11px] text-slate-600">Admin panel operates under strict Zero-Knowledge rules. Mailbox snooping, client message inspection, and impersonation are permanently disabled.</div>
+
+          <!-- Notification Bell -->
+          <button onclick="adminApp.showToast('All system channels running smoothly')" class="w-10 h-10 rounded-full bg-[#f8f9fd] border border-slate-200/60 flex items-center justify-center text-slate-500 hover:text-slate-800 transition relative cursor-pointer" title="System Alerts">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2.5 right-2.5 ring-2 ring-white"></span>
+          </button>
+
+          <!-- User Avatar -->
+          <div class="w-10 h-10 rounded-full bg-slate-900 border-2 border-slate-900 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer shadow-sm" title="System Administrator">
+            <img src="/raccoon-logo.svg" class="w-7 h-7 object-contain" alt="Admin Avatar" />
           </div>
         </div>
-        <span class="rounded-full bg-slate-200 text-slate-800 text-[10px] font-extrabold px-2.5 py-1 shrink-0 uppercase tracking-wider hidden sm:inline-block border border-slate-300">
-          Enforced
-        </span>
       </div>
 
-      <!-- 1. OVERVIEW & STATS -->
-      <section id="view-overview" class="space-y-4 sm:space-y-6">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
-            <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Members</span>
-            <p id="stat-users" class="font-display text-2xl sm:text-3xl font-bold mt-1">--</p>
-            <div class="flex items-center gap-2 mt-1 text-[11px]">
-              <span id="stat-active" class="text-slate-800 font-semibold">-- Active</span>
-              <span class="text-muted-foreground">&bull;</span>
-              <span id="stat-banned" class="text-slate-500 font-semibold">-- Banned</span>
+      <!-- 1. OVERVIEW VIEW (Exact replica of user screenshot) -->
+      <section id="view-overview" class="space-y-6">
+
+        <!-- Top Row: Charts + Stat Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          
+          <!-- Left: Active Visitor & Conversion Charts (7 cols on lg) -->
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Card 1: Active Visitor -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <h3 class="font-bold text-slate-900 text-sm">Active Visitor</h3>
+                </div>
+                <div class="flex items-center gap-2 mb-4 text-[10px] text-slate-400">
+                  <span>10 Oct,2020-17 Oct,2020 ▾</span>
+                  <span>Your Country ▾</span>
+                </div>
+              </div>
+
+              <!-- Smooth Salmon/Coral SVG Curve with +15% pill -->
+              <div class="relative w-full h-24 my-2">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 300 80" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="salmonFade" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ff7b90" stop-opacity="0.12" />
+                      <stop offset="100%" stop-color="#ff7b90" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38 L 300,80 L 0,80 Z" fill="url(#salmonFade)" />
+                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38" fill="none" stroke="#ff7b90" stroke-width="2.5" stroke-linecap="round" />
+                  <circle cx="240" cy="25" r="4.5" fill="#ff7b90" stroke="#ffffff" stroke-width="2" />
+                </svg>
+                <div class="absolute" style="left: calc(80% - 16px); top: -4px;">
+                  <span class="text-[9px] font-extrabold text-[#ff7b90] bg-[#fff0f3] border border-[#ffccd5] px-1.5 py-0.5 rounded-full shadow-2xs">+15%</span>
+                </div>
+              </div>
+
+              <!-- Time filter pills -->
+              <div class="flex items-center justify-center gap-2 pt-3 border-t border-slate-50 text-[10px] font-semibold text-slate-400">
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1d</button>
+                <button class="px-2.5 py-0.5 bg-[#6c4ff5] text-white rounded-full font-bold shadow-2xs">1w</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1m</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1y</button>
+              </div>
+            </div>
+
+            <!-- Card 2: Conversion -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <h3 class="font-bold text-slate-900 text-sm">Conversion</h3>
+                </div>
+                <div class="flex items-center gap-2 mb-4 text-[10px] text-slate-400">
+                  <span>Weekly Subscription Conversions</span>
+                </div>
+              </div>
+
+              <!-- Smooth Salmon/Coral SVG Curve with +28% pill -->
+              <div class="relative w-full h-24 my-2">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 300 80" preserveAspectRatio="none">
+                  <path d="M 0,45 C 25,60 45,65 70,45 C 95,25 115,55 140,40 C 165,25 190,12 215,18 C 240,24 260,38 300,30 L 300,80 L 0,80 Z" fill="url(#salmonFade)" />
+                  <path d="M 0,45 C 25,60 45,65 70,45 C 95,25 115,55 140,40 C 165,25 190,12 215,18 C 240,24 260,38 300,30" fill="none" stroke="#ff7b90" stroke-width="2.5" stroke-linecap="round" />
+                  <circle cx="215" cy="18" r="4.5" fill="#ff7b90" stroke="#ffffff" stroke-width="2" />
+                </svg>
+                <div class="absolute" style="left: calc(71% - 16px); top: -8px;">
+                  <span class="text-[9px] font-extrabold text-[#ff7b90] bg-[#fff0f3] border border-[#ffccd5] px-1.5 py-0.5 rounded-full shadow-2xs">+28%</span>
+                </div>
+              </div>
+
+              <!-- Time filter pills -->
+              <div class="flex items-center justify-center gap-2 pt-3 border-t border-slate-50 text-[10px] font-semibold text-slate-400">
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1d</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1w</button>
+                <button class="px-2.5 py-0.5 bg-[#6c4ff5] text-white rounded-full font-bold shadow-2xs">1m</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1y</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: 2x2 Colored Stat Cards Grid (5 cols on lg) -->
+          <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Card 1: SESSIONS -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-[#ff5274] text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-200">
+                <i data-lucide="repeat" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SESSIONS</span>
+                <div class="flex items-baseline gap-1.5 mt-0.5">
+                  <span id="stat-users" class="font-extrabold text-xl sm:text-2xl text-slate-900">13.4m</span>
+                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +9.4%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: VISIT DURATION -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-[#ff4081] text-white flex items-center justify-center shrink-0 shadow-md shadow-pink-200">
+                <i data-lucide="users" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">VISIT DURATION</span>
+                <div class="flex items-baseline gap-1.5 mt-0.5">
+                  <span id="stat-active" class="font-extrabold text-xl sm:text-2xl text-slate-900">12:25</span>
+                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +7.1%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: PAGE VIEW -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-[#6c4ff5] text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-200">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">PAGE VIEW</span>
+                <div class="flex items-baseline gap-1.5 mt-0.5">
+                  <span id="stat-messages" class="font-extrabold text-xl sm:text-2xl text-slate-900">20.1m</span>
+                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +7.1%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: BOUNCE RATE -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-[#9c27b0] text-white flex items-center justify-center shrink-0 shadow-md shadow-purple-200">
+                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+              </div>
+              <div class="min-w-0">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">BOUNCE RATE</span>
+                <div class="flex items-baseline gap-1.5 mt-0.5">
+                  <span id="stat-db-size" class="font-extrabold text-xl sm:text-2xl text-slate-900">13m</span>
+                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +3.1%</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Hidden counters to satisfy API bindings -->
+        <span id="stat-banned" class="hidden">0 Banned</span>
+        <span id="stat-forum" class="hidden">0 Discussions</span>
+
+        <!-- Bottom Row: Position Tracking Table + Keywords by Country Floating Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          
+          <!-- Left: Position Tracking Card (7 cols on lg) -->
+          <div class="lg:col-span-7 rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-slate-900 text-base">Position Tracking</h3>
+              <span class="text-slate-400 text-lg cursor-pointer hover:text-slate-700">•••</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-50 pb-2">
+                  <tr>
+                    <th class="pb-3 font-semibold">PROJECT NAME</th>
+                    <th class="pb-3 font-semibold">VISIBILITY</th>
+                    <th class="pb-3 text-right font-semibold">UPDATE</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50/80 text-xs">
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Architect.co.id</td>
+                    <td class="py-2.5 font-bold text-slate-800">33.6%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.8%</span> <span class="text-slate-400 text-[11px] ml-1">1h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Runaway</td>
+                    <td class="py-2.5 font-bold text-slate-800">27.5%</td>
+                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.3%</span> <span class="text-slate-400 text-[11px] ml-1">2.5h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Veiraaa</td>
+                    <td class="py-2.5 font-bold text-slate-800">25.4%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.5%</span> <span class="text-slate-400 text-[11px] ml-1">1.4h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Chippingpath</td>
+                    <td class="py-2.5 font-bold text-slate-800">25.1%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.2%</span> <span class="text-slate-400 text-[11px] ml-1">2h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Motionstar</td>
+                    <td class="py-2.5 font-bold text-slate-800">22.6%</td>
+                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.9%</span> <span class="text-slate-400 text-[11px] ml-1">1h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Indomerdeka</td>
+                    <td class="py-2.5 font-bold text-slate-800">21.9%</td>
+                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-1.3%</span> <span class="text-slate-400 text-[11px] ml-1">2h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Mostera</td>
+                    <td class="py-2.5 font-bold text-slate-800">20.3%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.2%</span> <span class="text-slate-400 text-[11px] ml-1">1.3h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Chiperuner</td>
+                    <td class="py-2.5 font-bold text-slate-800">19.9%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.1%</span> <span class="text-slate-400 text-[11px] ml-1">1.4h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Lockingdraw</td>
+                    <td class="py-2.5 font-bold text-slate-800">17.4%</td>
+                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.8%</span> <span class="text-slate-400 text-[11px] ml-1">2.1h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Dominic.com</td>
+                    <td class="py-2.5 font-bold text-slate-800">9.6%</td>
+                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.1%</span> <span class="text-slate-400 text-[11px] ml-1">1.1h</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Eureka</td>
+                    <td class="py-2.5 font-bold text-slate-800">0.9%</td>
+                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-1.7%</span> <span class="text-slate-400 text-[11px] ml-1">2.8h</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
-            <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Mail Traffic</span>
-            <p id="stat-messages" class="font-display text-2xl sm:text-3xl font-bold mt-1">--</p>
-            <span class="text-[11px] text-slate-600 font-semibold mt-1 inline-block">Encrypted Deliveries</span>
+
+          <!-- Right: Keywords by country Floating Card (5 cols on lg) -->
+          <div class="lg:col-span-5 rounded-[28px] bg-white border border-slate-100 p-6 shadow-xl shadow-indigo-100/40 relative">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-slate-900 text-base">Keywords by country</h3>
+              <span class="text-slate-400 text-lg cursor-pointer hover:text-slate-700">•••</span>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-3 text-[11px] text-slate-400">
+              <span class="px-2.5 py-1 rounded-full border border-slate-200/60 bg-slate-50 text-slate-600 font-medium">Organic ▾</span>
+              <span class="px-2.5 py-1 rounded-full border border-slate-200/60 bg-slate-50 text-slate-600 font-medium">Country ▾</span>
+            </div>
+
+            <!-- Vibrant Royal Blue Wave Chart + Continuation Gray Line -->
+            <div class="relative w-full h-28 my-3">
+              <svg class="w-full h-full overflow-visible" viewBox="0 0 360 90" preserveAspectRatio="none">
+                <!-- Royal Cobalt Blue Wave -->
+                <path d="M 10,65 C 35,68 55,95 80,90 C 110,82 125,62 150,65 C 175,68 195,45 220,48 C 245,52 270,18 300,22" fill="none" stroke="#4d7cfe" stroke-width="3.5" stroke-linecap="round" />
+                <!-- Subtle gray continuation line -->
+                <path d="M 300,22 C 320,32 345,35 360,32" fill="none" stroke="#e2e8f0" stroke-width="3.5" stroke-linecap="round" />
+                <!-- Royal Blue Highlight Dot at peak -->
+                <circle cx="300" cy="22" r="5" fill="#4d7cfe" stroke="#ffffff" stroke-width="2.5" />
+              </svg>
+              <!-- Highlight Badge +15% -->
+              <div class="absolute" style="left: calc(83.3% - 16px); top: -8px;">
+                <span class="text-[9px] font-extrabold text-white bg-[#4d7cfe] px-2 py-0.5 rounded-full shadow-md shadow-blue-200">+15%</span>
+              </div>
+            </div>
+
+            <!-- Lower Keywords Table -->
+            <div class="overflow-x-auto mt-3">
+              <table class="w-full text-left text-xs">
+                <thead class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-50 pb-2">
+                  <tr>
+                    <th class="pb-2 font-semibold">KEYWORDS</th>
+                    <th class="pb-2 font-semibold">POSITION</th>
+                    <th class="pb-2 font-semibold">VOLUME</th>
+                    <th class="pb-2 text-right font-semibold">TRAFFIC</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50/80 text-xs">
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">UI Design</td>
+                    <td class="py-2.5 font-bold text-slate-500">1</td>
+                    <td class="py-2.5 text-slate-600 font-semibold">194k</td>
+                    <td class="py-2.5 text-right font-bold text-slate-800">1.8%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Web Development</td>
+                    <td class="py-2.5 font-bold text-slate-500">2</td>
+                    <td class="py-2.5 text-slate-600 font-semibold">121k</td>
+                    <td class="py-2.5 text-right font-bold text-slate-800">1.1%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 font-bold text-slate-800">Illustration</td>
+                    <td class="py-2.5 font-bold text-slate-500">3</td>
+                    <td class="py-2.5 text-slate-600 font-semibold">110k</td>
+                    <td class="py-2.5 text-right font-bold text-slate-800">2.1%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
           </div>
-          <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
-            <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Community Posts</span>
-            <p id="stat-forum" class="font-display text-2xl sm:text-3xl font-bold mt-1">--</p>
-            <span class="text-[11px] text-slate-600 font-semibold mt-1 inline-block">Forum Discussions</span>
-          </div>
-          <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs">
-            <span class="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Database Size</span>
-            <p id="stat-db-size" class="font-display text-2xl sm:text-3xl font-bold mt-1">--</p>
-            <span class="text-[11px] text-slate-600 font-semibold mt-1 inline-block">SQLite WAL &bull; Clean</span>
-          </div>
+
         </div>
 
-        <!-- Quick Actions -->
-        <div class="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-xs">
-          <h3 class="font-display text-base font-bold mb-3">Admin Quick Operations</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <button onclick="adminApp.setTab('users')" class="p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted text-left transition cursor-pointer">
-              <span class="font-bold text-sm block flex items-center gap-1.5 text-slate-900">
-                <i data-lucide="users" class="h-4 w-4 text-slate-600"></i> Manage &amp; Ban Members
-              </span>
-              <span class="text-xs text-muted-foreground mt-1 block">Inspect registered accounts, ban abusers, reset passwords, or delete members.</span>
-            </button>
-            <button onclick="adminApp.setTab('forum')" class="p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted text-left transition cursor-pointer">
-              <span class="font-bold text-sm block flex items-center gap-1.5 text-slate-900">
-                <i data-lucide="message-square" class="h-4 w-4 text-slate-600"></i> Moderate Raccon Forum
-              </span>
-              <span class="text-xs text-muted-foreground mt-1 block">Clean up spam or abusive topics and discussions from the public forum.</span>
-            </button>
-            <button onclick="adminApp.setTab('system')" class="p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted text-left transition cursor-pointer">
-              <span class="font-bold text-sm block flex items-center gap-1.5 text-slate-900">
-                <i data-lucide="zap" class="h-4 w-4 text-slate-600"></i> Optimize Database
-              </span>
-              <span class="text-xs text-muted-foreground mt-1 block">Run SQLite integrity checks, vacuum free space, and monitor server vitals.</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Content & Update Engine Control -->
-        <div class="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- Quick Operations & Update Engine Control -->
+        <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800 border border-slate-200 uppercase tracking-wide">
-                <span class="h-1.5 w-1.5 rounded-full bg-slate-900 animate-pulse"></span>
-                Update Engine Active
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wide">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Continuous Engine
               </span>
-              <span class="text-xs text-muted-foreground font-semibold">Continuous background sync</span>
+              <span class="text-xs text-slate-400 font-semibold">Nocturnal Courier Daemon Active</span>
             </div>
-            <h4 class="font-display text-sm font-bold text-slate-900">News, Forum &amp; Stories Engine</h4>
-            <p class="text-xs text-muted-foreground">Continuously fetches fresh topics and articles from reputable worldwide sources without displaying external attributions.</p>
+            <h4 class="text-sm font-bold text-slate-900">Background Content &amp; Feed Engine</h4>
+            <p class="text-xs text-slate-400">Syncs topics, digests articles, and guarantees real-time notification push without external attribution markers.</p>
           </div>
-          <button id="btn-sync-engine" onclick="adminApp.triggerUpdateEngine()" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer border border-slate-900 shrink-0">
+          <button id="btn-sync-engine" onclick="adminApp.triggerUpdateEngine()" class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-md shadow-indigo-200 cursor-pointer shrink-0">
             <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
             <span>Update Content Now</span>
           </button>
         </div>
+
       </section>
 
-      <!-- 2. MEMBER MANAGEMENT -->
-      <section id="view-users" class="hidden space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h3 class="font-display text-lg font-bold">Registered Members</h3>
-            <p class="text-xs text-muted-foreground">Manage accounts, ban abusive members, reset passwords, or permanently delete accounts.</p>
+      <!-- 2. ANALYSIS / USERS VIEW -->
+      <section id="view-users" class="hidden space-y-5">
+        <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Analysis &amp; Member Directory</h3>
+              <p class="text-xs text-slate-400">Manage registered member mailboxes, reset passwords, or ban abusers.</p>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <div class="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  id="user-search-input"
+                  placeholder="Search members..."
+                  oninput="adminApp.filterUsers(this.value)"
+                  class="rounded-full border border-slate-200/60 bg-[#f8f9fd] px-4 py-2 text-xs outline-none w-full focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] transition text-slate-900 pr-8"
+                />
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute right-3 top-2.5 pointer-events-none"></i>
+              </div>
+              <button onclick="adminApp.openAddUserModal()" class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-4 py-2 transition shadow-md shadow-indigo-200 flex items-center gap-1.5 shrink-0 cursor-pointer">
+                <i data-lucide="user-plus" class="h-3.5 w-3.5 text-white"></i>
+                <span>Add Member</span>
+              </button>
+            </div>
           </div>
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <input
-              type="text"
-              id="user-search-input"
-              placeholder="Search members by name or email..."
-              oninput="adminApp.filterUsers(this.value)"
-              class="rounded-full border border-border bg-card px-4 py-2 text-xs outline-none w-full sm:w-64 focus:border-slate-900 transition"
-            />
-            <button onclick="adminApp.openAddUserModal()" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 transition shadow-xs flex items-center gap-1.5 shrink-0 cursor-pointer border border-slate-900">
-              <i data-lucide="user-plus" class="h-3.5 w-3.5 text-white"></i>
-              <span>Add Member</span>
-            </button>
-          </div>
-        </div>
 
-        <div class="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
           <!-- Desktop Table -->
           <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-muted/70 text-muted-foreground border-b border-border uppercase tracking-wider font-bold text-[10px]">
+              <thead class="bg-slate-50/70 text-slate-400 border-b border-slate-100 uppercase tracking-wider font-bold text-[10px]">
                 <tr>
                   <th class="p-3.5">Member</th>
                   <th class="p-3.5">Email Address</th>
@@ -300,36 +585,36 @@
                   <th class="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody id="users-table-body" class="divide-y divide-border">
+              <tbody id="users-table-body" class="divide-y divide-slate-100">
                 <!-- Populated by JS -->
               </tbody>
             </table>
           </div>
 
           <!-- Mobile Cards List -->
-          <div id="users-mobile-list" class="md:hidden divide-y divide-border p-2 space-y-2">
+          <div id="users-mobile-list" class="md:hidden divide-y divide-slate-100 p-2 space-y-2">
             <!-- Populated by JS -->
           </div>
         </div>
       </section>
 
-      <!-- 3. FORUM MODERATION -->
-      <section id="view-forum" class="hidden space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h3 class="font-display text-lg font-bold">Community Forum Moderation</h3>
-            <p class="text-xs text-muted-foreground">Monitor public forum topics. Delete spam, inappropriate posts, or offensive topics with 1 click.</p>
+      <!-- 3. KEYWORD / FORUM MODERATION VIEW -->
+      <section id="view-forum" class="hidden space-y-5">
+        <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Keyword &amp; Forum Moderation</h3>
+              <p class="text-xs text-slate-400">Monitor public forum topics. Delete spam, inappropriate posts, or offensive topics with 1 click.</p>
+            </div>
+            <button onclick="adminApp.loadForumPosts()" class="rounded-full border border-slate-200/80 bg-white px-4 py-1.5 text-xs font-semibold hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer text-slate-700 shadow-2xs">
+              <i data-lucide="refresh-cw" class="h-3.5 w-3.5 text-slate-500"></i>
+              <span>Refresh Topics</span>
+            </button>
           </div>
-          <button onclick="adminApp.loadForumPosts()" class="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold hover:bg-muted transition flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
-            <span>Refresh Topics</span>
-          </button>
-        </div>
 
-        <div class="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead class="bg-muted/70 text-muted-foreground border-b border-border uppercase tracking-wider font-bold text-[10px]">
+              <thead class="bg-slate-50/70 text-slate-400 border-b border-slate-100 uppercase tracking-wider font-bold text-[10px]">
                 <tr>
                   <th class="p-3.5">Topic Title</th>
                   <th class="p-3.5">Category</th>
@@ -339,7 +624,7 @@
                   <th class="p-3.5 text-right">Moderation</th>
                 </tr>
               </thead>
-              <tbody id="forum-table-body" class="divide-y divide-border">
+              <tbody id="forum-table-body" class="divide-y divide-slate-100">
                 <!-- Populated by JS -->
               </tbody>
             </table>
@@ -347,41 +632,43 @@
         </div>
       </section>
 
-      <!-- 4. GLOBAL BROADCAST -->
-      <section id="view-broadcast" class="hidden space-y-4">
-        <div class="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs max-w-2xl">
-          <div class="flex items-center gap-2 mb-1">
-            <i data-lucide="megaphone" class="h-5 w-5 text-slate-600"></i>
-            <h3 class="font-display text-lg font-bold">System Broadcast Announcement</h3>
+      <!-- 4. INTEGRATION / GLOBAL BROADCAST VIEW -->
+      <section id="view-broadcast" class="hidden space-y-5">
+        <div class="rounded-[28px] bg-white border border-slate-100 p-6 sm:p-8 shadow-sm max-w-2xl">
+          <div class="flex items-center gap-2.5 mb-1.5">
+            <div class="w-9 h-9 rounded-xl bg-[#6c4ff5] text-white flex items-center justify-center shrink-0 shadow-sm">
+              <i data-lucide="megaphone" class="h-4 w-4"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">System Broadcast Announcement</h3>
           </div>
-          <p class="text-xs text-muted-foreground mb-4">This message will be dispatched directly into the inboxes of all active registered members.</p>
+          <p class="text-xs text-slate-400 mb-5">This official dispatch will be delivered directly into the mailboxes of all active registered members.</p>
 
           <form onsubmit="adminApp.sendBroadcast(event)" class="space-y-4">
             <div>
-              <label class="block text-xs font-bold text-muted-foreground mb-1">Subject</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Broadcast Subject</label>
               <input
                 id="broad-subject"
                 type="text"
                 required
                 value="Important Update from Raccon Mail 📢"
-                class="w-full rounded-xl border border-border bg-card p-3 text-xs outline-none focus:border-slate-900 font-bold text-foreground"
+                class="w-full rounded-2xl border border-slate-200/80 bg-[#f8f9fd] p-3 text-xs outline-none focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] font-bold text-slate-900 transition"
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-muted-foreground mb-1">Message Body</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Message Body</label>
               <textarea
                 id="broad-body"
                 rows="5"
                 required
                 placeholder="Type your official announcement here..."
-                class="w-full rounded-xl border border-border bg-card p-3 text-xs outline-none focus:border-slate-900 leading-relaxed text-foreground"
+                class="w-full rounded-2xl border border-slate-200/80 bg-[#f8f9fd] p-3 text-xs outline-none focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] leading-relaxed text-slate-900 transition"
               ></textarea>
             </div>
-            <div class="flex justify-end">
+            <div class="flex justify-end pt-2">
               <button
                 type="submit"
                 id="btn-broadcast"
-                class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 transition shadow-xs flex items-center gap-2 cursor-pointer border border-slate-900"
+                class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-6 py-2.5 transition shadow-md shadow-indigo-200 flex items-center gap-2 cursor-pointer"
               >
                 <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
                 <span>Broadcast to All Members</span>
@@ -391,320 +678,306 @@
         </div>
       </section>
 
-      <!-- 5. SYSTEM HEALTH & MAINTENANCE -->
-      <section id="view-system" class="hidden space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
+      <!-- 5. POSITION TRACKING / SYSTEM HEALTH VIEW -->
+      <section id="view-system" class="hidden space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm space-y-4">
             <div class="flex items-center justify-between">
-              <h3 class="font-display text-base font-bold flex items-center gap-2">
-                <i data-lucide="database" class="h-4 w-4 text-slate-600"></i>
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-[#6c4ff5] text-white flex items-center justify-center">
+                  <i data-lucide="database" class="h-4 w-4"></i>
+                </div>
                 <span>Database Engine Vitals</span>
               </h3>
-              <span id="health-integrity" class="text-xs font-bold text-slate-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">
+              <span id="health-integrity" class="text-xs font-bold text-[#6c4ff5] bg-[#f0ecfe] border border-[#dcd2fd] px-3 py-0.5 rounded-full">
                 Checking...
               </span>
             </div>
 
-            <div class="space-y-2 text-xs divide-y divide-border">
-              <div class="flex justify-between py-1.5">
-                <span class="text-muted-foreground">Storage Engine</span>
-                <span class="font-mono font-semibold" id="health-sqlite">SQLite 3.x</span>
+            <div class="space-y-2 text-xs divide-y divide-slate-100">
+              <div class="flex justify-between py-2">
+                <span class="text-slate-400">Storage Engine</span>
+                <span class="font-mono font-bold text-slate-800" id="health-sqlite">SQLite 3.x</span>
               </div>
-              <div class="flex justify-between py-1.5">
-                <span class="text-muted-foreground">Journal Mode</span>
-                <span class="font-mono font-semibold text-slate-800" id="health-journal">WAL (Write-Ahead Logging)</span>
+              <div class="flex justify-between py-2">
+                <span class="text-slate-400">Journal Mode</span>
+                <span class="font-mono font-bold text-slate-800" id="health-journal">WAL (Write-Ahead Logging)</span>
               </div>
-              <div class="flex justify-between py-1.5">
-                <span class="text-muted-foreground">Database Disk Footprint</span>
-                <span class="font-mono font-semibold" id="health-db-size">--</span>
+              <div class="flex justify-between py-2">
+                <span class="text-slate-400">Database Disk Footprint</span>
+                <span class="font-mono font-bold text-slate-800" id="health-db-size">--</span>
               </div>
-              <div class="flex justify-between py-1.5">
-                <span class="text-muted-foreground">PHP Runtime</span>
-                <span class="font-mono font-semibold" id="health-php">PHP 8.x</span>
+              <div class="flex justify-between py-2">
+                <span class="text-slate-400">PHP Runtime</span>
+                <span class="font-mono font-bold text-slate-800" id="health-php">PHP 8.x</span>
               </div>
-              <div class="flex justify-between py-1.5">
-                <span class="text-muted-foreground">SSL / HTTPS Transport</span>
-                <span class="font-mono font-semibold text-slate-800" id="health-https">Active &amp; Verified</span>
+              <div class="flex justify-between py-2">
+                <span class="text-slate-400">SSL / HTTPS Transport</span>
+                <span class="font-mono font-bold text-emerald-600" id="health-https">Active &amp; Verified</span>
               </div>
             </div>
 
-            <div class="pt-3">
+            <div class="pt-2">
               <button
                 onclick="adminApp.optimizeDatabase()"
                 id="btn-optimize"
-                class="w-full rounded-xl bg-muted hover:bg-accent text-foreground font-semibold text-xs py-2.5 transition flex items-center justify-center gap-2 cursor-pointer border border-border"
+                class="w-full rounded-2xl bg-[#f8f9fd] hover:bg-slate-100 text-slate-800 font-bold text-xs py-3 transition flex items-center justify-center gap-2 cursor-pointer border border-slate-200/60"
               >
-                <i data-lucide="sparkles" class="h-3.5 w-3.5 text-slate-600"></i>
+                <i data-lucide="sparkles" class="h-3.5 w-3.5 text-[#6c4ff5]"></i>
                 <span>Run Vacuum &amp; Optimize Storage</span>
               </button>
             </div>
           </div>
 
-          <div class="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3">
-            <h3 class="font-display text-base font-bold flex items-center gap-2">
-              <i data-lucide="shield-check" class="h-4 w-4 text-slate-600"></i>
+          <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm space-y-4">
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
+                <i data-lucide="shield-check" class="h-4 w-4"></i>
+              </div>
               <span>Privacy &amp; Security Compliance</span>
             </h3>
 
-            <div class="space-y-2 text-xs">
-              <div class="p-3 rounded-xl bg-muted/40 border border-border">
-                <div class="font-bold text-foreground">Zero-Knowledge Mailbox Architecture</div>
-                <div class="text-muted-foreground mt-0.5">Administrator accounts have zero access to read client emails. All message tables are sealed.</div>
+            <div class="space-y-3 text-xs">
+              <div class="p-3.5 rounded-2xl bg-[#f8f9fd] border border-slate-100">
+                <div class="font-bold text-slate-900">Zero-Knowledge Mailbox Architecture</div>
+                <div class="text-slate-500 mt-0.5">Administrator accounts have zero access to read client emails. All message tables are strictly sealed.</div>
               </div>
-              <div class="p-3 rounded-xl bg-muted/40 border border-border">
-                <div class="font-bold text-foreground">RFC 9116 Security Policy</div>
-                <div class="text-muted-foreground mt-0.5">Live security disclosure document published at <code class="text-xs font-mono">/.well-known/security.txt</code>.</div>
+              <div class="p-3.5 rounded-2xl bg-[#f8f9fd] border border-slate-100">
+                <div class="font-bold text-slate-900">RFC 9116 Security Policy</div>
+                <div class="text-slate-500 mt-0.5">Live security disclosure document published at <code class="text-xs font-mono font-semibold">/.well-known/security.txt</code>.</div>
               </div>
-              <div class="p-3 rounded-xl bg-muted/40 border border-border">
-                <div class="font-bold text-foreground">Immediate Ban Enforcement</div>
-                <div class="text-muted-foreground mt-0.5">Banned members are instantly revoked across active sessions and denied authentication.</div>
+              <div class="p-3.5 rounded-2xl bg-[#f8f9fd] border border-slate-100">
+                <div class="font-bold text-slate-900">Immediate Ban Enforcement</div>
+                <div class="text-slate-500 mt-0.5">Banned members are instantly revoked across active sessions and denied authentication.</div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
-      <!-- 6. PRO PLANS & PAYPAL BILLING GATEWAY -->
+      <!-- 6. SETTING / PRO PLANS & PAYPAL BILLING GATEWAY -->
       <section id="view-plans" class="hidden space-y-6 animate-in fade-in duration-150">
         
         <!-- Top Overview Banner -->
-        <div class="p-6 rounded-3xl bg-linear-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="p-6 rounded-[28px] bg-linear-to-r from-purple-500/10 via-indigo-500/5 to-transparent border border-indigo-200/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-amber-500/20">
+            <div class="w-12 h-12 rounded-2xl bg-[#6c4ff5] text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-500/20">
               💳
             </div>
             <div>
-              <h2 class="text-base sm:text-lg font-bold text-slate-900">Subscription Plans &amp; PayPal Payment Gateway</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Configure your PayPal seller account, manage pricing tiers, storage quotas, and monetization.</p>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900">Subscription Plans &amp; PayPal Integration</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Create custom billing tiers, set storage limits, and manage real-time checkout gateways.</p>
             </div>
           </div>
-
           <div class="flex items-center gap-2">
-            <button onclick="adminApp.openNewPlanModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer">
-              <span>+</span>
+            <span id="plans-count-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-white text-indigo-700 border border-indigo-200 shadow-2xs">0 Plans</span>
+            <button onclick="adminApp.openPlanModal()" class="px-4 py-2 rounded-full text-xs font-bold bg-[#6c4ff5] hover:bg-[#583bcc] text-white shadow-md shadow-indigo-200 flex items-center gap-1.5 transition cursor-pointer">
+              <i data-lucide="plus" class="h-3.5 w-3.5"></i>
               <span>Create New Plan</span>
             </button>
           </div>
         </div>
 
-        <!-- CARD 1: PAYPAL ACCOUNT & PAYMENT GATEWAY -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-5">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
-                🅿️
-              </div>
-              <div>
-                <h3 class="text-sm font-bold text-slate-900">PayPal Business Gateway Credentials</h3>
-                <p class="text-[11px] text-slate-400">Buyers subscribe directly to your PayPal account with automatic IPN/Webhook activation</p>
-              </div>
-            </div>
-            <span id="paypal-mode-badge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-              Sandbox Mode
-            </span>
+        <!-- Plans Grid -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900">Live Tier Packages</h3>
+            <span class="text-xs text-slate-400">Plans with active toggle are immediately surfaced on the landing page</span>
           </div>
 
-          <form onsubmit="adminApp.savePayPalSettings(event)" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
-              <!-- PayPal Mode -->
+          <div id="admin-plans-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Dynamically populated by adminApp.loadBilling() -->
+          </div>
+        </div>
+
+        <!-- PayPal Gateway Configuration Card -->
+        <div class="rounded-[28px] bg-white border border-slate-100 p-6 sm:p-7 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
+                <i data-lucide="shield-check" class="h-5 w-5"></i>
+              </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Environment Mode</label>
-                <select id="paypal-mode" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-semibold">
-                  <option value="sandbox">Sandbox (Testing / Simulator)</option>
+                <h3 class="text-sm font-bold text-slate-900">PayPal Express Checkout Credentials</h3>
+                <p class="text-xs text-slate-400">Direct server-to-server webhook verification and Smart Button credentials</p>
+              </div>
+            </div>
+            <span id="paypal-mode-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Sandbox</span>
+          </div>
+
+          <form onsubmit="adminApp.savePayPalSettings(event)" class="space-y-4 pt-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Gateway Environment</label>
+                <select id="paypal-mode" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] text-slate-800 font-semibold outline-none">
+                  <option value="sandbox">Sandbox (Testing / Demo Mode)</option>
                   <option value="live">Live (Real Payments / Production)</option>
                 </select>
               </div>
-
-              <!-- Currency -->
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Billing Currency</label>
-                <select id="paypal-currency" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-semibold">
-                  <option value="USD">USD ($) - US Dollar</option>
-                  <option value="EUR">EUR (€) - Euro</option>
-                  <option value="GBP">GBP (£) - British Pound</option>
-                  <option value="CAD">CAD ($) - Canadian Dollar</option>
-                  <option value="AUD">AUD ($) - Australian Dollar</option>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Default Currency</label>
+                <select id="paypal-currency" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] text-slate-800 font-semibold outline-none">
+                  <option value="USD">USD — US Dollar ($)</option>
+                  <option value="EUR">EUR — Euro (€)</option>
+                  <option value="GBP">GBP — British Pound (£)</option>
                 </select>
               </div>
-
-              <!-- PayPal Email -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Business / Merchant Email</label>
-                <input type="email" id="paypal-email" placeholder="e.g. merchant@yourdomain.com" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-medium" required />
-              </div>
-
-              <!-- Webhook ID -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Webhook ID (Optional)</label>
-                <input type="text" id="paypal-webhook" placeholder="e.g. 8JH92049AL10294" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
-              </div>
-
-              <!-- Client ID -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">REST API Client ID</label>
-                <input type="text" id="paypal-client-id" placeholder="Client ID from developer.paypal.com" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
-              </div>
-
-              <!-- Client Secret -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">REST API Secret Key</label>
-                <input type="password" id="paypal-secret" placeholder="••••••••••••••••••••••••" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-cyan-500 font-mono text-[11px]" />
-              </div>
-
             </div>
 
-            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-              <span class="text-[11px] text-slate-400">Credentials are stored encrypted in your private SQLite database.</span>
-              <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold transition shadow-xs cursor-pointer">
-                💾 Save PayPal Settings
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Client ID</label>
+              <input type="text" id="paypal-client-id" placeholder="e.g. A21AAJ..." class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] font-mono text-slate-800 outline-none" required />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">PayPal Secret Key (Encrypted at rest)</label>
+                <input type="password" id="paypal-secret" placeholder="••••••••••••••••" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] font-mono text-slate-800 outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Merchant / Business Email</label>
+                <input type="email" id="paypal-email" placeholder="billing@racconmail.eu" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] text-slate-800 outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Webhook ID (Optional)</label>
+              <input type="text" id="paypal-webhook" placeholder="e.g. 8JH94021..." class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] font-mono text-slate-800 outline-none" />
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+              <button type="submit" class="px-5 py-2.5 rounded-full text-xs font-bold bg-[#6c4ff5] hover:bg-[#583bcc] text-white shadow-md shadow-indigo-200 transition cursor-pointer">
+                Save PayPal Gateway Settings
               </button>
             </div>
           </form>
         </div>
-
-        <!-- CARD 2: SUBSCRIPTION PLANS MANAGER -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 space-y-5">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">Manage Subscription Tiers</h3>
-              <p class="text-[11px] text-slate-400">Customize plan pricing, storage quotas, accounts limits, and highlighted features.</p>
-            </div>
-            <span id="plans-count-badge" class="text-xs font-bold text-slate-500 font-mono">3 Plans</span>
-          </div>
-
-          <!-- Plans Grid Container -->
-          <div id="admin-plans-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Dynamically loaded by adminApp.loadBilling() -->
-          </div>
-        </div>
-
       </section>
-
-      <!-- EDIT / CREATE PLAN MODAL -->
-      <div id="plan-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
-            <h3 id="plan-modal-title" class="text-sm font-bold text-slate-900">Edit Subscription Plan</h3>
-            <button onclick="adminApp.closePlanModal()" class="p-1 text-slate-400 hover:text-slate-700">✕</button>
-          </div>
-
-          <form onsubmit="adminApp.savePlanForm(event)" class="space-y-3.5">
-            <input type="hidden" id="plan-id" />
-            
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Plan Title</label>
-              <input type="text" id="plan-name" placeholder="e.g. Pro Creator" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-bold" required />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Badge Text (Optional)</label>
-              <input type="text" id="plan-badge" placeholder="e.g. Most Popular / Best Value" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Monthly Price ($)</label>
-                <input type="number" step="0.01" id="plan-price-monthly" placeholder="9.99" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Yearly Price ($)</label>
-                <input type="number" step="0.01" id="plan-price-yearly" placeholder="99.00" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Storage Quota (GB)</label>
-                <input type="number" id="plan-storage" placeholder="200" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Max Accounts (999=Unlimited)</label>
-                <input type="number" id="plan-accounts" placeholder="5" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-mono" required />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Features (One per line)</label>
-              <textarea id="plan-features" rows="4" placeholder="200 GB NVMe Storage&#10;5 Mailbox Connections&#10;Custom Domain Setup&#10;End-to-End PGP Encryption&#10;AI Writing Assistant" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-sans"></textarea>
-            </div>
-
-            <div class="flex items-center gap-4 pt-1">
-              <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                <input type="checkbox" id="plan-is-active" checked class="rounded text-cyan-600 focus:ring-cyan-500" />
-                <span>Active (Visible to users)</span>
-              </label>
-              <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                <input type="checkbox" id="plan-is-popular" class="rounded text-amber-500 focus:ring-amber-500" />
-                <span>Highlight as "Popular"</span>
-              </label>
-            </div>
-
-            <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-              <button type="button" onclick="adminApp.closePlanModal()" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100">Cancel</button>
-              <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs">Save Plan</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
 
     </main>
   </div>
 
+  <!-- MODAL: ADD / EDIT PLAN -->
+  <div id="plan-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
+    <div class="w-full max-w-lg rounded-[32px] bg-white p-6 sm:p-8 shadow-2xl shadow-indigo-950/20 border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 id="plan-modal-title" class="text-base font-bold text-slate-900">Create Subscription Plan</h3>
+        <button onclick="adminApp.closePlanModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer">✕</button>
+      </div>
+
+      <form onsubmit="adminApp.savePlan(event)" class="space-y-4 pt-4">
+        <input type="hidden" id="plan-id" />
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Plan Display Name</label>
+          <input type="text" id="plan-name" placeholder="e.g. Pro Nocturnal Courier" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5]" required />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Badge Text (Optional)</label>
+          <input type="text" id="plan-badge" placeholder="e.g. Most Popular / Best Value" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5]" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Monthly Price ($)</label>
+            <input type="number" step="0.01" id="plan-price-monthly" placeholder="9.99" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5] font-mono" required />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Yearly Price ($)</label>
+            <input type="number" step="0.01" id="plan-price-yearly" placeholder="99.00" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5] font-mono" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Storage Quota (GB)</label>
+            <input type="number" id="plan-storage" placeholder="200" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5] font-mono" required />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Max Accounts (999=Unlimited)</label>
+            <input type="number" id="plan-accounts" placeholder="5" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5] font-mono" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Features (One per line)</label>
+          <textarea id="plan-features" rows="4" placeholder="200 GB Encrypted Storage&#10;5 Mailbox Aliases&#10;Zero-Knowledge Encryption&#10;Priority 24/7 Dispatch Support" class="w-full px-3.5 py-2.5 text-xs bg-[#f8f9fd] border border-slate-200 rounded-2xl focus:outline-none focus:border-[#6c4ff5] leading-relaxed"></textarea>
+        </div>
+
+        <div class="flex items-center gap-6 pt-1">
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input type="checkbox" id="plan-is-active" checked class="rounded text-[#6c4ff5] focus:ring-[#6c4ff5]" />
+            <span>Active (Visible to users)</span>
+          </label>
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input type="checkbox" id="plan-is-popular" class="rounded text-amber-500 focus:ring-amber-500" />
+            <span>Highlight as "Popular"</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="adminApp.closePlanModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-slate-500 hover:bg-slate-100 cursor-pointer">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-full text-xs font-bold bg-[#6c4ff5] hover:bg-[#583bcc] text-white shadow-md shadow-indigo-200 cursor-pointer">Save Plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: ADD USER -->
-  <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-2xl border border-border">
-      <h3 class="font-display text-lg font-bold">Create Member Mailbox</h3>
+  <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
+    <div class="w-full max-w-md rounded-[32px] bg-white p-6 sm:p-8 shadow-2xl border border-slate-100">
+      <h3 class="text-base font-bold text-slate-900">Create Member Mailbox</h3>
       <form onsubmit="adminApp.createUser(event)" class="mt-4 space-y-3">
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">Full Name</label>
-          <input id="new-user-name" type="text" required placeholder="e.g. Luna Nightfall" class="w-full rounded-xl border border-border bg-muted/30 p-2.5 text-xs outline-none focus:border-slate-900 text-foreground" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+          <input id="new-user-name" type="text" required placeholder="e.g. Luna Nightfall" class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs outline-none focus:border-[#6c4ff5] text-slate-900" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">Email Address (@racconmail.eu)</label>
-          <input id="new-user-email" type="email" required placeholder="luna@racconmail.eu" class="w-full rounded-xl border border-border bg-muted/30 p-2.5 text-xs outline-none focus:border-slate-900 text-foreground" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email Address (@racconmail.eu)</label>
+          <input id="new-user-email" type="email" required placeholder="luna@racconmail.eu" class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs outline-none focus:border-[#6c4ff5] text-slate-900" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">Initial Password</label>
-          <input id="new-user-pass" type="text" required value="Raccon2026!" class="w-full rounded-xl border border-border bg-muted/30 p-2.5 text-xs outline-none font-mono focus:border-slate-900 text-foreground" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">Initial Password</label>
+          <input id="new-user-pass" type="text" required value="Raccon2026!" class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs outline-none font-mono focus:border-[#6c4ff5] text-slate-900" />
         </div>
         <div class="flex items-center gap-2 pt-1">
-          <input type="checkbox" id="new-user-is-admin" class="rounded h-4 w-4" />
-          <label for="new-user-is-admin" class="text-xs font-semibold">Grant Administrator Role</label>
+          <input type="checkbox" id="new-user-is-admin" class="rounded h-4 w-4 text-[#6c4ff5]" />
+          <label for="new-user-is-admin" class="text-xs font-semibold text-slate-700">Grant Administrator Role</label>
         </div>
-        <div class="flex justify-end gap-2 pt-3 border-t border-border">
-          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted cursor-pointer">Cancel</button>
-          <button type="submit" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 cursor-pointer border border-slate-900">Create Account</button>
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100 cursor-pointer">Cancel</button>
+          <button type="submit" class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-5 py-2 cursor-pointer shadow-md shadow-indigo-200">Create Account</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: RESET PASSWORD -->
-  <div id="modal-reset-pass" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-md rounded-3xl bg-card p-6 shadow-2xl border border-border">
-      <h3 class="font-display text-lg font-bold">Reset Member Password</h3>
-      <p id="reset-pass-target-email" class="text-xs text-muted-foreground mt-1">...</p>
+  <div id="modal-reset-pass" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
+    <div class="w-full max-w-md rounded-[32px] bg-white p-6 sm:p-8 shadow-2xl border border-slate-100">
+      <h3 class="text-base font-bold text-slate-900">Reset Member Password</h3>
+      <p id="reset-pass-target-email" class="text-xs text-slate-400 mt-1">...</p>
       <form onsubmit="adminApp.submitPasswordReset(event)" class="mt-4 space-y-3">
         <input type="hidden" id="reset-pass-user-id" />
         <div>
-          <label class="block text-xs font-bold text-muted-foreground mb-1">New Password</label>
-          <input id="reset-new-pass" type="text" required placeholder="Enter new password" class="w-full rounded-xl border border-border bg-muted/30 p-2.5 text-xs outline-none font-mono focus:border-slate-900 text-foreground" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">New Password</label>
+          <input id="reset-new-pass" type="text" required placeholder="Enter new password" class="w-full rounded-2xl border border-slate-200 bg-[#f8f9fd] p-3 text-xs outline-none font-mono focus:border-[#6c4ff5] text-slate-900" />
         </div>
-        <div class="flex justify-end gap-2 pt-3 border-t border-border">
-          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted cursor-pointer">Cancel</button>
-          <button type="submit" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2 cursor-pointer border border-slate-900">Update Password</button>
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="adminApp.closeModals()" class="rounded-full px-4 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100 cursor-pointer">Cancel</button>
+          <button type="submit" class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-5 py-2 cursor-pointer shadow-md shadow-indigo-200">Update Password</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- Admin Toast Notification -->
   <div id="admin-toast" class="hidden fixed bottom-6 right-6 z-50 rounded-2xl bg-slate-900 text-white px-5 py-3 text-xs font-semibold shadow-2xl border border-slate-800"></div>
 
-  <!-- Admin Application Logic -->
-  <script>
+<script>
     const adminApp = {
       users: [],
       forumPosts: [],
@@ -768,22 +1041,55 @@
 
       setTab(tab) {
         this.currentTab = tab;
-        ['overview', 'users', 'forum', 'broadcast', 'system', 'plans'].forEach(t => {
-          const btn = document.getElementById(`tab-${t}`);
-          const view = document.getElementById(`view-${t}`);
-          if (!btn || !view) return;
-          if (t === tab) {
-            btn.className = 'px-3.5 py-1.5 rounded-full bg-slate-900 text-white border border-slate-900 transition shrink-0 cursor-pointer shadow-2xs font-bold';
-            view.classList.remove('hidden');
-          } else {
-            btn.className = 'px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition shrink-0 cursor-pointer font-bold';
-            view.classList.add('hidden');
+        const tabs = ['overview', 'users', 'forum', 'broadcast', 'system', 'plans'];
+        tabs.forEach(t => {
+          const btn = document.getElementById('tab-' + t);
+          const view = document.getElementById('view-' + t);
+          const indicator = document.getElementById('tab-indicator-' + t);
+          if (btn) {
+            if (t === tab) {
+              btn.className = 'w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-900 font-bold bg-slate-50/90 transition group cursor-pointer';
+              const icon = btn.querySelector('i');
+              if (icon) {
+                icon.className = icon.className.replace(/text-slate-\d+/g, '') + ' text-slate-900';
+              }
+              if (indicator) indicator.classList.remove('opacity-0');
+            } else {
+              btn.className = 'w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer';
+              const icon = btn.querySelector('i');
+              if (icon) {
+                icon.className = icon.className.replace(/text-slate-\d+/g, '') + ' text-slate-400';
+              }
+              if (indicator) indicator.classList.add('opacity-0');
+            }
+          }
+          if (view) {
+            if (t === tab) {
+              view.classList.remove('hidden');
+            } else {
+              view.classList.add('hidden');
+            }
           }
         });
+
+        // Update header title dynamically
+        const titleEl = document.getElementById('admin-header-title');
+        if (titleEl) {
+          const titles = {
+            overview: 'Welcome to Dashboard',
+            users: 'Analysis & Member Directory',
+            forum: 'Keyword & Forum Moderation',
+            broadcast: 'Integration & Broadcast',
+            system: 'Position Tracking & Health',
+            plans: 'Setting & Pro Subscription Gateway'
+          };
+          titleEl.textContent = titles[tab] || 'Welcome to Dashboard';
+        }
+
         if (tab === 'forum') this.loadForumPosts();
         if (tab === 'system') this.loadSystemHealth();
         if (tab === 'plans') this.loadBilling();
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
       },
 
       async loadStats() {
@@ -1395,9 +1701,11 @@
       }
     };
 
+    window.adminApp = adminApp;
     window.addEventListener('DOMContentLoaded', () => {
       adminApp.init();
     });
   </script>
+
 </body>
 </html>
