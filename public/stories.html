@@ -240,6 +240,7 @@
       background: #94A3B8;
     }
   </style>
+  <script src="/js/notifications.js"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F2F4F7] text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
 
@@ -1571,19 +1572,17 @@
                             navigator.userAgent.includes('SWVAndroid') ||
                             navigator.userAgent.includes('Android');
 
-      // On mobile view / Android APK: hide the main 22-category sidebar for full focus
+      // Always show floating edge quick-access button in reader view (docked neatly on middle edge)
+      document.getElementById('mobile-reader-toggle-pill')?.classList.remove('hidden');
+
       if (isMobileOrApk) {
         document.querySelector('main > div > aside')?.classList.add('hidden');
         document.querySelector('main > div > section')?.classList.remove('lg:col-span-9');
         document.querySelector('main > div > section')?.classList.add('col-span-12');
 
-        // Show floating quick-access button on mobile/APK
-        document.getElementById('mobile-reader-toggle-pill')?.classList.remove('hidden');
-
         // On mobile view and Android APK: auto-hide the menu so it never overlaps the canvas
         toggleReaderMenu(false);
       } else {
-        document.getElementById('mobile-reader-toggle-pill')?.classList.add('hidden');
         const pref = localStorage.getItem('raccon_reader_menu_hidden');
         if (pref === '1') {
           toggleReaderMenu(false);
@@ -1991,15 +1990,21 @@
   </script>
 
 
-  <!-- Floating Mobile & Android APK Quick Reading Settings Pill -->
-  <div id="mobile-reader-toggle-pill" class="hidden md:hidden fixed bottom-6 right-4 z-40 transition">
+  <!-- Floating Edge Reading Settings Pill (Centered Vertically Along Edge - No Text Overlap) -->
+  <div 
+    id="mobile-reader-toggle-pill" 
+    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 transition-all duration-200"
+    aria-label="Story Reader Menu"
+  >
     <button 
       onclick="toggleReaderMenu()" 
-      class="flex items-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/95 hover:bg-black text-white text-xs font-bold shadow-2xl backdrop-blur-md border border-white/20 active:scale-95 transition cursor-pointer"
-      title="Toggle reading settings"
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/90 hover:bg-black text-white text-xs font-bold shadow-[0_10px_30px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/25 active:scale-95 transition cursor-pointer select-none group"
+      title="Toggle reading settings & canvas menu"
+      aria-label="Toggle reading menu"
     >
-      <i class="fas fa-sliders text-purple-400"></i>
-      <span id="mobile-toggle-text">Menu</span>
+      <i class="fas fa-sliders text-purple-400 group-hover:rotate-90 transition-transform text-xs"></i>
+      <span id="mobile-toggle-text" class="whitespace-nowrap tracking-tight">Hide Menu</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
     </button>
   </div>
 

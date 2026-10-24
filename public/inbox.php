@@ -162,6 +162,7 @@ try {
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="/js/notifications.js"></script>
 
   <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -1202,7 +1203,7 @@ try {
     function clickIncomingToast() {
       closeIncomingToast();
       if (currentFolder !== 'Inbox') {
-        selectFolder('Inbox');
+        switchFolder('Inbox');
       } else {
         renderMessageList();
       }
@@ -1273,6 +1274,17 @@ try {
           // Play Afraid Raccoon notification sound immediately!
           playRaccoonSound('afraid');
           showIncomingToast(newSender, newSubject, newMsgId);
+          
+          // Trigger system Web Push Notification across device
+          if (window.RacconNotifications) {
+            window.RacconNotifications.show({
+              title: 'New Email from ' + (newSender || 'Raccon Mail'),
+              body: newSubject || '(no subject)',
+              tag: 'mail-' + (newMsgId || Date.now()),
+              url: '/inbox'
+            });
+          }
+
           await fetchFolderMessages(currentFolder);
           await refreshFolderCounts();
         }
@@ -1350,6 +1362,7 @@ try {
     }
 
     // Switch Folder (Inbox, Unread, Starred, Sent, Drafts, Archive, Spam, Trash, All)
+    window.selectFolder = function(f) { return switchFolder(f); };
     async function switchFolder(folderName) {
       currentFolder = folderName;
       currentSelectedThreadIndex = 0;
@@ -1868,11 +1881,11 @@ try {
       document.getElementById('compose-to').value = email;
     }
 
-    // Send Email
+    // Send Email (Rock-Solid API Delivery with Real-Time Database Sync)
     async function sendEmailNow() {
       const btn = document.getElementById('btn-send-email');
       const to = document.getElementById('compose-to')?.value.trim();
-      const subject = document.getElementById('compose-subject')?.value.trim();
+      const subject = document.getElementById('compose-subject')?.value.trim() || '(no subject)';
       const body = document.getElementById('compose-body')?.value.trim();
 
       if (!to || !body) {
@@ -1882,59 +1895,70 @@ try {
 
       if (btn) {
         btn.disabled = true;
-        btn.innerText = 'Sending...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Sending...';
       }
 
       try {
         const res = await fetch('/api/messages/send', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to, subject, body })
+          body: JSON.stringify({ to: to, subject: subject, body: body })
         });
-      } catch (_) {}
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to dispatch email');
+        }
 
-      // Add to Sent folder
-      mailDatabase['Sent'].unshift({
-        id: 'sent_' + Date.now(),
-        sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
-        senderName: 'To: ' + to,
-        time: 'Just now',
-        subject: subject,
-        isStarred: false,
-        isRead: true,
-        avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
-        thread: [
-          {
-            sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
-            to: to,
-            date: 'Just now',
-            avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
-            body: body
-          }
-        ]
-      });
-
-      playRaccoonSound('happy');
-      showRaccoonSuccessModal();
-      refreshFolderCounts();
-      closeComposeCard();
-      if (btn) {
-        btn.disabled = false;
-        btn.innerText = 'Send';
+        playRaccoonSound('happy');
+        showRaccoonSuccessModal();
+        closeComposeCard();
+        await refreshFolderCounts();
+        await fetchFolderMessages(currentFolder);
+      } catch (err) {
+        alert('Could not send email: ' + (err.message || err));
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5 text-white"></i><span>Send</span>';
+          if (window.lucide) lucide.createIcons();
+        }
       }
     }
 
-    function sendQuickReply() {
+    async function sendQuickReply() {
       const inp = document.getElementById('quick-reply-input');
       const val = inp?.value.trim();
       if (!val) return;
 
       const list = mailDatabase[currentFolder] || mailDatabase['Inbox'];
       const msg = list[currentSelectedThreadIndex];
-      if (msg) {
+      if (!msg) return;
+
+      const toEmail = msg.sender || msg.sender_email;
+      const origSubj = msg.subject || '(no subject)';
+      const replySubj = origSubj.toLowerCase().startsWith('re:') ? origSubj : 'Re: ' + origSubj;
+
+      inp.disabled = true;
+      try {
+        const res = await fetch('/api/messages/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: toEmail,
+            subject: replySubj,
+            body: val,
+            in_reply_to: msg.id,
+            parent_id: msg.id
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to dispatch reply');
+        }
+
         msg.thread.push({
           sender: '<?php echo htmlspecialchars($currentUser['email']); ?>',
-          to: msg.sender,
+          to: toEmail,
           date: 'Just now',
           avatar: '<?php echo htmlspecialchars($currentUser['avatar']); ?>',
           body: val
@@ -1943,6 +1967,13 @@ try {
         playRaccoonSound('happy');
         showRaccoonSuccessModal();
         renderConversationThread(msg);
+        refreshFolderCounts();
+        fetchFolderMessages(currentFolder);
+      } catch (err) {
+        alert('Could not send reply: ' + (err.message || err));
+      } finally {
+        inp.disabled = false;
+        inp.focus();
       }
     }
 
@@ -2328,16 +2359,46 @@ try {
   <!-- ========================================================================= -->
   <!-- FLOATING MOBILE COMPOSE BUTTON (PENCIL IN BOTTOM RIGHT CORNER)            -->
   <!-- ========================================================================= -->
-  <button
-    type="button"
-    onclick="openComposeCard()"
-    id="mobile-floating-compose-btn"
-    class="md:hidden fixed bottom-6 right-6 z-[9990] w-14 h-14 rounded-full bg-slate-900 hover:bg-black text-white shadow-[0_10px_25px_rgba(15,23,42,0.45)] flex items-center justify-center transition active:scale-95 cursor-pointer border border-slate-700/40"
-    title="Write New Message"
-    aria-label="Write New Message"
+  <!-- ========================================================================= -->
+  <!-- MODERN COLORED MOBILE FLOATING DOCK (CENTERED WITH SEARCH & PENCIL ICONS)  -->
+  <!-- ========================================================================= -->
+  <div
+    id="mobile-centered-action-menu"
+    class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[9990] flex items-center gap-2 p-1.5 rounded-full bg-gradient-to-r from-cyan-600 via-teal-600 to-cyan-500 shadow-[0_12px_36px_rgba(6,182,212,0.55)] border border-white/30 backdrop-blur-md animate-in fade-in slide-in-from-bottom-5 duration-200 select-none"
   >
-    <i class="fas fa-pen text-lg text-white"></i>
-  </button>
+    <!-- Search Button (Magnifying Glass Icon) -->
+    <button
+      type="button"
+      onclick="openMobileSearchSheet()"
+      class="w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 active:scale-90 text-white flex items-center justify-center transition cursor-pointer shadow-inner"
+      title="Search Mailbox"
+      aria-label="Search Mailbox"
+    >
+      <i class="fas fa-search text-sm text-white drop-shadow-xs"></i>
+    </button>
+
+    <!-- Center Mascot Accent Indicator -->
+    <button
+      type="button"
+      onclick="refreshMailbox()"
+      class="w-7 h-7 rounded-full bg-white/20 hover:bg-white/35 active:rotate-180 text-white flex items-center justify-center transition cursor-pointer"
+      title="Refresh messages"
+      aria-label="Refresh messages"
+    >
+      <img src="/raccoon-logo.png" class="w-4 h-4 object-contain filter drop-shadow-xs" alt="Logo" />
+    </button>
+
+    <!-- Compose Button (Pencil Icon) -->
+    <button
+      type="button"
+      onclick="openComposeCard()"
+      class="w-11 h-11 rounded-full bg-white text-cyan-900 hover:bg-slate-50 active:scale-90 flex items-center justify-center transition cursor-pointer shadow-md"
+      title="Write New Email"
+      aria-label="Write New Email"
+    >
+      <i class="fas fa-pen text-sm text-cyan-700"></i>
+    </button>
+  </div>
 
   <!-- ========================================================================= -->
   <!-- RACCOON SUCCESS POPUP MODAL ("Email sent successfully! 🐾")                -->

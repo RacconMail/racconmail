@@ -205,6 +205,7 @@
       overflow: hidden;
     }
   </style>
+  <script src="/js/notifications.js"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F2F4F7] text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
 
@@ -783,6 +784,41 @@
         </button>
       </div>
     </div>
+  </div>
+
+  
+  <!-- Floating Side Discussion Controls (Centered Vertically Along Right Edge - Does Not Obstruct Text) -->
+  <div 
+    id="floating-forum-edge-dock" 
+    class="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-2 pr-0 select-none transition-all duration-200"
+    aria-label="Discussion Quick Actions"
+  >
+    <!-- Floating Reply Tab Button -->
+    <button
+      type="button"
+      onclick="focusThreadReply()"
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/90 hover:bg-black text-white text-xs font-bold shadow-[0_8px_25px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/20 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group"
+      title="Reply to Topic"
+      aria-label="Reply to Topic"
+    >
+      <i class="fas fa-reply text-cyan-400 text-sm shrink-0 group-hover:scale-110 transition-transform"></i>
+      <span class="whitespace-nowrap tracking-tight">Reply</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
+    </button>
+
+    <!-- Floating Follow Tab Button -->
+    <button
+      type="button"
+      id="btn-floating-follow"
+      onclick="toggleFollowThread()"
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_25px_rgba(0,0,0,0.15)] backdrop-blur-md border-y border-l border-slate-200 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group"
+      title="Follow Topic"
+      aria-label="Follow Topic"
+    >
+      <i class="fas fa-bell text-amber-500 text-sm shrink-0 group-hover:rotate-12 transition-transform" id="floating-follow-icon"></i>
+      <span id="floating-follow-text" class="whitespace-nowrap tracking-tight">Follow</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" id="floating-follow-dot"></span>
+    </button>
   </div>
 
   <!-- Toast Notification -->
@@ -1420,16 +1456,36 @@
       isFollowingActiveThread = !isFollowingActiveThread;
       const btn = document.getElementById('btn-follow-thread');
       const text = document.getElementById('btn-follow-text');
-      if (btn && text) {
-        if (isFollowingActiveThread) {
-          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
-          text.innerText = 'Following';
-          showToast('You are now following this discussion! 🔔');
-        } else {
-          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
-          text.innerText = 'Follow';
-          showToast('Unfollowed discussion.');
+      const floatBtn = document.getElementById('btn-floating-follow');
+      const floatText = document.getElementById('floating-follow-text');
+      const floatIcon = document.getElementById('floating-follow-icon');
+      const floatDot = document.getElementById('floating-follow-dot');
+
+      if (isFollowingActiveThread) {
+        if (btn) btn.className = 'w-full py-2.5 px-4 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+        if (text) text.innerText = 'Following';
+        if (floatBtn) floatBtn.className = 'flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-cyan-50/95 hover:bg-cyan-100 text-cyan-800 text-xs font-bold shadow-[0_8px_25px_rgba(6,182,212,0.3)] backdrop-blur-md border-y border-l border-cyan-300 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group';
+        if (floatText) floatText.innerText = 'Following';
+        if (floatIcon) floatIcon.className = 'fas fa-bell text-cyan-600 text-sm shrink-0';
+        if (floatDot) floatDot.className = 'w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0';
+        showToast('You are now following this discussion! 🔔');
+
+        if (window.RacconNotifications) {
+          window.RacconNotifications.show({
+            title: 'Following Topic 🔔',
+            body: 'You will receive updates for new replies in this thread.',
+            tag: 'forum-follow',
+            url: '/forum'
+          });
         }
+      } else {
+        if (btn) btn.className = 'w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+        if (text) text.innerText = 'Follow';
+        if (floatBtn) floatBtn.className = 'flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_25px_rgba(0,0,0,0.15)] backdrop-blur-md border-y border-l border-slate-200 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group';
+        if (floatText) floatText.innerText = 'Follow';
+        if (floatIcon) floatIcon.className = 'fas fa-bell text-amber-500 text-sm shrink-0';
+        if (floatDot) floatDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0';
+        showToast('Unfollowed discussion.');
       }
     }
 
@@ -1466,6 +1522,22 @@
         if (res.ok && data.success) {
           input.value = '';
           showToast('Reply posted successfully! 💬');
+        if (window.RacconNotifications) {
+          window.RacconNotifications.show({
+            title: 'Reply Posted! 💬',
+            body: 'Your reply has been successfully published on Raccoon Forum.',
+            tag: 'forum-reply',
+            url: '/forum'
+          });
+        }
+        if (window.RacconNotifications) {
+          window.RacconNotifications.show({
+            title: 'Reply Posted! 💬',
+            body: 'Your reply has been successfully published on Raccoon Forum.',
+            tag: 'forum-reply',
+            url: '/forum'
+          });
+        }
           openThreadReader(currentActiveThread.post.id);
         } else {
           showToast(data.error || 'Failed to post reply. Please sign in.', 'fa-exclamation-triangle');
