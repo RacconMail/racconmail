@@ -222,58 +222,9 @@ try {
       animation: readEmailGlow 3s ease-in-out infinite alternate !important;
     }
 
-    @keyframes readEmailGlow {
-      0% {
-        box-shadow: 0 0 15px 3px rgba(6, 182, 212, 0.25), 0 8px 20px -4px rgba(15, 23, 42, 0.06);
-        border-color: #06b6d4;
-      }
-      100% {
-        box-shadow: 0 0 32px 10px rgba(6, 182, 212, 0.5), 0 12px 28px -4px rgba(6, 182, 212, 0.2);
-        border-color: #22d3ee;
-      }
-    }
+    
 
-    /* Reading Pane Turquoise Ambient Accent & Reading Glow */
-    #col-reader {
-      box-shadow: inset 0 2px 0 0 #06b6d4, 0 0 30px 4px rgba(6, 182, 212, 0.12) !important;
-    }
 
-    /* Modern 10-Second Turquoise Search Loop Glow Animation */
-    @keyframes turquoiseSearchGlow10s {
-      0% {
-        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.85), 0 0 20px 4px rgba(6, 182, 212, 0.5);
-        transform: scale(1);
-      }
-      10%, 30%, 50%, 70%, 90% {
-        box-shadow: 0 0 45px 14px rgba(6, 182, 212, 0.9), 0 0 80px 24px rgba(6, 182, 212, 0.45);
-        transform: scale(1.1);
-        border-color: #22d3ee;
-      }
-      20%, 40%, 60%, 80% {
-        box-shadow: 0 0 20px 4px rgba(6, 182, 212, 0.55), 0 0 40px 10px rgba(6, 182, 212, 0.3);
-        transform: scale(1);
-        border-color: #06b6d4;
-      }
-      100% {
-        box-shadow: 0 10px 30px rgba(6, 182, 212, 0.38);
-        transform: scale(1);
-        border-color: #06b6d4;
-      }
-    }
-
-    @keyframes turquoiseRadarHalo10s {
-      0% { transform: scale(0.95); opacity: 0.9; }
-      70% { transform: scale(1.75); opacity: 0; }
-      100% { transform: scale(1.85); opacity: 0; }
-    }
-
-    .turquoise-glow-10s {
-      animation: turquoiseSearchGlow10s 10s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
-    }
-
-    .turquoise-radar-10s {
-      animation: turquoiseRadarHalo10s 2s cubic-bezier(0, 0, 0.2, 1) 5 !important;
-    }
 
 
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&display=swap');
@@ -830,7 +781,7 @@ try {
       </div>
 
       <!-- Messages Thread List Container -->
-      <div id="threads-container" class="flex-1 overflow-y-auto px-3 py-1 space-y-1.5 pb-6">
+      <div id="threads-container" class="flex-1 overflow-y-auto px-4 py-1 space-y-1.5 pb-24 md:pb-6">
         <!-- Rendered dynamically by renderMessageList() -->
       </div>
 
@@ -2491,46 +2442,6 @@ try {
     </button>
   </nav>
 
-  <!-- MODERN COLORED MOBILE FLOATING DOCK (CENTERED WITH SEARCH & PENCIL ICONS)  -->
-  <!-- ========================================================================= -->
-  <div
-    id="mobile-centered-action-menu"
-    class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[9990] flex items-center gap-2 p-1.5 rounded-full bg-gradient-to-r from-cyan-600 via-teal-600 to-cyan-500 shadow-[0_12px_36px_rgba(6,182,212,0.55)] border border-white/30 backdrop-blur-md animate-in fade-in slide-in-from-bottom-5 duration-200 select-none"
-  >
-    <!-- Search Button (Magnifying Glass Icon) -->
-    <button
-      type="button"
-      onclick="openMobileSearchSheet()"
-      class="w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 active:scale-90 text-white flex items-center justify-center transition cursor-pointer shadow-inner"
-      title="Search Mailbox"
-      aria-label="Search Mailbox"
-    >
-      <i class="fas fa-search text-sm text-white drop-shadow-xs"></i>
-    </button>
-
-    <!-- Center Mascot Accent Indicator -->
-    <button
-      type="button"
-      onclick="refreshMailbox()"
-      class="w-7 h-7 rounded-full bg-white/20 hover:bg-white/35 active:rotate-180 text-white flex items-center justify-center transition cursor-pointer"
-      title="Refresh messages"
-      aria-label="Refresh messages"
-    >
-      <img src="/raccoon-logo.png" class="w-4 h-4 object-contain filter drop-shadow-xs" alt="Logo" />
-    </button>
-
-    <!-- Compose Button (Pencil Icon) -->
-    <button
-      type="button"
-      onclick="openComposeCard()"
-      class="w-11 h-11 rounded-full bg-white text-cyan-900 hover:bg-slate-50 active:scale-90 flex items-center justify-center transition cursor-pointer shadow-md"
-      title="Write New Email"
-      aria-label="Write New Email"
-    >
-      <i class="fas fa-pen text-sm text-cyan-700"></i>
-    </button>
-  </div>
-
   <!-- ========================================================================= -->
   <!-- RACCOON SUCCESS POPUP MODAL ("Email sent successfully! 🐾")                -->
   <!-- ========================================================================= -->
@@ -2554,21 +2465,7 @@ try {
   </div>
 
   <!-- ========================================================================= -->
-  <!-- FLOATING MOBILE SEARCH BUTTON (BOTTOM-LEFT CORNER)                         -->
-  <!-- ========================================================================= -->
-  <button
-    type="button"
-    onclick="openMobileSearchSheet()"
-    id="mobile-floating-search-btn"
-    class="md:hidden fixed bottom-6 left-6 z-[9990] w-14 h-14 rounded-full bg-white hover:bg-cyan-50/60 shadow-[0_10px_30px_rgba(6,182,212,0.38)] flex items-center justify-center transition active:scale-95 cursor-pointer border-2 border-cyan-400 ring-4 ring-cyan-400/25 group"
-    title="Search Emails (Turquoise Loupe)"
-    aria-label="Search Emails"
-  >
-    <div class="relative flex items-center justify-center">
-      <span class="absolute w-8 h-8 rounded-full bg-cyan-400/20 group-hover:bg-cyan-400/35 transition-all duration-300 blur-xs"></span>
-      <i data-lucide="search" class="relative h-6 w-6 text-cyan-500 stroke-[2.75] group-hover:scale-110 transition filter drop-shadow-[0_1px_3px_rgba(6,182,212,0.45)]"></i>
-    </div>
-  </button>
+
 
   <!-- ========================================================================= -->
   <!-- MODERN HALF-SCREEN SEARCH BOTTOM SHEET (MOBILE VIEW & ANDROID APK)        -->
