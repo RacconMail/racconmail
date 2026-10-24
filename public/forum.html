@@ -285,6 +285,19 @@
 
       <!-- Auth & User Actions -->
       <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
+        
+        <!-- Header Notification Bell -->
+        <button 
+          type="button" 
+          onclick="handleForumNotificationClick()" 
+          class="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer mr-1" 
+          title="Notifications & Alerts"
+          aria-label="Notifications"
+        >
+          <i class="fas fa-bell text-base"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#F68D72] ring-2 ring-white"></span>
+        </button>
+
         <!-- Guest View (Default) -->
         <div id="auth-guest-group" class="flex items-center gap-2">
           <a href="/auth?tab=login"  class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
@@ -1145,7 +1158,7 @@
         const cleanSnippet = (post.content || 'Join the conversation on this topic with other members.').replace(/<[^>]+>/g, '').slice(0, 110);
 
         return `
-          <article onclick="openThreadView('${post.id}')" class="forum-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
+          <article onclick="openThreadReader('${post.id}')" class="forum-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
             <div class="flex items-start justify-between gap-3.5">
               <!-- Left Column: Details -->
               <div class="flex-1 min-w-0 pr-1">
@@ -1157,8 +1170,8 @@
                 </div>
 
                 <!-- Bold Headline -->
-                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-slate-700 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
-                  ${post.title}
+                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-[#F68D72] transition leading-snug tracking-tight mb-1.5 line-clamp-2">
+                  <a href="#d/${post.id}" onclick="openThreadReader('${post.id}'); return false;" class="hover:underline">${post.title}</a>
                 </h3>
 
                 <!-- Excerpt -->
@@ -1334,6 +1347,7 @@
     // =========================================================================
     // VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
     // =========================================================================
+    window.openThreadView = function(id) { return openThreadReader(id); };
     async function openThreadReader(postId) {
       currentNavView = 'thread';
       window.location.hash = `d/${postId}`;
@@ -1830,13 +1844,75 @@
     </a>
 
     <!-- Notifications Bell -->
-    <button onclick="if(window.RacconNotifications) RacconNotifications.requestPermission(); showToast('Notifications are active! 🔔');" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+    <button onclick="handleForumNotificationClick()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       </div>
       <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
     </button>
   </nav>
+
+
+  <!-- Notification Center Modal -->
+  <div 
+    id="forum-notifications-modal" 
+    class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs select-none" 
+    onclick="if(event.target === this) toggleNotificationPanel()"
+  >
+    <div class="relative w-full max-w-sm rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-[#FFEFEA] text-[#E06748] flex items-center justify-center">
+            <i class="fas fa-bell text-xs"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900">Notifications & Alerts</h3>
+            <p class="text-[11px] text-slate-400">Community & Thread Activity</p>
+          </div>
+        </div>
+        <button onclick="toggleNotificationPanel()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs transition cursor-pointer">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i class="fas fa-check-circle text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Push Notifications Enabled</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Instant alerts for new replies, mentions, and topics you follow.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#F8F9FA] border border-slate-100 flex items-start gap-3">
+          <div class="w-8 h-8 rounded-xl bg-[#F0F4FE] text-[#4A6FDC] flex items-center justify-center shrink-0">
+            <i class="fas fa-envelope-open-text text-xs"></i>
+          </div>
+          <div>
+            <p class="font-bold text-slate-800">Webmail Sync Active</p>
+            <p class="text-slate-500 text-[11px] mt-0.5 leading-relaxed">Discussion digests are securely routed to your encrypted inbox.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center gap-2">
+        <button 
+          onclick="handleForumNotificationClick()" 
+          class="flex-1 py-2.5 rounded-xl bg-[#F68D72] hover:bg-[#F57C60] text-white font-bold text-xs transition shadow-xs cursor-pointer text-center"
+        >
+          Send Test Alert 🔔
+        </button>
+        <button 
+          onclick="toggleNotificationPanel()" 
+          class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
