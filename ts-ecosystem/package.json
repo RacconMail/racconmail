@@ -1,0 +1,21 @@
+{
+  "name": "raccon-mail-ts-ecosystem",
+  "version": "2.0.0",
+  "description": "Enterprise TypeScript Full-Stack Suite for Raccon Mail (Web, Android APK, Desktop, Server)",
+  "main": "server/messages.service.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --loader ts-node/esm test-suite.ts",
+    "build:web": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

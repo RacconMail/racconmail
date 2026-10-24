@@ -1,0 +1,122 @@
+/**
+ * 🦝 Raccon Mail - Strict Anti-Overflow & Centering Design System
+ * "Scrisul sa nu depaseasca chenarele" (Text strictly contained within boxes)
+ */
+
+:root {
+  --primary-coral: #E06748;
+  --primary-purple: #6c4ff5;
+  --bg-sand: #FAFAF9;
+  --border-subtle: #E2E8F0;
+}
+
+/* 1. Global text break rules to guarantee zero horizontal overflow */
+.safe-chenar {
+  overflow: hidden !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  hyphens: auto;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Response Message Chenar (Centered, neat, zero escape) */
+.response-message-chenar {
+  background: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.response-message-body {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  user-select: text;
+}
+
+/* 3. Centered Email Reader Body Container */
+.reader-center-container {
+  max-width: 48rem; /* 768px */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* 4. Truncated Top Navigation Bar */
+.top-title-safe {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
+}
+
+@media (min-width: 640px) {
+  .top-title-safe {
+    max-width: 24rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .top-title-safe {
+    max-width: 32rem;
+  }
+}
+
+/* 5. Mobile Action Bottom Sheet Transitions */
+.mobile-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mobile-sheet-panel {
+  width: 100%;
+  background: #FFFFFF;
+  border-top-left-radius: 1.75rem;
+  border-top-right-radius: 1.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  animation: slideUpSheet 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (min-width: 640px) {
+  .mobile-sheet-backdrop {
+    align-items: center;
+    padding: 1rem;
+  }
+  .mobile-sheet-panel {
+    max-width: 28rem;
+    border-radius: 1.75rem;
+    animation: scaleModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes scaleModal {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
