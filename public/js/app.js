@@ -3,6 +3,38 @@
  * Matches Raccoon Postcard aesthetic + Full Raccon Mail functional capabilities
  */
 
+// Native Token & Credentials Interceptor for Android WebView & Cross-Platform Browsers
+(function() {
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options = {}) {
+    if (typeof url === 'string' && url.startsWith('/api')) {
+      options.credentials = options.credentials || 'include';
+      try {
+        const token = localStorage.getItem('raccon_token') 
+          || (window.RACCON_BOOTSTRAP && window.RACCON_BOOTSTRAP.token) 
+          || new URLSearchParams(window.location.search).get('token');
+        if (token) {
+          options.headers = options.headers || {};
+          if (options.headers instanceof Headers) {
+            if (!options.headers.has('Authorization')) {
+              options.headers.set('Authorization', 'Bearer ' + token);
+            }
+          } else if (Array.isArray(options.headers)) {
+            if (!options.headers.some(h => h[0].toLowerCase() === 'authorization')) {
+              options.headers.push(['Authorization', 'Bearer ' + token]);
+            }
+          } else {
+            if (!options.headers['Authorization']) {
+              options.headers['Authorization'] = 'Bearer ' + token;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+    return originalFetch.call(this, url, options);
+  };
+})();
+
 const app = {
   // State
   currentUser: null,
@@ -22,68 +54,16 @@ const app = {
   currentDraftId: null,
 
   // Web Audio Synthesizer: distinctive audio chimes for email reception, reply alerts, and send confirmation
-  playNotificationSound(type = 'receive') {
-    try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
-      if (ctx.state === 'suspended') {
-        ctx.resume().catch(() => {});
-      }
-      const now = ctx.currentTime;
-
-      if (type === 'send') {
-        // Ascending send whoosh chime (440Hz -> 880Hz)
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.3);
-      } else if (type === 'reply') {
-        // Melodic reply greeting: G5 -> C6 postal chime
-        const notes = [
-          { f: 783.99, t: 0, d: 0.18 },
-          { f: 1046.50, t: 0.12, d: 0.32 }
-        ];
-        notes.forEach(note => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(note.f, now + note.t);
-          gain.gain.setValueAtTime(0.15, now + note.t);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + note.t);
-          osc.stop(now + note.t + note.d + 0.05);
-        });
-      } else {
-        // Incoming email chime: 3 harmonious postal bells (D5 -> G5 -> B5)
-        const notes = [
-          { f: 587.33, t: 0, d: 0.16 },
-          { f: 783.99, t: 0.09, d: 0.20 },
-          { f: 987.77, t: 0.18, d: 0.35 }
-        ];
-        notes.forEach(note => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(note.f, now + note.t);
-          gain.gain.setValueAtTime(0.14, now + note.t);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + note.t);
-          osc.stop(now + note.t + note.d + 0.05);
-        });
-      }
-    } catch (_) {}
+    playNotificationSound(type = 'receive') {
+    const isHappy = (type === 'send');
+    if (typeof playRaccoonSound === 'function') {
+      playRaccoonSound(isHappy ? 'happy' : 'afraid');
+    } else {
+      try {
+        const audio = new Audio(isHappy ? '/sounds/happy-raccoon.wav' : '/sounds/afraid-raccoon.wav');
+        audio.play().catch(() => {});
+      } catch (_) {}
+    }
   },
 
   playChime() {
@@ -170,17 +150,26 @@ const app = {
       document.documentElement.classList.add('is-android-app');
     }
 
-    // Check authentication: do not allow unauthenticated visitors into the mailbox
-    try {
-      const meRes = await fetch('/api/auth/me');
-      const meData = await meRes.json();
-      if (!meData.loggedIn || !meData.user) {
-        window.location.replace('/auth?mode=register');
-        return;
+    // Verify authentication: prefer server bootstrap, then check /api/auth/me
+    if (window.RACCON_BOOTSTRAP && window.RACCON_BOOTSTRAP.user) {
+      this.currentUser = window.RACCON_BOOTSTRAP.user;
+    } else {
+      try {
+        const meRes = await fetch('/api/auth/me');
+        const meData = await meRes.json();
+        if (meData.loggedIn && meData.user) {
+          this.currentUser = meData.user;
+        } else {
+          window.location.replace('/auth?mode=login');
+          return;
+        }
+      } catch (_) {
+        const tok = localStorage.getItem('raccon_token') || new URLSearchParams(window.location.search).get('token');
+        if (!tok) {
+          window.location.replace('/auth?mode=login');
+          return;
+        }
       }
-    } catch (_) {
-      window.location.replace('/auth?mode=register');
-      return;
     }
 
     try { await this.fetchUser(); } catch (e) { console.error('fetchUser error:', e); }
@@ -2496,11 +2485,11 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
           <div id="reader-more-dropdown" class="hidden absolute right-0 top-full mt-1.5 w-52 bg-white rounded-2xl border border-slate-200 shadow-2xl p-1.5 z-50 text-slate-800 space-y-0.5">
             ${msg.is_spam ? `
               <button onclick="app.unspamMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer">
-                <i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i>
+                <i data-lucide="shield-check" class="h-4 w-4 text-slate-400"></i>
                 <span>Move to Inbox (Not Spam)</span>
               </button>
             ` : `
-              <button onclick="app.spamMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer text-amber-600">
+              <button onclick="app.spamMessage('${msg.id}')" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs hover:bg-slate-50 transition text-left cursor-pointer text-slate-700">
                 <i data-lucide="shield-alert" class="h-4 w-4"></i>
                 <span>Mark as Spam</span>
               </button>

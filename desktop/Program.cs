@@ -13,7 +13,7 @@ namespace RacconMailDesktop
     {
         public const string AppName = "Raccon Mail";
         public const string AppVersion = "2.0";
-        public const string AppUrl = "https://racconmail.eu/inbox";
+        public const string AppUrl = "https://racconmail.eu/?app=desktop";
         public const string AppPublisher = "Raccon Mail Open Source";
 
         [STAThread]

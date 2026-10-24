@@ -143,7 +143,7 @@
     .ambient-cookie-2 { animation: float-cookie-2 9s infinite ease-in-out 1.5s; }
   </style>
 </head>
-<body class="min-h-screen bg-[#FFFFFF] text-[#1E293B] flex flex-col justify-between antialiased selection:bg-slate-200 relative overflow-x-hidden">
+<body class="min-h-screen bg-[#FFFFFF] text-[#1E293B] flex flex-col justify-between antialiased selection:bg-slate-200 relative overflow-x-hidden font-sans">
 
   <!-- Ambient Floating Cookies in Background -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none" aria-hidden="true">
@@ -238,7 +238,7 @@
 
       <!-- Error Alert Box -->
       <div id="error-box" class="hidden mb-4 p-3 rounded-2xl bg-red-50/80 border border-red-200/80 text-red-700 text-xs font-semibold flex items-center gap-2">
-        <i class="fas fa-exclamation-circle text-sm text-red-500 shrink-0"></i>
+        <i class="fas fa-exclamation-circle text-sm text-slate-400 shrink-0"></i>
         <span id="error-text"></span>
       </div>
 
@@ -283,6 +283,11 @@
               <i id="l-eye-icon" class="fas fa-eye text-xs"></i>
             </button>
           </div>
+          <div class="flex justify-end mt-1">
+            <button type="button" onclick="promptResetPassword()" class="text-[11px] text-slate-500 hover:text-slate-900 cursor-pointer hover:underline">
+              Forgot password? Reset
+            </button>
+          </div>
         </div>
 
         <button
@@ -312,8 +317,7 @@
               <input
                 id="r-name"
                 type="text"
-                required
-                placeholder="e.g. Sam Bandit"
+                placeholder="e.g. Sam Bandit (optional)"
                 autocomplete="name"
                 class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-sm outline-none text-slate-900 placeholder-slate-400"
               />
@@ -419,11 +423,14 @@
 
   <script>
     // If user is already authenticated, direct them straight to their inbox
-    fetch('/api/auth/me').then(r => r.json()).then(d => {
-      if (d.loggedIn && d.user) {
-        window.location.replace('/inbox');
-      }
-    }).catch(() => {});
+    try {
+      const tok = localStorage.getItem('raccon_token');
+      fetch('/api/auth/me', { credentials: 'include', headers: tok ? { 'Authorization': 'Bearer ' + tok } : {} }).then(r => r.json()).then(d => {
+        if (d.loggedIn && d.user) {
+          window.location.replace('/inbox' + (tok ? ('?token=' + encodeURIComponent(tok)) : ''));
+        }
+      }).catch(() => {});
+    } catch (_) {}
 
     let pendingReg = null;
 
@@ -529,17 +536,59 @@
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Login failed');
-        window.location.replace('/inbox');
+        if (data.token) {
+          try {
+            localStorage.setItem('raccon_token', data.token);
+            localStorage.setItem('raccon_user', JSON.stringify(data.user));
+            document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
+          } catch (_) {}
+          window.location.replace('/inbox?token=' + encodeURIComponent(data.token));
+        } else {
+          window.location.replace('/inbox');
+        }
       } catch (err) {
         showError(err.message);
         btn.disabled = false;
         btn.innerHTML = '<span>Sign In to Raccon Mail</span> <span class="paw-bounce">🐾</span>';
         if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    async function promptResetPassword() {
+      const username = prompt('Enter your Raccon username or email to reset:');
+      if (!username || !username.trim()) return;
+      const newPass = prompt('Enter your new password (at least 5 characters):');
+      if (!newPass || newPass.length < 5) {
+        alert('Password must be at least 5 characters long.');
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: username.trim(), password: newPass })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Password reset failed');
+        if (data.token) {
+          try {
+            localStorage.setItem('raccon_token', data.token);
+            localStorage.setItem('raccon_user', JSON.stringify(data.user));
+            document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
+          } catch (_) {}
+          window.location.replace('/inbox?token=' + encodeURIComponent(data.token));
+        } else {
+          window.location.replace('/inbox');
+        }
+      } catch (err) {
+        alert(err.message);
       }
     }
 
@@ -572,12 +621,22 @@
       try {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password, anti_bot_verified: true })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Registration failed');
-        window.location.replace('/inbox');
+        if (data.token) {
+          try {
+            localStorage.setItem('raccon_token', data.token);
+            localStorage.setItem('raccon_user', JSON.stringify(data.user));
+            document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
+          } catch (_) {}
+          window.location.replace('/inbox?token=' + encodeURIComponent(data.token));
+        } else {
+          window.location.replace('/inbox');
+        }
       } catch (err) {
         showError(err.message);
         if (btn) {
@@ -748,10 +807,11 @@
     // Immediate session gate: If already logged in, redirect straight to inbox!
     (async function checkExistingSession() {
       try {
-        const res = await fetch('/api/auth/me');
+        const tok = localStorage.getItem('raccon_token');
+        const res = await fetch('/api/auth/me', { credentials: 'include', headers: tok ? { 'Authorization': 'Bearer ' + tok } : {} });
         const data = await res.json();
         if (data.loggedIn && data.user) {
-          window.location.replace('/inbox');
+          window.location.replace('/inbox' + (tok ? ('?token=' + encodeURIComponent(tok)) : ''));
         }
       } catch (_) {}
     })();

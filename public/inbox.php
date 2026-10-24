@@ -229,57 +229,6 @@ try {
       animation: turquoiseRadarHalo10s 2s cubic-bezier(0, 0, 0.2, 1) 5 !important;
     }
 
-    /* Ultra-Modern Luminous Turquoise Primary Counter Pill */
-    .turq-counter-pill {
-      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
-      color: #FFFFFF !important;
-      font-weight: 800 !important;
-      font-size: 11px !important;
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
-      letter-spacing: -0.02em !important;
-      padding: 2px 9px !important;
-      border-radius: 9999px !important;
-      border: 1px solid rgba(255, 255, 255, 0.45) !important;
-      box-shadow: 0 2px 10px -1px rgba(6, 182, 212, 0.55), 0 0 0 1px rgba(6, 182, 212, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      line-height: 1.15 !important;
-      text-shadow: 0 1px 2px rgba(8, 145, 178, 0.4) !important;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .turq-counter-pill:hover {
-      box-shadow: 0 4px 16px -1px rgba(6, 182, 212, 0.8), 0 0 0 1.5px rgba(34, 211, 238, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
-      transform: translateY(-1px) scale(1.05);
-    }
-
-    /* Ultra-Modern Frosted Glass Turquoise Counter Pill */
-    .turq-counter-soft {
-      background: rgba(6, 182, 212, 0.09) !important;
-      color: #0e7490 !important;
-      font-weight: 700 !important;
-      font-size: 11px !important;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-      letter-spacing: -0.01em !important;
-      padding: 1.5px 8px !important;
-      border-radius: 9999px !important;
-      border: 1px solid rgba(6, 182, 212, 0.26) !important;
-      box-shadow: 0 1px 2px rgba(6, 182, 212, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      line-height: 1.2 !important;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .turq-counter-soft:hover {
-      background: rgba(6, 182, 212, 0.18) !important;
-      border-color: rgba(6, 182, 212, 0.45) !important;
-      color: #0891b2 !important;
-      box-shadow: 0 2px 6px rgba(6, 182, 212, 0.18) !important;
-      transform: translateY(-0.5px);
-    }
 
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
@@ -532,7 +481,7 @@ try {
             <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Inbox</span>
           </div>
-          <span id="badge-inbox" class="sidebar-badge turq-counter-pill"><?php echo $counts['inbox_unread']; ?></span>
+          <span id="badge-inbox" class="sidebar-badge bg-slate-100 text-slate-700 border border-slate-200/90 text-[10px] font-bold px-2.5 py-0.5 rounded-full"><?php echo $counts['inbox_unread']; ?></span>
         </button>
 
         <!-- 2. UNREAD -->
@@ -541,7 +490,7 @@ try {
             <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Unread</span>
           </div>
-          <span id="badge-unread" class="sidebar-badge turq-counter-soft"><?php echo $counts['unread_total']; ?></span>
+          <span id="badge-unread" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['unread_total']; ?></span>
         </button>
 
         <!-- 3. STARRED / FAVORITES -->
@@ -550,7 +499,7 @@ try {
             <i data-lucide="star" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Starred</span>
           </div>
-          <span id="badge-starred" class="sidebar-badge turq-counter-soft"><?php echo $counts['starred_total']; ?></span>
+          <span id="badge-starred" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['starred_total']; ?></span>
         </button>
 
         <!-- 4. DRAFTS -->
@@ -559,7 +508,7 @@ try {
             <i data-lucide="file-edit" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Drafts</span>
           </div>
-          <span id="badge-drafts" class="sidebar-badge turq-counter-soft"><?php echo $counts['drafts_total']; ?></span>
+          <span id="badge-drafts" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['drafts_total']; ?></span>
         </button>
 
         <!-- 5. SENT -->
@@ -568,7 +517,7 @@ try {
             <i data-lucide="send" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Sent</span>
           </div>
-          <span id="badge-sent" class="sidebar-badge turq-counter-soft"><?php echo $counts['sent_total']; ?></span>
+          <span id="badge-sent" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['sent_total']; ?></span>
         </button>
 
         <!-- 6. ARCHIVE -->
@@ -577,7 +526,7 @@ try {
             <i data-lucide="archive" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Archive</span>
           </div>
-          <span id="badge-archive" class="sidebar-badge turq-counter-soft"><?php echo $counts['archive_total']; ?></span>
+          <span id="badge-archive" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['archive_total']; ?></span>
         </button>
 
         <!-- 7. SPAM -->
@@ -586,7 +535,7 @@ try {
             <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Spam</span>
           </div>
-          <span id="badge-spam" class="sidebar-badge turq-counter-soft"><?php echo $counts['spam_total']; ?></span>
+          <span id="badge-spam" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['spam_total']; ?></span>
         </button>
 
         <!-- 8. TRASH -->
@@ -596,7 +545,7 @@ try {
               <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
               <span class="sidebar-text truncate">Trash</span>
             </div>
-            <span id="badge-trash" class="sidebar-badge turq-counter-soft"><?php echo $counts['trash_total']; ?></span>
+            <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['trash_total']; ?></span>
           </button>
           <button onclick="emptyTrashAction()" title="Empty Trash" class="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer">
             <i data-lucide="eraser" class="h-3.5 w-3.5"></i>
@@ -689,7 +638,7 @@ try {
         <div class="flex items-center justify-between mb-1">
           <div class="flex items-center gap-2.5">
             <h1 id="current-folder-display-title" class="text-2xl font-bold text-slate-900 tracking-tight">Inbox</h1>
-            <span id="coral-inbox-badge" class="turq-counter-pill"><?php echo $counts['inbox_unread']; ?></span>
+            <span id="coral-inbox-badge" class="bg-slate-100 text-slate-700 border border-slate-200/90 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-2xs"><?php echo $counts['inbox_unread']; ?></span>
           </div>
 
           <!-- Mark all read and refresh buttons -->
@@ -879,8 +828,303 @@ try {
     let currentSelectedThreadIndex = 0;
     let isSidebarCollapsed = false;
 
+    // =========================================================================
+    // RACCON SOUND SYSTEM
+    // Happy Raccoon (1.00s joyful chitter) on Send
+    // Afraid Raccoon (0.85s startled alert) on Receive
+    // =========================================================================
+    const happyRaccoonAudio = new Audio('/sounds/happy-raccoon.wav');
+    const afraidRaccoonAudio = new Audio('/sounds/afraid-raccoon.wav');
+    happyRaccoonAudio.preload = 'auto';
+    afraidRaccoonAudio.preload = 'auto';
+
+    let audioContextInstance = null;
+    function getAudioContext() {
+      if (!audioContextInstance) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioContextInstance = new AudioContextClass();
+        }
+      }
+      if (audioContextInstance && audioContextInstance.state === 'suspended') {
+        audioContextInstance.resume().catch(() => {});
+      }
+      return audioContextInstance;
+    }
+
+    // Web Audio Synthesizer: 1-Second Happy Raccoon Joyful Chittering
+    function synthHappyRaccoon() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // 4 rapid happy chitter pulses (duration: exactly 1.0s)
+        const pulses = [
+          { start: 0.02, end: 0.22, f1: 1150, f2: 1550, vib: 28, vibD: 70 },
+          { start: 0.26, end: 0.46, f1: 1350, f2: 1850, vib: 32, vibD: 90 },
+          { start: 0.50, end: 0.72, f1: 1450, f2: 1980, vib: 35, vibD: 110 },
+          { start: 0.76, end: 0.98, f1: 1300, f2: 1700, vib: 26, vibD: 60 }
+        ];
+
+        pulses.forEach(p => {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+
+          osc1.type = 'triangle';
+          osc2.type = 'sine';
+          lfo.type = 'sine';
+
+          const pStart = now + p.start;
+          const pEnd = now + p.end;
+          const pDur = p.end - p.start;
+
+          osc1.frequency.setValueAtTime(p.f1, pStart);
+          osc1.frequency.exponentialRampToValueAtTime(p.f2, pEnd);
+
+          osc2.frequency.setValueAtTime(p.f1 * 2, pStart);
+          osc2.frequency.exponentialRampToValueAtTime(p.f2 * 2, pEnd);
+
+          lfo.frequency.setValueAtTime(p.vib, pStart);
+          lfoGain.gain.setValueAtTime(p.vibD, pStart);
+          lfo.connect(osc1.frequency);
+          lfo.connect(osc2.frequency);
+
+          gain.gain.setValueAtTime(0.0001, pStart);
+          gain.gain.exponentialRampToValueAtTime(0.28, pStart + pDur * 0.35);
+          gain.gain.exponentialRampToValueAtTime(0.0001, pEnd);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc1.start(pStart);
+          osc2.start(pStart);
+          lfo.start(pStart);
+          osc1.stop(pEnd + 0.05);
+          osc2.stop(pEnd + 0.05);
+          lfo.stop(pEnd + 0.05);
+        });
+      } catch (_) {}
+    }
+
+    // Web Audio Synthesizer: Afraid / Startled Raccoon Sound Notification
+    function synthAfraidRaccoon() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Alarmed stages:
+        // 1. Sudden startled screech (sharp high attack 3100Hz -> 2100Hz with panicky flutter)
+        // 2. Anxious tremor squeak (2400Hz -> 1750Hz)
+        // 3. Alarmed whimper chitter (1950Hz -> 1450Hz)
+        const stages = [
+          { start: 0.00, end: 0.32, f1: 3100, f2: 2100, vib: 42, vibD: 180, vol: 0.35, sharp: true },
+          { start: 0.35, end: 0.56, f1: 2400, f2: 1750, vib: 48, vibD: 140, vol: 0.28, sharp: false },
+          { start: 0.59, end: 0.80, f1: 1950, f2: 1450, vib: 52, vibD: 110, vol: 0.22, sharp: false }
+        ];
+
+        stages.forEach(s => {
+          const osc = ctx.createOscillator();
+          const oscHarm = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+
+          osc.type = 'sawtooth';
+          oscHarm.type = 'triangle';
+          lfo.type = 'sine';
+
+          const sStart = now + s.start;
+          const sEnd = now + s.end;
+          const sDur = s.end - s.start;
+
+          osc.frequency.setValueAtTime(s.f1, sStart);
+          osc.frequency.exponentialRampToValueAtTime(s.f2, sEnd);
+
+          oscHarm.frequency.setValueAtTime(s.f1 * 1.5, sStart);
+          oscHarm.frequency.exponentialRampToValueAtTime(s.f2 * 1.5, sEnd);
+
+          lfo.frequency.setValueAtTime(s.vib, sStart);
+          lfoGain.gain.setValueAtTime(s.vibD, sStart);
+          lfo.connect(osc.frequency);
+          lfo.connect(oscHarm.frequency);
+
+          if (s.sharp) {
+            gain.gain.setValueAtTime(s.vol, sStart);
+            gain.gain.exponentialRampToValueAtTime(0.0001, sEnd);
+          } else {
+            gain.gain.setValueAtTime(0.0001, sStart);
+            gain.gain.exponentialRampToValueAtTime(s.vol, sStart + sDur * 0.25);
+            gain.gain.exponentialRampToValueAtTime(0.0001, sEnd);
+          }
+
+          osc.connect(gain);
+          oscHarm.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(sStart);
+          oscHarm.start(sStart);
+          lfo.start(sStart);
+          osc.stop(sEnd + 0.05);
+          oscHarm.stop(sEnd + 0.05);
+          lfo.stop(sEnd + 0.05);
+        });
+      } catch (_) {}
+    }
+
+    // Unified Sound Player
+    function playRaccoonSound(type = 'happy') {
+      const isHappy = (type === 'happy' || type === 'send');
+      const targetAudio = isHappy ? happyRaccoonAudio : afraidRaccoonAudio;
+
+      try {
+        targetAudio.currentTime = 0;
+        const playPromise = targetAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Audio element failed or blocked: fallback to Web Audio synthesizer
+            if (isHappy) {
+              synthHappyRaccoon();
+            } else {
+              synthAfraidRaccoon();
+            }
+          });
+        }
+      } catch (_) {
+        if (isHappy) {
+          synthHappyRaccoon();
+        } else {
+          synthAfraidRaccoon();
+        }
+      }
+    }
+
+    // Auto-unlock audio on first user interaction
+    (function initAudioUnlock() {
+      function unlock() {
+        getAudioContext();
+        happyRaccoonAudio.load();
+        afraidRaccoonAudio.load();
+        window.removeEventListener('click', unlock);
+        window.removeEventListener('keydown', unlock);
+        window.removeEventListener('touchstart', unlock);
+      }
+      window.addEventListener('click', unlock, { once: true });
+      window.addEventListener('keydown', unlock, { once: true });
+      window.addEventListener('touchstart', unlock, { once: true });
+    })();
+
+    let latestIncomingMsgId = null;
+    function showIncomingToast(sender, subject, msgId = null) {
+      latestIncomingMsgId = msgId;
+      const toast = document.getElementById('raccoon-incoming-toast');
+      const senderEl = document.getElementById('incoming-toast-sender');
+      const subjEl = document.getElementById('incoming-toast-subject');
+      if (senderEl) senderEl.innerText = sender || 'New Sender';
+      if (subjEl) subjEl.innerText = subject || '(no subject)';
+      if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.remove('-translate-y-4', 'opacity-0');
+        }, 10);
+        clearTimeout(window.__incomingToastTimer);
+        window.__incomingToastTimer = setTimeout(closeIncomingToast, 6500);
+      }
+    }
+
+    function closeIncomingToast() {
+      const toast = document.getElementById('raccoon-incoming-toast');
+      if (toast) {
+        toast.classList.add('-translate-y-4', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    function clickIncomingToast() {
+      closeIncomingToast();
+      if (currentFolder !== 'Inbox') {
+        selectFolder('Inbox');
+      } else {
+        renderMessageList();
+      }
+      if (latestIncomingMsgId) {
+        const list = mailDatabase['Inbox'] || [];
+        const idx = list.findIndex(m => m.id === latestIncomingMsgId);
+        if (idx !== -1) {
+          selectMessageThread(idx);
+        }
+      }
+    }
+
+
     // Database of messages across all folders initialized from real SQLite database
     const initialDbMessages = <?php echo json_encode($initialInboxMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?> || [];
+
+    // Real-time Inbound Mail Monitor (Polls every 12 seconds with afraid raccoon sound)
+    const knownMessageIds = new Set(initialDbMessages.map(m => m.id));
+
+    async function pollForIncomingEmails() {
+      try {
+        let hasNew = false;
+        let newSender = '';
+        let newSubject = '';
+        let newMsgId = null;
+
+        try {
+          const syncRes = await fetch('/api/messages/sync');
+          if (syncRes.ok) {
+            const syncData = await syncRes.json();
+            if (syncData && syncData.synced > 0 && Array.isArray(syncData.messages) && syncData.messages.length > 0) {
+              const first = syncData.messages[0];
+              newSender = first.sender_name || first.sender_email || 'New Sender';
+              newSubject = first.subject || '(no subject)';
+              newMsgId = first.id;
+              hasNew = true;
+            }
+          }
+        } catch (_) {}
+
+        const res = await fetch('/api/messages?folder=inbox');
+        if (res.ok) {
+          const data = await res.json();
+          const msgs = data.messages || [];
+          for (const m of msgs) {
+            if (!knownMessageIds.has(m.id)) {
+              knownMessageIds.add(m.id);
+              if (!hasNew) {
+                hasNew = true;
+                newSender = m.sender_name || m.sender_email || 'New Sender';
+                newSubject = m.subject || '(no subject)';
+                newMsgId = m.id;
+              }
+            }
+          }
+        }
+
+        if (hasNew) {
+          // Play Afraid Raccoon notification sound!
+          playRaccoonSound('afraid');
+          showIncomingToast(newSender, newSubject, newMsgId);
+          await fetchFolderMessages(currentFolder);
+          await refreshFolderCounts();
+        }
+      } catch (err) {
+        console.warn('Inbound polling warning:', err);
+      }
+    }
+
+    // Start background inbound polling after 4 seconds
+    setTimeout(() => {
+      setInterval(pollForIncomingEmails, 12000);
+    }, 4000);
+
 
     const mailDatabase = {
       'Inbox': initialDbMessages.map(m => ({
@@ -1469,6 +1713,7 @@ try {
         ]
       });
 
+      playRaccoonSound('happy');
       showRaccoonSuccessModal();
       refreshFolderCounts();
       closeComposeCard();
@@ -1494,6 +1739,7 @@ try {
           body: val
         });
         inp.value = '';
+        playRaccoonSound('happy');
         showRaccoonSuccessModal();
         renderConversationThread(msg);
       }

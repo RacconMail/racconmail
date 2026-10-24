@@ -421,57 +421,33 @@
       border-radius: 9999px;
     }
 
-    /* Ultra-Modern Luminous Turquoise Primary Counter Pill */
-    .turq-counter-pill {
-      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
-      color: #FFFFFF !important;
-      font-weight: 800 !important;
-      font-size: 11px !important;
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
-      letter-spacing: -0.02em !important;
-      padding: 2px 9px !important;
-      border-radius: 9999px !important;
-      border: 1px solid rgba(255, 255, 255, 0.45) !important;
-      box-shadow: 0 2px 10px -1px rgba(6, 182, 212, 0.55), 0 0 0 1px rgba(6, 182, 212, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      line-height: 1.15 !important;
-      text-shadow: 0 1px 2px rgba(8, 145, 178, 0.4) !important;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .turq-counter-pill:hover {
-      box-shadow: 0 4px 16px -1px rgba(6, 182, 212, 0.8), 0 0 0 1.5px rgba(34, 211, 238, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
-      transform: translateY(-1px) scale(1.05);
-    }
-
-    /* Ultra-Modern Frosted Glass Turquoise Counter Pill */
-    .turq-counter-soft {
-      background: rgba(6, 182, 212, 0.09) !important;
-      color: #0e7490 !important;
-      font-weight: 700 !important;
-      font-size: 11px !important;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-      letter-spacing: -0.01em !important;
-      padding: 1.5px 8px !important;
-      border-radius: 9999px !important;
-      border: 1px solid rgba(6, 182, 212, 0.26) !important;
-      box-shadow: 0 1px 2px rgba(6, 182, 212, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      line-height: 1.2 !important;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    /* Native Installed App Mode (Android APK & Desktop .exe) - Do not show download prompts */
+    .is-native-app #app,
+    .is-android-app #app,
+    .is-desktop-app #app,
+    .is-native-app a[href="#app"],
+    .is-android-app a[href="#app"],
+    .is-desktop-app a[href="#app"] {
+      display: none !important;
     }
   </style>
 
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
+  <!-- Early Theme & Native App Initializer (Strict Clean Modern White) -->
   <script>
     (function() {
       localStorage.setItem('raccon_theme', 'light');
       document.documentElement.className = 'theme-light';
       document.documentElement.classList.remove('dark', 'theme-dark', 'theme-harmony', 'theme-midnight');
+
+      // Native App Mode: Detect Desktop app or Android APK
+      if (window.location.search.includes('app=desktop') || 
+          window.location.search.includes('app=android') || 
+          window.location.search.includes('app=1') || 
+          navigator.userAgent.includes('SWVAndroid') || 
+          navigator.userAgent.includes('RacconMailDesktop') || 
+          navigator.userAgent.includes('Electron')) {
+        document.documentElement.classList.add('is-native-app');
+      }
     })();
   </script>
 
@@ -1050,7 +1026,7 @@
                   <div class="px-3.5 py-2.5 bg-white border-b border-slate-100 flex items-center justify-between relative z-10">
                     <div class="flex items-center gap-2">
                       <img src="/raccoon-logo.png" alt="RacconMail" class="h-6 w-6 raccoon-anim object-contain" />
-                      <span class="font-display font-extrabold text-xs text-slate-900 flex items-center gap-1.5">RacconMail <span class="turq-counter-soft text-[9px] px-1.5 py-0.2">Mobile v2.0</span></span>
+                      <span class="font-display font-extrabold text-xs text-slate-900">RacconMail <span class="text-[9px] font-mono text-cyan-600 font-bold">Mobile v2.0</span></span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1064,7 +1040,7 @@
                       <i class="fas fa-search text-cyan-500 text-[10px]"></i>
                       <span class="truncate">Search postcards, tags...</span>
                     </div>
-                    <span class="turq-counter-pill"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse inline-block mr-1"></span>6</span>
+                    <span class="w-5 h-5 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-[10px] font-bold flex items-center justify-center">6</span>
                   </div>
 
                   <!-- Real Mobile Messages List (6 Rich Email Examples with Smooth Scroll) -->
@@ -1724,25 +1700,31 @@
       }
     }
 
-    // Android & Desktop App Native Integration
+    // Android & Desktop App Native Integration (Hides Download Prompts inside Installed Apps)
     (async function initAppLanding() {
-      const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || window.location.search.includes('app=android') || window.location.search.includes('app=1') || window.matchMedia('(display-mode: standalone)').matches;
-      if (isAndroidApp) {
-        document.documentElement.classList.add('is-android-app');
+      const isAndroidApp = navigator.userAgent.includes('SWVAndroid') || 
+                           window.location.search.includes('app=android') || 
+                           window.location.search.includes('app=1') || 
+                           window.matchMedia('(display-mode: standalone)').matches;
 
-        const apkBox = document.getElementById('android-apk-action-container');
-        if (apkBox) {
-          apkBox.innerHTML = `
-            <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
-              <i class="fas fa-check-circle text-slate-600 text-sm"></i>
-              <span>Official Android App v2.0 Installed &amp; Active</span>
-            </div>
-            <a href="/inbox" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-5 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 shadow-sm">
-              <span>Open Webmail</span>
-              <i class="fas fa-chevron-right text-[9px]"></i>
-            </a>
-          `;
+      const isDesktopApp = window.location.search.includes('app=desktop') || 
+                           navigator.userAgent.includes('RacconMailDesktop') || 
+                           navigator.userAgent.includes('Electron') || 
+                           (window.chrome && window.chrome.webview);
+
+      const isNativeApp = isAndroidApp || isDesktopApp;
+
+      if (isNativeApp) {
+        document.documentElement.classList.add('is-native-app');
+        if (isAndroidApp) document.documentElement.classList.add('is-android-app');
+        if (isDesktopApp) document.documentElement.classList.add('is-desktop-app');
+
+        // On Desktop App & Android APK: Do NOT show to download the apps - just show the landing page!
+        const appSection = document.getElementById('app');
+        if (appSection) {
+          appSection.style.display = 'none';
         }
+        document.querySelectorAll('a[href="#app"]').forEach(el => el.style.display = 'none');
       }
 
       // Check auth status for header & hero

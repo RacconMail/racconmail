@@ -2370,3 +2370,52 @@ body.app:not(.dark) {
 
 
 
+
+
+/* ==========================================================================
+   RACCON GLOBAL GRAY ICONS & TOGGLEBAR DESIGN SYSTEM ("iconite gri")
+   ========================================================================== */
+i[data-lucide],
+.lucide,
+header i,
+.sidebar i,
+.bubble-nav-item i,
+#messages-panel i,
+#reader-panel i,
+.nav-link i,
+.card-icon i {
+  color: #94A3B8;
+  stroke: #94A3B8;
+}
+
+/* White icons inside active pills and primary black capsule buttons */
+.bubble-nav-item.active i,
+.bubble-compose-pill i,
+.btn-primary i,
+button[style*="#0f172a"] i,
+button[style*="#0F172A"] i,
+button[style*="#18181B"] i,
+button[style*="#000000"] i,
+.bg-slate-900 i,
+.bg-black i {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Starred items retain clean gold/amber only when explicitly active */
+i[data-lucide="star"].fill-amber-500,
+i.fa-star.text-amber-500 {
+  color: #F59E0B !important;
+  stroke: #F59E0B !important;
+  fill: #F59E0B !important;
+}
+
+/* Coral badge token */
+.bubble-count-coral {
+  background-color: #FF4D6D !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  font-size: 11px !important;
+  padding: 1px 7px !important;
+}
