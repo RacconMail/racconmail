@@ -51,11 +51,47 @@ if (!$currentUser) {
     exit;
 }
 if (empty($currentUser['avatar'])) {
-    $currentUser['avatar'] = '/raccoon-logo.png';
+    $currentUser['avatar'] = '/raccoon-logo.svg';
 }
 
 $uid = $currentUser['id'];
 $uemail = $currentUser['email'];
+
+
+function cleanMimeEmailContent($raw) {
+    if (empty($raw) || !is_string($raw)) return '';
+    $str = trim($raw);
+
+    if (str_contains($str, '--') || preg_match('/content-type:\s*(text\/plain|text\/html|multipart)/i', $str)) {
+        if (preg_match('/content-type:\s*text\/plain[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i', $str, $pm)) {
+            $candidate = trim($pm[1]);
+            if (!empty($candidate)) {
+                $str = $candidate;
+            }
+        } elseif (preg_match('/content-type:\s*text\/html[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i', $str, $hm)) {
+            $candidate = trim($hm[1]);
+            if (!empty($candidate)) {
+                $str = trim(strip_tags($candidate));
+            }
+        } else {
+            $str = preg_replace('/--[a-zA-Z0-9_\-\.]+(?:--)?/', '', $str);
+            $str = preg_replace('/content-type:[^\r\n]+/i', '', $str);
+            $str = preg_replace('/content-transfer-encoding:[^\r\n]+/i', '', $str);
+            $str = preg_replace('/charset=["\']?[^"\'\r\n]+["\']?/i', '', $str);
+        }
+    }
+
+    $str = preg_replace('/^--[a-zA-Z0-9_\-\.]+/m', '', $str);
+    $str = preg_replace('/--[a-zA-Z0-9_\-\.]+--\s*$/m', '', $str);
+    $str = preg_replace('/^[ \t]*Content-Type:[^\r\n]*/mi', '', $str);
+    $str = preg_replace('/^[ \t]*Content-Transfer-Encoding:[^\r\n]*/mi', '', $str);
+
+    if (str_contains($str, '=20') || str_contains($str, '=0A') || str_contains($str, "=\r\n")) {
+        $str = quoted_printable_decode($str);
+    }
+
+    return trim($str);
+}
 
 // Calculate REAL counts for each folder
 $counts = [
@@ -119,6 +155,10 @@ try {
     $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox') ORDER BY created_at DESC LIMIT 50");
     $stmtMsgs->execute([$uid]);
     $initialInboxMessages = $stmtMsgs->fetchAll();
+    foreach ($initialInboxMessages as &$im) {
+        $im['body'] = cleanMimeEmailContent($im['body']);
+    }
+    unset($im);
 } catch (Throwable $e) {}
 ?>
 <!DOCTYPE html>
@@ -142,13 +182,14 @@ try {
   <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Tailwind CSS & Google Fonts -->
-  <script src="https://cdn.tailwindcss.com">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     function toggleInboxNotificationPanel() {
       const modal = document.getElementById('inbox-notifications-modal');
       if (modal) modal.classList.toggle('hidden');
     }
     function handleInboxNotificationClick(fromButton = false) {
-      if (!fromButton) toggleInboxNotificationPanel();
+      toggleInboxNotificationPanel();
       if (window.RacconNotifications && typeof RacconNotifications.requestPermission === 'function') {
         RacconNotifications.requestPermission().then(function(perm) {
           if (perm === 'granted') {
@@ -168,8 +209,7 @@ try {
     }
     window.toggleInboxNotificationPanel = toggleInboxNotificationPanel;
     window.handleInboxNotificationClick = handleInboxNotificationClick;
-
-</script>
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -1328,6 +1368,33 @@ try {
     });
 
 
+    
+    function cleanMimeEmailContent(raw) {
+      if (!raw || typeof raw !== 'string') return '';
+      let str = raw.trim();
+      if (str.includes('--') || /content-type:\s*(text\/plain|text\/html|multipart)/i.test(str)) {
+        const plainMatch = str.match(/content-type:\s*text\/plain[^]*?\r?\n\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i);
+        if (plainMatch && plainMatch[1] && plainMatch[1].trim()) {
+          str = plainMatch[1].trim();
+        } else {
+          const htmlMatch = str.match(/content-type:\s*text\/html[^]*?\r?\n\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i);
+          if (htmlMatch && htmlMatch[1] && htmlMatch[1].trim()) {
+            str = htmlMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          } else {
+            str = str.replace(/--[a-zA-Z0-9_\-\.]+(?:--)?/g, '');
+            str = str.replace(/content-type:[^\r\n]+/gi, '');
+            str = str.replace(/content-transfer-encoding:[^\r\n]+/gi, '');
+            str = str.replace(/charset=["']?[^"'\r\n]+["']?/gi, '');
+          }
+        }
+      }
+      str = str.replace(/^--[a-zA-Z0-9_\-\.]+/gm, '');
+      str = str.replace(/--[a-zA-Z0-9_\-\.]+--\s*$/gm, '');
+      str = str.replace(/^[ \t]*Content-Type:[^\r\n]*/gmi, '');
+      str = str.replace(/^[ \t]*Content-Transfer-Encoding:[^\r\n]*/gmi, '');
+      return str.trim();
+    }
+  
     const mailDatabase = {
       'Inbox': initialDbMessages.map(m => ({
         id: m.id,
@@ -1337,14 +1404,14 @@ try {
         subject: m.subject || '(no subject)',
         isStarred: !!m.is_starred,
         isRead: !!m.is_read,
-        avatar: '/raccoon-logo.png',
+        avatar: '/raccoon-logo.svg',
         body_html: m.body_html || '',
         thread: [
           {
             sender: m.sender_email,
             to: m.recipient_email || '<?php echo htmlspecialchars($currentUser['email']); ?>',
             date: m.created_at || 'Recently',
-            avatar: '/raccoon-logo.png',
+            avatar: '/raccoon-logo.svg',
             body: m.body || m.body_html || 'No content.'
           }
         ]
@@ -1490,7 +1557,7 @@ try {
       container.innerHTML = list.map((msg, idx) => {
         const isActive = idx === currentSelectedThreadIndex;
         const isRead = !!msg.isRead;
-        const rawSnippet = (msg.thread && msg.thread.length > 0 ? (msg.thread[msg.thread.length - 1]?.body || '') : (msg.preview || ''));
+        const rawSnippet = cleanMimeEmailContent(msg.thread && msg.thread.length > 0 ? (msg.thread[msg.thread.length - 1]?.body || "") : (msg.preview || ""));
         const cleanSnippet = rawSnippet.replace(/<[^>]+>/g, '').slice(0, 95).trim() + (rawSnippet.length > 95 ? '...' : '');
         const art = visualArtworks[idx % visualArtworks.length];
         const readMinutes = Math.max(1, Math.ceil((cleanSnippet.length + (msg.subject || '').length) / 25));
@@ -1646,7 +1713,7 @@ try {
             </div>
           </div>
           <div class="pl-12 text-xs text-slate-600 leading-relaxed space-y-2 whitespace-pre-line">
-            ${card.body}
+            ${cleanMimeEmailContent(card.body)}
           </div>
         </div>
       `).join('') + `
@@ -1692,14 +1759,14 @@ try {
             subject: m.subject || '(no subject)',
             isStarred: !!m.is_starred,
             isRead: !!m.is_read,
-            avatar: '/raccoon-logo.png',
+            avatar: '/raccoon-logo.svg',
             body_html: m.body_html || '',
             thread: [
               {
                 sender: m.sender_email,
                 to: m.recipient_email || '<?php echo htmlspecialchars($currentUser['email']); ?>',
                 date: m.created_at || 'Recently',
-                avatar: '/raccoon-logo.png',
+                avatar: '/raccoon-logo.svg',
                 body: m.body || m.body_html || 'No content.'
               }
             ]
@@ -2209,8 +2276,16 @@ try {
 
     // Mobile Back Navigation
     function backToMobileInbox() {
-      document.getElementById('col-inbox')?.classList.remove('hidden');
-      document.getElementById('col-reader')?.classList.add('hidden');
+      const colReader = document.getElementById('col-reader');
+      const colInbox = document.getElementById('col-inbox');
+      if (colReader) {
+        colReader.classList.add('hidden');
+        colReader.classList.remove('flex');
+      }
+      if (colInbox) {
+        colInbox.classList.remove('hidden');
+      }
+      window.scrollTo(0, 0);
     }
 
     // Dropdowns & Modals

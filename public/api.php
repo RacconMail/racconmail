@@ -1998,7 +1998,10 @@ try {
         $stmt = $db->prepare($sql);
         $stmt->execute($execParams);
         $messages = $stmt->fetchAll();
-
+        foreach ($messages as &$m) {
+            $m['body'] = cleanMimeEmailContent($m['body']);
+        }
+        unset($m);
         echo json_encode(['messages' => $messages]);
         exit;
     }
@@ -2185,6 +2188,15 @@ try {
             $msg['thread'] = $stmtThread->fetchAll();
         }
 
+        if (!empty($msg['thread'])) {
+            foreach ($msg['thread'] as &$tm) {
+                $tm['body'] = cleanMimeEmailContent($tm['body']);
+            }
+            unset($tm);
+        }
+        if (!empty($msg['body'])) {
+            $msg['body'] = cleanMimeEmailContent($msg['body']);
+        }
         echo json_encode(['message' => $msg]);
         exit;
     }
@@ -5135,6 +5147,54 @@ function extractImapBodyAndAttachments($mbox, $msgno, $structure, $uploadsDir) {
     return ['text' => $text, 'html' => $html, 'attachments' => $attachments];
 }
 
+
+function cleanMimeEmailContent($raw) {
+    if (empty($raw) || !is_string($raw)) return '';
+    $str = trim($raw);
+
+    if (str_contains($str, '--') || preg_match('/content-type:s*(text/plain|text/html|multipart)/i', $str)) {
+        // 1. Look for text/plain section first
+        if (preg_match('/content-type:s*text/plain[^
+]*?
+(?:[^
+]+?
+)*?
+([sS]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i', $str, $pm)) {
+            $candidate = trim($pm[1]);
+            if (!empty($candidate)) {
+                $str = $candidate;
+            }
+        } elseif (preg_match('/content-type:s*text/html[^
+]*?
+(?:[^
+]+?
+)*?
+([sS]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i', $str, $hm)) {
+            $candidate = trim($hm[1]);
+            if (!empty($candidate)) {
+                $str = trim(strip_tags($candidate));
+            }
+        } else {
+            // Strip boundary lines and header lines
+            $str = preg_replace('/--[a-zA-Z0-9_\-\.]+(?:--)?/', '', $str);
+            $str = preg_replace('/content-type:[^\r\n]+/i', '', $str);
+            $str = preg_replace('/content-transfer-encoding:[^\r\n]+/i', '', $str);
+            $str = preg_replace('/charset=["\']?[^"\'\r\n]+["\']?/i', '', $str);
+        }
+    }
+
+    $str = preg_replace('/^--[a-zA-Z0-9_\-\.]+/m', '', $str);
+    $str = preg_replace('/--[a-zA-Z0-9_\-\.]+--\s*$/m', '', $str);
+    $str = preg_replace('/^[ \t]*Content-Type:[^\r\n]*/mi', '', $str);
+    $str = preg_replace('/^[ \t]*Content-Transfer-Encoding:[^\r\n]*/mi', '', $str);
+
+    if (str_contains($str, '=20') || str_contains($str, '=0A') || str_contains($str, "=\r\n")) {
+        $str = quoted_printable_decode($str);
+    }
+
+    return trim($str);
+}
+
 function syncInboundEmails($db, $force = false) {
     // Ultra-Fast Zero-Lag Inbound Sync
     static $lastSync = 0;
@@ -5355,6 +5415,22 @@ function syncInboundEmails($db, $force = false) {
         }
     }
 
+    
+    // Auto-clean any existing raw MIME bodies in database
+    try {
+        $stmtRaw = $db->query("SELECT id, body FROM messages WHERE body LIKE '%--%' AND body LIKE '%Content-Type%' LIMIT 50");
+        $rawMsgs = $stmtRaw ? $stmtRaw->fetchAll() : [];
+        if (!empty($rawMsgs)) {
+            $stmtUpd = $db->prepare("UPDATE messages SET body = ? WHERE id = ?");
+            foreach ($rawMsgs as $rm) {
+                $cleaned = cleanMimeEmailContent($rm['body']);
+                if ($cleaned !== $rm['body']) {
+                    $stmtUpd->execute([$cleaned, $rm['id']]);
+                }
+            }
+        }
+    } catch (Throwable $e) {}
+
     return ['count' => $processedCount, 'messages' => $newlySynced];
 }
 
@@ -5515,8 +5591,7 @@ function syncMaildirFolder($db, $newDir, $uploadsDir, $isCur = false) {
                 $bodyHtml = $decoded;
                 $bodyText = strip_tags($decoded);
             } else {
-                $bodyText = $decoded;
-            }
+                $bodyText = cleanMimeEmailContent($decoded); }
         }
 
         if (empty($bodyText)) {

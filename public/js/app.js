@@ -1,3 +1,31 @@
+
+function cleanMimeEmailContent(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  let str = raw.trim();
+  if (str.includes('--') || /content-type:\s*(text\/plain|text\/html|multipart)/i.test(str)) {
+    const plainMatch = str.match(/content-type:\s*text\/plain[^]*?\r?\n\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i);
+    if (plainMatch && plainMatch[1] && plainMatch[1].trim()) {
+      str = plainMatch[1].trim();
+    } else {
+      const htmlMatch = str.match(/content-type:\s*text\/html[^]*?\r?\n\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i);
+      if (htmlMatch && htmlMatch[1] && htmlMatch[1].trim()) {
+        str = htmlMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      } else {
+        str = str.replace(/--[a-zA-Z0-9_\-\.]+(?:--)?/g, '');
+        str = str.replace(/content-type:[^\r\n]+/gi, '');
+        str = str.replace(/content-transfer-encoding:[^\r\n]+/gi, '');
+        str = str.replace(/charset=["']?[^"'\r\n]+["']?/gi, '');
+      }
+    }
+  }
+  str = str.replace(/^--[a-zA-Z0-9_\-\.]+/gm, '');
+  str = str.replace(/--[a-zA-Z0-9_\-\.]+--\s*$/gm, '');
+  str = str.replace(/^[ \t]*Content-Type:[^\r\n]*/gmi, '');
+  str = str.replace(/^[ \t]*Content-Transfer-Encoding:[^\r\n]*/gmi, '');
+  return str.trim();
+}
+window.cleanMimeEmailContent = cleanMimeEmailContent;
+
 /**
  * Raccon Mail — Fully Functional Mail Client
  * Matches Raccoon Postcard aesthetic + Full Raccon Mail functional capabilities
@@ -82,7 +110,7 @@ const app = {
     return false;
   },
 
-  showNotification({ title, body, icon = '/raccoon-logo.png', tag = 'raccon-mail', onClick = null }) {
+  showNotification({ title, body, icon = '/raccoon-logo.svg', tag = 'raccon-mail', onClick = null }) {
     // 1. In-app toast banner
     this.showToast(title + ': ' + body);
 
@@ -92,7 +120,7 @@ const app = {
         const notif = new Notification(title, {
           body,
           icon,
-          badge: '/raccoon-logo.png',
+          badge: '/raccoon-logo.svg',
           tag,
           renotify: true
         });
@@ -394,7 +422,7 @@ const app = {
           this.showNotification({
             title,
             body,
-            icon: '/raccoon-logo.png',
+            icon: '/raccoon-logo.svg',
             onClick: () => {
               if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
             }
@@ -895,7 +923,7 @@ const app = {
           <div class="space-y-2">
             ${sec.items.map(it => `
               <div class="p-2 rounded-xl bg-muted/40 hover:bg-muted transition flex gap-2.5 items-start">
-                <img src="${it.image}" alt="${it.title}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-border/60 shadow-xs" onerror="this.src='/raccoon-logo.png';" />
+                <img src="${it.image}" alt="${it.title}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-border/60 shadow-xs" onerror="this.src='/raccoon-logo.svg';" />
                 <div class="min-w-0 flex-1">
                   <div class="flex justify-between items-center text-[9px] text-muted-foreground mb-0.5">
                     <span class="font-mono text-muted-foreground">${it.time}</span>
@@ -1414,7 +1442,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const data = await res.json();
       this.currentUser = data;
 
-      const avatar = data.avatar || '/raccoon-logo.png';
+      const avatar = data.avatar || '/raccoon-logo.svg';
       const cover = data.cover_photo || 'linear-gradient(135deg, #181c1f 0%, #2c333a 50%, #121518 100%)';
 
       const nameEl = document.getElementById('active-user-name');
@@ -1542,7 +1570,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
             class="w-full text-left flex items-center justify-between p-2 rounded-xl text-xs hover:bg-muted transition ${acc.id === data.activeId ? 'font-bold bg-accent/40' : ''}"
           >
             <div class="flex items-center gap-2 truncate">
-              <img src="${acc.avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-contain" />
+              <img src="${acc.avatar || '/raccoon-logo.svg'}" class="h-6 w-6 rounded-full object-contain" />
               <div class="truncate">
                 <p class="truncate leading-tight">${acc.name}</p>
                 <p class="text-[10px] text-muted-foreground truncate">${acc.email}</p>
@@ -2146,7 +2174,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     if (list.length === 0) {
       container.innerHTML = `
         <div class="flex flex-col items-center justify-center p-8 text-center text-slate-400 h-64 select-none">
-          <img src="/raccoon-logo.png" class="h-12 w-12 opacity-30 mb-2 object-contain" />
+          <img src="/raccoon-logo.svg" class="h-12 w-12 opacity-30 mb-2 object-contain" />
           <p class="text-sm font-semibold text-slate-700">No emails here</p>
           <p class="text-xs text-slate-400 mt-1">Your mailbox is completely up to date.</p>
         </div>
@@ -2725,7 +2753,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const threadContainer = document.getElementById('thread-replies-container');
       if (threadContainer) {
         const myName = this.currentUser?.name || 'Me';
-        const myAvatar = this.currentUser?.avatar || '/raccoon-logo.png';
+        const myAvatar = this.currentUser?.avatar || '/raccoon-logo.svg';
         const dateStr = this.formatFullDateTime(new Date());
         
         const replyCard = document.createElement('div');
@@ -4107,7 +4135,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         this.showNotification({
           title: isReply ? ('💬 Reply from ' + sender) : ('📬 New Email from ' + sender),
           body: subj || ('Received ' + data.synced + ' new incoming email' + (data.synced > 1 ? 's' : '') + '!'),
-          icon: '/raccoon-logo.png',
+          icon: '/raccoon-logo.svg',
           onClick: () => {
             if (firstNew && firstNew.id) this.selectMessage(firstNew.id);
           }
@@ -4869,7 +4897,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
     const sub = document.getElementById('chat-popup-subtitle');
     if (sub) sub.textContent = 'Clever nocturnal messaging for registered members';
     const av = document.getElementById('chat-popup-avatar');
-    if (av) av.src = '/raccoon-logo.png';
+    if (av) av.src = '/raccoon-logo.svg';
 
     this.renderPopupConversations();
   },
@@ -4897,7 +4925,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const sub = document.getElementById('chat-popup-subtitle');
       if (sub) sub.textContent = friend.email;
       const av = document.getElementById('chat-popup-avatar');
-      if (av) av.src = friend.avatar || '/raccoon-logo.png';
+      if (av) av.src = friend.avatar || '/raccoon-logo.svg';
       friend.unread = 0;
       this.updateChatUnreadBadge();
     }
@@ -5081,7 +5109,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         >
           <div class="flex items-center gap-2.5 truncate">
             <div class="relative shrink-0">
-              <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
+              <img src="${c.avatar || '/raccoon-logo.svg'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
               <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-slate-500 border border-card"></span>
             </div>
             <div class="truncate">
@@ -5130,7 +5158,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
         >
           <div class="flex items-center gap-2.5 truncate">
             <div class="relative shrink-0">
-              <img src="${c.avatar || '/raccoon-logo.png'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
+              <img src="${c.avatar || '/raccoon-logo.svg'}" class="h-9 w-9 rounded-full object-cover aspect-square border border-border" />
               <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-slate-500 border border-card"></span>
             </div>
             <div class="truncate">
@@ -5165,7 +5193,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
       const emailEl = document.getElementById('chat-partner-email');
       if (emailEl) emailEl.textContent = friend.email;
       const av = document.getElementById('chat-partner-avatar');
-      if (av) av.src = friend.avatar || '/raccoon-logo.png';
+      if (av) av.src = friend.avatar || '/raccoon-logo.svg';
       friend.unread = 0;
       this.updateChatUnreadBadge();
     }
@@ -5200,7 +5228,7 @@ If a hunter enters the forest to feed his hungry family, Curupira leaves him in 
 
     const myEmail = this.currentUser?.email?.toLowerCase() || '';
     const activeFriendObj = this.chatConversations.find(c => (c.email || '').toLowerCase() === (this.activeChatFriend || '').toLowerCase());
-    const friendAvatar = activeFriendObj?.avatar || '/raccoon-logo.png';
+    const friendAvatar = activeFriendObj?.avatar || '/raccoon-logo.svg';
     const friendName = activeFriendObj?.name || 'Friend';
 
     let html = '';

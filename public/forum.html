@@ -15,14 +15,14 @@
   <meta property="og:site_name" content="Raccon Mail" />
   <meta property="og:title" content="Raccon Forum &bull; Community Discussions &amp; Activity Wall" />
   <meta property="og:description" content="A clean, modern community forum and integrated activity wall for discussions, announcements, security, and developer updates." />
-  <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
+  <meta property="og:image" content="https://racconmail.eu/raccoon-logo.svg" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://racconmail.eu/forum" />
   <meta name="twitter:title" content="Raccon Forum &bull; Community Discussions &amp; Activity Wall" />
   <meta name="twitter:description" content="A clean, modern community forum and integrated activity wall for discussions, announcements, security, and developer updates." />
-  <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
+  <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.svg" />
 
   <!-- Comprehensive Favicon Suite -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
@@ -314,7 +314,7 @@
           <div class="relative">
             <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-2 p-1 pl-2 bg-slate-100 hover:bg-slate-200/80 rounded-full border border-slate-200 transition cursor-pointer">
               <span id="user-display-name" class="text-xs font-bold text-slate-800 max-w-[110px] truncate">User</span>
-              <img id="user-display-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs" />
+              <img id="user-display-avatar" src="/raccoon-logo.svg" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs" />
             </button>
             
             <!-- User Dropdown Menu -->
@@ -563,7 +563,7 @@
           <!-- Wall Posting Widget -->
           <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
             <div class="flex items-start gap-3">
-              <img id="wall-composer-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-2xs" />
+              <img id="wall-composer-avatar" src="/raccoon-logo.svg" alt="Avatar" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-2xs" />
               <div class="flex-1 min-w-0">
                 <textarea 
                   id="wall-post-content" 
@@ -632,13 +632,24 @@
         <!-- ===================================================================
              VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
              =================================================================== -->
-        <div id="view-thread" class="hidden space-y-6">
+        <div id="view-thread" class="hidden space-y-6 pb-36 md:pb-12">
           
           <!-- Back to Discussions Button & Category Breadcrumb -->
           <div class="flex items-center justify-between gap-4">
             <button onclick="setNavView('all')" class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-2xs hover:bg-slate-50 transition cursor-pointer">
               <i class="fas fa-arrow-left"></i>
               <span>Back to Discussions</span>
+            </button>
+
+            <!-- Hide / Show Menu Toggle Button (Same as Stories) -->
+            <button 
+              id="btn-toggle-forum-menu" 
+              onclick="toggleForumMenu()" 
+              class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer"
+              title="Toggle discussion timeline & menu"
+            >
+              <i class="fas fa-sliders text-blue-500" id="toggle-forum-menu-icon"></i>
+              <span id="toggle-forum-menu-text">Hide Menu</span>
             </button>
 
             <span id="thread-category-badge" class="tag-badge tag-general">Category</span>
@@ -666,9 +677,8 @@
 
           <!-- Thread Layout: Left Sticky Controls & Right Post Stream -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            
             <!-- Left Sticky Discussion Controls (Flarum Scrubber & Actions) -->
-            <div class="md:col-span-3 space-y-3 sticky top-24">
+            <div id="thread-controls-panel" class="md:col-span-3 space-y-3 sticky top-24 transition-all duration-200">
               <button onclick="focusThreadReply()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
                 <i class="fas fa-reply text-xs"></i>
                 <span>Reply</span>
@@ -695,7 +705,7 @@
             </div>
 
             <!-- Right Post Stream (Sequential Posts & Replies) -->
-            <div class="md:col-span-9 space-y-4">
+            <div id="thread-stream-column" class="md:col-span-9 space-y-4 transition-all duration-200">
               
               <!-- Original Post (#1) & Sequential Replies -->
               <div id="thread-posts-stream" class="space-y-4">
@@ -703,9 +713,9 @@
               </div>
 
               <!-- Stream Bottom Reply Composer Box -->
-              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3 mb-10">
                 <div class="flex items-center gap-3">
-                  <img id="reply-box-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-8 w-8 rounded-full border border-slate-200" />
+                  <img id="reply-box-avatar" src="/raccoon-logo.svg" alt="Avatar" class="h-8 w-8 rounded-full border border-slate-200" />
                   <span class="text-xs font-bold text-slate-800">Write a reply...</span>
                 </div>
 
@@ -839,37 +849,20 @@
   </div>
 
   
-  <!-- Floating Side Discussion Controls (Centered Vertically Along Right Edge - Does Not Obstruct Text) -->
+  <!-- Floating Edge Forum Menu Toggle Pill (Centered Vertically Along Edge - Same as Stories) -->
   <div 
-    id="floating-forum-edge-dock" 
-    class="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-2 pr-0 select-none transition-all duration-200"
-    aria-label="Discussion Quick Actions"
+    id="mobile-forum-toggle-pill" 
+    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 transition-all duration-200"
+    aria-label="Discussion Menu Toggle"
   >
-    <!-- Floating Reply Tab Button -->
-    <button
-      type="button"
-      onclick="focusThreadReply()"
-      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/90 hover:bg-black text-white text-xs font-bold shadow-[0_8px_25px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/20 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group"
-      title="Reply to Topic"
-      aria-label="Reply to Topic"
+    <button 
+      onclick="toggleForumMenu()" 
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/90 hover:bg-black text-white text-xs font-bold shadow-[0_10px_30px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/25 active:scale-95 transition cursor-pointer select-none group"
+      title="Toggle discussion timeline & menu"
     >
-      <i class="fas fa-reply text-cyan-400 text-sm shrink-0 group-hover:scale-110 transition-transform"></i>
-      <span class="whitespace-nowrap tracking-tight">Reply</span>
-      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>
-    </button>
-
-    <!-- Floating Follow Tab Button -->
-    <button
-      type="button"
-      id="btn-floating-follow"
-      onclick="toggleFollowThread()"
-      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_25px_rgba(0,0,0,0.15)] backdrop-blur-md border-y border-l border-slate-200 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group"
-      title="Follow Topic"
-      aria-label="Follow Topic"
-    >
-      <i class="fas fa-bell text-amber-500 text-sm shrink-0 group-hover:rotate-12 transition-transform" id="floating-follow-icon"></i>
-      <span id="floating-follow-text" class="whitespace-nowrap tracking-tight">Follow</span>
-      <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" id="floating-follow-dot"></span>
+      <i class="fas fa-sliders text-blue-400 group-hover:rotate-90 transition-transform text-xs" id="mobile-toggle-forum-icon"></i>
+      <span id="mobile-forum-toggle-text" class="whitespace-nowrap tracking-tight">Hide Menu</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
     </button>
   </div>
 
@@ -990,7 +983,7 @@
         const replyAvatar = document.getElementById('reply-box-avatar');
 
         const displayName = user.name || user.email?.split('@')[0] || 'User';
-        const avatarSrc = user.avatar || '/raccoon-logo.png';
+        const avatarSrc = user.avatar || '/raccoon-logo.svg';
 
         if (nameEl) nameEl.innerText = displayName;
         if (avatarEl) avatarEl.src = avatarSrc;
@@ -1046,6 +1039,7 @@
       document.getElementById('view-discussions')?.classList.remove('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-thread')?.classList.add('hidden');
+      document.getElementById('mobile-forum-toggle-pill')?.classList.add('hidden');
       document.getElementById('flarum-hero')?.classList.remove('hidden');
 
       document.getElementById('nav-btn-all')?.classList.add('nav-item-active');
@@ -1060,6 +1054,7 @@
       document.getElementById('view-discussions')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.remove('hidden');
       document.getElementById('view-thread')?.classList.add('hidden');
+      document.getElementById('mobile-forum-toggle-pill')?.classList.add('hidden');
       document.getElementById('flarum-hero')?.classList.remove('hidden');
 
       document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
@@ -1224,7 +1219,7 @@
 
       container.innerHTML = posts.map(post => {
         const authorName = post.author_name || post.author_email?.split('@')[0] || 'Member';
-        const authorAvatar = post.author_avatar || '/raccoon-logo.png';
+        const authorAvatar = post.author_avatar || '/raccoon-logo.svg';
         const timeAgo = formatTimeAgo(post.created_at);
         const hasLiked = !!post.has_liked;
 
@@ -1375,6 +1370,44 @@
     window.toggleNotificationPanel = toggleNotificationPanel;
     window.handleForumNotificationClick = handleForumNotificationClick;
 
+    
+    // DEDICATED FORUM MENU HIDE/SHOW LOGIC (Same as Stories)
+    let isForumMenuVisible = true;
+    function toggleForumMenu(forceState = null) {
+      const panel = document.getElementById('thread-controls-panel');
+      const streamCol = document.getElementById('thread-stream-column');
+      const btnText = document.getElementById('toggle-forum-menu-text');
+      const btnIcon = document.getElementById('toggle-forum-menu-icon');
+      const mobileText = document.getElementById('mobile-forum-toggle-text');
+      const mobileIcon = document.getElementById('mobile-toggle-forum-icon');
+      const edgePill = document.getElementById('mobile-forum-toggle-pill');
+
+      if (forceState !== null) {
+        isForumMenuVisible = forceState;
+      } else {
+        isForumMenuVisible = !isForumMenuVisible;
+      }
+
+      if (isForumMenuVisible) {
+        panel?.classList.remove('hidden');
+        streamCol?.classList.remove('md:col-span-12');
+        streamCol?.classList.add('md:col-span-9');
+        if (btnText) btnText.innerText = 'Hide Menu';
+        if (btnIcon) btnIcon.className = 'fas fa-eye-slash text-blue-500';
+        if (mobileText) mobileText.innerText = 'Hide Menu';
+        if (mobileIcon) mobileIcon.className = 'fas fa-eye-slash text-blue-400 group-hover:rotate-90 transition-transform text-xs';
+      } else {
+        panel?.classList.add('hidden');
+        streamCol?.classList.remove('md:col-span-9');
+        streamCol?.classList.add('md:col-span-12');
+        if (btnText) btnText.innerText = 'Show Menu';
+        if (btnIcon) btnIcon.className = 'fas fa-sliders text-blue-500';
+        if (mobileText) mobileText.innerText = 'Show Menu';
+        if (mobileIcon) mobileIcon.className = 'fas fa-sliders text-blue-400 group-hover:rotate-90 transition-transform text-xs';
+      }
+    }
+    window.toggleForumMenu = toggleForumMenu;
+
     async function openThreadReader(postId) {
       currentNavView = 'thread';
       window.location.hash = `d/${postId}`;
@@ -1382,6 +1415,10 @@
       document.getElementById('view-discussions')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-thread')?.classList.remove('hidden');
+      document.getElementById('mobile-forum-toggle-pill')?.classList.remove('hidden');
+      if (window.innerWidth < 768) {
+        toggleForumMenu(false); // Clean view on mobile - no overlap!
+      }
       document.getElementById('flarum-hero')?.classList.add('hidden');
 
       const streamContainer = document.getElementById('thread-posts-stream');
@@ -1435,7 +1472,7 @@
         <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-3">
-              <img src="${post.author_avatar || '/raccoon-logo.png'}" class="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-2xs" />
+              <img src="${post.author_avatar || '/raccoon-logo.svg'}" class="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-2xs" />
               <div>
                 <div class="flex items-center gap-2">
                   <span class="font-extrabold text-sm text-slate-900">${post.author_name || 'Member'}</span>
@@ -1480,7 +1517,7 @@
       // Comments List (#2, #3, ...)
       comments.forEach((comment, idx) => {
         const cAuthor = comment.author_name || comment.author_email?.split('@')[0] || 'Member';
-        const cAvatar = comment.author_avatar || '/raccoon-logo.png';
+        const cAvatar = comment.author_avatar || '/raccoon-logo.svg';
         const cTime = formatTimeAgo(comment.created_at);
 
         html += `
