@@ -312,13 +312,13 @@ try {
     <!-- Center Section: Proton-style Global Search Bar (Hidden on mobile & APK, accessed via bottom-left search button) -->
     <div class="hidden md:block flex-1 max-w-xl mx-6">
       <div class="relative w-full flex items-center">
-        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
+        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.3)]"></i>
         <input
           id="global-search"
           type="text"
           placeholder="Search all emails..."
           oninput="handleSearch(this.value)"
-          class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-full border border-slate-200/90 pl-10 pr-10 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition shadow-2xs"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-full border border-slate-200/90 pl-10 pr-10 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition shadow-2xs"
         />
         <button onclick="clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
           <i data-lucide="x" class="h-3.5 w-3.5"></i>
@@ -1800,11 +1800,14 @@ try {
     type="button"
     onclick="openMobileSearchSheet()"
     id="mobile-floating-search-btn"
-    class="md:hidden fixed bottom-6 left-6 z-[9990] w-14 h-14 rounded-full bg-white hover:bg-slate-50 text-slate-700 shadow-[0_10px_25px_rgba(15,23,42,0.18)] flex items-center justify-center transition active:scale-95 cursor-pointer border border-slate-200/90"
-    title="Search Emails"
+    class="md:hidden fixed bottom-6 left-6 z-[9990] w-14 h-14 rounded-full bg-white hover:bg-cyan-50/60 shadow-[0_10px_30px_rgba(6,182,212,0.38)] flex items-center justify-center transition active:scale-95 cursor-pointer border-2 border-cyan-400 ring-4 ring-cyan-400/25 group"
+    title="Search Emails (Turquoise Loupe)"
     aria-label="Search Emails"
   >
-    <i data-lucide="search" class="h-6 w-6 text-slate-700"></i>
+    <div class="relative flex items-center justify-center">
+      <span class="absolute w-8 h-8 rounded-full bg-cyan-400/20 group-hover:bg-cyan-400/35 transition-all duration-300 blur-xs"></span>
+      <i data-lucide="search" class="relative h-6 w-6 text-cyan-500 stroke-[2.75] group-hover:scale-110 transition filter drop-shadow-[0_1px_3px_rgba(6,182,212,0.45)]"></i>
+    </div>
   </button>
 
   <!-- ========================================================================= -->
@@ -1821,7 +1824,7 @@ try {
     <!-- Sheet Header with Search Bar -->
     <div class="p-3.5 border-b border-slate-100 flex items-center gap-2">
       <div class="relative flex-1 flex items-center">
-        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none"></i>
+        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.35)]"></i>
         <input
           id="mobile-search-input"
           type="text"
