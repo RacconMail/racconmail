@@ -781,6 +781,7 @@
         });
         if (tab === 'forum') this.loadForumPosts();
         if (tab === 'system') this.loadSystemHealth();
+        if (tab === 'plans') this.loadBilling();
         lucide.createIcons();
       },
 
@@ -1146,6 +1147,229 @@
           document.getElementById('health-https').textContent = h.https_active ? 'Active (Strict Transport Security)' : 'Active';
         } catch (err) {
           console.error(err);
+        }
+      },
+
+      async loadBilling() {
+        try {
+          const res = await fetch('/api/admin/billing');
+          const data = await res.json();
+          if (!data.success) throw new Error(data.error || 'Failed to load billing');
+
+          // Populate PayPal Form
+          if (data.paypal) {
+            const p = data.paypal;
+            const emailEl = document.getElementById('paypal-email');
+            const modeEl = document.getElementById('paypal-mode');
+            const curEl = document.getElementById('paypal-currency');
+            const hookEl = document.getElementById('paypal-webhook');
+            const clientEl = document.getElementById('paypal-client-id');
+            const secretEl = document.getElementById('paypal-secret');
+            const badgeEl = document.getElementById('paypal-mode-badge');
+
+            if (emailEl) emailEl.value = p.paypal_email || '';
+            if (modeEl) modeEl.value = p.paypal_mode || 'sandbox';
+            if (curEl) curEl.value = p.currency || 'USD';
+            if (hookEl) hookEl.value = p.webhook_id || '';
+            if (clientEl) clientEl.value = p.paypal_client_id || '';
+            if (secretEl) secretEl.value = p.paypal_secret || '';
+
+            if (badgeEl) {
+              if (p.paypal_mode === 'live') {
+                badgeEl.className = 'text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+                badgeEl.textContent = 'Live Production Mode';
+              } else {
+                badgeEl.className = 'text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
+                badgeEl.textContent = 'Sandbox Mode';
+              }
+            }
+          }
+
+          // Populate Plans
+          this.plans = data.plans || [];
+          this.renderPlans(this.plans);
+        } catch (err) {
+          console.error('Error loading billing:', err);
+        }
+      },
+
+      renderPlans(plans) {
+        const grid = document.getElementById('admin-plans-grid');
+        const countBadge = document.getElementById('plans-count-badge');
+        if (countBadge) countBadge.textContent = plans.length + ' Plans';
+        if (!grid) return;
+
+        if (plans.length === 0) {
+          grid.innerHTML = '<div class="col-span-3 py-8 text-center text-slate-400 text-xs">No subscription plans created yet. Click "+ Create New Plan" to add one.</div>';
+          return;
+        }
+
+        grid.innerHTML = plans.map(p => {
+          const featuresList = (Array.isArray(p.features) ? p.features : [])
+            .map(f => '<li class="flex items-center gap-2 text-slate-600 text-xs"><span class="text-cyan-600 font-bold shrink-0">✓</span><span class="truncate">' + this.escapeHtml(f) + '</span></li>')
+            .join('');
+
+          const isPop = Boolean(Number(p.is_popular));
+          const isAct = Boolean(Number(p.is_active));
+
+          return '<div class="rounded-3xl border ' + (isPop ? 'border-amber-400 bg-amber-50/20 shadow-md ring-2 ring-amber-400/20' : 'border-slate-200 bg-white shadow-xs') + ' p-5 flex flex-col justify-between transition hover:shadow-sm relative">' +
+            (p.badge ? '<span class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold ' + (isPop ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-slate-100 text-slate-700') + '">' + this.escapeHtml(p.badge) + '</span>' : '') +
+            '<div>' +
+              '<div class="flex items-center gap-2 mb-2">' +
+                '<h4 class="text-sm font-bold text-slate-900">' + this.escapeHtml(p.name) + '</h4>' +
+                (isAct ? '<span class="w-2 h-2 rounded-full bg-emerald-500" title="Active"></span>' : '<span class="w-2 h-2 rounded-full bg-slate-300" title="Disabled"></span>') +
+              '</div>' +
+              '<div class="flex items-baseline gap-1 my-3">' +
+                '<span class="text-2xl font-black text-slate-900 font-mono">$' + Number(p.price_monthly).toFixed(2) + '</span>' +
+                '<span class="text-xs text-slate-400 font-medium">/month</span>' +
+                (p.price_yearly > 0 ? '<span class="text-[10px] text-slate-500 font-mono ml-2">($' + Number(p.price_yearly).toFixed(2) + '/yr)</span>' : '') +
+              '</div>' +
+              '<div class="py-2.5 px-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 mb-3">' +
+                '<span>📦 ' + (p.storage_gb >= 1000 ? (p.storage_gb / 1000) + ' TB' : p.storage_gb + ' GB') + ' Storage</span>' +
+                '<span>📬 ' + (p.max_accounts >= 999 ? 'Unlimited' : p.max_accounts) + ' Accounts</span>' +
+              '</div>' +
+              '<ul class="space-y-1.5 my-3">' + featuresList + '</ul>' +
+            '</div>' +
+            '<div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-4">' +
+              '<button onclick="adminApp.deletePlan(\'' + p.id + '\', \'' + this.escapeHtml(p.name).replace(/'/g, "\\'") + '\')" class="px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 text-xs font-bold transition cursor-pointer">Delete</button>' +
+              '<button onclick="adminApp.openEditPlanModal(\'' + p.id + '\')" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs cursor-pointer">Edit Tier</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      },
+
+      async savePayPalSettings(e) {
+        if (e) e.preventDefault();
+        try {
+          const email = document.getElementById('paypal-email').value.trim();
+          const mode = document.getElementById('paypal-mode').value;
+          const currency = document.getElementById('paypal-currency').value;
+          const webhook_id = document.getElementById('paypal-webhook').value.trim();
+          const client_id = document.getElementById('paypal-client-id').value.trim();
+          const secret = document.getElementById('paypal-secret').value.trim();
+
+          const res = await fetch('/api/admin/billing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'save_paypal',
+              paypal_email: email,
+              paypal_mode: mode,
+              currency: currency,
+              webhook_id: webhook_id,
+              paypal_client_id: client_id,
+              paypal_secret: secret
+            })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save settings');
+          this.showToast('PayPal credentials saved successfully!');
+          this.loadBilling();
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      openNewPlanModal() {
+        document.getElementById('plan-modal-title').textContent = 'Create New Subscription Plan';
+        document.getElementById('plan-id').value = '';
+        document.getElementById('plan-name').value = '';
+        document.getElementById('plan-badge').value = '';
+        document.getElementById('plan-price-monthly').value = '14.99';
+        document.getElementById('plan-price-yearly').value = '149.00';
+        document.getElementById('plan-storage').value = '500';
+        document.getElementById('plan-accounts').value = '10';
+        document.getElementById('plan-features').value = '500 GB NVMe Storage\n10 Connected Inboxes\nCustom Domain Setup\nPGP End-to-End Encryption\nPriority Support';
+        document.getElementById('plan-is-active').checked = true;
+        document.getElementById('plan-is-popular').checked = false;
+
+        const modal = document.getElementById('plan-modal');
+        if (modal) modal.classList.remove('hidden');
+      },
+
+      openEditPlanModal(planId) {
+        const plan = (this.plans || []).find(p => p.id === planId);
+        if (!plan) return;
+
+        document.getElementById('plan-modal-title').textContent = 'Edit Plan: ' + plan.name;
+        document.getElementById('plan-id').value = plan.id;
+        document.getElementById('plan-name').value = plan.name || '';
+        document.getElementById('plan-badge').value = plan.badge || '';
+        document.getElementById('plan-price-monthly').value = plan.price_monthly || 0;
+        document.getElementById('plan-price-yearly').value = plan.price_yearly || 0;
+        document.getElementById('plan-storage').value = plan.storage_gb || 50;
+        document.getElementById('plan-accounts').value = plan.max_accounts || 1;
+        document.getElementById('plan-features').value = Array.isArray(plan.features) ? plan.features.join('\n') : '';
+        document.getElementById('plan-is-active').checked = Boolean(Number(plan.is_active));
+        document.getElementById('plan-is-popular').checked = Boolean(Number(plan.is_popular));
+
+        const modal = document.getElementById('plan-modal');
+        if (modal) modal.classList.remove('hidden');
+      },
+
+      closePlanModal() {
+        const modal = document.getElementById('plan-modal');
+        if (modal) modal.classList.add('hidden');
+      },
+
+      async savePlanForm(e) {
+        if (e) e.preventDefault();
+        try {
+          const id = document.getElementById('plan-id').value.trim();
+          const name = document.getElementById('plan-name').value.trim();
+          const badge = document.getElementById('plan-badge').value.trim();
+          const price_monthly = parseFloat(document.getElementById('plan-price-monthly').value) || 0;
+          const price_yearly = parseFloat(document.getElementById('plan-price-yearly').value) || 0;
+          const storage_gb = parseInt(document.getElementById('plan-storage').value, 10) || 50;
+          const max_accounts = parseInt(document.getElementById('plan-accounts').value, 10) || 1;
+          const features = document.getElementById('plan-features').value;
+          const is_active = document.getElementById('plan-is-active').checked ? 1 : 0;
+          const is_popular = document.getElementById('plan-is-popular').checked ? 1 : 0;
+
+          if (!name) return alert('Please enter plan name');
+
+          const res = await fetch('/api/admin/billing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'save_plan',
+              id: id || ('plan_' + Date.now()),
+              name: name,
+              badge: badge,
+              price_monthly: price_monthly,
+              price_yearly: price_yearly,
+              storage_gb: storage_gb,
+              max_accounts: max_accounts,
+              features: features,
+              is_active: is_active,
+              is_popular: is_popular
+            })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save plan');
+
+          this.closePlanModal();
+          this.showToast('Subscription plan saved successfully!');
+          this.loadBilling();
+        } catch (err) {
+          alert('Error saving plan: ' + err.message);
+        }
+      },
+
+      async deletePlan(id, name) {
+        if (!confirm('Are you sure you want to delete plan "' + name + '"?')) return;
+        try {
+          const res = await fetch('/api/admin/billing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete_plan', id: id })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.error || 'Failed to delete plan');
+          this.showToast('Plan "' + name + '" deleted');
+          this.loadBilling();
+        } catch (err) {
+          alert('Error: ' + err.message);
         }
       },
 

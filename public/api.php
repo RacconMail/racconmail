@@ -2650,7 +2650,7 @@ try {
     }
 
     // TASKS & TO-DO API
-    if ($route === 'tasks') {
+    if ($route === 'tasks' || $route === 'tasks/toggle') {
         if ($method === 'GET') {
             $stmt = $db->prepare("SELECT * FROM user_tasks WHERE user_id = ? ORDER BY is_completed ASC, created_at DESC");
             $stmt->execute([$currentUserId]);
@@ -2813,6 +2813,11 @@ Alex"]
 
             echo json_encode(['success' => true, 'id' => $id]);
             exit;
+        } elseif ($method === 'DELETE') {
+            $id = $_GET['id'] ?? ($input['id'] ?? '');
+            $db->prepare("DELETE FROM user_rss_feeds WHERE id = ? AND user_id = ?")->execute([$id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
         }
     }
 
@@ -2866,11 +2871,11 @@ Alex"]
             SELECT a.*, m.subject as email_subject, m.sender_name, m.sender_email, m.created_at as email_date
             FROM attachments a
             LEFT JOIN messages m ON a.message_id = m.id
-            WHERE m.recipient_id = ? OR m.sender_id = ?
+            WHERE m.user_id = ? OR a.message_id = ?
             ORDER BY a.created_at DESC
             LIMIT 100
         ");
-        $stmt->execute([$currentUserId, $currentUserId]);
+        $stmt->execute([$currentUserId, 'vault_' . $currentUserId]);
         $attachments = $stmt->fetchAll();
 
         // If user has few attachments, provide rich sample files
@@ -2886,6 +2891,86 @@ Alex"]
 
         echo json_encode(['success' => true, 'attachments' => $attachments]);
         exit;
+    }
+
+    // ATTACHMENTS UPLOAD API (Productivity File Vault)
+    if ($route === 'attachments/upload' && $method === 'POST') {
+        if (empty($_FILES['file'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No file uploaded']);
+            exit;
+        }
+        $file = $_FILES['file'];
+        $origName = $file['name'];
+        $ext = pathinfo($origName, PATHINFO_EXTENSION);
+        $destFilename = 'att-' . time() . '-' . rand(1000, 9999) . ($ext ? '.' . $ext : '');
+        $targetPath = $uploadsDir . '/' . $destFilename;
+        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to store file']);
+            exit;
+        }
+        $attId = 'att_' . uniqid();
+        $mime = !empty($file['type']) ? $file['type'] : 'application/octet-stream';
+        $size = !empty($file['size']) ? $file['size'] : 0;
+        $db->prepare('INSERT INTO attachments (id, message_id, filename, original_name, mime_type, size_bytes, file_path) VALUES (?, ?, ?, ?, ?, ?, ?)')
+           ->execute([$attId, 'vault_' . $currentUserId, $destFilename, $origName, $mime, $size, $destFilename]);
+
+        echo json_encode([
+            'success' => true,
+            'attachment' => [
+                'id' => $attId,
+                'filename' => $destFilename,
+                'original_name' => $origName,
+                'mime_type' => $mime,
+                'size_bytes' => $size
+            ]
+        ]);
+        exit;
+    }
+
+    // ATTACHMENTS DELETE API
+    if ($route === 'attachments' && $method === 'DELETE') {
+        $id = $_GET['id'] ?? ($input['id'] ?? '');
+        $stmt = $db->prepare('SELECT * FROM attachments WHERE id = ?');
+        $stmt->execute([$id]);
+        $att = $stmt->fetch();
+        if ($att) {
+            $fPath = $uploadsDir . '/' . $att['filename'];
+            if (file_exists($fPath)) @unlink($fPath);
+            $db->prepare('DELETE FROM attachments WHERE id = ?')->execute([$id]);
+        }
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    // ATTACHMENTS DOWNLOAD ROUTE
+    if (preg_match('#^attachments/([^/]+)/download$#', $route, $matches)) {
+        $attId = $matches[1];
+        $stmt = $db->prepare('SELECT * FROM attachments WHERE id = ?');
+        $stmt->execute([$attId]);
+        $att = $stmt->fetch();
+
+        if ($att && file_exists($uploadsDir . '/' . $att['filename'])) {
+            $filePath = $uploadsDir . '/' . $att['filename'];
+            $origName = $att['original_name'] ?: $att['filename'];
+            $mime = $att['mime_type'] ?: 'application/octet-stream';
+            header('Content-Description: File Transfer');
+            header('Content-Type: ' . $mime);
+            header('Content-Disposition: attachment; filename="' . basename($origName) . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($filePath));
+            readfile($filePath);
+            exit;
+        } else {
+            // Friendly fallback for demo files
+            header('Content-Type: text/plain');
+            header('Content-Disposition: attachment; filename="document_' . $attId . '.txt"');
+            echo "Raccon Mail Cloud Vault\r\nFile Reference: " . $attId . "\r\nDate: " . date('Y-m-d H:i:s') . "\r\nStatus: Securely synced across SSD storage clusters.";
+            exit;
+        }
     }
 
     // EMAIL ALIASES & MASKING API

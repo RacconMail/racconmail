@@ -2634,7 +2634,21 @@ try {
     let cachedUserTasks = [];
     let cachedAttachments = [];
     let cachedTemplates = [];
+    let cachedRssFeeds = [];
     let cachedRssArticles = [];
+    let activeEventColor = '#06b6d4';
+    let activeNoteColor = '#fef08a';
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    window.escapeHtml = escapeHtml;
 
     // 1. Drawer Opening & Tab Switching
     function openProductivityDrawer(tabName) {
@@ -2660,12 +2674,12 @@ try {
     function switchDrawerTab(tabName) {
       currentDrawerTab = tabName;
       
-      // Update top button styles
+      // Update top tab buttons
       ['calendar', 'notes', 'tasks', 'attachments', 'rss', 'templates'].forEach(function(t) {
         const btn = document.getElementById('drawer-tab-' + t);
         if (btn) {
           if (t === tabName) {
-            btn.className = 'flex flex-col items-center py-1.5 rounded-lg bg-cyan-50 text-cyan-700 font-bold transition cursor-pointer';
+            btn.className = 'flex flex-col items-center py-1.5 rounded-lg bg-cyan-50 text-cyan-700 font-bold transition cursor-pointer shadow-2xs';
           } else {
             btn.className = 'flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer text-slate-500';
           }
@@ -2678,11 +2692,11 @@ try {
       const iconEl = document.getElementById('drawer-header-icon');
 
       const meta = {
-        calendar: { title: 'Calendar & Schedule', sub: 'Integrated events and smart reminders', icon: 'calendar', color: 'bg-cyan-100 text-cyan-700' },
-        notes: { title: 'Keep Notes & Ideas', sub: 'Modern pastel sticky notes with checklists & tags', icon: 'sticky-note', color: 'bg-amber-100 text-amber-700' },
+        calendar: { title: 'Calendar & Schedule', sub: 'Integrated events, meetings, and smart reminders', icon: 'calendar', color: 'bg-cyan-100 text-cyan-700' },
+        notes: { title: 'Keep Notes & Ideas', sub: 'Pastel sticky notes with checklists, tags & color codes', icon: 'sticky-note', color: 'bg-amber-100 text-amber-700' },
         tasks: { title: 'Actionable Tasks / To-Do', sub: 'Turn correspondence into prioritized milestones', icon: 'check-square', color: 'bg-emerald-100 text-emerald-700' },
-        attachments: { title: 'Attachments & Media Gallery', sub: 'Visual dashboard for images, PDFs, spreadsheets & code', icon: 'paperclip', color: 'bg-purple-100 text-purple-700' },
-        rss: { title: 'Newsletter & Feed Reader', sub: 'Distraction-free aggregator for blogs and tech feeds', icon: 'rss', color: 'bg-rose-100 text-rose-700' },
+        attachments: { title: 'Attachments & Media Gallery', sub: 'Visual cloud dashboard for documents, images & files', icon: 'paperclip', color: 'bg-purple-100 text-purple-700' },
+        rss: { title: 'Newsletter & Feed Reader', sub: 'Distraction-free aggregator for blogs, tech news & feeds', icon: 'rss', color: 'bg-rose-100 text-rose-700' },
         templates: { title: 'Canned Responses & Templates', sub: 'Insert pre-saved professional replies with 1 click', icon: 'file-text', color: 'bg-indigo-100 text-indigo-700' }
       }[tabName];
 
@@ -2751,7 +2765,7 @@ try {
         daysHtml += '<button onclick="selectCalendarDate(\'' + fullDate + '\')" class="h-8 rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition cursor-pointer relative ' +
           (isSelected ? 'bg-cyan-600 text-white font-bold shadow-2xs' : (isToday ? 'bg-cyan-50 text-cyan-800 font-bold border border-cyan-300' : 'hover:bg-slate-100 text-slate-700')) + '">' +
           '<span>' + d + '</span>' +
-          (hasEvents ? '<span class="w-1 h-1 rounded-full ' + (isSelected ? 'bg-white' : 'bg-cyan-500') + ' absolute bottom-1"></span>' : '') +
+          (hasEvents ? '<span class="w-1.5 h-1.5 rounded-full ' + (isSelected ? 'bg-white' : 'bg-cyan-500') + ' absolute bottom-1"></span>' : '') +
           '</button>';
       }
 
@@ -2761,7 +2775,7 @@ try {
       if (dayEvents.length === 0) {
         eventsListHtml = '<div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">' +
           '<i data-lucide="calendar-x" class="h-6 w-6 mx-auto mb-1.5 opacity-60"></i>' +
-          '<p class="text-xs font-medium">No events scheduled for ' + selectedCalendarDate + '</p>' +
+          '<p class="text-xs font-medium">No events scheduled for ' + escapeHtml(selectedCalendarDate) + '</p>' +
           '<button onclick="showQuickAddEvent()" class="mt-2 text-xs font-bold text-cyan-600 hover:underline cursor-pointer">+ Schedule Event</button>' +
           '</div>';
       } else {
@@ -2772,7 +2786,7 @@ try {
               '<div class="min-w-0">' +
                 '<p class="text-xs font-bold text-slate-900 truncate leading-snug">' + escapeHtml(ev.title) + '</p>' +
                 '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
-                  '<span class="font-mono font-medium text-slate-600">' + ev.start_time + ' - ' + ev.end_time + '</span>' +
+                  '<span class="font-mono font-medium text-slate-600">' + escapeHtml(ev.start_time) + ' - ' + escapeHtml(ev.end_time) + '</span>' +
                   (ev.location ? '<span>• ' + escapeHtml(ev.location) + '</span>' : '') +
                 '</div>' +
                 (ev.notes ? '<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">' + escapeHtml(ev.notes) + '</p>' : '') +
@@ -2801,7 +2815,7 @@ try {
       '<div class="flex items-center justify-between pt-1">' +
         '<h4 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">' +
           '<i data-lucide="clock" class="h-3.5 w-3.5 text-cyan-600"></i>' +
-          '<span>Schedule for ' + selectedCalendarDate + '</span>' +
+          '<span>Schedule for ' + escapeHtml(selectedCalendarDate) + '</span>' +
         '</h4>' +
         '<button onclick="showQuickAddEvent()" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 transition flex items-center gap-1 cursor-pointer">' +
           '<i data-lucide="plus" class="h-3.5 w-3.5"></i>' +
@@ -2809,7 +2823,7 @@ try {
         '</button>' +
       '</div>' +
       '<div id="quick-add-event-form" class="hidden p-3.5 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-2.5 animate-in fade-in duration-100">' +
-        '<input type="text" id="ev-input-title" placeholder="Event title or meeting..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />' +
+        '<input type="text" id="ev-input-title" placeholder="Event title or meeting..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 font-semibold" />' +
         '<div class="grid grid-cols-2 gap-2">' +
           '<input type="time" id="ev-input-start" value="10:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />' +
           '<input type="time" id="ev-input-end" value="11:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />' +
@@ -2818,10 +2832,11 @@ try {
         '<div class="flex items-center justify-between pt-1">' +
           '<div class="flex items-center gap-1.5">' +
             '<label class="text-[10px] text-slate-400 font-bold uppercase">Color:</label>' +
-            '<button onclick="setEventColor(\'#06b6d4\')" class="w-3.5 h-3.5 rounded-full bg-cyan-500 border border-white shadow-2xs"></button>' +
-            '<button onclick="setEventColor(\'#a855f7\')" class="w-3.5 h-3.5 rounded-full bg-purple-500 border border-white shadow-2xs"></button>' +
-            '<button onclick="setEventColor(\'#10b981\')" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white shadow-2xs"></button>' +
-            '<button onclick="setEventColor(\'#ef4444\')" class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#06b6d4\')" class="w-4 h-4 rounded-full bg-cyan-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#a855f7\')" class="w-4 h-4 rounded-full bg-purple-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#10b981\')" class="w-4 h-4 rounded-full bg-emerald-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#ef4444\')" class="w-4 h-4 rounded-full bg-rose-500 border border-white shadow-2xs"></button>' +
+            '<button onclick="setEventColor(\'#f59e0b\')" class="w-4 h-4 rounded-full bg-amber-500 border border-white shadow-2xs"></button>' +
           '</div>' +
           '<div class="flex items-center gap-1.5">' +
             '<button onclick="hideQuickAddEvent()" class="px-2.5 py-1 rounded-lg text-xs text-slate-500 hover:bg-slate-200/60 font-semibold cursor-pointer">Cancel</button>' +
@@ -2850,43 +2865,60 @@ try {
       if (f) f.classList.add('hidden');
     }
 
-    let activeEventColor = '#06b6d4';
     function setEventColor(colorHex) {
       activeEventColor = colorHex;
     }
 
     async function saveCalendarEventAction() {
-      const title = document.getElementById('ev-input-title').value.trim();
-      const start = document.getElementById('ev-input-start').value;
-      const end = document.getElementById('ev-input-end').value;
-      const loc = document.getElementById('ev-input-loc').value.trim();
+      try {
+        const titleEl = document.getElementById('ev-input-title');
+        const startEl = document.getElementById('ev-input-start');
+        const endEl = document.getElementById('ev-input-end');
+        const locEl = document.getElementById('ev-input-loc');
+        if (!titleEl) return;
 
-      if (!title) return alert('Please enter an event title');
+        const title = titleEl.value.trim();
+        const start = startEl ? startEl.value : '10:00';
+        const end = endEl ? endEl.value : '11:00';
+        const loc = locEl ? locEl.value.trim() : '';
 
-      await fetch('/api/calendar/events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title,
-          date: selectedCalendarDate,
-          start_time: start,
-          end_time: end,
-          location: loc,
-          color: activeEventColor
-        })
-      });
+        if (!title) return alert('Please enter an event title');
 
-      renderDrawerContent('calendar');
+        const res = await fetch('/api/calendar/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title,
+            date: selectedCalendarDate,
+            start_time: start,
+            end_time: end,
+            location: loc,
+            color: activeEventColor
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save event');
+
+        hideQuickAddEvent();
+        titleEl.value = '';
+        renderDrawerContent('calendar');
+      } catch (err) {
+        alert('Error saving calendar event: ' + (err.message || err));
+      }
     }
 
     async function deleteCalendarEvent(id) {
       if (!confirm('Delete this event?')) return;
-      await fetch('/api/calendar/events?id=' + encodeURIComponent(id), { method: 'DELETE' });
-      renderDrawerContent('calendar');
+      try {
+        await fetch('/api/calendar/events?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('calendar');
+      } catch (err) {
+        alert('Error deleting event: ' + err.message);
+      }
     }
 
     // =========================================================================
-    // NOTES SECTION
+    // NOTES SECTION (Pastel Sticky Cards & Categories)
     // =========================================================================
     async function loadNotesView(container) {
       const res = await fetch('/api/notes');
@@ -2906,7 +2938,7 @@ try {
           '</div>' +
           '<p class="text-xs text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">' + escapeHtml(n.content) + '</p>' +
           '<div class="flex items-center justify-between text-[10px] text-slate-500/80 pt-1 border-t border-black/5">' +
-            '<span class="font-mono">' + (n.category || 'general') + '</span>' +
+            '<span class="font-mono uppercase font-bold">' + escapeHtml(n.category || 'general') + '</span>' +
             '<span>' + new Date(n.created_at || Date.now()).toLocaleDateString() + '</span>' +
           '</div>' +
         '</div>';
@@ -2917,7 +2949,7 @@ try {
           '<i data-lucide="search" class="h-3.5 w-3.5 text-slate-400 absolute left-3 top-2.5"></i>' +
           '<input type="text" oninput="filterNotesLive(this.value)" placeholder="Search sticky notes..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white" />' +
         '</div>' +
-        '<button onclick="showQuickAddNote()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer">' +
+        '<button onclick="showQuickAddNote()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer shadow-2xs">' +
           '<i data-lucide="plus" class="h-3.5 w-3.5 text-white"></i>' +
           '<span>New Note</span>' +
         '</button>' +
@@ -2926,7 +2958,7 @@ try {
         '<input type="text" id="note-input-title" placeholder="Note Title..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 font-bold" />' +
         '<textarea id="note-input-body" rows="3" placeholder="Write thoughts, checklists, or key details..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 leading-normal"></textarea>' +
         '<div class="flex items-center justify-between pt-1">' +
-          '<div class="flex items-center gap-1">' +
+          '<div class="flex items-center gap-1.5">' +
             '<button onclick="setNoteColor(\'#fef08a\')" title="Sunny Yellow" class="w-4 h-4 rounded-full bg-amber-200 border border-amber-300"></button>' +
             '<button onclick="setNoteColor(\'#bbf7d0\')" title="Mint Green" class="w-4 h-4 rounded-full bg-emerald-200 border border-emerald-300"></button>' +
             '<button onclick="setNoteColor(\'#fed7aa\')" title="Peach Coral" class="w-4 h-4 rounded-full bg-orange-200 border border-orange-300"></button>' +
@@ -2939,7 +2971,7 @@ try {
           '</div>' +
         '</div>' +
       '</div>' +
-      '<div id="notes-grid-list" class="space-y-3">' + notesHtml + '</div>';
+      '<div id="notes-grid-list" class="space-y-3">' + (notesHtml || '<div class="py-8 text-center text-slate-400 text-xs">No notes saved yet. Click "+ New Note" to write one.</div>') + '</div>';
     }
 
     function showQuickAddNote() {
@@ -2955,46 +2987,76 @@ try {
       if (el) el.classList.add('hidden');
     }
 
-    let activeNoteColor = '#fef08a';
     function setNoteColor(c) {
       activeNoteColor = c;
     }
 
     async function saveNoteAction() {
-      const title = document.getElementById('note-input-title').value.trim();
-      const content = document.getElementById('note-input-body').value.trim();
-      if (!title && !content) return alert('Please enter note title or body');
+      try {
+        const titleEl = document.getElementById('note-input-title');
+        const contentEl = document.getElementById('note-input-body');
+        if (!titleEl || !contentEl) return;
 
-      await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title || 'Untitled Note',
-          content: content,
-          color: activeNoteColor
-        })
-      });
+        const title = titleEl.value.trim();
+        const content = contentEl.value.trim();
+        if (!title && !content) return alert('Please enter note title or body');
 
-      renderDrawerContent('notes');
+        const res = await fetch('/api/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title || 'Untitled Note',
+            content: content,
+            color: activeNoteColor
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save note');
+
+        hideQuickAddNote();
+        titleEl.value = '';
+        contentEl.value = '';
+        renderDrawerContent('notes');
+      } catch (err) {
+        alert('Error saving note: ' + (err.message || err));
+      }
     }
 
     async function deleteNoteAction(id) {
-      if (!confirm('Delete note?')) return;
-      await fetch('/api/notes?id=' + encodeURIComponent(id), { method: 'DELETE' });
-      renderDrawerContent('notes');
+      if (!confirm('Delete this note?')) return;
+      try {
+        await fetch('/api/notes?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('notes');
+      } catch (err) {
+        alert('Error deleting note: ' + err.message);
+      }
     }
 
-    function filterNotesLive(q) {
-      const term = (q || '').toLowerCase();
-      const cards = document.querySelectorAll('#notes-grid-list > div');
-      cards.forEach(function(c) {
-        const text = c.innerText.toLowerCase();
-        c.style.display = text.includes(term) ? '' : 'none';
+    function filterNotesLive(query) {
+      query = (query || '').toLowerCase();
+      const list = document.getElementById('notes-grid-list');
+      if (!list) return;
+
+      const filtered = cachedUserNotes.filter(function(n) {
+        return (n.title || '').toLowerCase().includes(query) || (n.content || '').toLowerCase().includes(query);
       });
+
+      list.innerHTML = filtered.map(function(n) {
+        return '<div class="p-3.5 rounded-2xl shadow-2xs border border-slate-200/70 space-y-2 group transition hover:shadow-xs relative" style="background-color: ' + (n.color || '#fef08a') + '">' +
+          '<div class="flex items-start justify-between gap-2">' +
+            '<h4 class="text-xs font-bold text-slate-900 leading-snug truncate">' + escapeHtml(n.title) + '</h4>' +
+            '<button onclick="deleteNoteAction(\'' + n.id + '\')" class="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer">' +
+              '<i data-lucide="trash" class="h-3 w-3"></i>' +
+            '</button>' +
+          '</div>' +
+          '<p class="text-xs text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">' + escapeHtml(n.content) + '</p>' +
+        '</div>';
+      }).join('');
+      if (window.lucide) lucide.createIcons();
     }
 
     // =========================================================================
-    // TASKS / TO-DO INTEGRATION
+    // TASKS & ACTIONABLE TO-DO LIST
     // =========================================================================
     async function loadTasksView(container) {
       const res = await fetch('/api/tasks');
@@ -3002,15 +3064,17 @@ try {
       cachedUserTasks = data.tasks || [];
 
       const tasksHtml = cachedUserTasks.map(function(t) {
-        return '<div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group ' + (t.is_completed ? 'opacity-50' : '') + '">' +
-          '<div class="flex items-start gap-2.5 min-w-0">' +
-            '<input type="checkbox" onchange="toggleTaskAction(\'' + t.id + '\', this.checked)" ' + (t.is_completed ? 'checked' : '') + ' class="mt-1 h-4 w-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer" />' +
+        const isDone = Boolean(Number(t.is_completed));
+        const priColor = { high: 'bg-rose-50 text-rose-700 border-rose-200', medium: 'bg-amber-50 text-amber-700 border-amber-200', low: 'bg-slate-100 text-slate-600 border-slate-200' }[t.priority || 'medium'];
+
+        return '<div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs flex items-center justify-between gap-3 group transition hover:shadow-xs">' +
+          '<div class="flex items-center gap-2.5 min-w-0">' +
+            '<input type="checkbox" ' + (isDone ? 'checked' : '') + ' onchange="toggleTaskAction(\'' + t.id + '\', this.checked)" class="w-4 h-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer shrink-0" />' +
             '<div class="min-w-0">' +
-              '<p class="text-xs font-bold text-slate-900 leading-snug truncate ' + (t.is_completed ? 'line-through text-slate-400' : '') + '">' + escapeHtml(t.title) + '</p>' +
-              '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">' +
-                '<span class="px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ' +
-                  (t.priority === 'high' ? 'bg-rose-50 text-rose-600 border border-rose-200/80' : (t.priority === 'medium' ? 'bg-amber-50 text-amber-600 border border-amber-200/80' : 'bg-slate-100 text-slate-600')) + '">' + t.priority + '</span>' +
-                (t.due_date ? '<span>📅 ' + t.due_date + '</span>' : '') +
+              '<p class="text-xs font-bold text-slate-900 truncate ' + (isDone ? 'line-through text-slate-400' : '') + '">' + escapeHtml(t.title) + '</p>' +
+              '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
+                '<span class="px-1.5 py-0.5 rounded border uppercase font-mono font-bold ' + priColor + '">' + escapeHtml(t.priority) + '</span>' +
+                (t.due_date ? '<span class="font-mono text-slate-500">Due: ' + escapeHtml(t.due_date) + '</span>' : '') +
                 (t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">✉️ ' + escapeHtml(t.linked_email_subject) + '</span>' : '') +
               '</div>' +
             '</div>' +
@@ -3025,55 +3089,75 @@ try {
         '<input type="text" id="task-input-title" placeholder="Add actionable task or milestone..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />' +
         '<div class="flex items-center justify-between">' +
           '<div class="flex items-center gap-2">' +
-            '<select id="task-input-priority" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600">' +
+            '<select id="task-input-priority" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-semibold">' +
               '<option value="medium">Medium Priority</option>' +
               '<option value="high">High Priority</option>' +
               '<option value="low">Low Priority</option>' +
             '</select>' +
             '<input type="date" id="task-input-due" value="' + new Date().toISOString().split('T')[0] + '" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-mono" />' +
           '</div>' +
-          '<button onclick="saveTaskAction()" class="px-3 py-1 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-lg shadow-2xs cursor-pointer">Add Task</button>' +
+          '<button onclick="saveTaskAction()" class="px-3.5 py-1 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-lg shadow-2xs cursor-pointer">Add Task</button>' +
         '</div>' +
       '</div>' +
       '<div class="flex items-center justify-between text-xs font-bold text-slate-700 pt-1">' +
-        '<span>Active Tasks (' + cachedUserTasks.filter(function(t) { return !t.is_completed; }).length + ')</span>' +
-        '<span class="text-[10px] text-slate-400 font-mono">' + cachedUserTasks.filter(function(t) { return t.is_completed; }).length + ' Done</span>' +
+        '<span>Active Tasks (' + cachedUserTasks.filter(function(t) { return !Number(t.is_completed); }).length + ')</span>' +
+        '<span class="text-[10px] text-slate-400 font-mono">' + cachedUserTasks.filter(function(t) { return Boolean(Number(t.is_completed)); }).length + ' Completed</span>' +
       '</div>' +
-      '<div class="space-y-2">' + tasksHtml + '</div>';
+      '<div class="space-y-2">' + (tasksHtml || '<div class="py-6 text-center text-slate-400 text-xs">No tasks found. Add a new task above!</div>') + '</div>';
     }
 
     async function saveTaskAction() {
-      const title = document.getElementById('task-input-title').value.trim();
-      const priority = document.getElementById('task-input-priority').value;
-      const due = document.getElementById('task-input-due').value;
+      try {
+        const titleEl = document.getElementById('task-input-title');
+        const priEl = document.getElementById('task-input-priority');
+        const dueEl = document.getElementById('task-input-due');
+        if (!titleEl) return;
 
-      if (!title) return alert('Please enter a task title');
+        const title = titleEl.value.trim();
+        const priority = priEl ? priEl.value : 'medium';
+        const due = dueEl ? dueEl.value : new Date().toISOString().split('T')[0];
 
-      await fetch('/api/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title, priority: priority, due_date: due })
-      });
+        if (!title) return alert('Please enter a task title');
 
-      renderDrawerContent('tasks');
+        const res = await fetch('/api/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, priority: priority, due_date: due })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save task');
+
+        titleEl.value = '';
+        renderDrawerContent('tasks');
+      } catch (err) {
+        alert('Error saving task: ' + (err.message || err));
+      }
     }
 
     async function toggleTaskAction(id, isCompleted) {
-      await fetch('/api/tasks/toggle', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, is_completed: isCompleted ? 1 : 0 })
-      });
-      renderDrawerContent('tasks');
+      try {
+        await fetch('/api/tasks/toggle', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id, is_completed: isCompleted ? 1 : 0 })
+        });
+        renderDrawerContent('tasks');
+      } catch (err) {
+        alert('Error updating task: ' + err.message);
+      }
     }
 
     async function deleteTaskAction(id) {
-      await fetch('/api/tasks?id=' + encodeURIComponent(id), { method: 'DELETE' });
-      renderDrawerContent('tasks');
+      try {
+        await fetch('/api/tasks?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('tasks');
+      } catch (err) {
+        alert('Error deleting task: ' + err.message);
+      }
     }
 
     // =========================================================================
-    // ATTACHMENTS & MEDIA GALLERY DASHBOARD
+    // ATTACHMENTS & MEDIA GALLERY DASHBOARD (With Direct Upload & Download)
     // =========================================================================
     async function loadAttachmentsView(container) {
       const res = await fetch('/api/attachments/dashboard');
@@ -3083,53 +3167,126 @@ try {
       const itemsHtml = cachedAttachments.map(function(att) {
         const isImg = (att.mime_type || '').startsWith('image/');
         const isPdf = (att.mime_type || '').includes('pdf');
-        const sizeMb = (att.size_bytes / 1024 / 1024).toFixed(1) + ' MB';
+        const isZip = (att.mime_type || '').includes('zip') || (att.filename || '').endsWith('.zip');
+        const sizeMb = (att.size_bytes ? (att.size_bytes / 1024 / 1024).toFixed(1) + ' MB' : '1.2 MB');
 
         return '<div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-center justify-between gap-3 group">' +
           '<div class="flex items-center gap-3 min-w-0">' +
             '<div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ' +
-              (isImg ? 'bg-amber-50 text-amber-600' : (isPdf ? 'bg-rose-50 text-rose-600' : 'bg-cyan-50 text-cyan-600')) + '">' +
-              '<i data-lucide="' + (isImg ? 'image' : (isPdf ? 'file-text' : 'file')) + '" class="h-5 w-5"></i>' +
+              (isImg ? 'bg-amber-50 text-amber-600' : (isPdf ? 'bg-rose-50 text-rose-600' : (isZip ? 'bg-emerald-50 text-emerald-600' : 'bg-cyan-50 text-cyan-600'))) + '">' +
+              '<i data-lucide="' + (isImg ? 'image' : (isPdf ? 'file-text' : (isZip ? 'archive' : 'file'))) + '" class="h-5 w-5"></i>' +
             '</div>' +
             '<div class="min-w-0">' +
               '<p class="text-xs font-bold text-slate-800 truncate">' + escapeHtml(att.original_name || att.filename) + '</p>' +
               '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
-                '<span class="font-mono">' + sizeMb + '</span>' +
-                (att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : '') +
+                '<span class="font-mono font-medium text-slate-600">' + sizeMb + '</span>' +
+                (att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : '<span>☁️ Vault File</span>') +
               '</div>' +
             '</div>' +
           '</div>' +
-          '<a href="/api/attachments/' + att.id + '/download" download class="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition shrink-0" title="Download File">' +
-            '<i data-lucide="download" class="h-4 w-4"></i>' +
-          '</a>' +
+          '<div class="flex items-center gap-1.5 shrink-0">' +
+            '<a href="/api/attachments/' + att.id + '/download" download class="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition" title="Download File">' +
+              '<i data-lucide="download" class="h-4 w-4"></i>' +
+            '</a>' +
+            '<button onclick="deleteAttachmentAction(\'' + att.id + '\')" class="opacity-0 group-hover:opacity-100 p-2 rounded-xl text-slate-300 hover:text-rose-600 transition cursor-pointer" title="Delete File">' +
+              '<i data-lucide="trash" class="h-3.5 w-3.5"></i>' +
+            '</button>' +
+          '</div>' +
         '</div>';
       }).join('');
 
       container.innerHTML = '<div class="flex items-center justify-between">' +
-        '<p class="text-xs font-bold text-slate-800">Mailbox Attachments (' + cachedAttachments.length + ')</p>' +
-        '<span class="text-[10px] text-slate-400 font-mono">Visual Index</span>' +
+        '<div>' +
+          '<p class="text-xs font-bold text-slate-800">Files & Attachments (' + cachedAttachments.length + ')</p>' +
+          '<span class="text-[10px] text-slate-400 font-mono">SSD Encrypted Storage</span>' +
+        '</div>' +
+        '<button onclick="toggleQuickAddFile()" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs">' +
+          '<i data-lucide="upload-cloud" class="h-3.5 w-3.5"></i>' +
+          '<span>Upload File</span>' +
+        '</button>' +
       '</div>' +
-      '<div class="space-y-2">' + itemsHtml + '</div>';
+      '<div id="quick-add-file-card" class="hidden p-3.5 rounded-2xl bg-purple-50/70 border border-purple-200/90 space-y-2 animate-in fade-in duration-100">' +
+        '<input type="file" id="attachment-file-input" class="hidden" onchange="handleFileUploadAction(event)" />' +
+        '<div onclick="document.getElementById(\'attachment-file-input\').click()" class="border-2 border-dashed border-purple-300 rounded-xl p-4 text-center cursor-pointer hover:bg-purple-100/50 transition bg-white/70">' +
+          '<i data-lucide="paperclip" class="h-6 w-6 text-purple-600 mx-auto mb-1"></i>' +
+          '<p class="text-xs font-bold text-slate-800">Click to choose a file or drag here</p>' +
+          '<p class="text-[10px] text-slate-400 mt-0.5">Supports PDF, Documents, Spreadsheets, Images, Archives up to 50MB</p>' +
+        '</div>' +
+        '<div id="upload-file-status" class="hidden text-xs text-center text-purple-700 font-bold py-1"></div>' +
+      '</div>' +
+      '<div class="space-y-2">' + (itemsHtml || '<div class="py-8 text-center text-slate-400 text-xs">No files uploaded yet. Click "+ Upload File" above!</div>') + '</div>';
+    }
+
+    function toggleQuickAddFile() {
+      const f = document.getElementById('quick-add-file-card');
+      if (f) f.classList.toggle('hidden');
+    }
+
+    async function handleFileUploadAction(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('upload-file-status');
+      if (statusEl) {
+        statusEl.classList.remove('hidden');
+        statusEl.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Uploading ' + escapeHtml(file.name) + '...';
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('/api/attachments/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to upload file');
+
+        toggleQuickAddFile();
+        renderDrawerContent('attachments');
+      } catch (err) {
+        alert('Upload Error: ' + (err.message || err));
+        if (statusEl) statusEl.classList.add('hidden');
+      }
+    }
+
+    async function deleteAttachmentAction(id) {
+      if (!confirm('Remove this file from your dashboard?')) return;
+      try {
+        await fetch('/api/attachments?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('attachments');
+      } catch (err) {
+        alert('Error removing file: ' + err.message);
+      }
     }
 
     // =========================================================================
-    // RSS & FEED READER
+    // RSS & FEED READER (With Custom Feed Subscriptions)
     // =========================================================================
     async function loadRssView(container) {
       const res = await fetch('/api/rss');
       const data = await res.json();
-      const articles = data.articles || [];
+      cachedRssFeeds = data.feeds || [];
+      cachedRssArticles = data.articles || [];
 
-      const articlesHtml = articles.map(function(art) {
+      const feedsPillsHtml = cachedRssFeeds.map(function(f) {
+        return '<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-200 shrink-0">' +
+          '<span>' + escapeHtml(f.title) + '</span>' +
+          '<button onclick="deleteFeedAction(\'' + f.id + '\')" class="text-slate-400 hover:text-rose-600 transition cursor-pointer" title="Unsubscribe">×</button>' +
+        '</div>';
+      }).join('');
+
+      const articlesHtml = cachedRssArticles.map(function(art) {
         return '<div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-rose-200 transition">' +
           '<div class="flex items-center justify-between text-[10px] text-slate-400">' +
             '<span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/60">' + escapeHtml(art.source) + '</span>' +
-            '<span>' + art.date + '</span>' +
+            '<span>' + escapeHtml(art.date) + '</span>' +
           '</div>' +
           '<h4 class="text-xs font-bold text-slate-900 leading-snug">' + escapeHtml(art.title) + '</h4>' +
           '<p class="text-[11px] text-slate-500 leading-relaxed">' + escapeHtml(art.snippet) + '</p>' +
           '<div class="flex items-center justify-between pt-1 text-[11px]">' +
-            '<span class="text-slate-400">By ' + escapeHtml(art.author || 'Editorial') + '</span>' +
+            '<span class="text-slate-400 font-medium">By ' + escapeHtml(art.author || 'Editorial') + '</span>' +
             '<a href="' + art.url + '" target="_blank" class="text-cyan-600 hover:underline font-bold flex items-center gap-1">' +
               '<span>Read Source</span>' +
               '<i data-lucide="external-link" class="h-3 w-3"></i>' +
@@ -3139,14 +3296,76 @@ try {
       }).join('');
 
       container.innerHTML = '<div class="flex items-center justify-between">' +
-        '<h3 class="text-xs font-bold text-slate-800">Subscribed Feeds</h3>' +
-        '<span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live Sync</span>' +
+        '<div>' +
+          '<h3 class="text-xs font-bold text-slate-800">Subscribed Feeds</h3>' +
+          '<span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live Sync</span>' +
+        '</div>' +
+        '<button onclick="toggleQuickAddFeed()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs">' +
+          '<i data-lucide="plus" class="h-3.5 w-3.5"></i>' +
+          '<span>Add Feed</span>' +
+        '</button>' +
       '</div>' +
-      '<div class="space-y-3">' + articlesHtml + '</div>';
+      '<div id="quick-add-feed-form" class="hidden p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200/90 space-y-2 animate-in fade-in duration-100">' +
+        '<input type="text" id="feed-input-title" placeholder="Feed Name (e.g. Ars Technica)..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-rose-500 font-bold" />' +
+        '<input type="url" id="feed-input-url" placeholder="RSS or Atom Feed URL (https://...)..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-rose-500 font-mono text-[11px]" />' +
+        '<div class="flex items-center justify-between pt-1">' +
+          '<select id="feed-input-cat" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-semibold">' +
+            '<option value="tech">Technology</option>' +
+            '<option value="news">World News</option>' +
+            '<option value="design">Design & UI</option>' +
+            '<option value="business">Business & Finance</option>' +
+            '<option value="science">Science & Space</option>' +
+          '</select>' +
+          '<div class="flex items-center gap-1.5">' +
+            '<button onclick="toggleQuickAddFeed()" class="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-200/60 rounded-lg cursor-pointer">Cancel</button>' +
+            '<button onclick="saveFeedAction()" class="px-3 py-1 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-2xs cursor-pointer">Subscribe</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="flex items-center gap-1.5 overflow-x-auto pb-1">' + feedsPillsHtml + '</div>' +
+      '<div class="space-y-3">' + (articlesHtml || '<div class="py-6 text-center text-slate-400 text-xs">No articles available.</div>') + '</div>';
+    }
+
+    function toggleQuickAddFeed() {
+      const f = document.getElementById('quick-add-feed-form');
+      if (f) f.classList.toggle('hidden');
+    }
+
+    async function saveFeedAction() {
+      try {
+        const title = document.getElementById('feed-input-title').value.trim();
+        const url = document.getElementById('feed-input-url').value.trim();
+        const cat = document.getElementById('feed-input-cat').value;
+
+        if (!title || !url) return alert('Please enter both Feed Name and RSS URL');
+
+        const res = await fetch('/api/rss', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, feed_url: url, category: cat })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to add feed');
+
+        toggleQuickAddFeed();
+        renderDrawerContent('rss');
+      } catch (err) {
+        alert('Error adding feed: ' + (err.message || err));
+      }
+    }
+
+    async function deleteFeedAction(id) {
+      if (!confirm('Unsubscribe from this feed?')) return;
+      try {
+        await fetch('/api/rss?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('rss');
+      } catch (err) {
+        alert('Error deleting feed: ' + err.message);
+      }
     }
 
     // =========================================================================
-    // TEMPLATES & CANNED RESPONSES (Clean by ID)
+    // TEMPLATES & CANNED RESPONSES (With New Template Builder)
     // =========================================================================
     async function loadTemplatesView(container) {
       const res = await fetch('/api/templates');
@@ -3154,16 +3373,21 @@ try {
       cachedTemplates = data.templates || [];
 
       const templatesHtml = cachedTemplates.map(function(tpl) {
-        return '<div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-indigo-200 transition">' +
+        return '<div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-indigo-200 transition group">' +
           '<div class="flex items-center justify-between">' +
-            '<div class="flex items-center gap-2">' +
-              '<span class="w-2 h-2 rounded-full bg-indigo-500"></span>' +
-              '<h4 class="text-xs font-bold text-slate-900">' + escapeHtml(tpl.title) + '</h4>' +
+            '<div class="flex items-center gap-2 min-w-0">' +
+              '<span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>' +
+              '<h4 class="text-xs font-bold text-slate-900 truncate">' + escapeHtml(tpl.title) + '</h4>' +
             '</div>' +
-            '<span class="text-[10px] font-mono text-slate-400 uppercase">' + tpl.category + '</span>' +
+            '<div class="flex items-center gap-1.5 shrink-0">' +
+              '<span class="text-[10px] font-mono text-slate-400 uppercase">' + escapeHtml(tpl.category) + '</span>' +
+              '<button onclick="deleteTemplateAction(\'' + tpl.id + '\')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-600 transition cursor-pointer" title="Delete Template">' +
+                '<i data-lucide="trash" class="h-3 w-3"></i>' +
+              '</button>' +
+            '</div>' +
           '</div>' +
           (tpl.subject ? '<p class="text-[11px] text-slate-500 font-medium">Subject: ' + escapeHtml(tpl.subject) + '</p>' : '') +
-          '<p class="text-[11px] text-slate-600 line-clamp-3 bg-slate-50 p-2 rounded-xl whitespace-pre-wrap font-sans">' + escapeHtml(tpl.body) + '</p>' +
+          '<p class="text-[11px] text-slate-600 line-clamp-3 bg-slate-50 p-2 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">' + escapeHtml(tpl.body) + '</p>' +
           '<div class="flex items-center justify-end gap-2 pt-1">' +
             '<button onclick="copyTemplateById(\'' + tpl.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition cursor-pointer">Copy</button>' +
             '<button onclick="insertTemplateById(\'' + tpl.id + '\')" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs transition cursor-pointer">Insert into Email</button>' +
@@ -3172,16 +3396,78 @@ try {
       }).join('');
 
       container.innerHTML = '<div class="flex items-center justify-between">' +
-        '<h3 class="text-xs font-bold text-slate-800">Canned Responses</h3>' +
-        '<span class="text-[10px] text-slate-400 font-mono">' + cachedTemplates.length + ' Saved</span>' +
+        '<div>' +
+          '<h3 class="text-xs font-bold text-slate-800">Canned Responses</h3>' +
+          '<span class="text-[10px] text-slate-400 font-mono">' + cachedTemplates.length + ' Saved</span>' +
+        '</div>' +
+        '<button onclick="toggleQuickAddTemplate()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs">' +
+          '<i data-lucide="plus" class="h-3.5 w-3.5"></i>' +
+          '<span>New Template</span>' +
+        '</button>' +
       '</div>' +
-      '<div class="space-y-3">' + templatesHtml + '</div>';
+      '<div id="quick-add-template-form" class="hidden p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200/90 space-y-2 animate-in fade-in duration-100">' +
+        '<input type="text" id="tpl-input-title" placeholder="Template Name (e.g. Support Receipt)..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 font-bold" />' +
+        '<input type="text" id="tpl-input-subj" placeholder="Email Subject Line (Optional)..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500" />' +
+        '<textarea id="tpl-input-body" rows="3" placeholder="Write pre-composed reply body..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 leading-normal"></textarea>' +
+        '<div class="flex items-center justify-between pt-1">' +
+          '<select id="tpl-input-cat" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-semibold">' +
+            '<option value="business">Business</option>' +
+            '<option value="support">Support</option>' +
+            '<option value="finance">Finance</option>' +
+            '<option value="general">General</option>' +
+          '</select>' +
+          '<div class="flex items-center gap-1.5">' +
+            '<button onclick="toggleQuickAddTemplate()" class="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-200/60 rounded-lg cursor-pointer">Cancel</button>' +
+            '<button onclick="saveTemplateAction()" class="px-3 py-1 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-2xs cursor-pointer">Save Template</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="space-y-3">' + (templatesHtml || '<div class="py-8 text-center text-slate-400 text-xs">No templates saved yet. Click "+ New Template" above!</div>') + '</div>';
+    }
+
+    function toggleQuickAddTemplate() {
+      const f = document.getElementById('quick-add-template-form');
+      if (f) f.classList.toggle('hidden');
+    }
+
+    async function saveTemplateAction() {
+      try {
+        const title = document.getElementById('tpl-input-title').value.trim();
+        const subj = document.getElementById('tpl-input-subj').value.trim();
+        const cat = document.getElementById('tpl-input-cat').value;
+        const body = document.getElementById('tpl-input-body').value.trim();
+
+        if (!title || !body) return alert('Please enter both Template Title and Body text');
+
+        const res = await fetch('/api/templates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, subject: subj, category: cat, body: body })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save template');
+
+        toggleQuickAddTemplate();
+        renderDrawerContent('templates');
+      } catch (err) {
+        alert('Error saving template: ' + (err.message || err));
+      }
+    }
+
+    async function deleteTemplateAction(id) {
+      if (!confirm('Delete this template?')) return;
+      try {
+        await fetch('/api/templates?id=' + encodeURIComponent(id), { method: 'DELETE' });
+        renderDrawerContent('templates');
+      } catch (err) {
+        alert('Error deleting template: ' + err.message);
+      }
     }
 
     function insertTemplateById(tplId) {
       const tpl = cachedTemplates.find(function(t) { return t.id === tplId; });
       if (!tpl) return;
-      openComposeCard();
+      if (typeof openComposeCard === 'function') openComposeCard();
       const bodyEl = document.getElementById('compose-body');
       const subjEl = document.getElementById('compose-subject');
       if (bodyEl) bodyEl.value = tpl.body;
@@ -3192,7 +3478,9 @@ try {
     function copyTemplateById(tplId) {
       const tpl = cachedTemplates.find(function(t) { return t.id === tplId; });
       if (!tpl) return;
-      navigator.clipboard.writeText(tpl.body);
+      if (navigator && navigator.clipboard) {
+        navigator.clipboard.writeText(tpl.body);
+      }
       alert('Template copied to clipboard!');
     }
 
