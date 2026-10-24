@@ -2,10 +2,10 @@
 <html lang="en" class="theme-light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raccon World Stories &bull; Folktales, Myths &amp; Cultural Fables</title>
-  <meta name="description" content="Raccon World Stories Library — Over 175 traditional folktales, fables, and cultural myths from around the globe. Read complete illustrated tales directly on Raccon Mail with zero ads and zero tracking." />
-  <meta name="keywords" content="raccon stories, world stories, folktales, cultural fables, traditional myths, free illustrated stories, racconmail" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Raccon Stories &bull; Web Fiction, Novels &amp; Story Wall</title>
+  <meta name="description" content="Raccon Stories — A modern community for readers and writers. Read and post romance, fantasy, sci-fi, webnovels, litrpg, fanfiction, and serialized stories." />
+  <meta name="keywords" content="raccon stories, webnovels, fiction, romance, fantasy, scifi, litrpg, isekai, stories wall, creative writing" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <link rel="canonical" href="https://racconmail.eu/stories" />
 
@@ -13,35 +13,30 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://racconmail.eu/stories" />
   <meta property="og:site_name" content="Raccon Mail" />
-  <meta property="og:title" content="Raccon World Stories — Folktales &amp; Cultural Fables" />
-  <meta property="og:description" content="Over 175 traditional folktales and myths from around the globe. Read complete illustrated stories with zero ads." />
+  <meta property="og:title" content="Raccon Stories &bull; Web Fiction, Novels &amp; Story Wall" />
+  <meta property="og:description" content="A modern community for readers and writers. Read and post romance, fantasy, sci-fi, webnovels, litrpg, and serialized stories." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:url" content="https://racconmail.eu/stories" />
-  <meta name="twitter:title" content="Raccon World Stories — Folktales &amp; Cultural Fables" />
-  <meta name="twitter:description" content="Over 175 traditional folktales and myths from around the globe. Read complete illustrated stories with zero ads." />
+  <meta name="twitter:title" content="Raccon Stories &bull; Web Fiction, Novels &amp; Story Wall" />
+  <meta name="twitter:description" content="A modern community for readers and writers. Read and post romance, fantasy, sci-fi, webnovels, and serialized stories." />
   <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
-  
-  <!-- Comprehensive Favicon Suite for Google Search & All Browsers -->
+
+  <!-- Comprehensive Favicon Suite -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#0F172A" />
+  <meta name="theme-color" content="#FFFFFF" />
 
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
-  <script>
-    (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
-    })();
-  </script>
+  <!-- Google Fonts Preconnect & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -51,18 +46,20 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             display: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-            serif: ['"Merriweather"', 'Georgia', 'serif']
+            serif: ['"Newsreader"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            obsidian: '#080c14',
-            surface: {
-              DEFAULT: '#0f172a',
-              card: '#111c33',
-              hover: '#172545',
-              border: 'rgba(255, 255, 255, 0.08)'
+            flarum: {
+              bg: '#F2F4F7',
+              card: '#FFFFFF',
+              border: '#E2E8F0',
+              text: '#1E293B',
+              muted: '#64748B',
+              primary: '#0F172A',
+              accent: '#3B82F6'
             }
           }
         }
@@ -70,633 +67,1783 @@
     }
   </script>
 
-  <!-- Lucide Icons & FontAwesome -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="/css/raccoon-mail.css" />
-
   <style>
+    /* Custom Modern Stories Styles (Matching Forum Aesthetics) */
     html, body {
+      background-color: #F2F4F7;
+      color: #1E293B;
+      font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, sans-serif;
       min-height: 100%;
-      height: auto;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
     }
-    body {
-      background-color: #FFFFFF !important;
-      color: #0F172A !important;
-      transition: background-color 0.2s ease, color 0.2s ease;
+
+    * {
+      -webkit-tap-highlight-color: transparent;
     }
-    .glass-nav {
-      background: #FFFFFF !important;
-      border-bottom: 1px solid var(--border, #E2E8F0);
+
+    /* Tag Badge Colors for Story Genres */
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      transition: all 0.15s ease;
+      cursor: pointer;
     }
-    .glass-card {
-      background: #FFFFFF !important;
-      border: 1px solid var(--border, #E2E8F0);
-      color: #0F172A !important;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    .tag-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
+    /* Genre Specific Palette */
+    .tag-romance { background-color: #FCE7F3; color: #BE185D; }
+    .tag-romance .tag-badge-dot { background-color: #BE185D; }
+
+    .tag-fantasy { background-color: #EDE9FE; color: #6D28D9; }
+    .tag-fantasy .tag-badge-dot { background-color: #6D28D9; }
+
+    .tag-scifi { background-color: #CFFAFE; color: #0E7490; }
+    .tag-scifi .tag-badge-dot { background-color: #0E7490; }
+
+    .tag-horror { background-color: #FEE2E2; color: #B91C1C; }
+    .tag-horror .tag-badge-dot { background-color: #B91C1C; }
+
+    .tag-mystery { background-color: #E2E8F0; color: #334155; }
+    .tag-mystery .tag-badge-dot { background-color: #334155; }
+
+    .tag-adventure { background-color: #FEF3C7; color: #B45309; }
+    .tag-adventure .tag-badge-dot { background-color: #B45309; }
+
+    .tag-historical { background-color: #FFEDD5; color: #C2410C; }
+    .tag-historical .tag-badge-dot { background-color: #C2410C; }
+
+    .tag-humor { background-color: #ECFCCB; color: #4D7C0F; }
+    .tag-humor .tag-badge-dot { background-color: #4D7C0F; }
+
+    .tag-drama { background-color: #CCFBF1; color: #0F766E; }
+    .tag-drama .tag-badge-dot { background-color: #0F766E; }
+
+    .tag-fanfic { background-color: #FAE8FF; color: #86198F; }
+    .tag-fanfic .tag-badge-dot { background-color: #86198F; }
+
+    .tag-paranormal { background-color: #FFE4E6; color: #9F1239; }
+    .tag-paranormal .tag-badge-dot { background-color: #9F1239; }
+
+    .tag-billionaire { background-color: #D1FAE5; color: #047857; }
+    .tag-billionaire .tag-badge-dot { background-color: #047857; }
+
+    .tag-litrpg { background-color: #E0E7FF; color: #4338CA; }
+    .tag-litrpg .tag-badge-dot { background-color: #4338CA; }
+
+    .tag-isekai { background-color: #E0F2FE; color: #0369A1; }
+    .tag-isekai .tag-badge-dot { background-color: #0369A1; }
+
+    .tag-ya { background-color: #FFE4E6; color: #E11D48; }
+    .tag-ya .tag-badge-dot { background-color: #E11D48; }
+
+    .tag-na { background-color: #DBEAFE; color: #1D4ED8; }
+    .tag-na .tag-badge-dot { background-color: #1D4ED8; }
+
+    .tag-children { background-color: #FFEDD5; color: #EA580C; }
+    .tag-children .tag-badge-dot { background-color: #EA580C; }
+
+    .tag-general { background-color: #F1F5F9; color: #475569; }
+    .tag-general .tag-badge-dot { background-color: #475569; }
+
+    .tag-poetry { background-color: #D1FAE5; color: #065F46; }
+    .tag-poetry .tag-badge-dot { background-color: #065F46; }
+
+    .tag-short { background-color: #FCE7F3; color: #9D174D; }
+    .tag-short .tag-badge-dot { background-color: #9D174D; }
+
+    /* Flarum Card Transition */
+    .story-card-item {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateZ(0);
+      will-change: transform, box-shadow;
+    }
+    .story-card-item:hover {
+      box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08);
+      border-color: #CBD5E1;
+      transform: translateY(-1px);
+    }
+
+    /* Active Nav Item */
+    .nav-item-active {
+      background-color: #0F172A !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
+    .nav-item-active i {
+      color: #FFFFFF !important;
+    }
+
+    /* Reader Theme Modes */
+    .reader-theme-light { background-color: #FFFFFF; color: #1E293B; }
+    .reader-theme-sepia { background-color: #FAF5EB; color: #433422; }
+    .reader-theme-dark  { background-color: #0F172A; color: #F1F5F9; }
+
+    /* Floating slide-up composer drawer */
+    #composer-drawer {
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+    }
+    #composer-drawer.composer-hidden {
+      transform: translateY(110%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #composer-drawer.composer-minimized {
+      height: 48px !important;
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
     }
   </style>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
 </head>
-<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white font-sans">
+<body class="min-h-screen flex flex-col bg-[#F2F4F7] text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
 
-  <!-- TOP NAVIGATION HEADER (Matching Inbox Bubble White Design) -->
-  <header class="w-full sticky top-0 z-40 bg-white border-b border-slate-200/80 shadow-xs" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
-      <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
-      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
-        <a href="/inbox" class="flex items-center gap-2 group shrink-0" title="Return to Raccon Mail Inbox">
-          <img src="/raccoon-logo.png" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
-          <div class="leading-none shrink-0">
-            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-500 tracking-tight flex items-center gap-1.5" style="color: #64748b !important;">
-              <span>Raccon Stories</span>
-              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">175+ Tales</span>
-            </span>
-            <span class="text-[10px] text-slate-400 hidden sm:inline">Folktales &bull; Myths &bull; Global Fables</span>
-          </div>
+  <!-- =========================================================================
+       STORIES HEADER NAVIGATION (MATCHING FORUM)
+       ========================================================================= -->
+  <header class="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Shortcuts -->
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="/stories" class="flex items-center gap-2.5 font-display text-lg sm:text-xl font-extrabold text-slate-900 hover:opacity-90 transition" title="Raccon Stories Home">
+          <img src="/raccoon-logo.png" alt="Raccon Mascot" class="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-xs" />
+          <span class="tracking-tight font-extrabold text-slate-900">Raccon <span class="text-purple-600 font-bold">Stories</span></span>
+        </a>
+        <a href="/forum" class="hidden sm:inline-flex items-center gap-1.5 ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Raccon Forum">
+          <i class="fas fa-comments text-[10px]"></i>
+          <span>Forum</span>
+        </a>
+        <a href="/inbox" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Webmail Inbox">
+          <i class="fas fa-inbox text-[10px]"></i>
+          <span>Webmail</span>
         </a>
       </div>
 
-      <!-- Live Stories Search -->
-      <div class="flex-1 max-w-md mx-2 hidden md:block">
-        <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.3)]"></i>
-          <input
-            id="stories-search-input"
-            type="text"
-            oninput="handleStoriesSearch(this.value)"
-            placeholder="Search folktales, countries, themes..."
-            class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
-            style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
+      <!-- Global Search Bar -->
+      <div class="flex-1 max-w-xl mx-auto relative hidden md:block">
+        <div class="relative w-full">
+          <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input 
+            type="text" 
+            id="story-search-input" 
+            placeholder="Search stories by title, author, genre, trope... (Ctrl + K)" 
+            class="w-full bg-slate-100/90 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-slate-300 rounded-full pl-10 pr-10 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
+            oninput="handleLiveSearch(this.value)"
           />
+          <button id="clear-search-btn" onclick="clearLiveSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+            <i class="fas fa-times-circle text-xs"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Action Navigation Links (Compact icon buttons on mobile: NEVER overlaps logo) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="stories-auth-bar">
-        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Webmail</span>
-        </a>
-        <a href="/news" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="News Wire">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">News</span>
-        </a>
-        <a href="/stories" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-semibold transition items-center justify-center gap-1.5 shrink-0 shadow-xs" title="World Stories">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span>Stories</span>
-        </a>
-        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
-          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Forum</span>
-        </a>
-        <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
-          <!-- Populated by JS -->
+      <!-- Auth & User Actions -->
+      <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
+        <!-- Guest View -->
+        <div id="auth-guest-group" class="flex items-center gap-2">
+          <a href="/auth?tab=login" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
+            Sign In
+          </a>
+          <a href="/auth?tab=register" class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <i class="fas fa-user-plus text-[11px]"></i>
+            <span>Sign Up</span>
+          </a>
         </div>
+
+        <!-- Authenticated View -->
+        <div id="auth-user-group" class="hidden items-center gap-3">
+          <div class="relative">
+            <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-2 p-1 pl-2 bg-slate-100 hover:bg-slate-200/80 rounded-full border border-slate-200 transition cursor-pointer">
+              <span id="user-display-name" class="text-xs font-bold text-slate-800 max-w-[110px] truncate">Author</span>
+              <img id="user-display-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs" />
+            </button>
+            
+            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs">
+              <div class="px-4 py-2 border-b border-slate-100">
+                <p class="font-bold text-slate-900 truncate" id="dropdown-user-name">User Name</p>
+                <p class="text-[11px] text-slate-500 truncate" id="dropdown-user-email">user@racconmail.eu</p>
+              </div>
+              <a href="/inbox" class="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-medium">
+                <i class="fas fa-envelope text-slate-400 w-4"></i> Webmail Inbox
+              </a>
+              <button onclick="filterMyStories()" class="w-full text-left flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-50 font-medium">
+                <i class="fas fa-book-bookmark text-slate-400 w-4"></i> My Published Stories
+              </button>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button onclick="logoutStories()" class="w-full text-left flex items-center gap-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-bold">
+                <i class="fas fa-sign-out-alt text-rose-400 w-4"></i> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
+
     </div>
   </header>
 
-  <!-- MAIN WRAPPER: 2-COLUMN COMMUNITY LAYOUT (Matching Forum Exactly) -->
-  <div class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-    <!-- LEFT / MAIN COLUMN (Catalog & Story Reader) -->
-    <main class="lg:col-span-8 space-y-5">
-
-      <!-- WELCOME HERO BANNER -->
-      <div id="stories-hero-card" class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-2 flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
-              <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>WORLD CULTURAL HERITAGE LIBRARY</span>
-            </div>
-            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Folktales, Myths &amp; Cultural Fables
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xl">
-              An ad-free cultural sanctuary with over 175 traditional stories from cultures across Europe, Asia, Africa, and the Americas. Read illustrated tales directly on site or send them as postcards.
-            </p>
-          </div>
-          <button
-            onclick="readRandomStory()"
-            class="rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
-          >
-            <i data-lucide="sparkles" class="h-4 w-4"></i>
-            <span>Surprise Story</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- CATEGORY PILL FILTER BAR (Bubble Capsule Design) -->
-      <div id="stories-filter-bar" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterStoriesCat('all')" data-cat="all" class="story-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
-          All Tales (175+)
-        </button>
-        <button onclick="filterStoriesCat('animals')" data-cat="animals" class="story-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🐾</span><span>Clever Animals</span>
-        </button>
-        <button onclick="filterStoriesCat('folktales')" data-cat="folktales" class="story-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>📜</span><span>Traditional Folktales</span>
-        </button>
-        <button onclick="filterStoriesCat('fables')" data-cat="fables" class="story-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>💡</span><span>Fables &amp; Wisdom</span>
-        </button>
-        <button onclick="filterStoriesCat('myths')" data-cat="myths" class="story-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>✨</span><span>Myths &amp; Magic</span>
-        </button>
-      </div>
-
-      <!-- STORIES CATALOG FEED CARDS (Rendered via JS) -->
-      <div id="stories-feed-container" class="space-y-4">
-        <!-- Rendered by JavaScript -->
-      </div>
-
-      <!-- Empty state -->
-      <div id="stories-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-slate-200 bg-white space-y-3">
-        <div class="h-16 w-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">📖</div>
-        <h3 class="font-display text-lg font-bold text-slate-900">No folktales found</h3>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto">Try searching a different country, title, or topic.</p>
-        <button onclick="filterStoriesCat('all')" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 mt-2 border border-slate-900">Reset Filters</button>
-      </div>
-
-      <!-- IN-PAGE FULL STORY READER (Zero Popups, Integrated) -->
-      <div id="story-reader-view" class="hidden space-y-5">
-        <!-- Reader Navigation Header -->
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-          <button onclick="closeStoryReader()" class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition cursor-pointer">
-            <i data-lucide="arrow-left" class="h-4 w-4 text-slate-600"></i>
-            <span>Back to Stories Library</span>
-          </button>
-          <div class="flex items-center gap-2">
-            <button onclick="sendCurrentStoryAsPostcard()" class="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs border border-slate-900">
-              <i data-lucide="send" class="h-3.5 w-3.5 text-white"></i>
-              <span>Send as Postcard</span>
-            </button>
-            <button onclick="shareCurrentStory()" class="p-2 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition cursor-pointer" title="Share story">
-              <i data-lucide="share-2" class="h-4 w-4 text-slate-600"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Reader Story Card -->
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 space-y-6 shadow-xs">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-            <div class="space-y-1.5">
-              <div class="flex items-center gap-2">
-                <span id="story-reader-flag" class="text-xl">🌍</span>
-                <span id="story-reader-origin" class="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full uppercase font-mono tracking-wider">Traditional Folktale</span>
-              </div>
-              <h1 id="story-reader-title" class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
-                Story Title
-              </h1>
-            </div>
-            <div id="story-reader-cover-wrap" class="shrink-0">
-              <img id="story-reader-cover" src="" class="h-20 w-20 rounded-2xl object-cover border border-slate-200 shadow-xs" onerror="this.src='/raccoon-logo.png';" />
-            </div>
-          </div>
-
-          <!-- Moral Banner -->
-          <div id="story-reader-moral-box" class="p-4 rounded-2xl bg-slate-100 border border-slate-200 flex items-start gap-3 text-xs sm:text-sm">
-            <span class="text-lg">💡</span>
-            <div>
-              <span class="font-bold text-slate-900">Moral of the Tale: </span>
-              <span id="story-reader-moral" class="text-slate-600 leading-relaxed italic">Wisdom passed through generations.</span>
-            </div>
-          </div>
-
-          <!-- Full Story Body Paragraphs -->
-          <div id="story-reader-body" class="space-y-4 font-serif text-sm sm:text-base leading-loose text-slate-800">
-            <!-- Populated via API or cached catalog -->
-          </div>
-
-          <!-- Postcard Dispatch Banner -->
-          <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="text-center sm:text-left">
-              <div class="font-bold text-sm text-slate-900">Share this folktale with a friend</div>
-              <div class="text-xs text-slate-500">Deliver this tale as an encrypted postcard directly to any mailbox.</div>
-            </div>
-            <button onclick="sendCurrentStoryAsPostcard()" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer border border-slate-900">
-              <i data-lucide="mail" class="h-4 w-4 text-white"></i>
-              <span>Compose Postcard Tale</span>
-            </button>
-          </div>
-        </article>
-      </div>
-
-    </main>
-
-    <!-- RIGHT SIDEBAR (Matching Forum Exact Design) -->
-    <aside class="lg:col-span-4 space-y-5">
-
-      <!-- Stories Library Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <div class="flex items-center gap-3">
-          <img src="/raccoon-logo.png" class="h-10 w-10 object-contain drop-shadow" alt="Raccon" />
-          <div>
-            <h3 class="font-display font-bold text-sm text-foreground">Raccon Stories Sanctuary</h3>
-            <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>175+ Traditional Folktales</span>
-            </p>
-          </div>
-        </div>
-        <p class="text-xs text-muted-foreground leading-relaxed">
-          Preserving indigenous and cultural folktales across generations. Read freely with zero paywalls, zero tracking cookies, and zero advertising.
+  <!-- =========================================================================
+       STORIES HERO WELCOME BANNER (MATCHING FORUM)
+       ========================================================================= -->
+  <section id="stories-hero" class="w-full bg-white border-b border-slate-200/80 py-6 sm:py-8 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <span>Welcome to Raccon Stories Library</span>
+          <span class="text-xl">📚</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl font-medium">
+          A modern community for readers and writers. Read and post romance, fantasy, sci-fi, webnovels, litrpg, poetry, and serialized stories with zero trackers.
         </p>
-        <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>Active Nocturnal Readers</span>
-          <span class="font-bold text-slate-700 font-mono">112 Reading Now</span>
+      </div>
+
+      <!-- Quick Action Badges -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="switchToWallView()" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition flex items-center gap-1.5 cursor-pointer">
+          <i class="fas fa-cubes text-purple-500"></i>
+          <span>Open Story Wall</span>
+        </button>
+        <button onclick="openComposerModal()" class="px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 hover:bg-black text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+          <i class="fas fa-feather-pointed text-purple-400 text-xs"></i>
+          <span>Post a Story</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       MAIN 2-COLUMN LAYOUT (FLARUM ARCHITECTURE FOR STORIES)
+       ========================================================================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- =====================================================================
+           LEFT SIDEBAR (STORIES CATEGORIES & FILTERS)
+           ===================================================================== -->
+      <aside class="lg:col-span-3 space-y-6">
+        
+        <!-- Primary "Post a Story" CTA Button -->
+        <button 
+          onclick="openComposerModal()" 
+          class="w-full py-3 px-4 rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-sm shadow-md hover:shadow-lg transition transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <i class="fas fa-feather-pointed text-purple-400"></i>
+          <span>Post a Story</span>
+        </button>
+
+        <!-- Navigation Views -->
+        <nav class="bg-white rounded-2xl border border-slate-200 p-2 shadow-2xs space-y-1">
+          <button 
+            onclick="setNavView('all')" 
+            id="nav-btn-all" 
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer nav-item-active"
+          >
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-book-open text-slate-400 w-4 text-center"></i>
+              <span>All Stories</span>
+            </div>
+            <span id="badge-all-count" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-white">0</span>
+          </button>
+
+          <button 
+            onclick="setNavView('wall')" 
+            id="nav-btn-wall" 
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+          >
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-cubes text-purple-600 w-4 text-center"></i>
+              <span>Story Wall</span>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 tracking-wide">Live</span>
+          </button>
+        </nav>
+
+        <!-- 1. FICTION GENRES -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5 px-1">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">1. Fiction Genres</span>
+            <span class="text-[10px] font-bold text-slate-400">Browse</span>
+          </div>
+
+          <div class="space-y-0.5" id="cat-group-genres">
+            <button onclick="filterByCategory('all')" id="cat-btn-all" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-900 bg-slate-100 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-layer-group text-slate-400 w-3.5 text-center"></i>
+                <span class="truncate">All Categories</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('romance')" id="cat-btn-romance" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-heart text-pink-500 w-3.5 text-center"></i>
+                <span class="truncate">Romance</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('fantasy')" id="cat-btn-fantasy" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-wand-magic-sparkles text-purple-500 w-3.5 text-center"></i>
+                <span class="truncate">Fantasy</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('scifi')" id="cat-btn-scifi" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-rocket text-cyan-500 w-3.5 text-center"></i>
+                <span class="truncate">Science Fiction</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('horror')" id="cat-btn-horror" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-ghost text-red-500 w-3.5 text-center"></i>
+                <span class="truncate">Horror</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('mystery')" id="cat-btn-mystery" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-magnifying-glass text-slate-500 w-3.5 text-center"></i>
+                <span class="truncate">Mystery &amp; Thriller</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('adventure')" id="cat-btn-adventure" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-shield-halved text-amber-500 w-3.5 text-center"></i>
+                <span class="truncate">Action &amp; Adventure</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('historical')" id="cat-btn-historical" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-landmark text-orange-500 w-3.5 text-center"></i>
+                <span class="truncate">Historical Fiction</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('humor')" id="cat-btn-humor" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-face-laugh-beam text-lime-500 w-3.5 text-center"></i>
+                <span class="truncate">Humor &amp; Comedy</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('drama')" id="cat-btn-drama" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-mug-hot text-teal-500 w-3.5 text-center"></i>
+                <span class="truncate">Drama &amp; Contemporary</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. DIGITAL & WEB-SPECIFIC -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5 px-1">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">2. Digital &amp; Webnovels</span>
+            <span class="text-[10px] font-bold text-slate-400">Web</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <button onclick="filterByCategory('fanfic')" id="cat-btn-fanfic" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-bolt text-fuchsia-500 w-3.5 text-center"></i>
+                <span class="truncate">Fanfiction</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('paranormal')" id="cat-btn-paranormal" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-moon text-rose-500 w-3.5 text-center"></i>
+                <span class="truncate">Werewolf &amp; Vampire</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('billionaire')" id="cat-btn-billionaire" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-briefcase text-emerald-500 w-3.5 text-center"></i>
+                <span class="truncate">Billionaire / CEO</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('litrpg')" id="cat-btn-litrpg" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-gamepad text-indigo-500 w-3.5 text-center"></i>
+                <span class="truncate">LitRPG / GameLit</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('isekai')" id="cat-btn-isekai" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-door-open text-sky-500 w-3.5 text-center"></i>
+                <span class="truncate">Isekai / Reincarnation</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. TARGET AUDIENCE & 4. FORMAT -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5 px-1">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">3. Audience &amp; Format</span>
+            <span class="text-[10px] font-bold text-slate-400">Style</span>
+          </div>
+
+          <div class="space-y-0.5">
+            <button onclick="filterByCategory('ya')" id="cat-btn-ya" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-graduation-cap text-rose-400 w-3.5 text-center"></i>
+                <span class="truncate">Young Adult (YA)</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('na')" id="cat-btn-na" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-user-graduate text-blue-500 w-3.5 text-center"></i>
+                <span class="truncate">New Adult (NA)</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('short_stories')" id="cat-btn-short_stories" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-feather text-pink-400 w-3.5 text-center"></i>
+                <span class="truncate">Short Stories</span>
+              </div>
+            </button>
+
+            <button onclick="filterByCategory('poetry')" id="cat-btn-poetry" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition">
+              <div class="flex items-center gap-2 truncate">
+                <i class="fas fa-scroll text-emerald-500 w-3.5 text-center"></i>
+                <span class="truncate">Poetry &amp; Verses</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar Resource Links -->
+        <div class="text-[11px] text-slate-400 px-3 space-y-1">
+          <div class="flex items-center gap-3 font-semibold">
+            <a href="/" class="hover:text-slate-700">Home</a>
+            <span>&bull;</span>
+            <a href="/forum" class="hover:text-slate-700">Forum</a>
+            <span>&bull;</span>
+            <a href="/legal/terms" class="hover:text-slate-700">Terms</a>
+            <span>&bull;</span>
+            <a href="/legal/privacy" class="hover:text-slate-700">Privacy</a>
+          </div>
+          <p>&copy; 2026 Raccon Mail. All rights reserved.</p>
+        </div>
+
+      </aside>
+
+      <!-- =====================================================================
+           RIGHT MAIN STAGE (STORIES DIRECTORY / STORY WALL / READER)
+           ===================================================================== -->
+      <section class="lg:col-span-9 min-h-[600px] space-y-6">
+
+        <!-- ===================================================================
+             VIEW 1: ALL STORIES DIRECTORY (MATCHING FORUM INDEX)
+             =================================================================== -->
+        <div id="view-stories" class="space-y-4">
+          
+          <!-- Stream Controls Bar (Sort, Category Title, Format Filter) -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 flex items-center justify-between gap-4 shadow-2xs">
+            <div class="flex items-center gap-2">
+              <span id="current-view-title" class="text-sm font-extrabold text-slate-900">All Stories</span>
+              <span id="active-tag-indicator" class="hidden tag-badge tag-general">All</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <!-- Format Filter -->
+              <select 
+                id="story-status-select" 
+                onchange="changeFormatFilter(this.value)" 
+                class="hidden sm:block bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-xl border border-slate-200 outline-none cursor-pointer transition"
+              >
+                <option value="all">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="ongoing">Ongoing</option>
+              </select>
+
+              <!-- Sort Dropdown -->
+              <select 
+                id="story-sort-select" 
+                onchange="changeSorting(this.value)" 
+                class="bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-xl border border-slate-200 outline-none cursor-pointer transition"
+              >
+                <option value="popular">Most Popular</option>
+                <option value="latest">Latest Published</option>
+                <option value="words">Longest Reads</option>
+              </select>
+
+              <!-- Refresh Button -->
+              <button 
+                onclick="loadStoriesFeed(true)" 
+                title="Refresh Library" 
+                class="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+              >
+                <i class="fas fa-arrows-rotate text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stories List Container -->
+          <div id="stories-container" class="space-y-3">
+            <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+              <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+              <p class="font-bold text-sm text-slate-600">Loading stories library...</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===================================================================
+             VIEW 2: INTEGRATED STORY WALL (POST A STORY WALL FEED)
+             =================================================================== -->
+        <div id="view-wall" class="hidden space-y-6">
+          
+          <!-- Story Wall Posting Widget ("Post a Story") -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex items-start gap-3">
+              <img id="wall-composer-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-2xs" />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <i class="fas fa-pen-nib text-purple-500"></i>
+                    <span>Post a Story on the Community Wall</span>
+                  </h3>
+                </div>
+
+                <!-- Story Title Input on Wall -->
+                <input 
+                  type="text" 
+                  id="wall-story-title" 
+                  placeholder="Story Title..." 
+                  class="w-full text-xs sm:text-sm font-bold text-slate-900 bg-slate-50 focus:bg-white border border-slate-200 focus:border-slate-400 rounded-xl px-3.5 py-2 mb-2 outline-none transition"
+                />
+
+                <!-- Story Content Textarea -->
+                <textarea 
+                  id="wall-story-content" 
+                  rows="4" 
+                  placeholder="Post a Story: Share a complete short story, chapter update, or creative scene with the community wall..." 
+                  class="w-full text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 focus:border-slate-400 rounded-2xl p-3.5 outline-none transition resize-none font-serif leading-relaxed"
+                ></textarea>
+
+                <!-- Wall Story Options Bar -->
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <!-- Category Selector -->
+                    <select id="wall-story-category" class="bg-slate-100 text-slate-700 text-xs font-semibold py-1.5 px-2.5 rounded-xl border border-slate-200 outline-none cursor-pointer">
+                      <option value="romance">❤️ Romance</option>
+                      <option value="fantasy" selected>🔮 Fantasy</option>
+                      <option value="scifi">🚀 Science Fiction</option>
+                      <option value="horror">👻 Horror</option>
+                      <option value="mystery">🔍 Mystery &amp; Thriller</option>
+                      <option value="adventure">⚔️ Action &amp; Adventure</option>
+                      <option value="historical">🏛️ Historical</option>
+                      <option value="humor">🎭 Humor &amp; Comedy</option>
+                      <option value="drama">☕ Drama</option>
+                      <option value="litrpg">🎮 LitRPG / GameLit</option>
+                      <option value="isekai">🌀 Isekai</option>
+                      <option value="billionaire">💼 Billionaire</option>
+                      <option value="paranormal">🐺 Werewolf / Vampire</option>
+                      <option value="ya">🎒 Young Adult</option>
+                      <option value="short_stories">⚡ Short Story</option>
+                      <option value="poetry">📜 Poetry</option>
+                    </select>
+
+                    <!-- Status Selector -->
+                    <select id="wall-story-status" class="bg-slate-100 text-slate-700 text-xs font-semibold py-1.5 px-2.5 rounded-xl border border-slate-200 outline-none cursor-pointer">
+                      <option value="completed">✅ Completed</option>
+                      <option value="ongoing">⏳ Ongoing</option>
+                    </select>
+                  </div>
+
+                  <button 
+                    onclick="submitWallStory()" 
+                    id="btn-wall-publish" 
+                    class="px-5 py-2 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i class="fas fa-feather text-xs"></i>
+                    <span>Post a Story</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Wall Feed Stream Container -->
+          <div id="wall-feed-container" class="space-y-4">
+            <!-- Dynamically Populated -->
+          </div>
+
+        </div>
+
+        <!-- ===================================================================
+             VIEW 3: STORY READER (MATCHING FORUM THREAD READER /d/:id)
+             =================================================================== -->
+        <div id="view-reader" class="hidden space-y-6">
+          
+          <!-- Back to Library & Category Breadcrumb -->
+          <div class="flex items-center justify-between gap-4">
+            <button onclick="setNavView('all')" class="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-2xs hover:bg-slate-50 transition cursor-pointer">
+              <i class="fas fa-arrow-left"></i>
+              <span>Back to Library</span>
+            </button>
+
+            <div class="flex items-center gap-2">
+              <span id="reader-status-badge" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800">Completed</span>
+              <span id="reader-category-badge" class="tag-badge tag-fantasy">Fantasy</span>
+            </div>
+          </div>
+
+          <!-- Story Title Header -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+            <h1 id="reader-story-title" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug font-serif">
+              Story Title
+            </h1>
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 font-medium">
+              <span id="reader-author-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-feather-pointed text-purple-400"></i> Written by <strong class="text-slate-800 font-bold">Author</strong>
+              </span>
+              <span>&bull;</span>
+              <span id="reader-stats-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-book-open text-slate-400"></i> 2,480 words &bull; 8m read
+              </span>
+              <span>&bull;</span>
+              <span id="reader-reviews-meta" class="flex items-center gap-1.5">
+                <i class="fas fa-comments text-slate-400"></i> 0 reviews
+              </span>
+            </div>
+          </div>
+
+          <!-- Reader Layout: Left Sticky Controls & Right Story Canvas -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left Sticky Reader Controls -->
+            <div class="md:col-span-3 space-y-3 sticky top-24">
+              <!-- Font Size Controls -->
+              <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between text-xs font-bold text-slate-700">
+                <span>Text Size</span>
+                <div class="flex items-center gap-1">
+                  <button onclick="adjustFontSize(-1)" class="p-1 px-2 hover:bg-slate-100 rounded text-xs font-serif" title="Smaller font">A-</button>
+                  <button onclick="adjustFontSize(1)" class="p-1 px-2 hover:bg-slate-100 rounded text-sm font-serif" title="Larger font">A+</button>
+                </div>
+              </div>
+
+              <!-- Theme Palette Toggle -->
+              <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between text-xs font-bold text-slate-700">
+                <span>Reading Canvas</span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="setReaderTheme('light')" class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow-2xs" title="Light"></button>
+                  <button onclick="setReaderTheme('sepia')" class="w-5 h-5 rounded-full bg-[#FAF5EB] border border-[#E2D8C3]" title="Sepia"></button>
+                  <button onclick="setReaderTheme('dark')" class="w-5 h-5 rounded-full bg-[#0F172A] border border-slate-700" title="Dark"></button>
+                </div>
+              </div>
+
+              <!-- Bookmark Story Button -->
+              <button id="btn-bookmark-story" onclick="toggleBookmarkStory()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fas fa-bookmark text-slate-400"></i>
+                <span id="btn-bookmark-text">Bookmark Story</span>
+              </button>
+
+              <button onclick="focusReviewReply()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fas fa-pen text-xs"></i>
+                <span>Write Review</span>
+              </button>
+
+              <!-- Reading Scrubber Progress -->
+              <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs text-xs space-y-1.5 text-center">
+                <div class="text-[11px] font-bold text-slate-500">Reading Progress</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="bg-purple-600 h-full w-full"></div>
+                </div>
+                <p class="text-[10px] text-slate-400 pt-1">Complete Chapter</p>
+              </div>
+            </div>
+
+            <!-- Right Reading Canvas & Reviews -->
+            <div class="md:col-span-9 space-y-6">
+              
+              <!-- Story Text Canvas -->
+              <article id="reader-canvas-box" class="reader-theme-light rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6 transition">
+                <div id="reader-story-body" class="font-serif text-base sm:text-lg leading-relaxed space-y-4 text-justify sm:text-left">
+                  <!-- Story Body Loaded Here -->
+                </div>
+
+                <!-- Story End Mark -->
+                <div class="pt-8 pb-4 text-center border-t border-slate-100">
+                  <span class="text-xs font-mono font-bold text-slate-400 tracking-widest uppercase">&bull; &bull; &bull; THE END &bull; &bull; &bull;</span>
+                </div>
+
+                <!-- Story Author Card -->
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <img id="reader-author-avatar" src="/raccoon-logo.png" class="h-12 w-12 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                    <div>
+                      <p class="font-extrabold text-sm text-slate-900" id="reader-author-name">Author</p>
+                      <p class="text-xs text-slate-500" id="reader-author-bio">Author &amp; Storyteller on Raccon Stories</p>
+                    </div>
+                  </div>
+
+                  <button id="reader-like-btn" onclick="toggleLikeActiveStory()" class="px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                    <i class="fas fa-heart text-slate-400"></i>
+                    <span id="reader-like-count">0</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Reviews & Reader Reactions Section -->
+              <div class="space-y-4">
+                <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                  <i class="fas fa-comments text-purple-500"></i>
+                  <span>Reader Reviews &amp; Comments</span>
+                </h3>
+
+                <!-- Reviews Stream -->
+                <div id="story-reviews-stream" class="space-y-3">
+                  <!-- Dynamically rendered -->
+                </div>
+
+                <!-- Review Submission Box -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
+                  <div class="flex items-center gap-3">
+                    <img id="review-box-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-8 w-8 rounded-full border border-slate-200" />
+                    <span class="text-xs font-bold text-slate-800">Leave a review for the author...</span>
+                  </div>
+
+                  <textarea 
+                    id="story-review-input" 
+                    rows="3" 
+                    placeholder="Share your thoughts on this chapter, characters, or world-building..." 
+                    class="w-full bg-slate-50 rounded-xl border border-slate-200 p-3.5 text-xs sm:text-sm text-slate-800 outline-none focus:border-slate-400 focus:bg-white transition resize-none"
+                  ></textarea>
+
+                  <div class="flex items-center justify-end">
+                    <button 
+                      onclick="submitStoryReview()" 
+                      id="btn-submit-review" 
+                      class="px-5 py-2 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-extrabold shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <i class="fas fa-paper-plane text-xs"></i>
+                      <span>Post Review</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       FLARUM FLOATING / SLIDE-UP COMPOSER DRAWER ("POST A STORY")
+       ========================================================================= -->
+  <div 
+    id="composer-drawer" 
+    class="fixed bottom-0 right-0 sm:right-6 w-full sm:w-[640px] max-w-full bg-white rounded-t-2xl sm:rounded-2xl border border-slate-300 shadow-2xl z-50 p-5 composer-hidden"
+  >
+    <!-- Composer Header Bar -->
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-feather-pointed text-purple-600 text-sm"></i>
+        <span class="font-extrabold text-sm text-slate-900">Post a Story</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="minimizeComposer()" title="Minimize" class="p-1 text-slate-400 hover:text-slate-700">
+          <i class="fas fa-minus text-xs"></i>
+        </button>
+        <button onclick="closeComposerModal()" title="Close" class="p-1 text-slate-400 hover:text-rose-600">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Composer Form -->
+    <div class="mt-3 space-y-3">
+      <!-- Story Title Input -->
+      <input 
+        type="text" 
+        id="c-story-title" 
+        placeholder="Story Title..." 
+        class="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:bg-white rounded-xl px-3.5 py-2.5 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition"
+      />
+
+      <!-- Story Genre & Status Selectors -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500">Genre:</span>
+          <select id="c-story-category" class="w-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer">
+            <option value="romance">❤️ Romance</option>
+            <option value="fantasy" selected>🔮 Fantasy</option>
+            <option value="scifi">🚀 Science Fiction</option>
+            <option value="horror">👻 Horror</option>
+            <option value="mystery">🔍 Mystery &amp; Thriller</option>
+            <option value="adventure">⚔️ Action &amp; Adventure</option>
+            <option value="historical">🏛️ Historical Fiction</option>
+            <option value="humor">🎭 Humor &amp; Comedy</option>
+            <option value="drama">☕ Drama &amp; Contemporary</option>
+            <option value="fanfic">⚡ Fanfiction</option>
+            <option value="paranormal">🐺 Werewolf &amp; Vampire</option>
+            <option value="billionaire">💼 Billionaire Romance</option>
+            <option value="litrpg">🎮 LitRPG / GameLit</option>
+            <option value="isekai">🌀 Isekai / Reincarnation</option>
+            <option value="ya">🎒 Young Adult (YA)</option>
+            <option value="na">🎓 New Adult (NA)</option>
+            <option value="children">🧸 Children's Fiction</option>
+            <option value="short_stories">⚡ Short Stories</option>
+            <option value="poetry">📜 Poetry</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500">Status:</span>
+          <select id="c-story-status" class="w-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 rounded-xl px-2.5 py-1.5 outline-none cursor-pointer">
+            <option value="completed">✅ Completed</option>
+            <option value="ongoing">⏳ Ongoing (In Progress)</option>
+          </select>
         </div>
       </div>
 
-      <!-- Popular Traditions Tags -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="globe" class="h-4 w-4 text-slate-600"></i>
-          <span>Popular Cultural Origins</span>
-        </h3>
-        <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-          <button onclick="searchStoriesOrigin('Japan')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🇯🇵 Japan</button>
-          <button onclick="searchStoriesOrigin('Ghana')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🇬🇭 Ghana</button>
-          <button onclick="searchStoriesOrigin('Greece')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🇬🇷 Greece</button>
-          <button onclick="searchStoriesOrigin('India')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🇮🇳 India</button>
-          <button onclick="searchStoriesOrigin('Norway')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🇳🇴 Norway</button>
-          <button onclick="searchStoriesOrigin('Indigenous')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">🪶 Indigenous</button>
+      <!-- Story Summary / Blurb -->
+      <input 
+        type="text" 
+        id="c-story-summary" 
+        placeholder="Brief summary / blurb (1-2 sentences to hook readers)..." 
+        class="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:bg-white rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none transition"
+      />
+
+      <!-- Story Full Content Editor -->
+      <textarea 
+        id="c-story-content" 
+        rows="6" 
+        placeholder="Write or paste your story / chapter here..." 
+        class="w-full bg-slate-50 border border-slate-200 focus:border-slate-400 focus:bg-white rounded-xl p-3.5 text-xs sm:text-sm text-slate-800 outline-none transition resize-y font-serif leading-relaxed"
+      ></textarea>
+
+      <!-- Footer Actions -->
+      <div class="flex items-center justify-between pt-2">
+        <div class="text-[11px] text-slate-400">
+          Markdown &amp; paragraphs supported
         </div>
+
+        <button 
+          type="button" 
+          onclick="publishStory()" 
+          id="btn-publish-story" 
+          class="px-5 py-2 rounded-full bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-feather-pointed text-purple-400 text-xs"></i>
+          <span>Post Story</span>
+        </button>
       </div>
-
-      <!-- Reader Sanctuary Charter -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="shield-check" class="h-4 w-4 text-slate-600"></i>
-          <span>Reader Sanctuary Charter</span>
-        </h3>
-        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-slate-600">
-          <li>100% free and open for readers of all ages.</li>
-          <li>Zero data harvesting or behavioral tracking.</li>
-          <li>Full text rendered on site with zero external popups.</li>
-          <li>Share folktales directly to friends via encrypted postcard.</li>
-        </ul>
-      </div>
-
-      <!-- Quick Navigation Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="compass" class="h-4 w-4 text-slate-600"></i>
-          <span>Raccon Hub Navigation</span>
-        </h3>
-        <div class="space-y-1.5 pt-1">
-          <a href="/news" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="newspaper" class="h-3.5 w-3.5 text-slate-600"></i> Raccon News Wire</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/forum" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600"></i> Raccon Forum</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i> Private Webmail</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-        </div>
-      </div>
-
-    </aside>
-
-  </div>
-
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="stories-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 text-slate-800 text-xs font-semibold shadow-2xl flex items-center gap-2">
-      <i data-lucide="check-circle" class="h-4 w-4 text-slate-600"></i>
-      <span id="stories-toast-text">Message</span>
     </div>
   </div>
 
-  <!-- SCRIPT ENGINE FOR STORIES -->
+  <!-- Toast Notification -->
+  <div id="stories-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xl border border-slate-700 opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center gap-2">
+    <i class="fas fa-info-circle text-purple-400" id="toast-icon"></i>
+    <span id="toast-message">Notification message</span>
+  </div>
+
+  <!-- =========================================================================
+       STORIES CLIENT ENGINE SCRIPT
+       ========================================================================= -->
   <script>
-    let storiesCatalog = [];
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let currentStory = null;
+    // State
+    let currentNavView = 'all'; // 'all', 'wall', 'reader'
+    let currentCategoryFilter = 'all';
+    let currentStatusFilter = 'all';
+    let currentSort = 'popular';
+    let currentSearchTerm = '';
+    let currentUser = null;
+    let allStoriesData = [];
+    let currentActiveStory = null;
+    let isBookmarked = false;
+    let currentFontSize = 17; // base px
 
-    function showToast(msg) {
+    // Category Metadata Mapping
+    const STORY_GENRES = {
+      'romance': { label: 'Romance', class: 'tag-romance', icon: 'fa-heart' },
+      'fantasy': { label: 'Fantasy', class: 'tag-fantasy', icon: 'fa-wand-magic-sparkles' },
+      'scifi': { label: 'Science Fiction', class: 'tag-scifi', icon: 'fa-rocket' },
+      'horror': { label: 'Horror', class: 'tag-horror', icon: 'fa-ghost' },
+      'mystery': { label: 'Mystery & Thriller', class: 'tag-mystery', icon: 'fa-magnifying-glass' },
+      'adventure': { label: 'Action & Adventure', class: 'tag-adventure', icon: 'fa-shield-halved' },
+      'historical': { label: 'Historical Fiction', class: 'tag-historical', icon: 'fa-landmark' },
+      'humor': { label: 'Humor & Comedy', class: 'tag-humor', icon: 'fa-face-laugh-beam' },
+      'drama': { label: 'Drama & Contemporary', class: 'tag-drama', icon: 'fa-mug-hot' },
+      'fanfic': { label: 'Fanfiction', class: 'tag-fanfic', icon: 'fa-bolt' },
+      'paranormal': { label: 'Werewolf & Vampire', class: 'tag-paranormal', icon: 'fa-moon' },
+      'billionaire': { label: 'Billionaire Romance', class: 'tag-billionaire', icon: 'fa-briefcase' },
+      'litrpg': { label: 'LitRPG / GameLit', class: 'tag-litrpg', icon: 'fa-gamepad' },
+      'isekai': { label: 'Isekai / Reincarnation', class: 'tag-isekai', icon: 'fa-door-open' },
+      'ya': { label: 'Young Adult (YA)', class: 'tag-ya', icon: 'fa-graduation-cap' },
+      'na': { label: 'New Adult (NA)', class: 'tag-na', icon: 'fa-user-graduate' },
+      'children': { label: "Children's Fiction", class: 'tag-children', icon: 'fa-child' },
+      'general': { label: 'General Fiction', class: 'tag-general', icon: 'fa-book-open' },
+      'short_stories': { label: 'Short Story', class: 'tag-short', icon: 'fa-feather' },
+      'poetry': { label: 'Poetry', class: 'tag-poetry', icon: 'fa-scroll' }
+    };
+
+    function getGenreBadge(cat) {
+      const c = (cat || 'fantasy').toLowerCase();
+      const meta = STORY_GENRES[c] || { label: c.charAt(0).toUpperCase() + c.slice(1), class: 'tag-fantasy', icon: 'fa-book' };
+      return `<span class="tag-badge ${meta.class}"><span class="tag-badge-dot"></span><i class="fas ${meta.icon} text-[10px]"></i><span>${meta.label}</span></span>`;
+    }
+
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return 'Recently';
+      const d = new Date(dateStr.replace(' ', 'T') + 'Z');
+      const now = new Date();
+      const diffSec = Math.floor((now - d) / 1000);
+      if (isNaN(diffSec) || diffSec < 60) return 'Just now';
+      if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+      if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+      if (diffSec < 2592000) return `${Math.floor(diffSec / 86400)}d ago`;
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function showToast(msg, icon = 'fa-check-circle') {
       const toast = document.getElementById('stories-toast');
-      const text = document.getElementById('stories-toast-text');
+      const text = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
       if (!toast || !text) return;
-      text.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
+      text.innerText = msg;
+      if (iconEl) iconEl.className = `fas ${icon} text-purple-400`;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
       setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
     }
 
-    async function checkAuthSession() {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        const pill = document.getElementById('user-status-pill');
-        if (!pill) return;
-        if (data.loggedIn && data.user) {
-          pill.innerHTML = `
-            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs text-slate-800 shadow-2xs">
-              <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
-              <span class="font-bold text-slate-900 hidden sm:inline">${escapeHtml(data.user.name)}</span>
-              <span class="text-slate-400 font-mono text-[10px]">●</span>
-            </div>
-          `;
-        } else {
-          pill.innerHTML = `
-            <a href="/auth?tab=login" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition cursor-pointer shadow-2xs whitespace-nowrap border border-slate-900">
-              Sign In / Join
-            </a>
-          `;
-        }
-      } catch (_) {}
-    }
+    // Initialize Stories App
+    async function initStories() {
+      await checkAuthStatus();
+      handleHashRouting();
+      window.addEventListener('hashchange', handleHashRouting);
 
-    async function loadStories() {
-      try {
-        const res = await fetch('/worldstories_catalog.json');
-        if (res.ok) {
-          storiesCatalog = await res.json();
-        }
-      } catch (err) {
-        console.warn('Could not load stories catalog:', err);
-      }
-
-      // Check URL parameters for direct story view
-      const params = new URLSearchParams(window.location.search);
-      const storyId = params.get('id');
-      if (storyId) {
-        const matched = storiesCatalog.find(s => String(s.id) === String(storyId));
-        if (matched) {
-          openStoryReader(matched.id);
-          return;
-        }
-      }
-
-      renderStoriesFeed();
-    }
-
-    function filterStoriesCat(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.story-cat-btn').forEach(btn => {
-        if (btn.dataset.cat === cat) {
-          btn.className = 'story-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer';
-        } else {
-          btn.className = 'story-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
+      // Keyboard shortcut Ctrl+K or / to focus search
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey && e.key.toLowerCase() === 'k') || (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName))) {
+          e.preventDefault();
+          document.getElementById('story-search-input')?.focus();
         }
       });
-      renderStoriesFeed();
     }
 
-    function handleStoriesSearch(val) {
-      searchQuery = val.trim().toLowerCase();
-      renderStoriesFeed();
-    }
-
-    function searchStoriesOrigin(origin) {
-      const input = document.getElementById('stories-search-input');
-      if (input) input.value = origin;
-      searchQuery = origin.toLowerCase();
-      renderStoriesFeed();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderStoriesFeed() {
-      const feed = document.getElementById('stories-feed-container');
-      const empty = document.getElementById('stories-empty');
-      if (!feed) return;
-
-      let list = storiesCatalog;
-
-      if (currentCategory !== 'all') {
-        list = list.filter(s => (s.category || '').toLowerCase() === currentCategory);
-      }
-
-      if (searchQuery) {
-        list = list.filter(s =>
-          (s.title || '').toLowerCase().includes(searchQuery) ||
-          (s.country || '').toLowerCase().includes(searchQuery) ||
-          (s.desc || s.synopsis || '').toLowerCase().includes(searchQuery)
-        );
-      }
-
-      if (list.length === 0) {
-        feed.innerHTML = '';
-        empty?.classList.remove('hidden');
-        return;
-      }
-
-      empty?.classList.add('hidden');
-      feed.innerHTML = list.map(s => renderStoryCard(s)).join('');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function renderStoryCard(s) {
-      const flag = s.flag || '🌍';
-      const country = s.country || 'World';
-      const readTime = s.readTime || '3 min';
-      const cover = s.cover || '/raccoon-logo.png';
-      const synopsis = s.synopsis || s.desc || 'A traditional cultural folktale passed down through generations.';
-
-      return `
-        <article class="rounded-3xl border border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-md transition p-5 sm:p-6 space-y-4 group shadow-xl shadow-slate-900/5">
-          <!-- Story Header -->
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-              <span class="text-lg">${flag}</span>
-              <div>
-                <span class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(country)}</span>
-                <span class="text-[10px] text-slate-400 ml-1.5 font-mono">Traditional Folktale</span>
-              </div>
-            </div>
-            <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
-              ⏱️ ${readTime}
-            </span>
-          </div>
-
-          <!-- Title & Excerpt -->
-          <div class="space-y-1.5">
-            <h2
-              onclick="openStoryReader('${s.id}')"
-              class="font-display font-bold text-base sm:text-lg text-slate-900 group-hover:text-slate-700 transition leading-snug cursor-pointer"
-            >
-              ${escapeHtml(s.title)}
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2">
-              ${escapeHtml(synopsis)}
-            </p>
-          </div>
-
-          <!-- Cover Image (If available) -->
-          ${s.cover ? `
-            <div onclick="openStoryReader('${s.id}')" class="rounded-2xl overflow-hidden aspect-video border border-slate-100 bg-slate-50 cursor-pointer">
-              <img src="${s.cover}" alt="${escapeHtml(s.title)}" class="w-full h-full object-cover group-hover:scale-102 transition duration-300" loading="lazy" onerror="this.src='/raccoon-logo.png';" />
-            </div>
-          ` : ''}
-
-          <!-- Languages info -->
-          ${s.languages && s.languages.length > 1 ? `
-            <div class="text-[11px] font-mono text-slate-400 pt-1 flex items-center gap-1.5 truncate">
-              <span>🌐 In ${s.languages.length} languages:</span>
-              <span class="text-slate-600">${s.languages.slice(0, 4).join(', ')}...</span>
-            </div>
-          ` : ''}
-
-          <!-- Bottom Action Buttons (Bubble White Pill Style) -->
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 flex-wrap gap-2">
-            <button
-              onclick="openStoryReader('${s.id}')"
-              class="rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs px-4 py-2 transition flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
-            >
-              <i data-lucide="book-open" class="h-3.5 w-3.5 text-white"></i>
-              <span>Read Full Tale</span>
-            </button>
-
-            <div class="flex items-center gap-2">
-              <button
-                onclick="sendStoryAsPostcard('${s.id}')"
-                class="px-3 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition flex items-center gap-1 text-[11px] cursor-pointer shadow-2xs"
-                title="Send as Postcard"
-              >
-                <i data-lucide="send" class="h-3.5 w-3.5 text-slate-400"></i>
-                <span class="hidden sm:inline">Postcard</span>
-              </button>
-
-              <button
-                onclick="shareStory('${s.id}', '${escapeJsString(s.title)}')"
-                class="px-2.5 py-1.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 transition flex items-center gap-1 text-[11px] cursor-pointer shadow-2xs"
-                title="Share link"
-              >
-                <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-400"></i>
-                <span>Share</span>
-              </button>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
-    async function openStoryReader(storyId) {
-      const story = storiesCatalog.find(s => String(s.id) === String(storyId));
-      if (!story) return;
-      currentStory = story;
-
-      // Hide catalog and show reader
-      document.getElementById('stories-hero-card')?.classList.add('hidden');
-      document.getElementById('stories-filter-bar')?.classList.add('hidden');
-      document.getElementById('stories-feed-container')?.classList.add('hidden');
-      document.getElementById('stories-empty')?.classList.add('hidden');
-      const reader = document.getElementById('story-reader-view');
-      reader?.classList.remove('hidden');
-
-      // Populate story data
-      document.getElementById('story-reader-flag').textContent = story.flag || '🌍';
-      document.getElementById('story-reader-origin').textContent = `Traditional Folktale from ${story.country || 'World'}`;
-      document.getElementById('story-reader-title').textContent = story.title;
-      document.getElementById('story-reader-cover').src = story.cover || '/raccoon-logo.png';
-      document.getElementById('story-reader-moral').textContent = story.moral || 'Wisdom passed down through generations.';
-
-      const bodyEl = document.getElementById('story-reader-body');
-      bodyEl.innerHTML = `
-        <div class="flex items-center justify-center p-8 text-center text-slate-500 space-y-2">
-          <i data-lucide="loader-2" class="h-6 w-6 animate-spin text-slate-600 mx-auto"></i>
-          <p class="text-xs">Loading illustrated folktale...</p>
-        </div>
-      `;
-      if (window.lucide) lucide.createIcons();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Fetch paragraphs
+    async function checkAuthStatus() {
       try {
-        const res = await fetch(`/api/story?id=${encodeURIComponent(story.id)}&slug=${encodeURIComponent(story.slug || story.id)}`);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.paragraphs) && data.paragraphs.length > 0) {
-          bodyEl.innerHTML = data.paragraphs.map(p => `<p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${escapeHtml(p)}</p>`).join('');
-        } else {
-          bodyEl.innerHTML = `
-            <p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${escapeHtml(story.synopsis || story.desc || 'A traditional cultural folktale.')}</p>
-          `;
+        const res = await fetch('/api/user');
+        if (res.ok) {
+          const user = await res.json();
+          if (user && user.id) {
+            currentUser = user;
+            renderAuthHeader(true, user);
+            return;
+          }
         }
-      } catch (_) {
-        bodyEl.innerHTML = `
-          <p class="leading-relaxed text-foreground/90 text-sm sm:text-base">${escapeHtml(story.synopsis || story.desc || 'A traditional cultural folktale.')}</p>
+      } catch (_) {}
+      renderAuthHeader(false);
+    }
+
+    function renderAuthHeader(isLoggedIn, user = null) {
+      const guestGroup = document.getElementById('auth-guest-group');
+      const userGroup = document.getElementById('auth-user-group');
+      if (isLoggedIn && user) {
+        guestGroup?.classList.add('hidden');
+        userGroup?.classList.remove('hidden');
+        userGroup?.classList.add('flex');
+
+        const nameEl = document.getElementById('user-display-name');
+        const avatarEl = document.getElementById('user-display-avatar');
+        const dropName = document.getElementById('dropdown-user-name');
+        const dropEmail = document.getElementById('dropdown-user-email');
+        const wallAvatar = document.getElementById('wall-composer-avatar');
+        const reviewAvatar = document.getElementById('review-box-avatar');
+
+        const displayName = user.name || user.email?.split('@')[0] || 'Author';
+        const avatarSrc = user.avatar || '/raccoon-logo.png';
+
+        if (nameEl) nameEl.innerText = displayName;
+        if (avatarEl) avatarEl.src = avatarSrc;
+        if (dropName) dropName.innerText = displayName;
+        if (dropEmail) dropEmail.innerText = user.email || '';
+        if (wallAvatar) wallAvatar.src = avatarSrc;
+        if (reviewAvatar) reviewAvatar.src = avatarSrc;
+      } else {
+        guestGroup?.classList.remove('hidden');
+        userGroup?.classList.add('hidden');
+      }
+    }
+
+    function toggleUserDropdown() {
+      const menu = document.getElementById('user-dropdown-menu');
+      menu?.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('user-dropdown-menu');
+      const btn = document.getElementById('user-menu-btn');
+      if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    async function logoutStories() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (_) {}
+      window.location.href = '/stories';
+    }
+
+    // Hash Routing Handler (#all, #wall, #tag-*, #read/:id)
+    function handleHashRouting() {
+      const hash = window.location.hash.replace('#', '') || 'all';
+      if (hash.startsWith('read/')) {
+        const storyId = hash.replace('read/', '').split('-')[0];
+        openStoryReader(storyId);
+      } else if (hash === 'wall') {
+        switchToWallView();
+      } else if (hash.startsWith('tag-')) {
+        const tag = hash.replace('tag-', '');
+        filterByCategory(tag);
+      } else {
+        switchToStoriesView();
+      }
+    }
+
+    function switchToStoriesView() {
+      currentNavView = 'all';
+      document.getElementById('view-stories')?.classList.remove('hidden');
+      document.getElementById('view-wall')?.classList.add('hidden');
+      document.getElementById('view-reader')?.classList.add('hidden');
+      document.getElementById('stories-hero')?.classList.remove('hidden');
+
+      document.getElementById('nav-btn-all')?.classList.add('nav-item-active');
+      document.getElementById('nav-btn-wall')?.classList.remove('nav-item-active');
+
+      loadStoriesFeed();
+    }
+
+    function switchToWallView() {
+      currentNavView = 'wall';
+      window.location.hash = 'wall';
+      document.getElementById('view-stories')?.classList.add('hidden');
+      document.getElementById('view-wall')?.classList.remove('hidden');
+      document.getElementById('view-reader')?.classList.add('hidden');
+      document.getElementById('stories-hero')?.classList.remove('hidden');
+
+      document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
+      document.getElementById('nav-btn-wall')?.classList.add('nav-item-active');
+
+      loadWallFeed();
+    }
+
+    function setNavView(view) {
+      if (view === 'all') {
+        window.location.hash = 'all';
+        currentCategoryFilter = 'all';
+        switchToStoriesView();
+      } else if (view === 'wall') {
+        switchToWallView();
+      }
+    }
+
+    // =========================================================================
+    // LOAD & RENDER STORIES DIRECTORY
+    // =========================================================================
+    async function loadStoriesFeed(forceRefresh = false) {
+      const container = document.getElementById('stories-container');
+      if (!container) return;
+
+      if (forceRefresh || allStoriesData.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+            <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+            <p class="font-bold text-sm text-slate-600">Loading stories library...</p>
+          </div>
         `;
       }
 
-      if (window.lucide) lucide.createIcons();
-    }
+      try {
+        let url = `/api/community/stories?category=${encodeURIComponent(currentCategoryFilter)}&status=${encodeURIComponent(currentStatusFilter)}&sort=${encodeURIComponent(currentSort)}`;
+        if (currentSearchTerm) {
+          url += `&search=${encodeURIComponent(currentSearchTerm)}`;
+        }
 
-    function closeStoryReader() {
-      document.getElementById('story-reader-view')?.classList.add('hidden');
-      document.getElementById('stories-hero-card')?.classList.remove('hidden');
-      document.getElementById('stories-filter-bar')?.classList.remove('hidden');
-      document.getElementById('stories-feed-container')?.classList.remove('hidden');
-      currentStory = null;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          allStoriesData = data.stories || [];
+          renderStoriesList(allStoriesData);
 
-    function readRandomStory() {
-      if (storiesCatalog.length === 0) return;
-      const idx = Math.floor(Math.random() * storiesCatalog.length);
-      openStoryReader(storiesCatalog[idx].id);
-    }
-
-    function shareStory(id, title) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${title} - Read traditional tale on Raccon Stories: ${window.location.origin}/stories?id=${id}`);
-        showToast('Story link copied to clipboard!');
+          const countBadge = document.getElementById('badge-all-count');
+          if (countBadge) countBadge.innerText = allStoriesData.length;
+        } else {
+          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load stories.</div>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to stories library.</div>`;
       }
     }
 
-    function shareCurrentStory() {
-      if (currentStory) {
-        shareStory(currentStory.id, currentStory.title);
+    function renderStoriesList(stories) {
+      const container = document.getElementById('stories-container');
+      if (!container) return;
+
+      if (!stories || stories.length === 0) {
+        container.innerHTML = `
+          <div class="p-12 text-center bg-white rounded-2xl border border-slate-200 select-none">
+            <img src="/raccoon-logo.png" class="h-16 w-16 mx-auto mb-3 opacity-60" />
+            <h3 class="font-bold text-base text-slate-800">No stories found in this category</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Be the first storyteller to post a novel or short story in this genre!</p>
+            <button onclick="openComposerModal()" class="mt-4 px-4 py-2 rounded-full bg-slate-900 text-white font-bold text-xs shadow-xs hover:bg-black transition">
+              Post a Story
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = stories.map(st => {
+        const authorName = st.author_name || st.author_email?.split('@')[0] || 'Storyteller';
+        const authorAvatar = st.author_avatar || '/raccoon-logo.png';
+        const timeAgo = formatTimeAgo(st.created_at);
+        const words = st.word_count || 1200;
+        const readTime = st.reading_time || Math.max(1, Math.ceil(words / 220));
+        const hasLiked = !!st.has_liked;
+        const statusLabel = st.format_status === 'completed' ? 'Completed' : 'Ongoing';
+        const statusClass = st.format_status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200';
+
+        return `
+          <article class="story-card-item bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-start gap-4">
+            
+            <!-- Book Cover Avatar Icon -->
+            <div class="relative shrink-0">
+              <div class="w-11 h-14 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 text-purple-300 flex flex-col items-center justify-center border border-slate-700 shadow-2xs">
+                <i class="fas fa-book-open text-xs"></i>
+                <span class="text-[8px] font-bold font-mono text-slate-400 mt-0.5">${readTime}m</span>
+              </div>
+            </div>
+
+            <!-- Story Body Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <a href="#read/${st.id}" onclick="openStoryReader('${st.id}'); return false;" class="text-sm sm:text-base font-extrabold text-slate-900 hover:text-purple-600 transition tracking-tight leading-snug line-clamp-1">
+                  ${st.title}
+                </a>
+                ${getGenreBadge(st.category)}
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${statusClass}">${statusLabel}</span>
+              </div>
+
+              <!-- Author & Word Count Line -->
+              <p class="text-[11px] text-slate-500 font-medium mb-1.5 flex items-center gap-2">
+                <span>By <strong class="text-slate-800 font-bold">${authorName}</strong></span>
+                <span>&bull;</span>
+                <span>${words.toLocaleString()} words</span>
+                <span>&bull;</span>
+                <span>${timeAgo}</span>
+              </p>
+
+              <!-- Blurb / Summary -->
+              <p class="text-xs text-slate-600 leading-relaxed line-clamp-2 font-serif">
+                ${st.summary || st.content?.slice(0, 140) + '...'}
+              </p>
+            </div>
+
+            <!-- Right Read & Like Counters -->
+            <div class="flex flex-col sm:flex-row items-center gap-2 shrink-0 self-center">
+              <button onclick="openStoryReader('${st.id}')" title="Read story" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-2xs">
+                <i class="fas fa-book-open text-purple-400 text-xs"></i>
+                <span>Read</span>
+              </button>
+
+              <button onclick="toggleLikeStory('${st.id}', this)" title="Like Story" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full ${hasLiked ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600'} text-xs font-bold transition cursor-pointer">
+                <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'} text-xs"></i>
+                <span class="like-cnt">${st.likes_count || 0}</span>
+              </button>
+            </div>
+
+          </article>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // LOAD & RENDER STORY WALL ("POST A STORY")
+    // =========================================================================
+    async function loadWallFeed() {
+      const container = document.getElementById('wall-feed-container');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+          <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+          <p class="font-bold text-sm text-slate-600">Loading story wall...</p>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/api/community/stories?sort=latest');
+        if (res.ok) {
+          const data = await res.json();
+          renderWallFeed(data.stories || []);
+        } else {
+          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load wall.</div>`;
+        }
+      } catch (e) {
+        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to wall.</div>`;
       }
     }
 
-    function sendStoryAsPostcard(id) {
-      const s = storiesCatalog.find(item => String(item.id) === String(id)) || currentStory;
-      if (!s) return;
-      window.location.href = `/inbox`;
+    function renderWallFeed(stories) {
+      const container = document.getElementById('wall-feed-container');
+      if (!container) return;
+
+      if (!stories || stories.length === 0) {
+        container.innerHTML = `
+          <div class="p-10 text-center bg-white rounded-2xl border border-slate-200">
+            <i class="fas fa-feather-pointed text-3xl text-slate-300 mb-2"></i>
+            <p class="font-bold text-sm text-slate-700">The story wall is empty</p>
+            <p class="text-xs text-slate-400 mt-1">Post a story above to inspire readers!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = stories.map(st => {
+        const authorName = st.author_name || st.author_email?.split('@')[0] || 'Storyteller';
+        const authorAvatar = st.author_avatar || '/raccoon-logo.png';
+        const timeAgo = formatTimeAgo(st.created_at);
+        const hasLiked = !!st.has_liked;
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-3">
+            
+            <!-- Wall Card Header -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <img src="${authorAvatar}" class="h-10 w-10 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-extrabold text-xs sm:text-sm text-slate-900">${authorName}</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700">Author</span>
+                  </div>
+                  <span class="text-[11px] text-slate-400 font-medium">${timeAgo} &bull; ${st.word_count || 1000} words</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                ${getGenreBadge(st.category)}
+              </div>
+            </div>
+
+            <!-- Story Title Link -->
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 font-serif">
+              <a href="#read/${st.id}" onclick="openStoryReader('${st.id}'); return false;" class="hover:text-purple-600 transition">
+                ${st.title}
+              </a>
+            </h3>
+
+            <!-- Story Snippet / Body -->
+            <div class="text-xs sm:text-sm text-slate-700 leading-relaxed font-serif whitespace-pre-line line-clamp-4">
+              ${st.content}
+            </div>
+
+            <!-- Wall Card Footer -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
+              <div class="flex items-center gap-4">
+                <button onclick="toggleLikeStory('${st.id}', this)" class="flex items-center gap-1.5 hover:text-rose-600 transition cursor-pointer ${hasLiked ? 'text-rose-600' : ''}">
+                  <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'}"></i>
+                  <span class="like-cnt">${st.likes_count || 0}</span> Likes
+                </button>
+
+                <button onclick="openStoryReader('${st.id}')" class="flex items-center gap-1.5 hover:text-purple-600 transition cursor-pointer">
+                  <i class="fas fa-book-open text-slate-400"></i>
+                  <span>Read Full Story</span>
+                </button>
+              </div>
+
+              <button onclick="copyStoryLink('${st.id}')" class="flex items-center gap-1 hover:text-slate-900 text-slate-400 transition" title="Share Story">
+                <i class="fas fa-share-nodes"></i>
+                <span class="hidden sm:inline">Share</span>
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join('');
     }
 
-    function sendCurrentStoryAsPostcard() {
-      if (currentStory) {
-        sendStoryAsPostcard(currentStory.id);
+    async function submitWallStory() {
+      const titleEl = document.getElementById('wall-story-title');
+      const catEl = document.getElementById('wall-story-category');
+      const statusEl = document.getElementById('wall-story-status');
+      const contentEl = document.getElementById('wall-story-content');
+      const btn = document.getElementById('btn-wall-publish');
+
+      const title = titleEl?.value.trim();
+      const content = contentEl?.value.trim();
+
+      if (!content) {
+        showToast('Please type a story or scene before posting.', 'fa-exclamation-circle');
+        contentEl?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
+
+      try {
+        const payload = {
+          title: title || (content.slice(0, 45) + '...'),
+          category: catEl?.value || 'fantasy',
+          format_status: statusEl?.value || 'completed',
+          content: content,
+          summary: content.slice(0, 160) + '...'
+        };
+
+        const res = await fetch('/api/community/stories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          titleEl.value = '';
+          contentEl.value = '';
+          showToast('Your story has been posted to the wall! 📚✨');
+          loadWallFeed();
+        } else {
+          showToast(data.error || 'Failed to post story. Please sign in.', 'fa-exclamation-triangle');
+        }
+      } catch (err) {
+        showToast('Network error posting story.', 'fa-exclamation-triangle');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-feather text-xs"></i> <span>Post a Story</span>';
+      }
+    }
+
+    // =========================================================================
+    // VIEW 3: DEDICATED STORY READER (#read/:id)
+    // =========================================================================
+    async function openStoryReader(storyId) {
+      currentNavView = 'reader';
+      window.location.hash = `read/${storyId}`;
+
+      document.getElementById('view-stories')?.classList.add('hidden');
+      document.getElementById('view-wall')?.classList.add('hidden');
+      document.getElementById('view-reader')?.classList.remove('hidden');
+      document.getElementById('stories-hero')?.classList.add('hidden');
+
+      const bodyContainer = document.getElementById('reader-story-body');
+      if (bodyContainer) {
+        bodyContainer.innerHTML = `
+          <div class="p-10 text-center text-slate-400">
+            <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
+            <p class="font-bold text-sm text-slate-600">Unrolling story pages...</p>
+          </div>
+        `;
+      }
+
+      try {
+        const res = await fetch(`/api/community/stories/${storyId}`);
+        if (res.ok) {
+          const data = await res.json();
+          currentActiveStory = data;
+          renderStoryReaderView(data.story, data.comments || []);
+        } else {
+          bodyContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold">Story not found or removed.</div>`;
+        }
+      } catch (e) {
+        bodyContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold">Error loading story reader.</div>`;
+      }
+    }
+
+    function renderStoryReaderView(story, comments) {
+      if (!story) return;
+
+      const titleEl = document.getElementById('reader-story-title');
+      const badgeEl = document.getElementById('reader-category-badge');
+      const statusBadge = document.getElementById('reader-status-badge');
+      const authorMeta = document.getElementById('reader-author-meta');
+      const statsMeta = document.getElementById('reader-stats-meta');
+      const reviewsMeta = document.getElementById('reader-reviews-meta');
+      const authorName = document.getElementById('reader-author-name');
+      const authorAvatar = document.getElementById('reader-author-avatar');
+      const authorBio = document.getElementById('reader-author-bio');
+      const likeCount = document.getElementById('reader-like-count');
+      const likeBtn = document.getElementById('reader-like-btn');
+      const bodyContainer = document.getElementById('reader-story-body');
+
+      if (titleEl) titleEl.innerText = story.title;
+      if (badgeEl) badgeEl.outerHTML = getGenreBadge(story.category);
+      if (statusBadge) {
+        statusBadge.innerText = story.format_status === 'completed' ? 'Completed' : 'Ongoing';
+        statusBadge.className = `px-2.5 py-1 rounded-full text-[11px] font-extrabold ${story.format_status === 'completed' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`;
+      }
+      if (authorMeta) authorMeta.innerHTML = `<i class="fas fa-feather-pointed text-purple-400"></i> Written by <strong class="text-slate-800 font-bold">${story.author_name || 'Storyteller'}</strong>`;
+      if (statsMeta) statsMeta.innerHTML = `<i class="fas fa-book-open text-slate-400"></i> ${(story.word_count || 1200).toLocaleString()} words &bull; ${story.reading_time || 8}m read`;
+      if (reviewsMeta) reviewsMeta.innerHTML = `<i class="fas fa-comments text-slate-400"></i> ${comments.length} reviews`;
+      if (authorName) authorName.innerText = story.author_name || 'Storyteller';
+      if (authorAvatar) authorAvatar.src = story.author_avatar || '/raccoon-logo.png';
+      if (authorBio) authorBio.innerText = story.author_bio || 'Storyteller on Raccon Stories Library';
+      if (likeCount) likeCount.innerText = story.likes_count || 0;
+      if (likeBtn) {
+        if (story.has_liked) {
+          likeBtn.className = 'px-4 py-2 rounded-full border border-rose-200 bg-rose-50 text-rose-600 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer';
+          likeBtn.querySelector('i')?.classList.add('text-rose-600');
+          likeBtn.querySelector('i')?.classList.remove('text-slate-400');
+        } else {
+          likeBtn.className = 'px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer';
+          likeBtn.querySelector('i')?.classList.remove('text-rose-600');
+          likeBtn.querySelector('i')?.classList.add('text-slate-400');
+        }
+      }
+
+      // Format Paragraphs
+      if (bodyContainer) {
+        const paragraphs = (story.content || '').split(/\n\n+/);
+        bodyContainer.innerHTML = paragraphs.map((p, idx) => {
+          if (!p.trim()) return '';
+          return `<p class="leading-relaxed mb-4 ${idx === 0 ? 'first-letter:text-4xl first-letter:font-bold first-letter:mr-1 first-letter:float-left first-letter:text-slate-900' : ''}">${p.replace(/\n/g, '<br/>')}</p>`;
+        }).join('');
+      }
+
+      // Render Reviews Stream
+      const reviewsStream = document.getElementById('story-reviews-stream');
+      if (reviewsStream) {
+        if (!comments || comments.length === 0) {
+          reviewsStream.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-2xl border border-slate-200 font-medium">No reviews yet. Be the first to share your reaction!</div>`;
+        } else {
+          reviewsStream.innerHTML = comments.map(c => `
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <img src="${c.author_avatar || '/raccoon-logo.png'}" class="h-6 w-6 rounded-full object-cover" />
+                  <span class="text-xs font-bold text-slate-900">${c.author_name || 'Reader'}</span>
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium">${formatTimeAgo(c.created_at)}</span>
+              </div>
+              <p class="text-xs text-slate-700 leading-relaxed font-normal">${escapeHtml(c.content)}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function adjustFontSize(delta) {
+      currentFontSize = Math.min(24, Math.max(14, currentFontSize + delta));
+      const body = document.getElementById('reader-story-body');
+      if (body) body.style.fontSize = `${currentFontSize}px`;
+    }
+
+    function setReaderTheme(theme) {
+      const box = document.getElementById('reader-canvas-box');
+      if (!box) return;
+      box.className = `reader-theme-${theme} rounded-2xl border border-slate-200 p-6 sm:p-10 shadow-xs space-y-6 transition`;
+    }
+
+    function toggleBookmarkStory() {
+      isBookmarked = !isBookmarked;
+      const text = document.getElementById('btn-bookmark-text');
+      const btn = document.getElementById('btn-bookmark-story');
+      if (btn && text) {
+        if (isBookmarked) {
+          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+          text.innerText = 'Bookmarked 🔖';
+          showToast('Story saved to your reading bookmarks!');
+        } else {
+          btn.className = 'w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
+          text.innerText = 'Bookmark Story';
+          showToast('Bookmark removed.');
+        }
+      }
+    }
+
+    function focusReviewReply() {
+      const input = document.getElementById('story-review-input');
+      input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      input?.focus();
+    }
+
+    async function submitStoryReview() {
+      if (!currentActiveStory || !currentActiveStory.story) return;
+      const input = document.getElementById('story-review-input');
+      const btn = document.getElementById('btn-submit-review');
+      const content = input?.value.trim();
+
+      if (!content) {
+        showToast('Please type a review.', 'fa-exclamation-circle');
+        input?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
+
+      try {
+        const res = await fetch(`/api/community/stories/${currentActiveStory.story.id}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: content })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          input.value = '';
+          showToast('Review posted! 💬');
+          openStoryReader(currentActiveStory.story.id);
+        } else {
+          showToast(data.error || 'Failed to post review. Please sign in.', 'fa-exclamation-triangle');
+        }
+      } catch (err) {
+        showToast('Network error while posting review.', 'fa-exclamation-triangle');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Post Review</span>';
+      }
+    }
+
+    async function toggleLikeActiveStory() {
+      if (!currentActiveStory || !currentActiveStory.story) return;
+      const btn = document.getElementById('reader-like-btn');
+      if (btn) toggleLikeStory(currentActiveStory.story.id, btn);
+    }
+
+    async function toggleLikeStory(storyId, buttonEl) {
+      try {
+        const res = await fetch(`/api/community/stories/${storyId}/like`, { method: 'POST' });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const cntEl = buttonEl.querySelector('.like-cnt') || document.getElementById('reader-like-count');
+          const heart = buttonEl.querySelector('.fa-heart');
+          if (cntEl) cntEl.innerText = data.likes_count;
+          if (data.action === 'liked') {
+            heart?.classList.add('text-rose-600');
+            heart?.classList.remove('text-slate-400');
+            buttonEl.classList.add('text-rose-600');
+            showToast('You loved this story! ❤️');
+          } else {
+            heart?.classList.remove('text-rose-600');
+            heart?.classList.add('text-slate-400');
+            buttonEl.classList.remove('text-rose-600');
+          }
+        } else {
+          showToast(data.error || 'Please sign in to like stories.', 'fa-exclamation-triangle');
+        }
+      } catch (e) {
+        showToast('Error recording like.', 'fa-exclamation-triangle');
+      }
+    }
+
+    function copyStoryLink(storyId) {
+      const url = `${window.location.origin}/stories#read/${storyId}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Story link copied to clipboard! 📋');
+      }).catch(() => {
+        prompt('Copy story link:', url);
+      });
+    }
+
+    // =========================================================================
+    // SEARCH & FILTERING HELPERS
+    // =========================================================================
+    let searchDebounceTimer = null;
+    function handleLiveSearch(query) {
+      currentSearchTerm = query.trim();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        if (currentSearchTerm) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        loadStoriesFeed();
+      }, 200);
+    }
+
+    function clearLiveSearch() {
+      const input = document.getElementById('story-search-input');
+      if (input) input.value = '';
+      currentSearchTerm = '';
+      document.getElementById('clear-search-btn')?.classList.add('hidden');
+      loadStoriesFeed();
+    }
+
+    function filterByCategory(category) {
+      currentCategoryFilter = category;
+      window.location.hash = category === 'all' ? 'all' : `tag-${category}`;
+
+      document.querySelectorAll('#cat-group-genres button, aside button[id^="cat-btn-"]').forEach(btn => {
+        btn.classList.remove('bg-slate-100', 'font-bold', 'text-slate-900');
+        btn.classList.add('font-medium', 'text-slate-600');
+      });
+      const activeBtn = document.getElementById(`cat-btn-${category}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-slate-100', 'font-bold', 'text-slate-900');
+        activeBtn.classList.remove('font-medium', 'text-slate-600');
+      }
+
+      const titleEl = document.getElementById('current-view-title');
+      if (titleEl) {
+        titleEl.innerText = category === 'all' ? 'All Stories' : `Stories in ${STORY_GENRES[category]?.label || category}`;
+      }
+
+      switchToStoriesView();
+    }
+
+    function changeFormatFilter(status) {
+      currentStatusFilter = status;
+      loadStoriesFeed();
+    }
+
+    function changeSorting(sortVal) {
+      currentSort = sortVal;
+      loadStoriesFeed();
+    }
+
+    function filterMyStories() {
+      if (!currentUser) return;
+      currentSearchTerm = currentUser.name || currentUser.email;
+      loadStoriesFeed();
+    }
+
+    // =========================================================================
+    // SLIDE-UP STORY COMPOSER DRAWER ("POST A STORY")
+    // =========================================================================
+    function openComposerModal() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.remove('composer-hidden', 'composer-minimized');
+      document.getElementById('c-story-title')?.focus();
+    }
+
+    function closeComposerModal() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.add('composer-hidden');
+    }
+
+    function minimizeComposer() {
+      const drawer = document.getElementById('composer-drawer');
+      drawer?.classList.toggle('composer-minimized');
+    }
+
+    async function publishStory() {
+      const titleEl = document.getElementById('c-story-title');
+      const catEl = document.getElementById('c-story-category');
+      const statusEl = document.getElementById('c-story-status');
+      const summaryEl = document.getElementById('c-story-summary');
+      const contentEl = document.getElementById('c-story-content');
+      const btn = document.getElementById('btn-publish-story');
+
+      const title = titleEl?.value.trim();
+      const content = contentEl?.value.trim();
+
+      if (!title) {
+        showToast('Please enter a story title.', 'fa-exclamation-circle');
+        titleEl?.focus();
+        return;
+      }
+      if (!content) {
+        showToast('Please write or paste story content.', 'fa-exclamation-circle');
+        contentEl?.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Publishing...';
+
+      try {
+        const payload = {
+          title: title,
+          category: catEl?.value || 'fantasy',
+          format_status: statusEl?.value || 'completed',
+          summary: summaryEl?.value.trim() || content.slice(0, 160) + '...',
+          content: content
+        };
+
+        const res = await fetch('/api/community/stories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          titleEl.value = '';
+          summaryEl.value = '';
+          contentEl.value = '';
+          closeComposerModal();
+          showToast('Your story is now live in the library! 📚🎉');
+          loadStoriesFeed(true);
+          if (data.id) {
+            window.location.hash = `read/${data.id}`;
+          }
+        } else {
+          showToast(data.error || 'Failed to publish story. Please sign in.', 'fa-exclamation-triangle');
+        }
+      } catch (err) {
+        showToast('Network error publishing story.', 'fa-exclamation-triangle');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-feather-pointed text-purple-400 text-xs"></i> <span>Post Story</span>';
       }
     }
 
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
     }
 
-    function escapeJsString(str) {
-      if (!str) return '';
-      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      await checkAuthSession();
-      await loadStories();
-      if (window.lucide) lucide.createIcons();
-    });
+    // Startup
+    document.addEventListener('DOMContentLoaded', initStories);
   </script>
 
   <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
