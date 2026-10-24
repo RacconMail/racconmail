@@ -401,7 +401,7 @@ try {
 
       <!-- Brand Mascot Logo & Name: Clicking refreshes the mail without logging out -->
       <a href="/inbox" onclick="window.location.reload(); return false;" class="flex items-center gap-2 group cursor-pointer mr-1" title="Raccon Mail (Click to refresh)">
-        <img src="/raccoon-logo.png" alt="Raccon Mail" class="h-7 w-7 object-contain group-hover:scale-105 transition" />
+        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-7 w-7 object-contain group-hover:scale-105 transition" />
         <span class="font-bold text-base tracking-tight hidden sm:inline" style="color: #64748B !important;">Raccon Mail</span>
       </a>
 
@@ -1668,7 +1668,7 @@ try {
       if (container) {
         container.innerHTML = `
           <div class="flex flex-col items-center justify-center h-full p-8 text-center text-slate-400">
-            <img src="/raccoon-logo.png" class="h-20 w-20 object-contain opacity-60 mb-3" />
+            <img src="/raccoon-logo.svg" class="h-20 w-20 object-contain opacity-60 mb-3" />
             <p class="font-bold text-base text-slate-700">No Conversation Selected</p>
             <p class="text-xs text-slate-400 mt-1">Select an email to read or click Compose to start a new thread.</p>
           </div>
@@ -2477,7 +2477,7 @@ try {
         <i class="fas fa-times text-xs"></i>
       </button>
       <div class="relative inline-block mb-3">
-        <img src="/raccoon-logo.png" alt="Raccon Mascot" class="h-24 w-24 mx-auto object-contain filter drop-shadow-md animate-bounce" />
+        <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="h-24 w-24 mx-auto object-contain filter drop-shadow-md animate-bounce" />
         <span class="absolute -top-1 -right-1 text-2xl">✨</span>
       </div>
       <h3 class="font-display text-xl font-bold text-slate-900">Email sent successfully! 🐾</h3>
