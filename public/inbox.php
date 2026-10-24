@@ -605,6 +605,78 @@ try {
         </button>
       </div>
 
+      <!-- Section: PRODUCTIVITY & SUITE (High-Value Modern Sections) -->
+      <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-5">Productivity</div>
+      <div class="space-y-1">
+        
+        <!-- 1. Calendar -->
+        <button onclick="openProductivityDrawer('calendar')" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-6 h-6 rounded-lg bg-cyan-50 border border-cyan-200/80 flex items-center justify-center text-cyan-600 group-hover:bg-cyan-100 transition shrink-0">
+              <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
+            </div>
+            <span class="sidebar-text truncate">Calendar</span>
+          </div>
+          <span class="sidebar-badge text-[10px] font-bold bg-cyan-100/80 text-cyan-800 px-2 py-0.5 rounded-full">3 Today</span>
+        </button>
+
+        <!-- 2. Notes Section -->
+        <button onclick="openProductivityDrawer('notes')" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-6 h-6 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 group-hover:bg-amber-100 transition shrink-0">
+              <i data-lucide="sticky-note" class="h-3.5 w-3.5"></i>
+            </div>
+            <span class="sidebar-text truncate">Keep Notes</span>
+          </div>
+          <span class="sidebar-badge text-[10px] font-mono text-slate-400">4</span>
+        </button>
+
+        <!-- 3. Tasks / To-Do -->
+        <button onclick="openProductivityDrawer('tasks')" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-6 h-6 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition shrink-0">
+              <i data-lucide="check-square" class="h-3.5 w-3.5"></i>
+            </div>
+            <span class="sidebar-text truncate">Tasks / To-Do</span>
+          </div>
+          <span id="sidebar-tasks-count" class="sidebar-badge text-[10px] font-bold bg-emerald-100/80 text-emerald-800 px-2 py-0.5 rounded-full">2</span>
+        </button>
+
+        <!-- 4. Attachments & Media Dashboard -->
+        <button onclick="openProductivityDrawer('attachments')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-purple-50 border border-purple-200/80 flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition shrink-0">
+            <i data-lucide="paperclip" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">Files & Gallery</span>
+        </button>
+
+        <!-- 5. RSS / Feed Reader -->
+        <button onclick="openProductivityDrawer('rss')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-rose-50 border border-rose-200/80 flex items-center justify-center text-rose-600 group-hover:bg-rose-100 transition shrink-0">
+            <i data-lucide="rss" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">Feed Reader</span>
+        </button>
+
+        <!-- 6. Templates & Canned Responses -->
+        <button onclick="openProductivityDrawer('templates')" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold nav-pill-inactive group">
+          <div class="w-6 h-6 rounded-lg bg-indigo-50 border border-indigo-200/80 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition shrink-0">
+            <i data-lucide="file-text" class="h-3.5 w-3.5"></i>
+          </div>
+          <span class="sidebar-text truncate">Templates</span>
+        </button>
+
+        <!-- 7. Pro Suite & Value Extensions Hub -->
+        <button onclick="openProFeaturesModal()" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl transition cursor-pointer group mt-2">
+          <div class="flex items-center gap-2 truncate">
+            <i data-lucide="sparkles" class="h-3.5 w-3.5 text-amber-500"></i>
+            <span class="sidebar-text truncate">Pro Plan Hub</span>
+          </div>
+          <span class="sidebar-badge text-[9px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded">PRO</span>
+        </button>
+
+      </div>
+
       <!-- Section: ECOSYSTEM (Modern Gray Badges) -->
       <div class="sidebar-section-title text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 mt-5">Ecosystem</div>
       <div class="space-y-1">
@@ -679,10 +751,37 @@ try {
         </p>
 
         <!-- Quick Filter Tabs: All, Unread, Starred -->
-        <div class="flex items-center gap-1.5 mb-2">
-          <button onclick="setListFilter('all')" id="filter-btn-all" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer">All</button>
-          <button onclick="setListFilter('unread')" id="filter-btn-unread" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Unread</button>
-          <button onclick="setListFilter('starred')" id="filter-btn-starred" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">Starred</button>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-1.5">
+            <button onclick="setListFilter('all')" id="filter-btn-all" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer transition">All</button>
+            <button onclick="setListFilter('unread')" id="filter-btn-unread" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition">Unread</button>
+            <button onclick="setListFilter('starred')" id="filter-btn-starred" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer transition">Starred</button>
+          </div>
+          <!-- Unified Inbox Status Indicator -->
+          <div id="unified-status-badge" class="hidden items-center gap-1 text-[10px] font-bold text-cyan-600 bg-cyan-50 border border-cyan-200/80 px-2 py-0.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+            <span>Unified (3)</span>
+          </div>
+        </div>
+
+        <!-- Smart Categories Tabs: Primary, Promotions, Social, Updates -->
+        <div class="grid grid-cols-4 gap-1 p-1 bg-slate-100/80 rounded-xl mb-2.5 select-none text-[11px] font-medium text-slate-600">
+          <button onclick="setSmartCategory('primary')" id="smart-tab-primary" class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white text-slate-900 font-bold shadow-2xs transition cursor-pointer">
+            <i data-lucide="inbox" class="h-3.5 w-3.5 text-cyan-500"></i>
+            <span class="truncate">Primary</span>
+          </button>
+          <button onclick="setSmartCategory('promotions')" id="smart-tab-promotions" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
+            <i data-lucide="tag" class="h-3.5 w-3.5 text-amber-500"></i>
+            <span class="truncate">Promos</span>
+          </button>
+          <button onclick="setSmartCategory('social')" id="smart-tab-social" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
+            <i data-lucide="users" class="h-3.5 w-3.5 text-purple-500"></i>
+            <span class="truncate">Social</span>
+          </button>
+          <button onclick="setSmartCategory('updates')" id="smart-tab-updates" class="flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer">
+            <i data-lucide="bell" class="h-3.5 w-3.5 text-emerald-500"></i>
+            <span class="truncate">Updates</span>
+          </button>
         </div>
       </div>
 
@@ -732,6 +831,37 @@ try {
       </div>
 
     </main>
+    <!-- ========================================================================= -->
+    <!-- RIGHT QUICK-ACCESS 1-CLICK PRODUCTIVITY RAIL (Gmail / Outlook Style)      -->
+    <!-- ========================================================================= -->
+    <div id="quick-rail" class="hidden xl:flex flex-col items-center justify-between w-14 border-l border-slate-100 bg-white py-4 shrink-0 select-none z-20">
+      <div class="flex flex-col items-center gap-4">
+        <button onclick="openProductivityDrawer('calendar')" title="Calendar & Events" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="calendar" class="h-5 w-5"></i>
+        </button>
+        <button onclick="openProductivityDrawer('notes')" title="Keep Notes" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="sticky-note" class="h-5 w-5"></i>
+        </button>
+        <button onclick="openProductivityDrawer('tasks')" title="Tasks & To-Do" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="check-square" class="h-5 w-5"></i>
+        </button>
+        <button onclick="openProductivityDrawer('attachments')" title="Attachments & Files Gallery" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="paperclip" class="h-5 w-5"></i>
+        </button>
+        <button onclick="openProductivityDrawer('rss')" title="Newsletter & Feed Reader" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="rss" class="h-5 w-5"></i>
+        </button>
+        <button onclick="openProductivityDrawer('templates')" title="Canned Response Templates" class="w-10 h-10 rounded-2xl flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition cursor-pointer active:scale-95">
+          <i data-lucide="file-text" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <!-- Bottom Pro Plan Trigger -->
+      <button onclick="openProFeaturesModal()" title="Explore Pro Features & Business Plan" class="w-10 h-10 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 hover:bg-amber-100 transition cursor-pointer active:scale-95">
+        <i data-lucide="sparkles" class="h-5 w-5"></i>
+      </button>
+    </div>
+
 
   </div>
 
@@ -2313,6 +2443,1078 @@ try {
       </div>
     </div>
   </div>
+
+  <!-- ========================================================================= -->
+  <!-- HIGH-VALUE PRODUCTIVITY SLIDE-OVER DRAWER (Calendar, Notes, Tasks, etc.)  -->
+  <!-- ========================================================================= -->
+  <div id="productivity-drawer-backdrop" onclick="closeProductivityDrawer()" class="hidden fixed inset-0 bg-slate-900/30 backdrop-blur-2xs z-40 transition-opacity"></div>
+  
+  <aside id="productivity-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[420px] bg-white border-l border-slate-200 shadow-2xl z-50 flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out select-none">
+    
+    <!-- Drawer Top Header & Tool Tabs -->
+    <div class="p-4 border-b border-slate-100 flex flex-col gap-3 shrink-0 bg-slate-50/70">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div id="drawer-header-icon" class="w-8 h-8 rounded-xl bg-cyan-100/80 text-cyan-700 flex items-center justify-center font-bold">
+            <i data-lucide="calendar" class="h-4 w-4"></i>
+          </div>
+          <div>
+            <h2 id="drawer-header-title" class="text-sm font-bold text-slate-900 leading-tight">Calendar & Schedule</h2>
+            <p id="drawer-header-subtitle" class="text-[11px] text-slate-400">Integrated events and smart reminders</p>
+          </div>
+        </div>
+
+        <button onclick="closeProductivityDrawer()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <!-- Quick Tool Switcher Ribbon -->
+      <div class="grid grid-cols-6 gap-1 p-1 bg-white rounded-xl border border-slate-200/80 shadow-2xs text-[10px] font-bold text-slate-500">
+        <button onclick="switchDrawerTab('calendar')" id="drawer-tab-calendar" class="flex flex-col items-center py-1.5 rounded-lg bg-cyan-50 text-cyan-700 transition cursor-pointer">
+          <i data-lucide="calendar" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Cal</span>
+        </button>
+        <button onclick="switchDrawerTab('notes')" id="drawer-tab-notes" class="flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+          <i data-lucide="sticky-note" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Notes</span>
+        </button>
+        <button onclick="switchDrawerTab('tasks')" id="drawer-tab-tasks" class="flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+          <i data-lucide="check-square" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Tasks</span>
+        </button>
+        <button onclick="switchDrawerTab('attachments')" id="drawer-tab-attachments" class="flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+          <i data-lucide="paperclip" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Files</span>
+        </button>
+        <button onclick="switchDrawerTab('rss')" id="drawer-tab-rss" class="flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+          <i data-lucide="rss" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Feeds</span>
+        </button>
+        <button onclick="switchDrawerTab('templates')" id="drawer-tab-templates" class="flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer">
+          <i data-lucide="file-text" class="h-3.5 w-3.5 mb-0.5"></i>
+          <span>Templates</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer Dynamic Scrollable Content Pane -->
+    <div id="drawer-content-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <!-- Injected by renderDrawerContent() -->
+    </div>
+
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- ⚙️ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL (Full Multi-Tab Showcase) -->
+  <!-- ========================================================================= -->
+  <div id="pro-features-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Top Header -->
+      <div class="p-5 pb-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/80">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-2xs">
+            <i data-lucide="sparkles" class="h-5 w-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Raccon Pro & Enterprise Hub</h2>
+              <span class="text-[10px] font-black uppercase tracking-wider bg-amber-200/90 text-amber-900 px-2 py-0.5 rounded-full">Included</span>
+            </div>
+            <p class="text-xs text-slate-400">High-value modern extensions ready for commercial and enterprise deployment</p>
+          </div>
+        </div>
+
+        <button onclick="closeProFeaturesModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <!-- 4 Value Proposition Tabs -->
+      <div class="grid grid-cols-4 border-b border-slate-100 bg-white text-xs font-bold text-slate-500 shrink-0 select-none">
+        <button onclick="switchProTab('infra')" id="pro-tab-infra" class="py-3 text-center border-b-2 border-amber-500 text-amber-800 bg-amber-50/40 transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="server" class="h-3.5 w-3.5 text-amber-600"></i>
+          <span class="hidden sm:inline">Infrastructure & Storage</span>
+          <span class="sm:hidden">Infra</span>
+        </button>
+        <button onclick="switchProTab('security')" id="pro-tab-security" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="shield-check" class="h-3.5 w-3.5 text-emerald-600"></i>
+          <span class="hidden sm:inline">Privacy & Security</span>
+          <span class="sm:hidden">Security</span>
+        </button>
+        <button onclick="switchProTab('productivity')" id="pro-tab-productivity" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="zap" class="h-3.5 w-3.5 text-cyan-600"></i>
+          <span class="hidden sm:inline">AI & Productivity</span>
+          <span class="sm:hidden">Productivity</span>
+        </button>
+        <button onclick="switchProTab('business')" id="pro-tab-business" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="briefcase" class="h-3.5 w-3.5 text-purple-600"></i>
+          <span class="hidden sm:inline">Business & CRM</span>
+          <span class="sm:hidden">Business</span>
+        </button>
+      </div>
+
+      <!-- Modal Body (Dynamic Tab Content) -->
+      <div id="pro-tab-content-container" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+        <!-- Rendered by renderProTabContent() -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+          <span>100% Native PHP + SQLite Architecture &mdash; Zero External SaaS Dependency</span>
+        </div>
+        <button onclick="closeProFeaturesModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition cursor-pointer">
+          Close Hub
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ADD / CONNECT EXTERNAL ACCOUNT MODAL                                      -->
+  <!-- ========================================================================= -->
+  <div id="add-account-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-2xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="plus-circle" class="h-5 w-5 text-cyan-600"></i>
+          <h3 class="text-sm font-bold text-slate-900">Connect External Mail Account</h3>
+        </div>
+        <button onclick="closeAddAccountModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Email Address</label>
+          <input type="email" id="new-acc-email" placeholder="e.g. name@company.com or @gmail.com" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Display Label</label>
+          <input type="text" id="new-acc-name" placeholder="e.g. Work Mailbox" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">IMAP Server</label>
+            <input type="text" id="new-acc-imap" placeholder="imap.mail.com" value="mail.racconmail.eu" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Port & Security</label>
+            <input type="text" id="new-acc-port" value="993 (SSL)" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl font-mono text-[11px]" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Password / App Key</label>
+          <input type="password" id="new-acc-pass" placeholder="••••••••••••" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-slate-100">
+        <button onclick="closeAddAccountModal()" class="px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+        <button onclick="saveConnectedAccountAction()" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- HIGH-VALUE PRODUCTIVITY & PRO SUITE JAVASCRIPT LOGIC                      -->
+  <!-- ========================================================================= -->
+  <script>
+    // Productivity State
+    let currentDrawerTab = 'calendar';
+    let isUnifiedInboxActive = false;
+    let selectedCalendarDate = new Date().toISOString().split('T')[0];
+    let cachedCalendarEvents = [];
+    let cachedUserNotes = [];
+    let cachedUserTasks = [];
+    let cachedAttachments = [];
+    let cachedTemplates = [];
+    let cachedRssArticles = [];
+
+    // 1. Drawer Opening & Tab Switching
+    function openProductivityDrawer(tabName = 'calendar') {
+      const drawer = document.getElementById('productivity-drawer');
+      const backdrop = document.getElementById('productivity-drawer-backdrop');
+      if (!drawer) return;
+
+      drawer.classList.remove('translate-x-full');
+      backdrop.classList.remove('hidden');
+      switchDrawerTab(tabName);
+    }
+
+    function closeProductivityDrawer() {
+      const drawer = document.getElementById('productivity-drawer');
+      const backdrop = document.getElementById('productivity-drawer-backdrop');
+      if (!drawer) return;
+
+      drawer.classList.add('translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+
+    function switchDrawerTab(tabName) {
+      currentDrawerTab = tabName;
+      
+      // Update top button styles
+      ['calendar', 'notes', 'tasks', 'attachments', 'rss', 'templates'].forEach(t => {
+        const btn = document.getElementById('drawer-tab-' + t);
+        if (btn) {
+          if (t === tabName) {
+            btn.className = 'flex flex-col items-center py-1.5 rounded-lg bg-cyan-50 text-cyan-700 font-bold transition cursor-pointer';
+          } else {
+            btn.className = 'flex flex-col items-center py-1.5 rounded-lg hover:bg-slate-50 transition cursor-pointer text-slate-500';
+          }
+        }
+      });
+
+      // Update Header Text & Icon
+      const titleEl = document.getElementById('drawer-header-title');
+      const subEl = document.getElementById('drawer-header-subtitle');
+      const iconEl = document.getElementById('drawer-header-icon');
+
+      const meta = {
+        calendar: { title: 'Calendar & Schedule', sub: 'Integrated event planner linked to dates and reminders', icon: 'calendar', color: 'bg-cyan-100 text-cyan-700' },
+        notes: { title: 'Keep Notes & Ideas', sub: 'Modern pastel sticky notes with checklists & tags', icon: 'sticky-note', color: 'bg-amber-100 text-amber-700' },
+        tasks: { title: 'Actionable Tasks / To-Do', sub: 'Turn correspondence into prioritized milestones', icon: 'check-square', color: 'bg-emerald-100 text-emerald-700' },
+        attachments: { title: 'Attachments & Media Gallery', sub: 'Visual dashboard for images, PDFs, spreadsheets & code', icon: 'paperclip', color: 'bg-purple-100 text-purple-700' },
+        rss: { title: 'Newsletter & Feed Reader', sub: 'Distraction-free aggregator for blogs and tech feeds', icon: 'rss', color: 'bg-rose-100 text-rose-700' },
+        templates: { title: 'Canned Responses & Templates', sub: 'Insert pre-saved professional replies with 1 click', icon: 'file-text', color: 'bg-indigo-100 text-indigo-700' }
+      }[tabName];
+
+      if (titleEl && meta) titleEl.innerText = meta.title;
+      if (subEl && meta) subEl.innerText = meta.sub;
+      if (iconEl && meta) {
+        iconEl.className = 'w-8 h-8 rounded-xl flex items-center justify-center font-bold ' + meta.color;
+        iconEl.innerHTML = '<i data-lucide="' + meta.icon + '" class="h-4 w-4"></i>';
+      }
+
+      renderDrawerContent(tabName);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // 2. Render Drawer Content Dynamically
+    async function renderDrawerContent(tabName) {
+      const container = document.getElementById('drawer-content-container');
+      if (!container) return;
+
+      container.innerHTML = '<div class="py-12 flex flex-col items-center justify-center text-slate-400 gap-2"><div class="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div><span class="text-xs">Loading ' + tabName + '...</span></div>';
+
+      try {
+        if (tabName === 'calendar') {
+          await loadCalendarView(container);
+        } else if (tabName === 'notes') {
+          await loadNotesView(container);
+        } else if (tabName === 'tasks') {
+          await loadTasksView(container);
+        } else if (tabName === 'attachments') {
+          await loadAttachmentsView(container);
+        } else if (tabName === 'rss') {
+          await loadRssView(container);
+        } else if (tabName === 'templates') {
+          await loadTemplatesView(container);
+        }
+      } catch (err) {
+        container.innerHTML = '<div class="p-4 rounded-xl bg-rose-50 text-rose-700 text-xs">Error loading ' + tabName + ': ' + err.message + '</div>';
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // =========================================================================
+    // CALENDAR VIEW & EVENT PLANNER
+    // =========================================================================
+    async function loadCalendarView(container) {
+      const res = await fetch('/api/calendar/events');
+      const data = await res.json();
+      cachedCalendarEvents = data.events || [];
+
+      // Calendar month header & mini grid
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.toLocaleString('default', { month: 'long' });
+      const daysInMonth = new Date(currentYear, now.getMonth() + 1, 0).getDate();
+      const todayDate = now.getDate();
+
+      let daysHtml = '';
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dStr = String(d).padStart(2, '0');
+        const mStr = String(now.getMonth() + 1).padStart(2, '0');
+        const fullDate = \`\${currentYear}-\${mStr}-\${dStr}\`;
+        const isToday = (d === todayDate);
+        const isSelected = (fullDate === selectedCalendarDate);
+        const hasEvents = cachedCalendarEvents.some(ev => ev.event_date === fullDate);
+
+        daysHtml += \`
+          <button onclick="selectCalendarDate('\${fullDate}')" class="h-8 rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition cursor-pointer relative \${
+            isSelected ? 'bg-cyan-600 text-white font-bold shadow-2xs' : (isToday ? 'bg-cyan-50 text-cyan-800 font-bold border border-cyan-300' : 'hover:bg-slate-100 text-slate-700')
+          }">
+            <span>\${d}</span>
+            \${hasEvents ? '<span class="w-1 h-1 rounded-full ' + (isSelected ? 'bg-white' : 'bg-cyan-500') + ' absolute bottom-1"></span>' : ''}
+          </button>
+        \`;
+      }
+
+      // Filter events for selected date
+      const dayEvents = cachedCalendarEvents.filter(ev => ev.event_date === selectedCalendarDate);
+
+      let eventsListHtml = '';
+      if (dayEvents.length === 0) {
+        eventsListHtml = \`
+          <div class="py-6 text-center text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
+            <i data-lucide="calendar-x" class="h-6 w-6 mx-auto mb-1.5 opacity-60"></i>
+            <p class="text-xs font-medium">No events scheduled for \${selectedCalendarDate}</p>
+            <button onclick="showQuickAddEvent()" class="mt-2 text-xs font-bold text-cyan-600 hover:underline">+ Schedule Event</button>
+          </div>
+        \`;
+      } else {
+        eventsListHtml = dayEvents.map(ev => \`
+          <div class="p-3 rounded-2xl bg-white border border-slate-100 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full mt-1 shrink-0" style="background-color: \${ev.color || '#06b6d4'}"></span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-900 truncate leading-snug">\${escapeHtml(ev.title)}</p>
+                <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                  <span class="font-mono font-medium text-slate-600">\${ev.start_time} - \${ev.end_time}</span>
+                  \${ev.location ? '<span>• ' + escapeHtml(ev.location) + '</span>' : ''}
+                </div>
+                \${ev.notes ? '<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">' + escapeHtml(ev.notes) + '</p>' : ''}
+              </div>
+            </div>
+            <button onclick="deleteCalendarEvent('\${ev.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
+              <i data-lucide="trash" class="h-3.5 w-3.5"></i>
+            </button>
+          </div>
+        \`).join('');
+      }
+
+      container.innerHTML = \`
+        <!-- Mini Calendar Header -->
+        <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <i data-lucide="calendar" class="h-4 w-4 text-cyan-500"></i>
+              <span>\${currentMonth} \${currentYear}</span>
+            </h3>
+            <span class="text-[10px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">Today: \${todayDate} \${currentMonth}</span>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-[10px] font-bold text-slate-400 text-center mb-1">
+            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1">
+            \${daysHtml}
+          </div>
+        </div>
+
+        <!-- Schedule for selected date -->
+        <div class="flex items-center justify-between pt-1">
+          <h4 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <i data-lucide="clock" class="h-3.5 w-3.5 text-cyan-600"></i>
+            <span>Schedule for \${selectedCalendarDate}</span>
+          </h4>
+          <button onclick="showQuickAddEvent()" class="text-xs font-bold text-cyan-600 hover:text-cyan-800 transition flex items-center gap-1 cursor-pointer">
+            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+            <span>Add Event</span>
+          </button>
+        </div>
+
+        <!-- Quick Add Event Drawer Card -->
+        <div id="quick-add-event-form" class="hidden p-3.5 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 space-y-2.5 animate-in fade-in duration-100">
+          <input type="text" id="ev-input-title" placeholder="Event title or meeting..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+          <div class="grid grid-cols-2 gap-2">
+            <input type="time" id="ev-input-start" value="10:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />
+            <input type="time" id="ev-input-end" value="11:00" class="px-2.5 py-1 text-xs bg-white border border-slate-200 rounded-lg text-slate-700 font-mono" />
+          </div>
+          <input type="text" id="ev-input-loc" placeholder="Location or Zoom / Meet URL" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+          
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-1.5">
+              <label class="text-[10px] text-slate-400 font-bold uppercase">Color:</label>
+              <button onclick="setEventColor('#06b6d4')" class="w-3.5 h-3.5 rounded-full bg-cyan-500 border border-white shadow-2xs"></button>
+              <button onclick="setEventColor('#a855f7')" class="w-3.5 h-3.5 rounded-full bg-purple-500 border border-white shadow-2xs"></button>
+              <button onclick="setEventColor('#10b981')" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white shadow-2xs"></button>
+              <button onclick="setEventColor('#ef4444')" class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-white shadow-2xs"></button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="hideQuickAddEvent()" class="px-2.5 py-1 rounded-lg text-xs text-slate-500 hover:bg-slate-200/60 font-semibold">Cancel</button>
+              <button onclick="saveCalendarEventAction()" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white shadow-2xs">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day Events List -->
+        <div class="space-y-2">
+          \${eventsListHtml}
+        </div>
+      \`;
+    }
+
+    function selectCalendarDate(dateStr) {
+      selectedCalendarDate = dateStr;
+      renderDrawerContent('calendar');
+    }
+
+    function showQuickAddEvent() {
+      const f = document.getElementById('quick-add-event-form');
+      if (f) {
+        f.classList.remove('hidden');
+        document.getElementById('ev-input-title').focus();
+      }
+    }
+
+    function hideQuickAddEvent() {
+      const f = document.getElementById('quick-add-event-form');
+      if (f) f.classList.add('hidden');
+    }
+
+    let activeEventColor = '#06b6d4';
+    function setEventColor(colorHex) {
+      activeEventColor = colorHex;
+    }
+
+    async function saveCalendarEventAction() {
+      const title = document.getElementById('ev-input-title').value.trim();
+      const start = document.getElementById('ev-input-start').value;
+      const end = document.getElementById('ev-input-end').value;
+      const loc = document.getElementById('ev-input-loc').value.trim();
+
+      if (!title) return alert('Please enter an event title');
+
+      await fetch('/api/calendar/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title,
+          date: selectedCalendarDate,
+          start_time: start,
+          end_time: end,
+          location: loc,
+          color: activeEventColor
+        })
+      });
+
+      renderDrawerContent('calendar');
+    }
+
+    async function deleteCalendarEvent(id) {
+      if (!confirm('Delete this event?')) return;
+      await fetch('/api/calendar/events?id=' + encodeURIComponent(id), { method: 'DELETE' });
+      renderDrawerContent('calendar');
+    }
+
+    // =========================================================================
+    // NOTES SECTION (Modern Pastel Sticky Notes with Pins & Search)
+    // =========================================================================
+    async function loadNotesView(container) {
+      const res = await fetch('/api/notes');
+      const data = await res.json();
+      cachedUserNotes = data.notes || [];
+
+      const notesHtml = cachedUserNotes.map(n => \`
+        <div class="p-3.5 rounded-2xl shadow-2xs border border-slate-200/70 space-y-2 group transition hover:shadow-xs relative" style="background-color: \${n.color || '#fef08a'}">
+          <div class="flex items-start justify-between gap-2">
+            <h4 class="text-xs font-bold text-slate-900 leading-snug truncate">\${escapeHtml(n.title)}</h4>
+            <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+              \${n.is_pinned ? '<span title="Pinned Note">📌</span>' : ''}
+              <button onclick="deleteNoteAction('\${n.id}')" class="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer">
+                <i data-lucide="trash" class="h-3 w-3"></i>
+              </button>
+            </div>
+          </div>
+          <p class="text-xs text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">\${escapeHtml(n.content)}</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-500/80 pt-1 border-t border-black/5">
+            <span class="font-mono">\${n.category || 'general'}</span>
+            <span>\${new Date(n.created_at || Date.now()).toLocaleDateString()}</span>
+          </div>
+        </div>
+      \`).join('');
+
+      container.innerHTML = \`
+        <!-- Notes Top Bar -->
+        <div class="flex items-center justify-between">
+          <div class="relative flex-1 mr-2">
+            <i data-lucide="search" class="h-3.5 w-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+            <input type="text" oninput="filterNotesLive(this.value)" placeholder="Search sticky notes..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:bg-white" />
+          </div>
+          <button onclick="showQuickAddNote()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer">
+            <i data-lucide="plus" class="h-3.5 w-3.5 text-white"></i>
+            <span>New Note</span>
+          </button>
+        </div>
+
+        <!-- Quick New Note Composer -->
+        <div id="quick-add-note-card" class="hidden p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-2.5 animate-in fade-in duration-100">
+          <input type="text" id="note-input-title" placeholder="Note Title..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 font-bold" />
+          <textarea id="note-input-body" rows="3" placeholder="Write thoughts, checklists, or key details..." class="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-amber-500 leading-normal"></textarea>
+          
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-1">
+              <button onclick="setNoteColor('#fef08a')" title="Sunny Yellow" class="w-4 h-4 rounded-full bg-amber-200 border border-amber-300"></button>
+              <button onclick="setNoteColor('#bbf7d0')" title="Mint Green" class="w-4 h-4 rounded-full bg-emerald-200 border border-emerald-300"></button>
+              <button onclick="setNoteColor('#fed7aa')" title="Peach Coral" class="w-4 h-4 rounded-full bg-orange-200 border border-orange-300"></button>
+              <button onclick="setNoteColor('#e9d5ff')" title="Lavender Purple" class="w-4 h-4 rounded-full bg-purple-200 border border-purple-300"></button>
+              <button onclick="setNoteColor('#bae6fd')" title="Sky Blue" class="w-4 h-4 rounded-full bg-sky-200 border border-sky-300"></button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="hideQuickAddNote()" class="px-2.5 py-1 text-xs text-slate-500 hover:bg-slate-200/60 rounded-lg">Cancel</button>
+              <button onclick="saveNoteAction()" class="px-3 py-1 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg shadow-2xs">Save Note</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Grid -->
+        <div id="notes-grid-list" class="space-y-3">
+          \${notesHtml}
+        </div>
+      \`;
+    }
+
+    function showQuickAddNote() {
+      const el = document.getElementById('quick-add-note-card');
+      if (el) {
+        el.classList.remove('hidden');
+        document.getElementById('note-input-title').focus();
+      }
+    }
+
+    function hideQuickAddNote() {
+      const el = document.getElementById('quick-add-note-card');
+      if (el) el.classList.add('hidden');
+    }
+
+    let activeNoteColor = '#fef08a';
+    function setNoteColor(c) {
+      activeNoteColor = c;
+    }
+
+    async function saveNoteAction() {
+      const title = document.getElementById('note-input-title').value.trim();
+      const content = document.getElementById('note-input-body').value.trim();
+      if (!title && !content) return alert('Please enter note title or body');
+
+      await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title || 'Untitled Note',
+          content: content,
+          color: activeNoteColor
+        })
+      });
+
+      renderDrawerContent('notes');
+    }
+
+    async function deleteNoteAction(id) {
+      if (!confirm('Delete note?')) return;
+      await fetch('/api/notes?id=' + encodeURIComponent(id), { method: 'DELETE' });
+      renderDrawerContent('notes');
+    }
+
+    // =========================================================================
+    // TASKS / TO-DO INTEGRATION
+    // =========================================================================
+    async function loadTasksView(container) {
+      const res = await fetch('/api/tasks');
+      const data = await res.json();
+      cachedUserTasks = data.tasks || [];
+
+      const tasksHtml = cachedUserTasks.map(t => \`
+        <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-start justify-between gap-3 group \${t.is_completed ? 'opacity-50' : ''}">
+          <div class="flex items-start gap-2.5 min-w-0">
+            <input type="checkbox" onchange="toggleTaskAction('\${t.id}', this.checked)" \${t.is_completed ? 'checked' : ''} class="mt-1 h-4 w-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer" />
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-slate-900 leading-snug truncate \${t.is_completed ? 'line-through text-slate-400' : ''}">\${escapeHtml(t.title)}</p>
+              <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1">
+                <span class="px-1.5 py-0.5 rounded font-bold uppercase tracking-wider \${
+                  t.priority === 'high' ? 'bg-rose-50 text-rose-600 border border-rose-200/80' : (t.priority === 'medium' ? 'bg-amber-50 text-amber-600 border border-amber-200/80' : 'bg-slate-100 text-slate-600')
+                }">\${t.priority}</span>
+                \${t.due_date ? '<span>📅 ' + t.due_date + '</span>' : ''}
+                \${t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">✉️ ' + escapeHtml(t.linked_email_subject) + '</span>' : ''}
+              </div>
+            </div>
+          </div>
+          <button onclick="deleteTaskAction('\${t.id}')" class="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer">
+            <i data-lucide="trash" class="h-3.5 w-3.5"></i>
+          </button>
+        </div>
+      \`).join('');
+
+      container.innerHTML = \`
+        <!-- Quick Add Task Bar -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <input type="text" id="task-input-title" placeholder="Add actionable task or milestone..." class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <select id="task-input-priority" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600">
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+              <input type="date" id="task-input-due" value="\${new Date().toISOString().split('T')[0]}" class="text-xs bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-600 font-mono" />
+            </div>
+            <button onclick="saveTaskAction()" class="px-3 py-1 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-lg shadow-2xs">Add Task</button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs font-bold text-slate-700 pt-1">
+          <span>Active Tasks (\${cachedUserTasks.filter(t => !t.is_completed).length})</span>
+          <span class="text-[10px] text-slate-400 font-mono">\${cachedUserTasks.filter(t => t.is_completed).length} Done</span>
+        </div>
+
+        <!-- Task List -->
+        <div class="space-y-2">
+          \${tasksHtml}
+        </div>
+      \`;
+    }
+
+    async function saveTaskAction() {
+      const title = document.getElementById('task-input-title').value.trim();
+      const priority = document.getElementById('task-input-priority').value;
+      const due = document.getElementById('task-input-due').value;
+
+      if (!title) return alert('Please enter a task title');
+
+      await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, priority: priority, due_date: due })
+      });
+
+      renderDrawerContent('tasks');
+    }
+
+    async function toggleTaskAction(id, isCompleted) {
+      await fetch('/api/tasks/toggle', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, is_completed: isCompleted ? 1 : 0 })
+      });
+      renderDrawerContent('tasks');
+    }
+
+    async function deleteTaskAction(id) {
+      await fetch('/api/tasks?id=' + encodeURIComponent(id), { method: 'DELETE' });
+      renderDrawerContent('tasks');
+    }
+
+    // =========================================================================
+    // ATTACHMENTS & MEDIA GALLERY DASHBOARD
+    // =========================================================================
+    async function loadAttachmentsView(container) {
+      const res = await fetch('/api/attachments/dashboard');
+      const data = await res.json();
+      cachedAttachments = data.attachments || [];
+
+      const itemsHtml = cachedAttachments.map(att => {
+        const isImg = (att.mime_type || '').startsWith('image/');
+        const isPdf = (att.mime_type || '').includes('pdf');
+        const sizeMb = (att.size_bytes / 1024 / 1024).toFixed(1) + ' MB';
+
+        return \`
+          <div class="p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition flex items-center justify-between gap-3 group">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 \${
+                isImg ? 'bg-amber-50 text-amber-600' : (isPdf ? 'bg-rose-50 text-rose-600' : 'bg-cyan-50 text-cyan-600')
+              }">
+                <i data-lucide="\${isImg ? 'image' : (isPdf ? 'file-text' : 'file')}" class="h-5 w-5"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-800 truncate">\${escapeHtml(att.original_name || att.filename)}</p>
+                <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                  <span class="font-mono">\${sizeMb}</span>
+                  \${att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : ''}
+                </div>
+              </div>
+            </div>
+            <a href="/api/attachments/\${att.id}/download" download class="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 transition shrink-0" title="Download File">
+              <i data-lucide="download" class="h-4 w-4"></i>
+            </a>
+          </div>
+        \`;
+      }).join('');
+
+      container.innerHTML = \`
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-bold text-slate-800">Mailbox Attachments (\${cachedAttachments.length})</p>
+          <span class="text-[10px] text-slate-400 font-mono">Visual Index</span>
+        </div>
+
+        <div class="space-y-2">
+          \${itemsHtml}
+        </div>
+      \`;
+    }
+
+    // =========================================================================
+    // RSS & FEED READER
+    // =========================================================================
+    async function loadRssView(container) {
+      const res = await fetch('/api/rss');
+      const data = await res.json();
+      const articles = data.articles || [];
+
+      const articlesHtml = articles.map(art => \`
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-rose-200 transition">
+          <div class="flex items-center justify-between text-[10px] text-slate-400">
+            <span class="font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200/60">\${escapeHtml(art.source)}</span>
+            <span>\${art.date}</span>
+          </div>
+          <h4 class="text-xs font-bold text-slate-900 leading-snug">\${escapeHtml(art.title)}</h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">\${escapeHtml(art.snippet)}</p>
+          <div class="flex items-center justify-between pt-1 text-[11px]">
+            <span class="text-slate-400">By \${escapeHtml(art.author || 'Editorial')}</span>
+            <a href="\${art.url}" target="_blank" class="text-cyan-600 hover:underline font-bold flex items-center gap-1">
+              <span>Read Source</span>
+              <i data-lucide="external-link" class="h-3 w-3"></i>
+            </a>
+          </div>
+        </div>
+      \`).join('');
+
+      container.innerHTML = \`
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-800">Subscribed Feeds</h3>
+          <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live Sync</span>
+        </div>
+
+        <div class="space-y-3">
+          \${articlesHtml}
+        </div>
+      \`;
+    }
+
+    // =========================================================================
+    // TEMPLATES & CANNED RESPONSES
+    // =========================================================================
+    async function loadTemplatesView(container) {
+      const res = await fetch('/api/templates');
+      const data = await res.json();
+      cachedTemplates = data.templates || [];
+
+      const templatesHtml = cachedTemplates.map(tpl => \`
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2 hover:border-indigo-200 transition">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              <h4 class="text-xs font-bold text-slate-900">\${escapeHtml(tpl.title)}</h4>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase">\${tpl.category}</span>
+          </div>
+          \${tpl.subject ? '<p class="text-[11px] text-slate-500 font-medium">Subject: ' + escapeHtml(tpl.subject) + '</p>' : ''}
+          <p class="text-[11px] text-slate-600 line-clamp-3 bg-slate-50 p-2 rounded-xl whitespace-pre-wrap font-sans">\${escapeHtml(tpl.body)}</p>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button onclick="copyTemplateText(\\\`\${escapeJsString(tpl.body)}\\\`)" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition cursor-pointer">Copy</button>
+            <button onclick="insertTemplateToCompose(\\\`\${escapeJsString(tpl.subject || '')}\\\`, \\\`\${escapeJsString(tpl.body)}\\\`)" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs transition cursor-pointer">Insert into Email</button>
+          </div>
+        </div>
+      \`).join('');
+
+      container.innerHTML = \`
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-slate-800">Canned Responses</h3>
+          <span class="text-[10px] text-slate-400 font-mono">\${cachedTemplates.length} Saved</span>
+        </div>
+
+        <div class="space-y-3">
+          \${templatesHtml}
+        </div>
+      \`;
+    }
+
+    function insertTemplateToCompose(subj, body) {
+      openComposeCard();
+      const bodyEl = document.getElementById('compose-body');
+      const subjEl = document.getElementById('compose-subject');
+      if (bodyEl) bodyEl.value = body;
+      if (subjEl && subj && !subjEl.value) subjEl.value = subj;
+      closeProductivityDrawer();
+    }
+
+    function copyTemplateText(text) {
+      navigator.clipboard.writeText(text);
+      alert('Template copied to clipboard!');
+    }
+
+    function escapeJsString(str) {
+      return (str || '').replace(/\\\\/g, '\\\\\\\\').replace(/\`/g, '\\\\\`').replace(/\\$/g, '\\\\$');
+    }
+
+    // =========================================================================
+    // MULTI-ACCOUNT & UNIFIED INBOX LOGIC
+    // =========================================================================
+    function toggleAccountDropdown(e) {
+      if (e) e.stopPropagation();
+      const m = document.getElementById('account-dropdown-menu');
+      if (m) m.classList.toggle('hidden');
+    }
+
+    function switchActiveAccount(email, modeName, color) {
+      document.getElementById('active-acc-name').innerText = email;
+      document.getElementById('active-acc-mode').innerText = modeName;
+      document.getElementById('active-acc-dot').style.backgroundColor = color;
+      toggleAccountDropdown();
+      refreshMailbox();
+    }
+
+    function toggleUnifiedInbox() {
+      isUnifiedInboxActive = !isUnifiedInboxActive;
+      const stateEl = document.getElementById('unified-toggle-state');
+      const badgeEl = document.getElementById('unified-status-badge');
+      const titleEl = document.getElementById('current-folder-display-title');
+
+      if (isUnifiedInboxActive) {
+        if (stateEl) stateEl.innerText = 'ON (3 ACCOUNTS)';
+        if (badgeEl) badgeEl.classList.remove('hidden');
+        if (titleEl) titleEl.innerText = 'Unified Inbox';
+      } else {
+        if (stateEl) stateEl.innerText = 'OFF';
+        if (badgeEl) badgeEl.classList.add('hidden');
+        if (titleEl) titleEl.innerText = 'Inbox';
+      }
+      toggleAccountDropdown();
+      refreshMailbox();
+    }
+
+    function openAddAccountModal() {
+      const m = document.getElementById('add-account-modal');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closeAddAccountModal() {
+      const m = document.getElementById('add-account-modal');
+      if (m) m.classList.add('hidden');
+    }
+
+    async function saveConnectedAccountAction() {
+      const email = document.getElementById('new-acc-email').value.trim();
+      const name = document.getElementById('new-acc-name').value.trim();
+      if (!email) return alert('Please enter an email address');
+
+      await fetch('/api/accounts/switcher', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, display_name: name })
+      });
+
+      closeAddAccountModal();
+      alert('External account ' + email + ' connected successfully!');
+    }
+
+    // =========================================================================
+    // SMART CATEGORIES / TABS
+    // =========================================================================
+    let activeSmartTab = 'primary';
+    function setSmartCategory(cat) {
+      activeSmartTab = cat;
+      ['primary', 'promotions', 'social', 'updates'].forEach(c => {
+        const btn = document.getElementById('smart-tab-' + c);
+        if (btn) {
+          if (c === cat) {
+            btn.className = 'flex items-center justify-center gap-1 py-1 rounded-lg bg-white text-slate-900 font-bold shadow-2xs transition cursor-pointer';
+          } else {
+            btn.className = 'flex items-center justify-center gap-1 py-1 rounded-lg hover:bg-white/80 transition cursor-pointer text-slate-500';
+          }
+        }
+      });
+      // Filter the threads container
+      refreshMailbox();
+    }
+
+    // =========================================================================
+    // ⚙️ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL
+    // =========================================================================
+    function openProFeaturesModal() {
+      const m = document.getElementById('pro-features-modal');
+      if (m) {
+        m.classList.remove('hidden');
+        switchProTab('infra');
+      }
+    }
+
+    function closeProFeaturesModal() {
+      const m = document.getElementById('pro-features-modal');
+      if (m) m.classList.add('hidden');
+    }
+
+    function switchProTab(tabKey) {
+      ['infra', 'security', 'productivity', 'business'].forEach(k => {
+        const btn = document.getElementById('pro-tab-' + k);
+        if (btn) {
+          if (k === tabKey) {
+            btn.className = 'py-3 text-center border-b-2 border-amber-500 text-amber-800 bg-amber-50/40 transition cursor-pointer flex items-center justify-center gap-1.5 font-bold';
+          } else {
+            btn.className = 'py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5 text-slate-500';
+          }
+        }
+      });
+      renderProTabContent(tabKey);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderProTabContent(tabKey) {
+      const container = document.getElementById('pro-tab-content-container');
+      if (!container) return;
+
+      if (tabKey === 'infra') {
+        container.innerHTML = \`
+          <!-- 1. Infrastructure & Storage Extensions -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-900">Expanded Cloud Storage (2TB Tier)</h4>
+                <p class="text-[11px] text-slate-400">High-speed SSD storage for messages, logs, and database files</p>
+              </div>
+              <span class="text-xs font-mono font-bold text-cyan-600 bg-cyan-50 border border-cyan-200 px-2.5 py-1 rounded-full">14.2 GB / 2,000 GB</span>
+            </div>
+
+            <!-- Custom Domain Support -->
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900">Custom Domain Support (name@yourdomain.com)</h4>
+                  <p class="text-[11px] text-slate-400">Automated DNS MX, SPF, DKIM & DMARC configuration</p>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+              </div>
+              <div class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-[11px] space-y-1">
+                <p>MX 10 mail.yourdomain.com.</p>
+                <p>TXT "v=spf1 include:racconmail.eu ~all"</p>
+                <p>TXT default._domainkey "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBA..."</p>
+              </div>
+            </div>
+
+            <!-- Large File Sending & Multi-Account Syncing -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Large File Sending (>25MB)</h4>
+                <p class="text-[11px] text-slate-500">Auto-generates encrypted cloud download links with expiry dates and password protection.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Multi-Account IMAP/POP3 Sync</h4>
+                <p class="text-[11px] text-slate-500">Aggregate unlimited mailboxes into a single synchronized dashboard with 0ms local caching.</p>
+              </div>
+            </div>
+          </div>
+        \`;
+      } else if (tabKey === 'security') {
+        container.innerHTML = \`
+          <!-- 2. Privacy & Advanced Security -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-emerald-950">End-to-End Encryption (E2EE) & PGP Keys</h4>
+                <p class="text-[11px] text-emerald-700">Client-side zero-knowledge encryption key vault active</p>
+              </div>
+              <span class="text-[10px] font-bold text-white bg-emerald-600 px-3 py-1 rounded-full shadow-2xs">PGP 4096-bit</span>
+            </div>
+
+            <!-- Email Aliases & Masking -->
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900">Email Aliases & Burner Masking</h4>
+                  <p class="text-[11px] text-slate-400">Generate disposable addresses to stop tracking and spam</p>
+                </div>
+                <button onclick="generateBurnerAlias()" class="text-xs font-bold text-cyan-600 hover:underline">+ Generate Mask</button>
+              </div>
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">
+                  <span class="font-mono text-slate-700">mask.shopping.4829@racconmail.eu</span>
+                  <span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 text-xs">
+                  <span class="font-mono text-slate-700">mask.newsletters.9102@racconmail.eu</span>
+                  <span class="text-[10px] text-slate-400">Forwards to alex@racconmail.eu</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audit Logs & Security Radar -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <h4 class="text-xs font-bold text-slate-900">Security Audit Logs & Active Sessions</h4>
+              <p class="text-[11px] text-slate-400">Full IP address logging, suspicious login alerts, and remote session termination.</p>
+              <div class="text-[10px] text-slate-600 font-mono space-y-1 pt-1">
+                <p>• \${new Date().toLocaleDateString()} 20:54 &mdash; Webmail Authorized &mdash; 178.132.24.11 (Chrome Win11)</p>
+                <p>• Yesterday 14:12 &mdash; Android APK Token Handshake &mdash; Verified</p>
+              </div>
+            </div>
+          </div>
+        \`;
+      } else if (tabKey === 'productivity') {
+        container.innerHTML = \`
+          <!-- 3. Professional Productivity Tools -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-cyan-50/60 border border-cyan-200/80 flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-cyan-950">AI Writing Assistant & Summarizer</h4>
+                <p class="text-[11px] text-cyan-700">Draft replies, adjust professional tone, and summarize long multi-nested threads</p>
+              </div>
+              <span class="text-[10px] font-bold text-white bg-cyan-600 px-3 py-1 rounded-full shadow-2xs">Integrated</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Email Tracking & Read Receipts</h4>
+                <p class="text-[11px] text-slate-500">Real-time open tracking and link analytics so you know precisely when recipients open your proposals.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Send Later & 30s Undo Send</h4>
+                <p class="text-[11px] text-slate-500">Scheduled delivery matching recipient time zones, plus an extended 30-second cancellation safety window.</p>
+              </div>
+            </div>
+
+            <!-- Automation & Sequences -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+              <h4 class="text-xs font-bold text-slate-900">Advanced Automation Rules & Sequences</h4>
+              <p class="text-[11px] text-slate-500">Build conditional triggers: "If sender is client, apply Priority tag, create Calendar reminder, and auto-reply confirmation."</p>
+            </div>
+          </div>
+        \`;
+      } else if (tabKey === 'business') {
+        container.innerHTML = \`
+          <!-- 4. Business & Collaborative Features -->
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-200/80 flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-purple-950">Shared Inboxes (support@ & team@)</h4>
+                <p class="text-[11px] text-purple-700">Team collaboration with internal comments, assignment queues, and ticket statuses</p>
+              </div>
+              <span class="text-[10px] font-bold text-white bg-purple-600 px-3 py-1 rounded-full shadow-2xs">Multi-Agent</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Full CRM Two-Way Sync</h4>
+                <p class="text-[11px] text-slate-500">Direct integration with Salesforce, HubSpot, and Pipedrive to sync contacts, leads, and deal history.</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-900">Premium Webhooks</h4>
+                <p class="text-[11px] text-slate-500">Live webhooks for Slack notifications, Jira ticket creation, Asana milestones, and Zoom video meetings.</p>
+              </div>
+            </div>
+          </div>
+        \`;
+      }
+    }
+
+    async function generateBurnerAlias() {
+      const res = await fetch('/api/security/aliases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label: 'Quick Burner' })
+      });
+      const data = await res.json();
+      alert('Created Alias: ' + data.alias_email);
+      renderProTabContent('security');
+    }
+  </script>
 
 </body>
 </html>

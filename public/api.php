@@ -57,7 +57,7 @@ if (!is_dir($uploadsDir)) {
 }
 
 // Run schema setup and migrations ONCE (avoiding SQLite write locks on every request)
-$migratedFlagFile = __DIR__ . '/.db_migrated_v16_admin_fix';
+$migratedFlagFile = __DIR__ . '/.db_migrated_v17_productivity_suite';
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
         if ($dbNeedsInit) {
@@ -137,6 +137,107 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     PRIMARY KEY (post_id, user_id)
                 )");
+
+                // High-Value Productivity & Pro Suite Tables
+                $db->exec("CREATE TABLE IF NOT EXISTS calendar_events (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    event_date TEXT NOT NULL,
+                    start_time TEXT DEFAULT '09:00',
+                    end_time TEXT DEFAULT '10:00',
+                    location TEXT DEFAULT '',
+                    reminder TEXT DEFAULT '15m',
+                    category TEXT DEFAULT 'work',
+                    color TEXT DEFAULT '#06b6d4',
+                    linked_email_id TEXT DEFAULT '',
+                    notes TEXT DEFAULT '',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_calendar_user_date ON calendar_events(user_id, event_date)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS user_notes (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    color TEXT DEFAULT '#fef08a',
+                    is_pinned INTEGER DEFAULT 0,
+                    checklist_json TEXT DEFAULT '[]',
+                    category TEXT DEFAULT 'general',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_notes_user ON user_notes(user_id, is_pinned, updated_at)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS user_tasks (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    due_date TEXT DEFAULT '',
+                    priority TEXT DEFAULT 'medium',
+                    is_completed INTEGER DEFAULT 0,
+                    linked_email_id TEXT DEFAULT '',
+                    linked_email_subject TEXT DEFAULT '',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+                $db->exec("CREATE INDEX IF NOT EXISTS idx_tasks_user ON user_tasks(user_id, is_completed)");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS email_templates (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    category TEXT DEFAULT 'general',
+                    subject TEXT DEFAULT '',
+                    body TEXT NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS user_rss_feeds (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    feed_url TEXT NOT NULL,
+                    site_url TEXT DEFAULT '',
+                    category TEXT DEFAULT 'tech',
+                    icon TEXT DEFAULT 'newspaper',
+                    unread_count INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS user_accounts (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    display_name TEXT NOT NULL,
+                    provider TEXT DEFAULT 'racconmail',
+                    color TEXT DEFAULT '#06b6d4',
+                    is_primary INTEGER DEFAULT 0,
+                    is_active INTEGER DEFAULT 1,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS email_aliases (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    alias_email TEXT NOT NULL,
+                    label TEXT NOT NULL,
+                    forward_to TEXT NOT NULL,
+                    is_active INTEGER DEFAULT 1,
+                    emails_received INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS security_audit_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id TEXT NOT NULL,
+                    event_type TEXT NOT NULL,
+                    ip_address TEXT NOT NULL,
+                    device TEXT NOT NULL,
+                    location TEXT DEFAULT '',
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+  
             } catch (Throwable $e) {}
         }
 
@@ -2401,7 +2502,414 @@ try {
         }
     }
 
-    // 10. Simulate Incoming Mail
+    
+    // ==========================================
+    // 14. HIGH-VALUE PRODUCTIVITY & PRO SUITE API
+    // ==========================================
+
+    // CALENDAR EVENTS API
+    if ($route === 'calendar/events') {
+        if ($method === 'GET') {
+            $month = $_GET['month'] ?? date('Y-m');
+            $stmt = $db->prepare("SELECT * FROM calendar_events WHERE user_id = ? AND event_date LIKE ? ORDER BY event_date ASC, start_time ASC");
+            $stmt->execute([$currentUserId, $month . '%']);
+            $events = $stmt->fetchAll();
+
+            // Pre-seed default events if brand new user
+            if (empty($events) && $month === date('Y-m')) {
+                $today = date('Y-m-d');
+                $tomorrow = date('Y-m-d', strtotime('+1 day'));
+                $nextWeek = date('Y-m-d', strtotime('+3 days'));
+                
+                $seeds = [
+                    ['ev_' . uniqid(), $currentUserId, 'Team Strategy & Product Launch 🚀', $today, '10:00', '11:30', 'Zoom Meeting Room #4', '15m', 'work', '#06b6d4', 'Discuss Q4 roadmap and CodeCanyon webmail script release.'],
+                    ['ev_' . uniqid(), $currentUserId, 'Design System & Icon Review', $tomorrow, '14:00', '15:00', 'Office Studio A', '30m', 'meeting', '#a855f7', 'Review modern pastel sticky notes and calendar cards.'],
+                    ['ev_' . uniqid(), $currentUserId, 'Server Maintenance & IMAP Sync', $nextWeek, '08:00', '09:00', 'Cloud Infrastructure', '1h', 'urgent', '#ef4444', 'Optimize SQLite WAL mode and Maildir SSD scanner speed.']
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT OR IGNORE INTO calendar_events (id, user_id, title, event_date, start_time, end_time, location, reminder, category, color, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId, $month . '%']);
+                $events = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'events' => $events]);
+            exit;
+        } elseif ($method === 'POST') {
+            $title = trim($input['title'] ?? 'New Event');
+            $date = trim($input['date'] ?? date('Y-m-d'));
+            $startTime = trim($input['start_time'] ?? '09:00');
+            $endTime = trim($input['end_time'] ?? '10:00');
+            $location = trim($input['location'] ?? '');
+            $reminder = trim($input['reminder'] ?? '15m');
+            $category = trim($input['category'] ?? 'work');
+            $color = trim($input['color'] ?? '#06b6d4');
+            $linkedEmailId = trim($input['linked_email_id'] ?? '');
+            $notes = trim($input['notes'] ?? '');
+            $id = 'ev_' . uniqid();
+
+            $db->prepare("INSERT INTO calendar_events (id, user_id, title, event_date, start_time, end_time, location, reminder, category, color, linked_email_id, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+               ->execute([$id, $currentUserId, $title, $date, $startTime, $endTime, $location, $reminder, $category, $color, $linkedEmailId, $notes]);
+
+            echo json_encode(['success' => true, 'id' => $id, 'message' => 'Event created']);
+            exit;
+        } elseif ($method === 'DELETE') {
+            $id = $_GET['id'] ?? ($input['id'] ?? '');
+            $db->prepare("DELETE FROM calendar_events WHERE id = ? AND user_id = ?")->execute([$id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
+        }
+    }
+
+    // NOTES SECTION API
+    if ($route === 'notes') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM user_notes WHERE user_id = ? ORDER BY is_pinned DESC, updated_at DESC");
+            $stmt->execute([$currentUserId]);
+            $notes = $stmt->fetchAll();
+
+            // Pre-seed sample notes if empty
+            if (empty($notes)) {
+                $seeds = [
+                    ['nt_' . uniqid(), $currentUserId, 'CodeCanyon Listing Checklist 📌', "1. Write compelling item description
+2. Prepare 80x80 raccoon avatar
+3. Include 1-Click Installer script
+4. Add offline documentation HTML
+5. Verify high speed 60fps performance", '#fef08a', 1, 'work'],
+                    ['nt_' . uniqid(), $currentUserId, 'IMAP SSL & Security Keys', "Remember to enable port 993 for secure IMAP and port 465 for SSL SMTP. PGP E2EE keys stored in client vault.", '#bbf7d0', 0, 'security'],
+                    ['nt_' . uniqid(), $currentUserId, 'Ideas for Next Version', "• Voice memo transcription
+• Kanban view for customer inquiries
+• Dark glassmorphism widgets", '#fed7aa', 0, 'ideas'],
+                    ['nt_' . uniqid(), $currentUserId, 'Meeting Notes: Design System', "Keep fonts clean: DM Sans for reading and Space Grotesk for headers. Turquoise glow provides high-contrast focus.", '#e9d5ff', 0, 'general']
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO user_notes (id, user_id, title, content, color, is_pinned, category) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $notes = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'notes' => $notes]);
+            exit;
+        } elseif ($method === 'POST') {
+            $id = trim($input['id'] ?? ('nt_' . uniqid()));
+            $title = trim($input['title'] ?? 'Untitled Note');
+            $content = trim($input['content'] ?? '');
+            $color = trim($input['color'] ?? '#fef08a');
+            $isPinned = !empty($input['is_pinned']) ? 1 : 0;
+            $category = trim($input['category'] ?? 'general');
+
+            $stmtCheck = $db->prepare("SELECT id FROM user_notes WHERE id = ? AND user_id = ?");
+            $stmtCheck->execute([$id, $currentUserId]);
+            if ($stmtCheck->fetch()) {
+                $db->prepare("UPDATE user_notes SET title = ?, content = ?, color = ?, is_pinned = ?, category = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?")
+                   ->execute([$title, $content, $color, $isPinned, $category, $id, $currentUserId]);
+            } else {
+                $db->prepare("INSERT INTO user_notes (id, user_id, title, content, color, is_pinned, category) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                   ->execute([$id, $currentUserId, $title, $content, $color, $isPinned, $category]);
+            }
+            echo json_encode(['success' => true, 'id' => $id]);
+            exit;
+        } elseif ($method === 'DELETE') {
+            $id = $_GET['id'] ?? ($input['id'] ?? '');
+            $db->prepare("DELETE FROM user_notes WHERE id = ? AND user_id = ?")->execute([$id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
+        }
+    }
+
+    // TASKS & TO-DO API
+    if ($route === 'tasks') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM user_tasks WHERE user_id = ? ORDER BY is_completed ASC, created_at DESC");
+            $stmt->execute([$currentUserId]);
+            $tasks = $stmt->fetchAll();
+
+            // Pre-seed sample tasks
+            if (empty($tasks)) {
+                $seeds = [
+                    ['tsk_' . uniqid(), $currentUserId, 'Review contracts and reply to legal team', date('Y-m-d', strtotime('+1 day')), 'high', 0, '', 'Legal Partnership Agreement'],
+                    ['tsk_' . uniqid(), $currentUserId, 'Schedule demo with enterprise client', date('Y-m-d', strtotime('+2 days')), 'medium', 0, '', 'Inquiry: Enterprise Mail Plan'],
+                    ['tsk_' . uniqid(), $currentUserId, 'Back up SQLite database and rotate logs', date('Y-m-d', strtotime('+4 days')), 'low', 0, '', 'System Maintenance'],
+                    ['tsk_' . uniqid(), $currentUserId, 'Upgrade cPanel PHP 8.2 memory limit', date('Y-m-d'), 'medium', 1, '', 'Server notice']
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO user_tasks (id, user_id, title, due_date, priority, is_completed, linked_email_id, linked_email_subject) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $tasks = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'tasks' => $tasks]);
+            exit;
+        } elseif ($method === 'POST') {
+            $title = trim($input['title'] ?? 'New Task');
+            $dueDate = trim($input['due_date'] ?? date('Y-m-d'));
+            $priority = trim($input['priority'] ?? 'medium');
+            $linkedEmailId = trim($input['linked_email_id'] ?? '');
+            $linkedSubject = trim($input['linked_email_subject'] ?? '');
+            $id = 'tsk_' . uniqid();
+
+            $db->prepare("INSERT INTO user_tasks (id, user_id, title, due_date, priority, is_completed, linked_email_id, linked_email_subject) VALUES (?, ?, ?, ?, ?, 0, ?, ?)")
+               ->execute([$id, $currentUserId, $title, $dueDate, $priority, $linkedEmailId, $linkedSubject]);
+
+            echo json_encode(['success' => true, 'id' => $id]);
+            exit;
+        } elseif ($route === 'tasks/toggle' || $method === 'PUT') {
+            $id = $input['id'] ?? ($_GET['id'] ?? '');
+            $completed = !empty($input['is_completed']) ? 1 : 0;
+            $db->prepare("UPDATE user_tasks SET is_completed = ? WHERE id = ? AND user_id = ?")->execute([$completed, $id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
+        } elseif ($method === 'DELETE') {
+            $id = $_GET['id'] ?? ($input['id'] ?? '');
+            $db->prepare("DELETE FROM user_tasks WHERE id = ? AND user_id = ?")->execute([$id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
+        }
+    }
+
+    // TEMPLATES & CANNED RESPONSES API
+    if ($route === 'templates') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM email_templates WHERE user_id = ? ORDER BY category ASC, title ASC");
+            $stmt->execute([$currentUserId]);
+            $templates = $stmt->fetchAll();
+
+            if (empty($templates)) {
+                $seeds = [
+                    ['tpl_' . uniqid(), $currentUserId, 'Meeting Confirmation', 'business', 'Confirmation: Scheduled Discussion', "Hi there,
+
+Thank you for reaching out! I am writing to confirm our scheduled meeting. I look forward to speaking with you and discussing the details.
+
+Please let me know if you need to reschedule or have any questions beforehand.
+
+Best regards,
+Alex"],
+                    ['tpl_' . uniqid(), $currentUserId, 'Support Ticket Received', 'support', 'We received your inquiry [#REF-4829]', "Hello,
+
+Thanks for reaching out to Raccon Mail Support. We have received your request and our engineering team is actively investigating.
+
+You can expect an update within 2 to 4 business hours.
+
+Warmly,
+Raccon Customer Care Team"],
+                    ['tpl_' . uniqid(), $currentUserId, 'Invoice & Payment Follow-up', 'finance', 'Follow-up regarding Invoice #[Number]', "Dear Client,
+
+I hope you are having a wonderful week. This is a gentle reminder regarding invoice #[Number] which was issued on [Date].
+
+Could you please confirm when payment is expected to be processed? Let me know if you need another copy of the invoice.
+
+Thank you for your business!"],
+                    ['tpl_' . uniqid(), $currentUserId, 'Quick Thank You', 'general', 'Thank you!', "Hi,
+
+Thank you so much for your quick response and assistance. I really appreciate your support!
+
+Have a great rest of your day,
+Alex"]
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO email_templates (id, user_id, title, category, subject, body) VALUES (?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $templates = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'templates' => $templates]);
+            exit;
+        } elseif ($method === 'POST') {
+            $title = trim($input['title'] ?? 'Custom Template');
+            $category = trim($input['category'] ?? 'general');
+            $subject = trim($input['subject'] ?? '');
+            $body = trim($input['body'] ?? '');
+            $id = 'tpl_' . uniqid();
+
+            $db->prepare("INSERT INTO email_templates (id, user_id, title, category, subject, body) VALUES (?, ?, ?, ?, ?, ?)")
+               ->execute([$id, $currentUserId, $title, $category, $subject, $body]);
+
+            echo json_encode(['success' => true, 'id' => $id]);
+            exit;
+        } elseif ($method === 'DELETE') {
+            $id = $_GET['id'] ?? ($input['id'] ?? '');
+            $db->prepare("DELETE FROM email_templates WHERE id = ? AND user_id = ?")->execute([$id, $currentUserId]);
+            echo json_encode(['success' => true]);
+            exit;
+        }
+    }
+
+    // RSS / FEED READER API
+    if ($route === 'rss') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM user_rss_feeds WHERE user_id = ? ORDER BY created_at ASC");
+            $stmt->execute([$currentUserId]);
+            $feeds = $stmt->fetchAll();
+
+            if (empty($feeds)) {
+                $seeds = [
+                    ['rss_' . uniqid(), $currentUserId, 'TechCrunch Daily', 'https://techcrunch.com/feed/', 'https://techcrunch.com', 'tech', 'cpu', 3],
+                    ['rss_' . uniqid(), $currentUserId, 'Hacker News Frontpage', 'https://news.ycombinator.com/rss', 'https://news.ycombinator.com', 'code', 'terminal', 5],
+                    ['rss_' . uniqid(), $currentUserId, 'Smashing Magazine Design', 'https://www.smashingmagazine.com/feed/', 'https://smashingmagazine.com', 'design', 'palette', 2],
+                    ['rss_' . uniqid(), $currentUserId, 'Reuters Business & Finance', 'https://reuters.com/rss/business', 'https://reuters.com', 'news', 'globe', 4]
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO user_rss_feeds (id, user_id, title, feed_url, site_url, category, icon, unread_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $feeds = $stmt->fetchAll();
+            }
+
+            // Return feeds and sample curated articles
+            $articles = [
+                ['id' => 'art_1', 'feed_id' => $feeds[0]['id'] ?? 'f1', 'source' => 'TechCrunch', 'title' => 'The Next Era of Privacy-First Open Source Email Systems', 'date' => '2 hours ago', 'snippet' => 'Zero-knowledge encryption and local SQLite indexing are revolutionizing how modern developers manage asynchronous communication on self-hosted servers.', 'url' => 'https://techcrunch.com', 'author' => 'Sarah Perez'],
+                ['id' => 'art_2', 'feed_id' => $feeds[1]['id'] ?? 'f2', 'source' => 'Hacker News', 'title' => 'Why SQLite in WAL mode outperforms client-server databases for webmail', 'date' => '4 hours ago', 'snippet' => 'Benchmarking memory-mapped I/O with 256MB cache demonstrates sub-millisecond retrieval across millions of email headers.', 'url' => 'https://news.ycombinator.com', 'author' => 'dhouston'],
+                ['id' => 'art_3', 'feed_id' => $feeds[2]['id'] ?? 'f3', 'source' => 'Smashing Magazine', 'title' => 'Crafting High-DPI Vector Icons and Ergonomic Reading Canvases', 'date' => 'Yesterday', 'snippet' => 'How subtle turquoise focus rings, responsive typography, and tactile pill selectors improve user engagement in productivity applications.', 'url' => 'https://smashingmagazine.com', 'author' => 'Vitaly Friedman'],
+                ['id' => 'art_4', 'feed_id' => $feeds[3]['id'] ?? 'f4', 'source' => 'Reuters Business', 'title' => 'Global SaaS Market Demands Standalone Self-Hosted Scripts', 'date' => '2 days ago', 'snippet' => 'Enterprises and webmasters increasingly favor perpetual license scripts on platforms like CodeCanyon over recurring monthly subscriptions.', 'url' => 'https://reuters.com', 'author' => 'K. Miller']
+            ];
+
+            echo json_encode(['success' => true, 'feeds' => $feeds, 'articles' => $articles]);
+            exit;
+        } elseif ($method === 'POST') {
+            $title = trim($input['title'] ?? 'Custom Feed');
+            $feedUrl = trim($input['feed_url'] ?? '');
+            $category = trim($input['category'] ?? 'tech');
+            $id = 'rss_' . uniqid();
+
+            $db->prepare("INSERT INTO user_rss_feeds (id, user_id, title, feed_url, category) VALUES (?, ?, ?, ?, ?)")
+               ->execute([$id, $currentUserId, $title, $feedUrl, $category]);
+
+            echo json_encode(['success' => true, 'id' => $id]);
+            exit;
+        }
+    }
+
+    // MULTI-ACCOUNT & UNIFIED INBOX API
+    if ($route === 'accounts/switcher') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM user_accounts WHERE user_id = ? ORDER BY is_primary DESC, created_at ASC");
+            $stmt->execute([$currentUserId]);
+            $accounts = $stmt->fetchAll();
+
+            if (empty($accounts)) {
+                $userStmt = $db->prepare("SELECT email, name FROM users WHERE id = ?");
+                $userStmt->execute([$currentUserId]);
+                $u = $userStmt->fetch();
+                $mainEmail = $u['email'] ?? 'alex@racconmail.eu';
+                $mainName = $u['name'] ?? 'Alex Raccon';
+
+                $seeds = [
+                    ['acc_1', $currentUserId, $mainEmail, $mainName . ' (Personal)', 'racconmail', '#06b6d4', 1, 1],
+                    ['acc_2', $currentUserId, 'work@racconmail.eu', 'Raccon Tech Ltd (Work)', 'imap', '#a855f7', 0, 1],
+                    ['acc_3', $currentUserId, 'alex.founder@gmail.com', 'Google Workspace (Sync)', 'google', '#ea4335', 0, 1]
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO user_accounts (id, user_id, email, display_name, provider, color, is_primary, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $accounts = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'accounts' => $accounts]);
+            exit;
+        } elseif ($method === 'POST') {
+            $email = trim($input['email'] ?? '');
+            $name = trim($input['display_name'] ?? $email);
+            $provider = trim($input['provider'] ?? 'imap');
+            $color = trim($input['color'] ?? '#06b6d4');
+            $id = 'acc_' . uniqid();
+
+            $db->prepare("INSERT INTO user_accounts (id, user_id, email, display_name, provider, color, is_primary, is_active) VALUES (?, ?, ?, ?, ?, ?, 0, 1)")
+               ->execute([$id, $currentUserId, $email, $name, $provider, $color]);
+
+            echo json_encode(['success' => true, 'id' => $id]);
+            exit;
+        }
+    }
+
+    // ATTACHMENTS & MEDIA DASHBOARD API
+    if ($route === 'attachments/dashboard') {
+        $stmt = $db->prepare("
+            SELECT a.*, m.subject as email_subject, m.sender_name, m.sender_email, m.created_at as email_date
+            FROM attachments a
+            LEFT JOIN messages m ON a.message_id = m.id
+            WHERE m.recipient_id = ? OR m.sender_id = ?
+            ORDER BY a.created_at DESC
+            LIMIT 100
+        ");
+        $stmt->execute([$currentUserId, $currentUserId]);
+        $attachments = $stmt->fetchAll();
+
+        // If user has few attachments, provide rich sample files
+        if (count($attachments) < 3) {
+            $sampleFiles = [
+                ['id' => 'att_demo_1', 'filename' => 'q4_financial_growth_report.pdf', 'original_name' => 'Q4_Financial_Growth_Report_2026.pdf', 'mime_type' => 'application/pdf', 'size_bytes' => 2480000, 'email_subject' => 'Q4 Executive Summary & Revenue', 'sender_name' => 'Finance Director', 'created_at' => date('Y-m-d H:i:s', strtotime('-1 day'))],
+                ['id' => 'att_demo_2', 'filename' => 'codecanyon_seller_guidelines.pdf', 'original_name' => 'Envato_Author_Master_Guide.pdf', 'mime_type' => 'application/pdf', 'size_bytes' => 1840000, 'email_subject' => 'CodeCanyon Submission Instructions', 'sender_name' => 'Envato Review Team', 'created_at' => date('Y-m-d H:i:s', strtotime('-2 days'))],
+                ['id' => 'att_demo_3', 'filename' => 'architecture_database_schema.png', 'original_name' => 'SQLite_HighSpeed_Schema_Diagram.png', 'mime_type' => 'image/png', 'size_bytes' => 920000, 'email_subject' => 'Architecture Diagram update', 'sender_name' => 'Lead Architect', 'created_at' => date('Y-m-d H:i:s', strtotime('-3 days'))],
+                ['id' => 'att_demo_4', 'filename' => 'user_onboarding_analytics.xlsx', 'original_name' => 'Monthly_Signups_and_Conversion.xlsx', 'mime_type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'size_bytes' => 540000, 'email_subject' => 'Analytics metrics review', 'sender_name' => 'Growth Lead', 'created_at' => date('Y-m-d H:i:s', strtotime('-4 days'))]
+            ];
+            $attachments = array_merge($attachments, $sampleFiles);
+        }
+
+        echo json_encode(['success' => true, 'attachments' => $attachments]);
+        exit;
+    }
+
+    // EMAIL ALIASES & MASKING API
+    if ($route === 'security/aliases') {
+        if ($method === 'GET') {
+            $stmt = $db->prepare("SELECT * FROM email_aliases WHERE user_id = ? ORDER BY created_at DESC");
+            $stmt->execute([$currentUserId]);
+            $aliases = $stmt->fetchAll();
+
+            if (empty($aliases)) {
+                $seeds = [
+                    ['als_' . uniqid(), $currentUserId, 'shopping.mask.8492@racconmail.eu', 'Online Shopping & Stores', 'alex@racconmail.eu', 1, 14],
+                    ['als_' . uniqid(), $currentUserId, 'newsletter.burner.3291@racconmail.eu', 'Tech Newsletters & Subscriptions', 'alex@racconmail.eu', 1, 38],
+                    ['als_' . uniqid(), $currentUserId, 'social.anon.9102@racconmail.eu', 'Public Forums & Social Media', 'alex@racconmail.eu', 1, 6]
+                ];
+                foreach ($seeds as $s) {
+                    $db->prepare("INSERT INTO email_aliases (id, user_id, alias_email, label, forward_to, is_active, emails_received) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                       ->execute($s);
+                }
+                $stmt->execute([$currentUserId]);
+                $aliases = $stmt->fetchAll();
+            }
+
+            echo json_encode(['success' => true, 'aliases' => $aliases]);
+            exit;
+        } elseif ($method === 'POST') {
+            $label = trim($input['label'] ?? 'General Mask');
+            $forwardTo = trim($input['forward_to'] ?? 'alex@racconmail.eu');
+            $randomHex = bin2hex(random_bytes(4));
+            $aliasEmail = 'mask.' . strtolower(preg_replace('/[^a-z0-9]/', '', $label)) . '.' . $randomHex . '@racconmail.eu';
+            $id = 'als_' . uniqid();
+
+            $db->prepare("INSERT INTO email_aliases (id, user_id, alias_email, label, forward_to, is_active, emails_received) VALUES (?, ?, ?, ?, ?, 1, 0)")
+               ->execute([$id, $currentUserId, $aliasEmail, $label, $forwardTo]);
+
+            echo json_encode(['success' => true, 'id' => $id, 'alias_email' => $aliasEmail]);
+            exit;
+        }
+    }
+
+    // SECURITY AUDIT LOGS & SESSIONS API
+    if ($route === 'security/audit') {
+        $logs = [
+            ['id' => 1, 'event' => 'Successful Login (Web Client)', 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1', 'device' => 'Chrome on Windows 11', 'location' => 'Bucharest, Romania', 'status' => 'Authorized', 'time' => 'Just now'],
+            ['id' => 2, 'event' => 'IMAP Session Handshake', 'ip' => '178.132.24.11', 'device' => 'Native Android APK Mail Client', 'location' => 'Bucharest, Romania', 'status' => 'Active', 'time' => '12 minutes ago'],
+            ['id' => 3, 'event' => 'API Token Authorization', 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1', 'device' => 'Desktop Electron Mail', 'location' => 'Bucharest, Romania', 'status' => 'Valid', 'time' => 'Yesterday, 18:24'],
+            ['id' => 4, 'event' => 'Password Verification Check', 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1', 'device' => 'Chrome on Windows 11', 'location' => 'Bucharest, Romania', 'status' => 'Verified', 'time' => '3 days ago']
+        ];
+        echo json_encode(['success' => true, 'logs' => $logs]);
+        exit;
+    }
+  
+// 10. Simulate Incoming Mail
     if ($route === 'messages/simulate' && $method === 'POST') {
         $senders = [
             ['name' => 'Rocky Raccoon', 'email' => 'rocky@raccoonmail.com', 'subject' => 'Midnight snack plans 🦝', 'body' => 'Found the best bakery dumpster! Fresh warm croissants disposal at 2am sharp. Bring the crew.'],
