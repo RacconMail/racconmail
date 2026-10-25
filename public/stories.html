@@ -399,13 +399,13 @@
         </button>
         <!-- Guest View -->
         <div id="auth-guest-group" class="flex items-center gap-2">
-          <a href="/auth?tab=login" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
+          <button onclick="openAuthModal('login');" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
             Sign In
-          </a>
-          <a href="/auth?tab=register" class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
+          </button>
+          <button onclick="openAuthModal('register');" class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
             <i class="fas fa-user-plus text-[11px]"></i>
             <span>Sign Up</span>
-          </a>
+          </button>
         </div>
 
         <!-- Authenticated View -->
@@ -603,8 +603,8 @@
           </div>
         </div>
 
-        <!-- 2. DIGITAL & WEB-SPECIFIC -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- 2. DIGITAL & WEB-SPECIFIC (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">2. Digital &amp; Webnovels</span>
             <span class="text-[10px] font-bold text-slate-400">Web</span>
@@ -648,8 +648,8 @@
           </div>
         </div>
 
-        <!-- 3. TARGET AUDIENCE & 4. FORMAT -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- 3. TARGET AUDIENCE & 4. FORMAT (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">3. Audience &amp; Format</span>
             <span class="text-[10px] font-bold text-slate-400">Style</span>
@@ -725,7 +725,7 @@
                 title="Browse Genres & Tropes"
               >
                 <i class="fas fa-compass text-xs"></i>
-                <span>Explore Genres</span>
+                <span>Categories &amp; Genres</span>
               </button>
             </div>
 
@@ -910,7 +910,7 @@
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             
             <!-- Left Reader Controls Panel (Collapsible & Non-Sticky on Mobile) -->
-            <div id="reader-controls-panel" class="md:col-span-3 space-y-3 md:sticky md:top-24 transition-all duration-200">
+            <div id="reader-controls-panel" class="hidden md:block md:col-span-3 space-y-3 md:sticky md:top-24 transition-all duration-200">
               <!-- Mobile Header with Hide Button -->
               <div class="flex items-center justify-between pb-2 border-b border-slate-100 md:hidden bg-white p-2.5 rounded-xl border border-slate-200">
                 <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
@@ -1267,7 +1267,7 @@
     }
 
     function switchStoriesNavTab(tab) {
-      const tabs = ['genres', 'tropes', 'moods'];
+      const tabs = ['genres', 'tropes', 'moods', 'formats'];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-snav-${t}`);
         const pane = document.getElementById(`pane-snav-${t}`);
@@ -1291,10 +1291,13 @@
       }
     }
 
-    function initStories() {
+    async async function initStories() {
       await checkAuthStatus();
       handleHashRouting();
       window.addEventListener('hashchange', handleHashRouting);
+      if (currentNavView === 'stories' || currentNavView === 'all') {
+        loadStoriesFeed();
+      }
 
       // Keyboard shortcut Ctrl+K or / to focus search
       document.addEventListener('keydown', (e) => {
@@ -1307,9 +1310,20 @@
 
     async function checkAuthStatus() {
       try {
-        const res = await fetch('/api/user');
+        const tok = getAuthToken();
+        const headers = tok ? { 'Authorization': 'Bearer ' + tok } : {};
+        const res = await fetch('/api/auth/me', { credentials: 'include', headers });
         if (res.ok) {
-          const user = await res.json();
+          const data = await res.json();
+          if (data && data.loggedIn && data.user) {
+            currentUser = data.user;
+            renderAuthHeader(true, currentUser);
+            return;
+          }
+        }
+        const fallbackRes = await fetch('/api/user', { credentials: 'include', headers });
+        if (fallbackRes.ok) {
+          const user = await fallbackRes.json();
           if (user && user.id) {
             currentUser = user;
             renderAuthHeader(true, user);
@@ -1403,6 +1417,7 @@
       document.getElementById('view-stories')?.classList.remove('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.add('hidden');
+      document.getElementById('mobile-story-floating-pill')?.classList.add('hidden');
       document.getElementById('stories-hero')?.classList.remove('hidden');
 
       // Restore main sidebar and column layouts
@@ -1756,6 +1771,7 @@
       document.getElementById('view-stories')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.remove('hidden');
+      document.getElementById('mobile-story-floating-pill')?.classList.remove('hidden');
       document.getElementById('stories-hero')?.classList.add('hidden');
 
       // Detect mobile view or Android APK / Native mode
@@ -2150,7 +2166,11 @@
     }
 
     // Startup
-    document.addEventListener('DOMContentLoaded', initStories);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initStories);
+    } else {
+      initStories();
+    }
   </script>
 
   <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
@@ -2182,6 +2202,39 @@
       }, { passive: true });
     })();
   </script>
+
+
+  
+  <!-- Floating Right-Middle Action Pill Menu (Follow Story & Reply/Review) -->
+  <div 
+    id="mobile-story-floating-pill" 
+    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 transition-all duration-200 select-none md:hidden"
+    aria-label="Story Actions"
+  >
+    <!-- Follow / Bookmark Pill Button -->
+    <button 
+      onclick="toggleBookmarkStory()" 
+      id="floating-pill-story-bookmark" 
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.18)] backdrop-blur-md border-y border-l border-slate-200 active:scale-95 transition cursor-pointer select-none group"
+      title="Follow & Bookmark Story"
+    >
+      <i class="fas fa-bookmark text-purple-500 text-xs transition-transform group-hover:scale-110" id="floating-story-bookmark-icon"></i>
+      <span id="floating-story-bookmark-text" class="whitespace-nowrap tracking-tight">Follow</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
+    </button>
+
+    <!-- Reply / Review Pill Button -->
+    <button 
+      onclick="focusReviewReply()" 
+      id="floating-pill-story-reply" 
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/95 hover:bg-black text-white text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.28)] backdrop-blur-md border-y border-l border-white/20 active:scale-95 transition cursor-pointer select-none group"
+      title="Reply & Leave Review"
+    >
+      <i class="fas fa-comment-dots text-purple-400 text-xs transition-transform group-hover:-translate-x-0.5"></i>
+      <span class="whitespace-nowrap tracking-tight">Reply</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
+    </button>
+  </div>
 
 
   <!-- Floating Edge Reading Settings Pill (Centered Vertically Along Edge - No Text Overlap) -->
@@ -3074,6 +3127,7 @@
         <button onclick="switchStoriesNavTab('genres')" id="tab-btn-snav-genres" class="flex-1 py-1.5 rounded-xl bg-white text-slate-900 shadow-2xs transition">Genres</button>
         <button onclick="switchStoriesNavTab('tropes')" id="tab-btn-snav-tropes" class="flex-1 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Tropes</button>
         <button onclick="switchStoriesNavTab('moods')" id="tab-btn-snav-moods" class="flex-1 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Moods</button>
+        <button onclick="switchStoriesNavTab('formats')" id="tab-btn-snav-formats" class="flex-1 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Format</button>
       </div>
 
       <!-- Content Area -->
@@ -3124,6 +3178,27 @@
           <button onclick="filterByTrope('Grumpy x Sunshine'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">☀️ Grumpy x Sunshine</button>
         </div>
 
+        
+        <!-- Pane 4: Formats & Audience -->
+        <div id="pane-snav-formats" class="hidden grid grid-cols-2 gap-2">
+          <button onclick="filterByCategory('ya'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-left font-bold text-rose-700 flex items-center gap-2">
+            <i class="fas fa-graduation-cap text-rose-500"></i>
+            <span>Young Adult (YA)</span>
+          </button>
+          <button onclick="filterByCategory('na'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-blue-200 bg-blue-50/60 hover:bg-blue-100 text-left font-bold text-blue-700 flex items-center gap-2">
+            <i class="fas fa-user-graduate text-blue-500"></i>
+            <span>New Adult (NA)</span>
+          </button>
+          <button onclick="filterByCategory('short_stories'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-pink-200 bg-pink-50/60 hover:bg-pink-100 text-left font-bold text-pink-700 flex items-center gap-2">
+            <i class="fas fa-feather text-pink-500"></i>
+            <span>Short Stories</span>
+          </button>
+          <button onclick="filterByCategory('poetry'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-left font-bold text-emerald-700 flex items-center gap-2">
+            <i class="fas fa-scroll text-emerald-500"></i>
+            <span>Poetry &amp; Verses</span>
+          </button>
+        </div>
+
         <!-- Pane 3: Moods -->
         <div id="pane-snav-moods" class="hidden flex flex-wrap gap-2">
           <button onclick="filterByTrope('Cozy'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold">☕ Cozy &amp; Heartwarming</button>
@@ -3135,5 +3210,240 @@
     </div>
   </div>
 
+
+  <!-- IN-PAGE AUTH MODAL (Sign In & Join Free) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200" onclick="if(event.target === this) closeAuthModal()">
+    <div class="relative w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200/80 overflow-y-auto max-h-[92vh] transform transition-all scale-100">
+      
+      <!-- Close Button (X) -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition cursor-pointer z-10" title="Close">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+
+      <!-- Mascot & Title -->
+      <div class="text-center mb-5 pt-1">
+        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-12 w-12 mx-auto object-contain mb-2" />
+        <h2 id="modal-auth-heading" class="text-2xl font-black tracking-tight text-slate-900">Sign In to Raccon</h2>
+        <p id="modal-auth-sub" class="text-xs text-slate-500 mt-1 font-medium">Clever, encrypted nocturnal community &amp; webmail.</p>
+      </div>
+
+      <!-- Segmented Tab Switcher -->
+      <div class="flex rounded-full bg-slate-100 p-1 mb-5 text-xs font-semibold border border-slate-200/80">
+        <button
+          id="modal-tab-login"
+          type="button"
+          onclick="setModalTab('login')"
+          class="flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+        >
+          <i class="fas fa-key text-xs"></i>
+          <span>Sign In</span>
+        </button>
+        <button
+          id="modal-tab-register"
+          type="button"
+          onclick="setModalTab('register')"
+          class="flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-sparkles text-xs"></i>
+          <span>Join Free</span>
+        </button>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="modal-error-box" class="hidden mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+        <i class="fas fa-exclamation-circle text-sm shrink-0"></i>
+        <span id="modal-error-text"></span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email or Username</label>
+          <div class="flex items-center rounded-2xl border border-slate-200 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-user text-xs"></i></div>
+            <input
+              id="m-l-email"
+              type="text"
+              required
+              placeholder="username or me@racconmail.eu"
+              autocomplete="username"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-xs sm:text-sm outline-none text-slate-900 placeholder-slate-400 font-medium"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+          <div class="flex items-center rounded-2xl border border-slate-200 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-lock text-xs"></i></div>
+            <input
+              id="m-l-pass"
+              type="password"
+              required
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-xs sm:text-sm outline-none text-slate-900 placeholder-slate-400 font-medium"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="m-btn-login"
+          class="w-full rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs sm:text-sm py-3 transition shadow-md mt-2 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+        >
+          <span>Sign In to Raccon</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </button>
+
+        <div class="pt-2 text-center text-xs text-slate-500">
+          Don't have an account? 
+          <button type="button" onclick="setModalTab('register')" class="font-bold text-slate-900 hover:underline ml-1 cursor-pointer">
+            Create Free Account
+          </button>
+        </div>
+      </form>
+
+      <!-- REGISTER REDIRECT NOTICE -->
+      <div id="modal-form-register" class="hidden space-y-4 text-center py-2">
+        <div class="w-12 h-12 rounded-2xl bg-[#E8F8F9] text-[#0284C7] mx-auto flex items-center justify-center text-xl shadow-xs">
+          <i class="fas fa-feather-pointed"></i>
+        </div>
+        <h3 class="text-sm font-extrabold text-slate-900">Create your free @racconmail.eu Account</h3>
+        <p class="text-xs text-slate-500">Get private encrypted email, forum posting rights, and story publishing privileges in seconds.</p>
+        <a 
+          href="/auth?tab=register" 
+          class="block w-full py-3 rounded-2xl bg-[#0284C7] hover:bg-[#0274b0] text-white font-extrabold text-xs sm:text-sm transition shadow-md active:scale-98"
+        >
+          Open Quick Registration &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+
+  // Helper: Read Cookie
+  function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(";").shift());
+    return null;
+  }
+
+  function getAuthToken() {
+    return localStorage.getItem('raccon_token') || getCookie('raccon_token') || null;
+  }
+
+  // Auth Modal Controls
+  let pendingAuthAction = null;
+
+  function openAuthModal(tab = 'login', reason = '') {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    setModalTab(tab);
+    if (reason) {
+      const errBox = document.getElementById('modal-error-box');
+      const errText = document.getElementById('modal-error-text');
+      if (errBox && errText) {
+        errText.innerText = reason;
+        errBox.classList.remove('hidden');
+      }
+    } else {
+      document.getElementById('modal-error-box')?.classList.add('hidden');
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function closeAuthModal() {
+    document.getElementById('auth-modal')?.classList.add('hidden');
+    document.getElementById('modal-error-box')?.classList.add('hidden');
+  }
+
+  function setModalTab(tab) {
+    const isLogin = tab === 'login';
+    const tabLogin = document.getElementById('modal-tab-login');
+    const tabRegister = document.getElementById('modal-tab-register');
+    const formLogin = document.getElementById('modal-form-login');
+    const formRegister = document.getElementById('modal-form-register');
+    const heading = document.getElementById('modal-auth-heading');
+
+    if (tabLogin) {
+      tabLogin.className = isLogin 
+        ? 'flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs'
+        : 'flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+    }
+    if (tabRegister) {
+      tabRegister.className = !isLogin 
+        ? 'flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs'
+        : 'flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+    }
+
+    if (formLogin) formLogin.classList.toggle('hidden', !isLogin);
+    if (formRegister) formRegister.classList.toggle('hidden', isLogin);
+    if (heading) heading.textContent = isLogin ? 'Sign In to Raccon' : 'Create Free Account';
+  }
+
+  async function handleModalLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('m-l-email')?.value.trim();
+    const password = document.getElementById('m-l-pass')?.value;
+    const errBox = document.getElementById('modal-error-box');
+    const errText = document.getElementById('modal-error-text');
+    const btn = document.getElementById('m-btn-login');
+
+    if (!email || !password) {
+      if (errBox && errText) {
+        errText.innerText = 'Please enter both username/email and password.';
+        errBox.classList.remove('hidden');
+      }
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> <span>Signing in...</span>';
+    errBox?.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Invalid credentials');
+
+      if (data.token) {
+        localStorage.setItem('raccon_token', data.token);
+        localStorage.setItem('raccon_user', JSON.stringify(data.user));
+        document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
+      }
+
+      currentUser = data.user;
+      renderAuthHeader(true, currentUser);
+      closeAuthModal();
+
+      if (typeof showToast === 'function') {
+        showToast('Welcome back, ' + (currentUser.name || currentUser.email) + '! 🐾', 'success');
+      }
+
+      if (pendingAuthAction && typeof pendingAuthAction === 'function') {
+        const action = pendingAuthAction;
+        pendingAuthAction = null;
+        action();
+      }
+    } catch (err) {
+      if (errBox && errText) {
+        errText.innerText = err.message || 'Login failed';
+        errBox.classList.remove('hidden');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<span>Sign In to Raccon</span> <i class="fas fa-arrow-right text-xs"></i>';
+    }
+  }
+
+</script>
 </body>
 </html>

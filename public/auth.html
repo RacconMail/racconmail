@@ -549,9 +549,12 @@
             localStorage.setItem('raccon_user', JSON.stringify(data.user));
             document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
           } catch (_) {}
-          window.location.replace('/inbox?token=' + encodeURIComponent(data.token));
+          const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/inbox';
+          const sep = redirectUrl.includes('?') ? '&' : '?';
+          window.location.replace(redirectUrl + sep + 'token=' + encodeURIComponent(data.token));
         } else {
-          window.location.replace('/inbox');
+          const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/inbox';
+          window.location.replace(redirectUrl);
         }
       } catch (err) {
         showError(err.message);

@@ -508,13 +508,13 @@
 
         <!-- Guest View (Default) -->
         <div id="auth-guest-group" class="flex items-center gap-2">
-          <a href="/auth?tab=login"  class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
+          <button onclick="openAuthModal('login');" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
             Sign In
-          </a>
-          <a href="/auth?tab=register"  class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
+          </button>
+          <button onclick="openAuthModal('register');" class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
             <i class="fas fa-user-plus text-[11px]"></i>
             <span>Sign Up</span>
-          </a>
+          </button>
         </div>
 
         <!-- Authenticated User View (Dynamic) -->
@@ -661,8 +661,8 @@
           
         </nav>
 
-        <!-- Flarum Iconic Tags & Categories -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- Flarum Iconic Tags & Categories (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-3 px-1">
             <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Categories</span>
             <span class="text-[10px] font-bold text-slate-400">Filter</span>
@@ -743,8 +743,8 @@
           </div>
         </div>
 
-        <!-- [Admin Configurable] Most Popular Topics & Reputed Users Widget -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- [Admin Configurable] Most Popular Topics & Reputed Users Widget (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-3 px-1">
             <div class="flex items-center gap-1.5">
               <i class="fas fa-fire text-amber-500 text-xs"></i>
@@ -770,8 +770,8 @@
           </div>
         </div>
 
-        <!-- Keyword Tags & Tag Cloud Widget -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- Keyword Tags & Tag Cloud Widget (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <div class="flex items-center gap-1.5">
               <i class="fas fa-tags text-blue-500 text-xs"></i>
@@ -785,8 +785,8 @@
           </div>
         </div>
 
-        <!-- Forum Statistics Widget -->
-        <div class="bg-white rounded-3xl border border-slate-200/70 p-5 shadow-[0_10px_30px_-4px_rgba(15,23,42,0.04)] text-slate-900">
+        <!-- Forum Statistics Widget (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-3xl border border-slate-200/70 p-5 shadow-[0_10px_30px_-4px_rgba(15,23,42,0.04)] text-slate-900">
           <div class="flex items-center justify-between mb-3 border-b border-slate-700/60 pb-2">
             <div class="flex items-center gap-1.5">
               <i class="fas fa-chart-simple text-[#F68D72] text-xs"></i>
@@ -899,11 +899,11 @@
               <!-- Mobile Quick Navigation Menu Trigger -->
               <button 
                 onclick="toggleMobileQuickNav()" 
-                class="lg:hidden inline-flex items-center gap-1.5 py-2 px-3 rounded-2xl bg-[#E8F8F9] hover:bg-[#D7F3F5] text-[#0284C7] text-xs font-bold transition shadow-2xs cursor-pointer border border-[#0284C7]/20 active:scale-95"
-                title="Quick Navigation & Categories"
+                class="lg:hidden inline-flex items-center gap-1.5 py-2 px-3.5 rounded-2xl bg-[#E8F8F9] hover:bg-[#D7F3F5] text-[#0284C7] text-xs font-bold transition shadow-2xs cursor-pointer border border-[#0284C7]/20 active:scale-95"
+                title="Browse Categories & Navigation"
               >
-                <i class="fas fa-compass text-xs"></i>
-                <span>Quick Nav</span>
+                <i class="fas fa-layer-group text-xs"></i>
+                <span>Categories</span>
               </button>
 
               <span id="current-view-title" class="text-sm font-extrabold text-slate-900 tracking-tight">All Discussions</span>
@@ -1071,7 +1071,7 @@
           <!-- Thread Layout: Left Sticky Controls & Right Post Stream -->
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             <!-- Left Sticky Discussion Controls (Flarum Scrubber & Actions) -->
-            <div id="thread-controls-panel" class="md:col-span-3 space-y-3 sticky top-24 transition-all duration-200">
+            <div id="thread-controls-panel" class="hidden md:block md:col-span-3 space-y-3 sticky top-24 transition-all duration-200">
               <button onclick="focusThreadReply()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
                 <i class="fas fa-reply text-xs"></i>
                 <span>Reply</span>
@@ -1298,10 +1298,43 @@
   </div>
 
   
+  
+  <!-- Floating Right-Middle Action Pill Menu (Follow & Reply) -->
+  <div 
+    id="mobile-thread-floating-pill" 
+    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 transition-all duration-200 select-none md:hidden"
+    aria-label="Discussion Actions"
+  >
+    <!-- Follow Pill Button -->
+    <button 
+      onclick="toggleFollowThread()" 
+      id="floating-pill-follow" 
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.18)] backdrop-blur-md border-y border-l border-slate-200 active:scale-95 transition cursor-pointer select-none group"
+      title="Follow / Unfollow discussion"
+    >
+      <i class="fas fa-bell text-amber-500 text-xs transition-transform group-hover:scale-110" id="floating-follow-icon"></i>
+      <span id="floating-follow-text" class="whitespace-nowrap tracking-tight">Follow</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+    </button>
+
+    <!-- Reply Pill Button -->
+    <button 
+      onclick="focusThreadReply()" 
+      id="floating-pill-reply" 
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/95 hover:bg-black text-white text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.28)] backdrop-blur-md border-y border-l border-white/20 active:scale-95 transition cursor-pointer select-none group"
+      title="Reply to discussion"
+    >
+      <i class="fas fa-reply text-blue-400 text-xs transition-transform group-hover:-translate-x-0.5"></i>
+      <span class="whitespace-nowrap tracking-tight">Reply</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+    </button>
+  </div>
+
+
   <!-- Floating Edge Forum Menu Toggle Pill (Centered Vertically Along Edge - Same as Stories) -->
   <div 
     id="mobile-forum-toggle-pill" 
-    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 transition-all duration-200"
+    class="fixed right-0 top-1/2 -translate-y-1/2 z-40 transition-all duration-200"
     aria-label="Discussion Menu Toggle"
   >
     <button 
@@ -1445,19 +1478,30 @@
     // Check Current User Auth Status
     async function checkAuthStatus() {
       try {
-        const res = await fetch('/api/user');
+        const tok = getAuthToken();
+        const headers = tok ? { 'Authorization': 'Bearer ' + tok } : {};
+        const res = await fetch('/api/auth/me', { credentials: 'include', headers });
         if (res.ok) {
-          const user = await res.json();
-          if (user && user.id) {
-            currentUser = user;
-            renderAuthHeader(true, user);
-            // Show moderator options if admin
-            if (user.is_admin) {
+          const data = await res.json();
+          if (data && data.loggedIn && data.user) {
+            currentUser = data.user;
+            renderAuthHeader(true, currentUser);
+            if (currentUser.is_admin) {
               document.getElementById('composer-sticky-check-box')?.classList.remove('hidden');
               document.getElementById('admin-forum-tools-box')?.classList.remove('hidden');
               document.getElementById('btn-admin-config-popular')?.classList.remove('hidden');
               document.getElementById('dash-tab-sticky')?.classList.remove('hidden');
             }
+            return;
+          }
+        }
+        // Fallback to /api/user with credentials
+        const fallbackRes = await fetch('/api/user', { credentials: 'include', headers });
+        if (fallbackRes.ok) {
+          const user = await fallbackRes.json();
+          if (user && user.id) {
+            currentUser = user;
+            renderAuthHeader(true, user);
             return;
           }
         }
@@ -1782,7 +1826,7 @@
         return `
           <div class="border border-slate-200/70 rounded-2xl p-3 bg-[#F8F9FB] transition">
             <div class="flex items-center justify-between mb-2">
-              <button onclick="filterByCategory('${c.slug}'); toggleMobileQuickNav(false);" class="font-bold text-slate-900 hover:text-[#0284C7] flex items-center gap-2">
+              <button onclick="filterByCategory('${c.slug}'); toggleMobileQuickNav(false);" class="font-bold text-slate-900 hover:text-[#0284C7] flex items-center gap-2 cursor-pointer">
                 <div class="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs text-[#0284C7]">
                   <i class="fas ${c.icon || 'fa-folder'}"></i>
                 </div>
@@ -1795,8 +1839,20 @@
         `;
       }).join('');
 
+      const allTopicsMobileBtn = `
+        <button onclick="filterByCategory('all'); toggleMobileQuickNav(false);" class="w-full flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-200/80 hover:border-[#0284C7] shadow-2xs font-extrabold text-slate-800 text-xs transition cursor-pointer mb-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-xl bg-[#E8F8F9] text-[#0284C7] flex items-center justify-center text-xs">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <span>All Topics &amp; Discussions</span>
+          </div>
+          <span class="text-[10px] font-bold text-[#0284C7] bg-[#E8F8F9] px-2.5 py-1 rounded-full">All</span>
+        </button>
+      `;
+
       if (container) container.innerHTML = itemsHtml;
-      if (mobileContainer) mobileContainer.innerHTML = itemsHtml;
+      if (mobileContainer) mobileContainer.innerHTML = allTopicsMobileBtn + itemsHtml;
     }
 
     // Load Widgets & Forum Statistics
@@ -4638,8 +4694,8 @@
             <i class="fas fa-compass"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-sm text-slate-900">Quick Navigation</h3>
-            <p class="text-[11px] text-slate-400">1-Click categories &amp; subcategories</p>
+            <h3 class="font-extrabold text-sm text-slate-900">Categories &amp; Navigation</h3>
+            <p class="text-[11px] text-slate-400">1-Click topic categories &amp; subcategories</p>
           </div>
         </div>
         <button onclick="toggleMobileQuickNav(false)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs transition">
@@ -4654,5 +4710,240 @@
     </div>
   </div>
 
+
+  <!-- IN-PAGE AUTH MODAL (Sign In & Join Free) -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200" onclick="if(event.target === this) closeAuthModal()">
+    <div class="relative w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200/80 overflow-y-auto max-h-[92vh] transform transition-all scale-100">
+      
+      <!-- Close Button (X) -->
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition cursor-pointer z-10" title="Close">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+
+      <!-- Mascot & Title -->
+      <div class="text-center mb-5 pt-1">
+        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-12 w-12 mx-auto object-contain mb-2" />
+        <h2 id="modal-auth-heading" class="text-2xl font-black tracking-tight text-slate-900">Sign In to Raccon</h2>
+        <p id="modal-auth-sub" class="text-xs text-slate-500 mt-1 font-medium">Clever, encrypted nocturnal community &amp; webmail.</p>
+      </div>
+
+      <!-- Segmented Tab Switcher -->
+      <div class="flex rounded-full bg-slate-100 p-1 mb-5 text-xs font-semibold border border-slate-200/80">
+        <button
+          id="modal-tab-login"
+          type="button"
+          onclick="setModalTab('login')"
+          class="flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+        >
+          <i class="fas fa-key text-xs"></i>
+          <span>Sign In</span>
+        </button>
+        <button
+          id="modal-tab-register"
+          type="button"
+          onclick="setModalTab('register')"
+          class="flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <i class="fas fa-sparkles text-xs"></i>
+          <span>Join Free</span>
+        </button>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="modal-error-box" class="hidden mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+        <i class="fas fa-exclamation-circle text-sm shrink-0"></i>
+        <span id="modal-error-text"></span>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form id="modal-form-login" onsubmit="handleModalLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email or Username</label>
+          <div class="flex items-center rounded-2xl border border-slate-200 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-user text-xs"></i></div>
+            <input
+              id="m-l-email"
+              type="text"
+              required
+              placeholder="username or me@racconmail.eu"
+              autocomplete="username"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-xs sm:text-sm outline-none text-slate-900 placeholder-slate-400 font-medium"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+          <div class="flex items-center rounded-2xl border border-slate-200 bg-white focus-within:border-slate-900 focus-within:ring-1 focus-within:ring-slate-900 overflow-hidden transition">
+            <div class="pl-4 pr-2 text-slate-400 shrink-0"><i class="fas fa-lock text-xs"></i></div>
+            <input
+              id="m-l-pass"
+              type="password"
+              required
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              class="flex-1 min-w-0 bg-transparent py-2.5 px-2 text-xs sm:text-sm outline-none text-slate-900 placeholder-slate-400 font-medium"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="m-btn-login"
+          class="w-full rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs sm:text-sm py-3 transition shadow-md mt-2 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+        >
+          <span>Sign In to Raccon</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </button>
+
+        <div class="pt-2 text-center text-xs text-slate-500">
+          Don't have an account? 
+          <button type="button" onclick="setModalTab('register')" class="font-bold text-slate-900 hover:underline ml-1 cursor-pointer">
+            Create Free Account
+          </button>
+        </div>
+      </form>
+
+      <!-- REGISTER REDIRECT NOTICE -->
+      <div id="modal-form-register" class="hidden space-y-4 text-center py-2">
+        <div class="w-12 h-12 rounded-2xl bg-[#E8F8F9] text-[#0284C7] mx-auto flex items-center justify-center text-xl shadow-xs">
+          <i class="fas fa-feather-pointed"></i>
+        </div>
+        <h3 class="text-sm font-extrabold text-slate-900">Create your free @racconmail.eu Account</h3>
+        <p class="text-xs text-slate-500">Get private encrypted email, forum posting rights, and story publishing privileges in seconds.</p>
+        <a 
+          href="/auth?tab=register" 
+          class="block w-full py-3 rounded-2xl bg-[#0284C7] hover:bg-[#0274b0] text-white font-extrabold text-xs sm:text-sm transition shadow-md active:scale-98"
+        >
+          Open Quick Registration &rarr;
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+
+  // Helper: Read Cookie
+  function getCookie(name) {
+    const value = "; " + document.cookie;
+    const parts = value.split("; " + name + "=");
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(";").shift());
+    return null;
+  }
+
+  function getAuthToken() {
+    return localStorage.getItem('raccon_token') || getCookie('raccon_token') || null;
+  }
+
+  // Auth Modal Controls
+  let pendingAuthAction = null;
+
+  function openAuthModal(tab = 'login', reason = '') {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    setModalTab(tab);
+    if (reason) {
+      const errBox = document.getElementById('modal-error-box');
+      const errText = document.getElementById('modal-error-text');
+      if (errBox && errText) {
+        errText.innerText = reason;
+        errBox.classList.remove('hidden');
+      }
+    } else {
+      document.getElementById('modal-error-box')?.classList.add('hidden');
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function closeAuthModal() {
+    document.getElementById('auth-modal')?.classList.add('hidden');
+    document.getElementById('modal-error-box')?.classList.add('hidden');
+  }
+
+  function setModalTab(tab) {
+    const isLogin = tab === 'login';
+    const tabLogin = document.getElementById('modal-tab-login');
+    const tabRegister = document.getElementById('modal-tab-register');
+    const formLogin = document.getElementById('modal-form-login');
+    const formRegister = document.getElementById('modal-form-register');
+    const heading = document.getElementById('modal-auth-heading');
+
+    if (tabLogin) {
+      tabLogin.className = isLogin 
+        ? 'flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs'
+        : 'flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+    }
+    if (tabRegister) {
+      tabRegister.className = !isLogin 
+        ? 'flex-1 py-2 rounded-full transition bg-slate-900 text-white font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs'
+        : 'flex-1 py-2 rounded-full transition text-slate-500 hover:text-slate-900 font-semibold flex items-center justify-center gap-1.5 cursor-pointer';
+    }
+
+    if (formLogin) formLogin.classList.toggle('hidden', !isLogin);
+    if (formRegister) formRegister.classList.toggle('hidden', isLogin);
+    if (heading) heading.textContent = isLogin ? 'Sign In to Raccon' : 'Create Free Account';
+  }
+
+  async function handleModalLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('m-l-email')?.value.trim();
+    const password = document.getElementById('m-l-pass')?.value;
+    const errBox = document.getElementById('modal-error-box');
+    const errText = document.getElementById('modal-error-text');
+    const btn = document.getElementById('m-btn-login');
+
+    if (!email || !password) {
+      if (errBox && errText) {
+        errText.innerText = 'Please enter both username/email and password.';
+        errBox.classList.remove('hidden');
+      }
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin text-xs"></i> <span>Signing in...</span>';
+    errBox?.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Invalid credentials');
+
+      if (data.token) {
+        localStorage.setItem('raccon_token', data.token);
+        localStorage.setItem('raccon_user', JSON.stringify(data.user));
+        document.cookie = 'raccon_token=' + encodeURIComponent(data.token) + '; path=/; max-age=2592000; SameSite=Lax';
+      }
+
+      currentUser = data.user;
+      renderAuthHeader(true, currentUser);
+      closeAuthModal();
+
+      if (typeof showToast === 'function') {
+        showToast('Welcome back, ' + (currentUser.name || currentUser.email) + '! 🐾', 'success');
+      }
+
+      if (pendingAuthAction && typeof pendingAuthAction === 'function') {
+        const action = pendingAuthAction;
+        pendingAuthAction = null;
+        action();
+      }
+    } catch (err) {
+      if (errBox && errText) {
+        errText.innerText = err.message || 'Login failed';
+        errBox.classList.remove('hidden');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<span>Sign In to Raccon</span> <i class="fas fa-arrow-right text-xs"></i>';
+    }
+  }
+
+</script>
 </body>
 </html>

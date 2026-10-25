@@ -336,11 +336,7 @@
       }
     }
 
-    .cookie-roller {
-      position: absolute;
-      animation: cookieRollPhysics 6.5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
-      will-change: left, transform;
-    }
+    
 
     .cookie-actor {
       display: inline-block;
@@ -527,77 +523,13 @@
 
 
     <!-- HARMONY HEADER (Clean White Navbar with Pill Search and Buttons) -->
-    <header class="bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10 sticky top-0 z-40 shadow-xs transition-colors duration-200 w-full m-0">
-      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-3 sm:px-6 py-2.5 sm:py-4">
-        <!-- Brand Logo -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-xs transition-colors duration-200 w-full m-0">
+      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
+        <!-- Brand Logo (Only element in the menu as requested) -->
         <a href="/" id="brand-logo-link" class="flex items-center gap-2.5 font-display text-base sm:text-xl font-extrabold text-slate-900 hover:opacity-95 transition shrink-0" title="Raccon Mail">
           <img src="/raccoon-logo.svg" alt="Raccon Mail mascot" fetchpriority="high" decoding="async" class="h-8 w-8 sm:h-10 sm:w-10 object-contain shrink-0 drop-shadow-xs"/>
           <span class="tracking-tight text-slate-900 font-bold">Raccon Mail</span>
         </a>
-
-        <!-- Charming Animated Rolling Cookie (No Background - Wide Screens Only) -->
-        <div class="hidden lg:flex items-center relative overflow-hidden bg-transparent h-10 w-64 select-none cursor-pointer group" title="Click to catch the rolling cookie!" onclick="spawnCookieCrumbs(this)">
-          <div class="w-full flex items-center relative h-full">
-            <!-- The Rolling Cookie Group -->
-            <div class="cookie-roller flex items-center gap-2 top-1/2 -translate-y-1/2">
-              <span class="cookie-actor text-2xl inline-block leading-none filter drop-shadow-xs transition transform group-hover:scale-125">🍪</span>
-              <span class="text-xs opacity-60 leading-none">🐾</span>
-              <span class="cookie-status-text text-[11px] font-bold text-slate-600 tracking-tight whitespace-nowrap">fresh & warm!</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Header Nav Links & Actions (Desktop Only - Completely Hidden on Mobile) -->
-        <!-- Mobile Header Quick Links (Visible on Smartphones < 768px) -->
-        <div class="flex md:hidden items-center gap-1.5 shrink-0" id="mobile-header-links">
-          <a href="/news" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border border-slate-200/90 rounded-full shadow-2xs hover:bg-slate-50 transition flex items-center gap-1">
-            <i class="fas fa-newspaper text-[10px] text-[#E06748]"></i>
-            <span>News</span>
-          </a>
-          <a href="/stories" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border border-slate-200/90 rounded-full shadow-2xs hover:bg-slate-50 transition flex items-center gap-1">
-            <i class="fas fa-book-open text-[10px] text-[#4A6FDC]"></i>
-            <span>Stories</span>
-          </a>
-          <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="px-3 py-1 text-xs font-bold text-white bg-slate-900 rounded-full shadow-2xs hover:bg-black transition flex items-center gap-1 cursor-pointer">
-            <span>Sign In</span>
-          </a>
-        </div>
-
-        <!-- Header Nav Links & Actions (Desktop Only) -->
-        <div class="hidden md:flex items-center gap-2 shrink-0 top-menu-auth-group" id="auth-nav-container">
-          <a href="/news" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-newspaper text-xs text-slate-600"></i>
-            <span>News Wire</span>
-          </a>
-          <a href="/stories" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-book-open text-xs text-slate-600"></i>
-            <span>Stories</span>
-          </a>
-          <a href="/forum" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
-            <i class="fas fa-comments text-xs text-slate-600"></i>
-            <span>Raccon Forum</span>
-          </a>
-          <a href="/legal/privacy" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1"><i class="fas fa-shield-alt text-xs text-slate-500"></i><span>Privacy</span></a>
-          <a href="#app" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5">Apps</a>
-
-          <!-- Sign In Button (Desktop Only) -->
-          <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="btn-secondary rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80 px-4 py-1.5 text-xs font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shrink-0 shadow-xs">
-            <svg class="w-3 h-3 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-              <polyline points="10 17 15 12 10 7"/>
-              <line x1="15" y1="12" x2="3" y2="12"/>
-            </svg>
-            <span>Sign In</span>
-          </a>
-
-          <!-- Join Free Button (Desktop Only) -->
-          <a href="/auth?tab=register" onclick="openAuthModal('register'); return false;" class="btn-primary rounded-full bg-slate-900 hover:bg-black text-white border border-slate-900 px-4 py-1.5 text-xs font-bold transition active:scale-95 shadow-xs flex items-center gap-1 cursor-pointer shrink-0">
-            <span>Join Free</span>
-            <svg class="w-2.5 h-2.5 text-white/80 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </a>
-        </div>
       </div>
     </header>
 
