@@ -954,65 +954,50 @@
             </div>
           </div>
 
-          <!-- Reader Layout: Left Controls & Right Story Canvas -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            
-            <!-- Left Reader Controls Panel (Collapsible & Non-Sticky on Mobile) -->
-            <div id="reader-controls-panel" class="hidden md:block md:col-span-3 space-y-3 md:sticky md:top-24 transition-all duration-200">
-              <!-- Mobile Header with Hide Button -->
-              <div class="flex items-center justify-between pb-2 border-b border-slate-100 md:hidden bg-white p-2.5 rounded-xl border border-slate-200">
-                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                  <i class="fas fa-sliders text-purple-500"></i>
-                  <span>Reading Options</span>
-                </span>
-                <button onclick="toggleReaderMenu(false)" class="p-1 px-2.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold flex items-center gap-1">
-                  <i class="fas fa-times"></i> Hide
-                </button>
-              </div>
+          <!-- Reading Options Toolbar Bar (Above Canvas, Guaranteed Zero Overlap on All Devices) -->
+          <div id="reader-controls-panel" class="bg-white rounded-2xl border border-slate-200/90 p-3 sm:px-5 shadow-xs max-w-3xl mx-auto flex flex-wrap items-center justify-between gap-3 transition-all duration-200 select-none">
+            <!-- Left Controls: Font Size & Reading Canvas Palette -->
+            <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
               <!-- Font Size Controls -->
-              <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between text-xs font-bold text-slate-700">
-                <span>Text Size</span>
-                <div class="flex items-center gap-1">
-                  <button onclick="adjustFontSize(-1)" class="p-1 px-2 hover:bg-slate-100 rounded text-xs font-serif" title="Smaller font">A-</button>
-                  <button onclick="adjustFontSize(1)" class="p-1 px-2 hover:bg-slate-100 rounded text-sm font-serif" title="Larger font">A+</button>
+              <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                <span class="text-slate-500 text-[11px] font-semibold"><i class="fas fa-font text-xs text-purple-500 mr-1"></i> Text Size</span>
+                <div class="flex items-center gap-1 ml-1">
+                  <button onclick="adjustFontSize(-1)" class="w-6 h-6 rounded-lg bg-white hover:bg-slate-200 text-slate-800 flex items-center justify-center font-serif text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer" title="Smaller font">A-</button>
+                  <button onclick="adjustFontSize(1)" class="w-6 h-6 rounded-lg bg-white hover:bg-slate-200 text-slate-800 flex items-center justify-center font-serif text-sm font-bold shadow-2xs transition active:scale-95 cursor-pointer" title="Larger font">A+</button>
                 </div>
               </div>
 
-              <!-- Theme Palette Toggle -->
-              <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-2xs flex items-center justify-between text-xs font-bold text-slate-700">
-                <span>Reading Canvas</span>
-                <div class="flex items-center gap-1.5">
-                  <button onclick="setReaderTheme('light')" class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow-2xs" title="Light"></button>
-                  <button onclick="setReaderTheme('sepia')" class="w-5 h-5 rounded-full bg-[#FAF5EB] border border-[#E2D8C3]" title="Sepia"></button>
-                  <button onclick="setReaderTheme('dark')" class="w-5 h-5 rounded-full bg-[#0F172A] border border-slate-700" title="Dark"></button>
+              <!-- Theme Palette (Reading Canvas) -->
+              <div class="flex items-center gap-2 text-xs font-bold text-slate-700 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200/80 shadow-2xs">
+                <span class="text-slate-500 text-[11px] font-semibold"><i class="fas fa-palette text-xs text-purple-500 mr-1"></i> Reading Canvas</span>
+                <div class="flex items-center gap-1.5 ml-1">
+                  <button onclick="setReaderTheme('light')" class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow-2xs hover:scale-110 active:scale-95 transition cursor-pointer" title="Light Canvas"></button>
+                  <button onclick="setReaderTheme('sepia')" class="w-5 h-5 rounded-full bg-[#FAF5EB] border border-[#E2D8C3] shadow-2xs hover:scale-110 active:scale-95 transition cursor-pointer" title="Sepia Canvas"></button>
+                  <button onclick="setReaderTheme('dark')" class="w-5 h-5 rounded-full bg-[#0F172A] border border-slate-700 shadow-2xs hover:scale-110 active:scale-95 transition cursor-pointer" title="Dark Canvas"></button>
                 </div>
               </div>
+            </div>
 
-              <!-- Bookmark Story Button -->
-              <button id="btn-bookmark-story" onclick="toggleBookmarkStory()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer">
+            <!-- Right Controls: Bookmark & Write Review -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Bookmark Button -->
+              <button id="btn-bookmark-story" onclick="toggleBookmarkStory()" class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center gap-1.5 cursor-pointer active:scale-95">
                 <i class="fas fa-bookmark text-slate-400"></i>
                 <span id="btn-bookmark-text">Bookmark Story</span>
               </button>
 
-              <button onclick="focusReviewReply()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
+              <!-- Write Review Button -->
+              <button onclick="focusReviewReply()" class="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95">
                 <i class="fas fa-pen text-xs"></i>
                 <span>Write Review</span>
               </button>
-
-              <!-- Reading Scrubber Progress -->
-              <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs text-xs space-y-1.5 text-center">
-                <div class="text-[11px] font-bold text-slate-500">Reading Progress</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-purple-600 h-full w-full"></div>
-                </div>
-                <p class="text-[10px] text-slate-400 pt-1">Complete Chapter</p>
-              </div>
             </div>
+          </div>
 
-            <!-- Right Reading Canvas & Reviews (Expands to 12 cols when menu hidden) -->
-            <div id="reader-canvas-column" class="md:col-span-9 space-y-6 transition-all duration-200">
-              
-              <!-- Story Text Canvas -->
+          <!-- Reading Canvas Article Box (Centered, Spacious, 100% Never Overlapped) -->
+          <div id="reader-canvas-column" class="space-y-6 transition-all duration-200 max-w-3xl mx-auto">
+            
+            <!-- Story Text Canvas -->
               <article id="reader-canvas-box" class="reader-theme-light rounded-2xl border border-slate-200 p-5 sm:p-10 shadow-xs space-y-6 transition max-w-3xl mx-auto">
                 <div id="reader-story-body" class="font-serif text-base sm:text-lg leading-relaxed space-y-4 text-justify sm:text-left">
                   <!-- Story Body Loaded Here -->
@@ -1081,8 +1066,6 @@
               </div>
 
             </div>
-
-          </div>
 
         </div>
 
@@ -1927,7 +1910,6 @@
 
     function toggleReaderMenu(forceState = null) {
       const panel = document.getElementById('reader-controls-panel');
-      const canvasCol = document.getElementById('reader-canvas-column');
       const btnText = document.getElementById('toggle-menu-text');
       const btnIcon = document.getElementById('toggle-menu-icon');
       const mobileText = document.getElementById('mobile-toggle-text');
@@ -1940,18 +1922,14 @@
 
       if (isReaderMenuVisible) {
         panel?.classList.remove('hidden');
-        canvasCol?.classList.remove('md:col-span-12');
-        canvasCol?.classList.add('md:col-span-9');
-        if (btnText) btnText.innerText = 'Hide Menu';
+        if (btnText) btnText.innerText = 'Hide Controls';
         if (btnIcon) btnIcon.className = 'fas fa-eye-slash text-purple-500';
-        if (mobileText) mobileText.innerText = 'Hide Menu';
+        if (mobileText) mobileText.innerText = 'Hide Controls';
       } else {
         panel?.classList.add('hidden');
-        canvasCol?.classList.remove('md:col-span-9');
-        canvasCol?.classList.add('md:col-span-12');
-        if (btnText) btnText.innerText = 'Show Menu';
+        if (btnText) btnText.innerText = 'Show Controls';
         if (btnIcon) btnIcon.className = 'fas fa-sliders text-purple-500';
-        if (mobileText) mobileText.innerText = 'Show Menu';
+        if (mobileText) mobileText.innerText = 'Show Controls';
       }
 
       localStorage.setItem('raccon_reader_menu_hidden', isReaderMenuVisible ? '0' : '1');
@@ -1983,21 +1961,13 @@
       // Always show floating edge quick-access button in reader view (docked neatly on middle edge)
       document.getElementById('mobile-reader-toggle-pill')?.classList.remove('hidden');
 
-      if (isMobileOrApk) {
-        document.querySelector('main > div > aside')?.classList.add('hidden');
-        document.querySelector('main > div > section')?.classList.remove('lg:col-span-9');
-        document.querySelector('main > div > section')?.classList.add('col-span-12');
+      // In Story Reader view: Hide website aside on all viewports for clean, spacious centered reading
+      document.querySelector('main > div > aside')?.classList.add('hidden');
+      document.querySelector('main > div > section')?.classList.remove('lg:col-span-9');
+      document.querySelector('main > div > section')?.classList.add('col-span-12');
 
-        // On mobile view and Android APK: auto-hide the menu so it never overlaps the canvas
-        toggleReaderMenu(false);
-      } else {
-        const pref = localStorage.getItem('raccon_reader_menu_hidden');
-        if (pref === '1') {
-          toggleReaderMenu(false);
-        } else {
-          toggleReaderMenu(true);
-        }
-      }
+      const pref = localStorage.getItem('raccon_reader_menu_hidden');
+      toggleReaderMenu(pref !== '1');
 
       const bodyContainer = document.getElementById('reader-story-body');
       if (bodyContainer) {
