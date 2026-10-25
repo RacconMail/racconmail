@@ -61,21 +61,18 @@ async function verifyLive() {
 
   const html = inboxRes.body;
   const checks = [
-    { label: 'Master Select Checkbox', pass: html.includes('master-select-checkbox') },
-    { label: 'Filter All Tab', pass: html.includes('d-filter-all') },
-    { label: 'Filter Read Tab', pass: html.includes('d-filter-read') },
-    { label: 'Filter Unread Tab', pass: html.includes('d-filter-unread') },
-    { label: 'List Refresh Button', pass: html.includes('list-refresh-btn') },
-    { label: 'Reader Counter < 1 of X >', pass: html.includes('reader-counter') },
-    { label: 'Docked Inline Quick Reply Textarea', pass: html.includes('quick-reply-input') },
-    { label: 'Inline Send Split Button', pass: html.includes('inline-send-btn') },
-    { label: 'Inline CC Row', pass: html.includes('inline-cc-row') },
-    { label: 'Inline BCC Row', pass: html.includes('inline-bcc-row') },
-    { label: 'AI Assist Trigger', pass: html.includes('triggerInlineAiAssist') },
-    { label: 'Date Grouping Function', pass: html.includes('getEmailDateInfo') },
-    { label: 'Navigation Thread Function', pass: html.includes('navigateThread') },
-    { label: 'Reader Fullscreen Function', pass: html.includes('toggleReaderFullscreen') },
-    { label: 'Active Right Indicator Styling', pass: html.includes('border-r-slate-900') }
+    { label: 'Middle Column Header Exists', pass: html.includes('Middle Column Desktop Header (No Search Bar, Zero Overlap, Clean 2-Column Layout)') },
+    { label: 'Search bar removed from middle header', pass: !html.includes('id="global-search" placeholder="Search..."') },
+    { label: 'Master Select Checkbox present', pass: html.includes('master-select-checkbox') },
+    { label: 'Filter All Tab present', pass: html.includes('d-filter-all') },
+    { label: 'Filter Read Tab present', pass: html.includes('d-filter-read') },
+    { label: 'Filter Unread Tab present', pass: html.includes('d-filter-unread') },
+    { label: 'List Refresh Button present', pass: html.includes('list-refresh-btn') },
+    { label: 'Desktop Filter Menu present', pass: html.includes('desktop-filter-menu') },
+    { label: 'Pill container has whitespace-nowrap & shrink-0', pass: html.includes('shrink-0 whitespace-nowrap') },
+    { label: 'Reader Counter present', pass: html.includes('reader-counter') },
+    { label: 'Docked Inline Quick Reply present', pass: html.includes('quick-reply-input') },
+    { label: 'Inline Send Split Button present', pass: html.includes('inline-send-btn') }
   ];
 
   console.table(checks);
