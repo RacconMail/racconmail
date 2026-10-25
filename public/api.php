@@ -5663,6 +5663,329 @@ Alex"]
 
     // 13.1 GET /api/community/stories (List, Search & Filter Stories)
     if ($route === 'community/stories' && $method === 'GET') {
+        // Ensure comprehensive story library across all genres
+        $existingCount = (int)$db->query("SELECT COUNT(*) FROM community_stories")->fetchColumn();
+        if ($existingCount < 20) {
+            $seedStoriesAll = [
+                [
+                    'id' => 'story_mystery_cipher',
+                    'title' => 'The Glass Cipher of Vienna',
+                    'category' => 'mystery',
+                    'format_status' => 'completed',
+                    'target_audience' => 'general',
+                    'summary' => 'In 1894 Vienna, inspector Leopold Vance receives a wax cylinder containing the final words of an imperial clockmaker and a riddle locked within an astronomical clock.',
+                    'content' => "The fog rolling off the Danube smelled of coal smoke and wet limestone.
+
+Inspector Leopold Vance stood in the workshop of master horologist Tobias Richter. On the workbench sat a cylinder phonograph with its brass horn tarnished by decades of oil fumes. Beside it, the dead clockmaker's masterwork—a five-foot astronomical mechanism shaped like a celestial sphere—clicked with terrifying precision.
+
+'The wax cylinder was discovered in his hand, Herr Inspector,' Sergeant Bauer whispered, holding his lantern steady. 'Recorded forty minutes before his heart ceased.'
+
+Vance lowered the sapphire stylus onto the grooved cylinder. The horn hissed with static, followed by the hoarse, hurried voice of Tobias Richter:
+
+'If you are listening to this, Leopold, the Archduke's men have already failed to find the sixth gear. Do not look to the planets. Look to the shadow cast by Saturn at the winter solstice. The cipher is not in the stars. It is in the glass.'
+
+Vance stepped closer to the mechanism. Inside the brass armature, suspended at the exact center of Saturn's orbital ring, was a microscopic lens of Bohemian crystal. When the lantern light struck it at an angle of thirty degrees, a sequence of seven numbers projected across the far wall.
+
+Numbers that matched the combination of the Imperial Treasury in the Hofburg.",
+                    'tags' => 'mystery,detective,noir,puzzle,vienna,thriller',
+                    'words' => 3420,
+                    'read_time' => 12,
+                    'likes' => 88,
+                    'comments' => 16
+                ],
+                [
+                    'id' => 'story_thriller_intercept',
+                    'title' => 'The Geneva Intercept',
+                    'category' => 'thriller',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'general',
+                    'summary' => 'An operational signals analyst at CERN discovers a high-frequency packet transmission hidden beneath cosmic ray telemetry, triggering a high-stakes hunt across the Alps.',
+                    'content' => "The sub-atomic collision monitors at CERN record seventy petabytes of sensor data every week. Most of it is quantum noise, quarks dissolving into energy in fractional nanoseconds.
+
+Elena Rostova was not a particle physicist; she was the cyber-infrastructure analyst assigned to the deep cryogenic storage arrays. At 02:40, while running a baseline checksum on the fiber links running through the Mont Blanc tunnel, she noticed a repeating anomaly: exactly 512 bytes of encrypted entropy injected into the calibration packets of the ALICE detector.
+
+The payload was not physics data. It was encrypted with a 4096-bit post-quantum lattice algorithm bearing the digital signature of the Swiss Federal Banking Depository.
+
+Elena picked up the secure desk phone to contact network security. The line went dead mid-ring. Through the reinforced observation glass of the server bay, the emergency egress lights switched from clear white to amber.
+
+A message blinked onto her terminal:
+
+*DO NOT LEAVE THE BAY, ELENA. THEY ARE ALREADY IN THE LOBBY.*
+
+She looked down at her encrypted flash key, pulled the emergency power disconnect, and plunged the underground data center into total darkness.",
+                    'tags' => 'thriller,suspense,espionage,cyber,action,geneva',
+                    'words' => 3100,
+                    'read_time' => 11,
+                    'likes' => 95,
+                    'comments' => 21
+                ],
+                [
+                    'id' => 'story_adventure_archipelago',
+                    'title' => 'The Horizon Expedition: Beyond the Sunken Archipelago',
+                    'category' => 'adventure',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'ya',
+                    'summary' => 'Captain Ethan Drake guides a salvage schooner through a perpetual magnetic fog into uncharted waters where forgotten civilizations left floating monolithic ruins.',
+                    'content' => "The brass needle of the binnacle compass did not spin north. It pointed straight down into the indigo abyss of the ocean.
+
+'Hold fast the tiller!' Captain Ethan Drake roared through the gale, water cascading off the brim of his oilskin hat. Ahead, through the dense sea mist, the Horizon Wall began to part.
+
+For three centuries, maritime charts marked the Southern Meridian as 'The Edge of Silence.' Ships that ventured past the 40th parallel never returned with intact logs. But Drake possessed the astrolabe recovered from the wreck of the San Telmo—an instrument constructed from an unearthly alloy that resonated with magnetic tides.
+
+As the Peregrine crested a monstrous swell, the mist evaporated with startling suddenness. The sea below them was glass-smooth, glowing with a bioluminescent emerald radiance.
+
+Rising out of the calm waters were not islands of coral, but towering spires of carved black basalt, their summits lost in the storm clouds above. Between the towers, ancient stone bridges spanned miles of open water, untouched by erosion or time.
+
+'Lower the sails,' Drake breathed, his grip relaxing on the helm. 'We found the sunken archipelago.'",
+                    'tags' => 'adventure,action,exploration,sea,relics,mystery',
+                    'words' => 2900,
+                    'read_time' => 10,
+                    'likes' => 79,
+                    'comments' => 13
+                ],
+                [
+                    'id' => 'story_historical_samarkand',
+                    'title' => 'The Silk Road Cartographer: Samarkand 1402',
+                    'category' => 'historical',
+                    'format_status' => 'completed',
+                    'target_audience' => 'general',
+                    'summary' => 'A Venetian cartographer in the grand turquoise court of Timur is tasked with copying an ancient Chinese sea atlas, risking his life to preserve forbidden knowledge.',
+                    'content' => "The courtyard of the Bibi-Khanym mosque shone with azure tile and gold leaf under the blinding Central Asian noon.
+
+Marco di Vivaro knelt upon a silk prayer rug, grinding lapis lazuli into fine ultramarine paste. Ten years had passed since his merchant caravan was captured on the Pamir pass and brought to Samarkand. In that time, the conqueror Timur had transformed the oasis city into the intellectual crown of the world, gathering astronomers from Damascus, silversmiths from Isfahan, and scribes from Cathay.
+
+'Show me the eastern margin, Venetian,' a raspy voice ordered.
+
+Marco rose and bowed low. The elderly Emir leaned heavily on his scimitar cane, his single good eye fixed upon the vellum parchment spread across the cedar table.
+
+The map depicted not merely the caravan routes through Bukhara and Kashgar, but a coastline that European scholars insisted did not exist: a vast eastern ocean dotted with volcanic islands, leading to an uncharted southern continent.
+
+'The sailors of the Middle Kingdom crossed this sea three reigns ago,' Timur remarked softly. 'My armies conquer the earth on horseback, Marco. But the future belongs to those who command the waves. Scribe three copies. If a single line diverges from the original, your hand will join the stones of the citadel wall.'
+
+Marco dipped his reed pen into the ink. His hand did not tremble. On the third copy, he added a tiny cipher in Venetian merchant code—a beacon for the explorers who would come after.",
+                    'tags' => 'historical,manuscript,timur,samarkand,journey,history',
+                    'words' => 3300,
+                    'read_time' => 12,
+                    'likes' => 84,
+                    'comments' => 14
+                ],
+                [
+                    'id' => 'story_humor_underworld',
+                    'title' => 'Accidental Overlord: The Bureaucrat Who Conquered the Underworld',
+                    'category' => 'humor',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'general',
+                    'summary' => 'Senior tax auditor Arthur Pendelton accidentally files form 27-B into the Nether Realm portal, legally transferring supreme sovereign ownership of the Underworld to his pension plan.',
+                    'content' => "Arthur Pendelton had spent thirty-four years in the Department of Inland Revenue without once taking an unapproved fifteen-minute coffee break.
+
+He possessed two pairs of wire-rimmed spectacles, a brown cardigan with leather elbow patches, and an unwavering conviction that every irregularity in the universe could be rectified through proper documentation.
+
+When a demonic pentagram flared in purple brimstone across the basement archive floor of office block 4B, the apprentice demon Lord Malakor stepped out, expecting screams of terror and pleading souls.
+
+Instead, Arthur pushed his glasses up his nose and frowned.
+
+'You are tracking soot onto the freshly buffed linoleum,' Arthur said, holding a clipboard. 'And may I see your transit manifest for inter-dimensional biomass?'
+
+Malakor laughed, a sound like grinding magma. 'Foolish mortal! I am the Duke of Cinders! I come to claim the tribute of blood and—'
+
+'Yes, yes, fascinating,' Arthur interrupted, stamping three separate carbon sheets with a resounding THWACK. 'However, under Section 14, Subsection C of the Overseas Realm Sovereignty Act of 1888, uncertified spectral entities operating without a registered business tax number forfeit all territorial jurisdiction to the senior presiding officer present.'
+
+Arthur handed the yellow carbon copy to the stunned demon.
+
+'Congratulations, Lord Malakor. As of 09:14 this morning, your subterranean brimstone empire has been annexed into the British Civil Service Municipal Pension Trust. I am now your supreme managing director. Please have the quarterly brimstone audits on my desk by Thursday.'",
+                    'tags' => 'humor,comedy,satire,bureaucracy,underworld,fantasy',
+                    'words' => 2450,
+                    'read_time' => 8,
+                    'likes' => 112,
+                    'comments' => 29
+                ],
+                [
+                    'id' => 'story_drama_bucharest',
+                    'title' => 'The Architect\'s Symphony',
+                    'category' => 'drama',
+                    'format_status' => 'completed',
+                    'target_audience' => 'general',
+                    'summary' => 'Restoring an earthquake-damaged neo-classical theater in Bucharest leads architect Andrei to a bundle of forgotten letters hidden behind the orchestra pit, unravelling a forty-year family rift.',
+                    'content' => "The plaster dust inside the Odeon Theater hung suspended in shafts of late autumn sunlight, like powdered memories waiting to settle.
+
+Andrei measured the crack running vertically through the proscenium arch. The structural report called for reinforcement girders, but Andrei wanted to preserve the original 1928 acoustic molding. His grandfather had carved the gilded lyres decorating the private royal boxes before the regime change of the late forties.
+
+While inspecting the foundation joists beneath the orchestra pit, his crowbar dislodged a loose slab of Transylvanian marble. Behind it lay a moisture-sealed zinc biscuit tin.
+
+Inside were forty-two letters tied with faded blue ribbon, written on airmail onion skin paper between Paris and Bucharest from 1968 to 1974.
+
+They were addressed to his mother.
+
+Andrei sat on the edge of the pit in the cold, silent theater and began to read. With every sentence, the bitter stories he had been told as a child—of an absent father who had abandoned his family for Parisian jazz—crumbled away like weathered mortar. His father had never abandoned them; his letters, filled with desperate love and musical scores dedicated to his daughter, had been systematically intercepted by state censors.
+
+When Andrei walked out into Calea Victoriei that evening, the city seemed different. The cracked walls were not ruins to be patched up; they were archives of forgiveness.",
+                    'tags' => 'drama,contemporary,family,architecture,bucharest,emotional',
+                    'words' => 3200,
+                    'read_time' => 11,
+                    'likes' => 76,
+                    'comments' => 11
+                ],
+                [
+                    'id' => 'story_fanfic_ironfox',
+                    'title' => 'Chronicles of the Iron Fox: An Alternate Odyssey',
+                    'category' => 'fanfic',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'ya',
+                    'summary' => 'In a gaslamp steampunk realm where airship armadas duel for cloud territory, the legendary rogue Fox takes on one final high-altitude escort contract across the Storm Divide.',
+                    'content' => "The twin steam turbines of the sky-cutter Vulpis hummed at 2,400 RPM, vibrating through the brass deckplates under Ren's boots.
+
+Ren—known across the Lower Cloud Docks simply as the Iron Fox—checked the pressure gauges on his mechanical grappling arm. The copper pressure cylinder was holding at ninety bar, well within safety tolerances for high-altitude interception.
+
+'Storm front ahead, Captain!' shouted Pip, the diminutive squirrel-folk engineer poking her goggles up from the boiler hatch. 'Barometric pressure is dropping like a lead anchor!'
+
+Ren adjusted his aviator goggles and stared into the wall of purple cumulonimbus clouds. Inside that storm was the Imperial Dreadnought Titan, carrying the stolen weather engine that had turned the southern breadbasket provinces into a frozen desert.
+
+'Throttle to eighty percent, Pip,' Ren ordered calmly, engaging the magnetic clutches on the twin rudders. 'We\'re not going around the storm. We\'re going straight through the eye.'
+
+With a hiss of superheated steam and a roar of propellers, the Vulpis tilted its brass prow upward, diving headfirst into the electric heart of the tempest.",
+                    'tags' => 'fanfic,steampunk,alternate,lore,airship,adventure',
+                    'words' => 2750,
+                    'read_time' => 9,
+                    'likes' => 83,
+                    'comments' => 17
+                ],
+                [
+                    'id' => 'story_isekai_courier',
+                    'title' => 'Reborn as a Raccoon Courier in another Realm',
+                    'category' => 'isekai',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'ya',
+                    'summary' => 'Kicked by a truck into the fantasy world of Valerie, Leo awakens as a masked raccoon postal courier with an overpowered instant-delivery pocket dimension!',
+                    'content' => "One second I was delivering packages on an electric cargo bike in downtown Seattle, and the next second a runaway cement truck sent me flying into the stratosphere.
+
+When I woke up, a celestial blue interface was floating before my whiskers:
+
+[STATUS INITIALIZATION COMPLETE]
+[Name: Leo | Class: Dimensional Postmaster | Species: Ringtail Raccoon]
+[Mana: 0 | Magic Resistance: 99% | Spatial Storage: Infinite]
+[Unique Trait: 'Guaranteed 24-Hour Express Teleportation']
+
+I looked down. Two fluffy ringed paws. A bushy tail. And strapped over my furry shoulder was a magnificent leather messenger satchel that connected directly to a sub-space pocket.
+
+'Halt, monster!' a loud voice boomed.
+
+A knight in gleaming silver armor, riding a feathered griffin, touched down in the clearing. 'Identify yourself, woodland creature!'
+
+I reached into my satchel, pulled out a wax-sealed parchment that smelled of lilac, and handed it up to the knight.
+
+'Special delivery for Lord Commander Galahad from the Grand Sorceress of the Northern Spire,' I said. (To his ears, it was perfectly polite human speech.)
+
+The knight's jaw dropped. 'The Northern Spire is three thousand leagues away! It takes six months by dragon!'
+
+'Prime shipping, sir,' I grinned, twitching my ears. 'Sign here, please.'",
+                    'tags' => 'isekai,reincarnation,fantasy,teleportation,raccoon,comedy',
+                    'words' => 2600,
+                    'read_time' => 9,
+                    'likes' => 124,
+                    'comments' => 32
+                ],
+                [
+                    'id' => 'story_ya_lumina',
+                    'title' => 'The Starlight Cipher at Lumina Academy',
+                    'category' => 'ya',
+                    'format_status' => 'ongoing',
+                    'target_audience' => 'ya',
+                    'summary' => 'A scholarship student at the elite Lumina Astral Academy discovers that the glowing constellations on the library ceiling are a countdown clock to a forbidden eclipse.',
+                    'content' => "The library of Lumina Academy smelled of crushed juniper and starlight ink.
+
+Mira had won her scholarship not through noble blood or wealthy patrons, but by memorizing all eighty-eight celestial navigational coordinates before her fourteenth birthday.
+
+While the aristocratic students spent their evenings practicing cosmetic glow-charms for the Winter Ball, Mira climbed to the uppermost gallery of the Great Rotunda. The ceiling was an enchanted fresco of the midnight sky, where silver stars drifted across sapphire plaster in real-time alignment with the heavens.
+
+Using her brass telescope, Mira zoomed in on the constellation of the Weaver's Loom. One of the central stars was pulsing in an irregular rhythm—three beats, a pause, five beats.
+
+'Prime numbers,' she whispered.
+
+'You\'re not supposed to be up here after curfew, Mira,' a quiet voice spoke from the shadows.
+
+It was Julian, the quiet headmaster's nephew, holding a notebook filled with astronomical calculations identical to her own.
+
+'Look at the Loom star, Julian,' Mira said without turning. 'It\'s speeding up. The stars aren\'t drifting. They\'re falling.'",
+                    'tags' => 'ya,academy,magic,stars,friendship,mystery',
+                    'words' => 2850,
+                    'read_time' => 10,
+                    'likes' => 89,
+                    'comments' => 15
+                ],
+                [
+                    'id' => 'story_na_montmartre',
+                    'title' => 'Rooftop Nights in Montmartre',
+                    'category' => 'na',
+                    'format_status' => 'completed',
+                    'target_audience' => 'na',
+                    'summary' => 'Two broke young painters living in a cramped Parisian garret race against eviction to curate an underground rooftop exhibition that redefines contemporary art.',
+                    'content' => "The radiator in the fifth-floor attic clanked like a tired percussionist.
+
+Camille wiped linseed oil from her knuckles with a rag and surveyed the canvas taking up half the sloping mansard wall. Outside, the slate rooftops of Montmartre were slick with evening drizzle, the glowing dome of Sacré-Cœur watching over Paris like an alabaster ghost.
+
+'The landlord gave us until Friday noon,' Luc said, sitting on an overturned milk crate while mixing titanium white with cobalt blue. 'That\'s exactly eighty-four hours before our easels end up on Rue Lepic.'
+
+Camille stepped back, her eyes shining with reckless energy. 'Then we don\'t hold the show in a gallery that wants a sixty percent commission. We hold it here.'
+
+'In an attic with a leaky skylight?'
+
+'On the rooftop, Luc. String fairy lights between the chimney stacks. Serve five-euro vin rouge. We invite every student from the Sorbonne and every critic who wrote off our generation.'
+
+Luc looked at her for three seconds, the skepticism vanishing into that wild, creative spark that had kept them alive through two bitter winters.
+
+'I\'ll get the ladder,' he said.",
+                    'tags' => 'na,art,paris,youth,ambition,contemporary',
+                    'words' => 2950,
+                    'read_time' => 10,
+                    'likes' => 71,
+                    'comments' => 12
+                ],
+                [
+                    'id' => 'story_short_clockmaker',
+                    'title' => 'The Clockmaker of Zurich',
+                    'category' => 'short_stories',
+                    'format_status' => 'completed',
+                    'target_audience' => 'general',
+                    'summary' => 'A master horologist invents a pocket watch that does not measure hours or minutes, but measures the fleeting moments in a lifetime spent truly happy.',
+                    'content' => "Old Herr Lindt worked in a basement shop near the Limmat river where the tick of a hundred escapements sounded like summer rain.
+
+For seven decades, he had manufactured pocket watches of flawless Swiss precision. Kings had bought his gold repeaters; railroad magnates had relied on his chronometers. But in the eightieth year of his life, Lindt set aside his standard gears to build a different kind of timepiece.
+
+It possessed a single dial made of mother-of-pearl, without numerals or hour hands. Inside the case was an escapement calibrated not to gravity, but to the gentle galvanic warmth of the bearer's palm.
+
+When a young banker entered the shop to purchase a birthday gift for his fiancee, he picked up the pearl watch in confusion.
+
+'Herr Lindt, this watch is defective. The hand is standing still.'
+
+Lindt looked up through his jeweler's loupe with a quiet, patient smile.
+
+'Hold it tightly, young man. And think of the afternoon you realized you were in love.'
+
+The banker smiled faintly, looking out the rain-streaked window. Within ten seconds, the slender rose-gold hand began to move—slowly, gently, sweeping across the pearl face with an exquisite chime.
+
+'It does not count time that passes,' Lindt said gently. 'It counts time that mattered.'",
+                    'tags' => 'short_stories,flashfiction,philosophical,time,tale,wisdom',
+                    'words' => 1650,
+                    'read_time' => 6,
+                    'likes' => 104,
+                    'comments' => 24
+                ]
+            ];
+
+            $stmtCheck = $db->prepare("SELECT id FROM community_stories WHERE id = ?");
+            $stmtIns = $db->prepare("INSERT INTO community_stories (id, user_id, title, category, format_status, target_audience, summary, content, tags, word_count, reading_time, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            foreach ($seedStoriesAll as $s) {
+                $stmtCheck->execute([$s['id']]);
+                if (!$stmtCheck->fetchColumn()) {
+                    @$stmtIns->execute([
+                        $s['id'], 'usr_admin_master', $s['title'], $s['category'], $s['format_status'],
+                        $s['target_audience'], $s['summary'], $s['content'], $s['tags'],
+                        $s['words'], $s['read_time'], $s['likes'], $s['comments']
+                    ]);
+                }
+            }
+        }
+
         $category = trim($_GET['category'] ?? 'all');
         $status = trim($_GET['status'] ?? 'all');
         $search = trim($_GET['search'] ?? '');
@@ -5678,8 +6001,23 @@ Alex"]
         $params = [];
 
         if ($category !== 'all' && $category !== '') {
-            $query .= " AND s.category = ?";
-            $params[] = $category;
+            if ($category === 'thriller' || $category === 'mystery') {
+                $query .= " AND (s.category IN ('mystery', 'thriller') OR s.tags LIKE '%mystery%' OR s.tags LIKE '%thriller%')";
+            } elseif ($category === 'ya') {
+                $query .= " AND (s.category = 'ya' OR s.target_audience = 'ya' OR s.tags LIKE '%ya%' OR s.tags LIKE '%young adult%')";
+            } elseif ($category === 'na') {
+                $query .= " AND (s.category = 'na' OR s.target_audience = 'na' OR s.tags LIKE '%na%' OR s.tags LIKE '%new adult%')";
+            } elseif ($category === 'paranormal') {
+                $query .= " AND (s.category = 'paranormal' OR s.tags LIKE '%paranormal%' OR s.tags LIKE '%werewolf%' OR s.tags LIKE '%vampire%')";
+            } elseif ($category === 'humor') {
+                $query .= " AND (s.category = 'humor' OR s.tags LIKE '%humor%' OR s.tags LIKE '%comedy%')";
+            } elseif ($category === 'short_stories') {
+                $query .= " AND (s.category = 'short_stories' OR s.tags LIKE '%short_stories%' OR s.tags LIKE '%short%')";
+            } else {
+                $query .= " AND (s.category = ? OR s.tags LIKE ?)";
+                $params[] = $category;
+                $params[] = '%' . $category . '%';
+            }
         }
 
         if ($status !== 'all' && $status !== '') {
@@ -5720,10 +6058,34 @@ Alex"]
             }
         }
 
+        // Calculate accurate category counts
+        $counts = ['all' => (int)$db->query("SELECT COUNT(*) FROM community_stories")->fetchColumn()];
+        $allCats = ['romance', 'fantasy', 'scifi', 'horror', 'mystery', 'thriller', 'adventure', 'historical', 'humor', 'drama', 'fanfic', 'paranormal', 'billionaire', 'litrpg', 'isekai', 'ya', 'na', 'short_stories', 'poetry'];
+        foreach ($allCats as $c) {
+            if ($c === 'mystery' || $c === 'thriller') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category IN ('mystery', 'thriller') OR tags LIKE '%mystery%' OR tags LIKE '%thriller%'")->fetchColumn();
+            } elseif ($c === 'ya') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category = 'ya' OR target_audience = 'ya' OR tags LIKE '%ya%'")->fetchColumn();
+            } elseif ($c === 'na') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category = 'na' OR target_audience = 'na' OR tags LIKE '%na%'")->fetchColumn();
+            } elseif ($c === 'paranormal') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category = 'paranormal' OR tags LIKE '%paranormal%' OR tags LIKE '%werewolf%' OR tags LIKE '%vampire%'")->fetchColumn();
+            } elseif ($c === 'humor') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category = 'humor' OR tags LIKE '%humor%' OR tags LIKE '%comedy%'")->fetchColumn();
+            } elseif ($c === 'short_stories') {
+                $counts[$c] = (int)$db->query("SELECT COUNT(*) FROM community_stories WHERE category = 'short_stories' OR tags LIKE '%short_stories%' OR tags LIKE '%short%'")->fetchColumn();
+            } else {
+                $stmtC = $db->prepare("SELECT COUNT(*) FROM community_stories WHERE category = ? OR tags LIKE ?");
+                $stmtC->execute([$c, '%' . $c . '%']);
+                $counts[$c] = (int)$stmtC->fetchColumn();
+            }
+        }
+
         echo json_encode([
             'success' => true,
             'stories' => $stories,
             'count' => count($stories),
+            'category_counts' => $counts,
             'isLoggedIn' => !empty($currentUserId),
             'currentUserId' => $currentUserId
         ]);
