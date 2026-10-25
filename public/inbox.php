@@ -1477,17 +1477,17 @@ try {
         <!-- TAB 1: UPLOAD PHOTO -->
         <div id="tab-panel-upload" class="space-y-3">
           <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="handleAvatarFileSelect(event)" />
-          <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-5 sm:p-6 text-center cursor-pointer group">
+          <label for="avatar-file-input" id="avatar-dropzone" class="block border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-5 sm:p-6 text-center cursor-pointer group">
             <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
               <i data-lucide="image-plus" class="h-6 w-6"></i>
             </div>
             <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag &amp; drop</p>
             <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG &bull; Auto square cropped</p>
-            <button type="button" onclick="event.stopPropagation(); document.getElementById('avatar-file-input').click()" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer">
+            <span class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer">
               <i data-lucide="upload" class="w-3.5 h-3.5"></i>
               <span>Choose Photo</span>
-            </button>
-          </div>
+            </span>
+          </label>
           <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
         </div>
 
@@ -1651,7 +1651,7 @@ try {
   <!-- ========================================================================= -->
   <script>
     // Initialize Lucide Icons immediately
-    lucide.createIcons();
+    try { if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons(); } catch (_) {}
 
     // Central Data Model with real messages & realistic seed
     let currentFolder = 'Inbox';
@@ -2182,7 +2182,7 @@ try {
 
     // Switch Folder (Inbox, Unread, Starred, Sent, Drafts, Archive, Spam, Trash, All)
     window.selectFolder = function(f) { return switchFolder(f); };
-    async 
+
     // =========================================================================
     // MOBILE REFERENCE APP HELPER FUNCTIONS
     // =========================================================================
@@ -2329,7 +2329,6 @@ try {
       }
     });
 
-    async 
     // Mobile Profile Page Handlers
     
     // Direct Photo Upload for Mobile Profile
@@ -2344,10 +2343,15 @@ try {
         if (typeof showToast === 'function') showToast('Uploading profile photo... ⏳', 'info');
         
         const formData = new FormData();
-        formData.append('avatar', file);
+        formData.append('avatar', file, file.name || 'avatar.jpg');
+
+        const tok = typeof getAuthToken === 'function' ? getAuthToken() : '';
+        const authHeader = tok ? { 'Authorization': 'Bearer ' + tok } : {};
 
         const res = await fetch('/api/user/avatar', {
           method: 'POST',
+          credentials: 'include',
+          headers: authHeader,
           body: formData
         });
         const data = await res.json();
