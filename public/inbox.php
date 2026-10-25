@@ -501,24 +501,26 @@ try {
         </button>
 
         <!-- Account Popover Dropdown -->
-        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2.5 z-50 text-slate-900 space-y-1">
+        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl border border-slate-200 shadow-2xl p-2.5 z-50 text-slate-900 space-y-1">
           <!-- User Profile Hero inside Dropdown -->
           <div class="p-3 border-b border-slate-100 bg-linear-to-b from-slate-50/70 to-white rounded-xl mb-1">
             <div class="flex items-center gap-3">
-              <div class="relative group cursor-pointer" onclick="openAvatarModal(); toggleUserDropdown();" title="Click to change profile photo">
+              <div class="relative group cursor-pointer shrink-0" onclick="openAvatarModal(); toggleUserDropdown();" title="Click to change profile photo">
                 <img id="dropdown-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-12 w-12 rounded-full object-cover ring-2 ring-slate-200 group-hover:ring-[#F68D72] shadow-xs transition" />
                 <div class="absolute inset-0 bg-black/45 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white backdrop-blur-2xs">
                   <i data-lucide="camera" class="h-4 w-4"></i>
                 </div>
-                <span class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#FFEFEA] border-2 border-white text-[#E06748] flex items-center justify-center shadow-2xs group-hover:bg-[#E06748] group-hover:text-white transition" title="Change Photo">
+                  <i data-lucide="camera" class="h-2.5 w-2.5"></i>
+                </div>
               </div>
               <div class="min-w-0 flex-1">
                 <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
                 <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
-                <button type="button" onclick="openAvatarModal(); toggleUserDropdown();" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#E06748] hover:text-[#c45336] transition cursor-pointer">
-                  <i data-lucide="sparkles" class="h-3 w-3"></i>
-                  <span>Change Photo</span>
-                </button>
+                <div class="mt-1 flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span class="truncate">Active Account</span>
+                </div>
               </div>
             </div>
             <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
@@ -531,12 +533,14 @@ try {
           </div>
 
           <!-- Dropdown Navigation Items -->
-          <button onclick="openAvatarModal(); toggleUserDropdown()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-orange-50/70 hover:text-[#E06748] transition cursor-pointer text-left">
-            <div class="flex items-center gap-2">
-              <i data-lucide="image" class="h-4 w-4 text-[#F68D72]"></i>
-              <span>Change Profile Photo</span>
+          <button onclick="openAvatarModal(); toggleUserDropdown()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-orange-50/70 hover:text-[#E06748] transition cursor-pointer text-left group">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-7 h-7 rounded-lg bg-[#FFEFEA] text-[#E06748] flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+              </div>
+              <span class="truncate">Change Profile Photo</span>
             </div>
-            <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-[#FFEFEA] text-[#E06748]">New</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-[#FFEFEA] text-[#E06748] shrink-0 ml-2">New</span>
           </button>
           <button onclick="openSettingsModal(); toggleUserDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
             <i data-lucide="user" class="h-4 w-4 text-slate-400"></i>
@@ -969,22 +973,25 @@ try {
       </div>
       <div class="space-y-4 text-xs">
         <!-- Profile Avatar Card inside Settings -->
-        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-          <div class="flex items-center gap-3">
-            <div class="relative group cursor-pointer" onclick="openAvatarModal()" title="Change avatar">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <div class="relative group cursor-pointer shrink-0" onclick="openAvatarModal(true)" title="Change avatar">
               <img id="settings-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-12 w-12 rounded-full object-cover ring-2 ring-slate-200 group-hover:ring-[#F68D72] transition" />
               <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
                 <i data-lucide="camera" class="h-4 w-4"></i>
               </div>
+              <div class="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#FFEFEA] border-2 border-white text-[#E06748] flex items-center justify-center shadow-2xs">
+                <i data-lucide="camera" class="h-2.5 w-2.5"></i>
+              </div>
             </div>
-            <div>
+            <div class="min-w-0 flex-1">
               <p class="font-bold text-xs text-slate-900">Profile Photo</p>
-              <p class="text-[11px] text-slate-400">Custom photo, exclusive mascot badges, or dice generator</p>
+              <p class="text-[11px] text-slate-400 truncate">Custom photo, exclusive mascot badges, or dice studio</p>
             </div>
           </div>
-          <button type="button" onclick="openAvatarModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
+          <button type="button" onclick="openAvatarModal(true)" class="shrink-0 w-full sm:w-auto justify-center px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
             <i data-lucide="camera" class="h-3.5 w-3.5 text-[#F68D72]"></i>
-            <span>Change</span>
+            <span>Change Photo</span>
           </button>
         </div>
 
@@ -1012,167 +1019,164 @@ try {
   <!-- MODERN PROFILE PHOTO MODAL (#modal-change-avatar)                         -->
   <!-- ========================================================================= -->
   <div id="modal-change-avatar" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-60 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 relative my-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 relative my-auto overflow-hidden">
       
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <div class="flex items-center gap-3">
+      <!-- Modal Header (Fixed at top) -->
+      <div class="px-5 pt-5 pb-3.5 border-b border-slate-100 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3 min-w-0">
           <div class="w-10 h-10 rounded-2xl bg-[#FFEFEA] text-[#E06748] flex items-center justify-center shrink-0 shadow-2xs">
             <i data-lucide="camera" class="h-5 w-5"></i>
           </div>
-          <div>
-            <h3 class="font-bold text-base text-slate-900 leading-tight">Change Profile Photo</h3>
-            <p class="text-[11px] text-slate-400">Personalize your identity across Raccon Mail & Community</p>
+          <div class="min-w-0">
+            <h3 class="font-bold text-base text-slate-900 leading-tight truncate">Change Profile Photo</h3>
+            <p class="text-[11px] text-slate-400 truncate">Personalize your identity across Raccon Mail & Community</p>
           </div>
         </div>
-        <button type="button" onclick="closeAvatarModal()" class="w-8 h-8 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer">
+        <button type="button" onclick="closeAvatarModal()" class="w-8 h-8 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer shrink-0 ml-2" title="Close">
           <i data-lucide="x" class="h-4 w-4"></i>
         </button>
       </div>
 
-      <!-- Live Interactive Avatar Preview -->
-      <div class="mb-4 p-4 rounded-2xl bg-linear-to-b from-slate-50/80 to-white border border-slate-100 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-        <div class="relative group shrink-0">
-          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-slate-100 shadow-md overflow-hidden bg-slate-100 relative">
-            <img id="avatar-preview-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="w-full h-full object-cover" alt="Avatar Preview" />
-            <div id="avatar-preview-loading" class="hidden absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center text-[10px] font-bold">
-              <i data-lucide="loader-2" class="h-5 w-5 animate-spin mb-1"></i>
-              <span>Processing...</span>
+      <!-- Modal Body (Independently Scrollable with smooth scrolling) -->
+      <div class="px-5 py-4 overflow-y-auto overscroll-contain flex-1 space-y-4">
+        
+        <!-- Live Interactive Avatar Preview -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-linear-to-b from-slate-50/90 to-white border border-slate-100 flex items-center gap-3.5 sm:gap-4">
+          <div class="relative group shrink-0">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full ring-4 ring-slate-100 shadow-md overflow-hidden bg-slate-100 relative">
+              <img id="avatar-preview-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="w-full h-full object-cover" alt="Avatar Preview" />
+              <div id="avatar-preview-loading" class="hidden absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center text-[10px] font-bold">
+                <i data-lucide="loader-2" class="h-5 w-5 animate-spin mb-1"></i>
+                <span>Processing...</span>
+              </div>
+            </div>
+            <span class="absolute bottom-0 right-0 h-5 w-5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center text-white text-[9px] shadow-xs" title="Online Status">
+              <i data-lucide="check" class="h-3 w-3 stroke-[3]"></i>
+            </span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-orange-50 text-[#E06748] border border-orange-100 text-[10px] font-bold uppercase tracking-wider mb-1">
+              <i data-lucide="sparkles" class="h-3 w-3 text-[#F68D72]"></i>
+              <span>Live Preview</span>
+            </div>
+            <p class="font-bold text-sm text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+            <p class="text-xs text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
+            <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">Synced in real-time across Webmail, Forum discussions, and Stories.</p>
+          </div>
+        </div>
+
+        <!-- Segmented Tab Navigation (Responsive Grid, Zero Overlap) -->
+        <div class="grid grid-cols-4 p-1 bg-slate-100/90 rounded-2xl gap-1 text-[11px] sm:text-xs font-bold text-slate-600 select-none">
+          <button type="button" onclick="switchAvatarTab('upload')" id="tab-btn-upload" class="py-2 px-1 sm:px-2 rounded-xl transition flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer bg-white text-slate-900 shadow-2xs truncate">
+            <i data-lucide="upload-cloud" class="h-3.5 w-3.5 text-[#F68D72] shrink-0"></i>
+            <span class="truncate">Upload</span>
+          </button>
+          <button type="button" onclick="switchAvatarTab('presets')" id="tab-btn-presets" class="py-2 px-1 sm:px-2 rounded-xl transition flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900 truncate">
+            <i data-lucide="shield" class="h-3.5 w-3.5 shrink-0"></i>
+            <span class="truncate">Badges</span>
+          </button>
+          <button type="button" onclick="switchAvatarTab('dice')" id="tab-btn-dice" class="py-2 px-1 sm:px-2 rounded-xl transition flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900 truncate">
+            <i data-lucide="dices" class="h-3.5 w-3.5 shrink-0"></i>
+            <span class="truncate">Dice<span class="hidden sm:inline"> Roll</span></span>
+          </button>
+          <button type="button" onclick="switchAvatarTab('url')" id="tab-btn-url" class="py-2 px-1 sm:px-2 rounded-xl transition flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900 truncate">
+            <i data-lucide="link-2" class="h-3.5 w-3.5 shrink-0"></i>
+            <span class="truncate">Link</span>
+          </button>
+        </div>
+
+        <!-- TAB 1: UPLOAD PHOTO -->
+        <div id="tab-panel-upload" class="space-y-3">
+          <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-5 sm:p-6 text-center cursor-pointer group">
+            <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" class="hidden" onchange="handleAvatarFileSelect(event)" />
+            <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
+              <i data-lucide="image-plus" class="h-6 w-6"></i>
+            </div>
+            <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag &amp; drop</p>
+            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG (Up to 10MB) &bull; Auto square cropped</p>
+          </div>
+          <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
+        </div>
+
+        <!-- TAB 2: EXCLUSIVE RACCON BADGES & MASCOTS (Responsive 2-col mobile, 4-col desktop) -->
+        <div id="tab-panel-presets" class="hidden">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-60 overflow-y-auto pr-1">
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-default.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-default.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Classic</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-gold-gear.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-gold-gear.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Gold Gear</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-cyber-mechanic.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-cyber-mechanic.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mechanic</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-mascot.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-mascot.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mascot</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-portrait.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-portrait.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Portrait</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-stealth-agent.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-stealth-agent.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Stealth</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-sunset-coral.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-sunset-coral.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Coral Badge</span>
+            </button>
+            <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-neon-matrix.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+              <img src="/avatars/raccoon-neon-matrix.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+              <span class="text-[10px] font-bold text-slate-700 truncate w-full">Neon Operative</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 3: DICE GENERATOR (Responsive 3-col mobile, 6-col desktop) -->
+        <div id="tab-panel-dice" class="hidden space-y-3">
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 gap-2">
+            <div class="min-w-0">
+              <p class="font-bold text-xs text-slate-800 truncate">Generative Studio</p>
+              <p class="text-[11px] text-slate-400 truncate">Roll to generate unique avatar variations</p>
+            </div>
+            <button type="button" onclick="rollDiceAvatars()" id="dice-roll-btn" class="shrink-0 px-3 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs transition active:scale-95 cursor-pointer">
+              <i data-lucide="dices" class="h-3.5 w-3.5 text-[#F68D72] transition-transform duration-300" id="dice-icon-spin"></i>
+              <span>Roll Dice</span>
+            </button>
+          </div>
+          <div id="dice-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-1">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- TAB 4: WEB LINK -->
+        <div id="tab-panel-url" class="hidden space-y-3">
+          <div>
+            <label class="block font-bold text-xs text-slate-700 mb-1">Image URL</label>
+            <div class="flex gap-2">
+              <input type="url" id="avatar-url-input" placeholder="https://example.com/photo.jpg" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-slate-800" />
+              <button type="button" onclick="previewCustomUrl()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition cursor-pointer shrink-0">Preview</button>
             </div>
           </div>
-          <span class="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center text-white text-[9px]" title="Online Status">
-            <i data-lucide="check" class="h-3 w-3 stroke-[3]"></i>
-          </span>
+          <p class="text-[11px] text-slate-400">Enter a direct link to any public image (HTTPS recommended).</p>
         </div>
-        <div class="min-w-0 flex-1">
-          <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider mb-1">
-            <i data-lucide="sparkles" class="h-3 w-3 text-[#F68D72]"></i>
-            <span>Interactive Live Preview</span>
-          </div>
-          <p class="font-bold text-sm text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
-          <p class="text-xs text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
-          <p class="text-[11px] text-slate-500 mt-1">Changes are synced across Webmail, Forum discussions, and Stories.</p>
-        </div>
+
       </div>
 
-      <!-- Segmented Tab Navigation -->
-      <div class="flex items-center p-1 bg-slate-100/90 rounded-2xl gap-1 mb-4 text-xs font-bold text-slate-600 select-none">
-        <button type="button" onclick="switchAvatarTab('upload')" id="tab-btn-upload" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer bg-white text-slate-900 shadow-2xs">
-          <i data-lucide="upload-cloud" class="h-3.5 w-3.5 text-[#F68D72]"></i>
-          <span>Upload</span>
+      <!-- Modal Footer (Fixed at bottom, Fully Responsive) -->
+      <div class="px-5 py-3.5 border-t border-slate-100 bg-slate-50/60 shrink-0 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5">
+        <button type="button" onclick="resetAvatarToDefault()" class="w-full sm:w-auto justify-center text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-3 py-2 rounded-xl transition cursor-pointer flex items-center gap-1.5" title="Revert to original mascot">
+          <i data-lucide="rotate-ccw" class="h-3.5 w-3.5 shrink-0"></i>
+          <span>Reset to Default</span>
         </button>
-        <button type="button" onclick="switchAvatarTab('presets')" id="tab-btn-presets" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
-          <i data-lucide="shield" class="h-3.5 w-3.5"></i>
-          <span>Badges</span>
-        </button>
-        <button type="button" onclick="switchAvatarTab('dice')" id="tab-btn-dice" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
-          <i data-lucide="dices" class="h-3.5 w-3.5"></i>
-          <span>Dice Roll</span>
-        </button>
-        <button type="button" onclick="switchAvatarTab('url')" id="tab-btn-url" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
-          <i data-lucide="link-2" class="h-3.5 w-3.5"></i>
-          <span>Link</span>
-        </button>
-      </div>
-
-      <!-- TAB 1: UPLOAD PHOTO -->
-      <div id="tab-panel-upload" class="space-y-3">
-        <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-6 text-center cursor-pointer group">
-          <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" class="hidden" onchange="handleAvatarFileSelect(event)" />
-          <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
-            <i data-lucide="image-plus" class="h-6 w-6"></i>
-          </div>
-          <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag & drop</p>
-          <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG (Up to 10MB) &bull; Auto square cropped</p>
-        </div>
-        <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
-      </div>
-
-      <!-- TAB 2: EXCLUSIVE RACCON BADGES & MASCOTS -->
-      <div id="tab-panel-presets" class="hidden">
-        <div class="grid grid-cols-4 gap-2.5 max-h-56 overflow-y-auto pr-1">
-          <!-- Preset 1 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-default.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-default.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Classic</span>
-          </button>
-          <!-- Preset 2 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-gold-gear.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-gold-gear.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Gold Gear</span>
-          </button>
-          <!-- Preset 3 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-cyber-mechanic.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-cyber-mechanic.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mechanic</span>
-          </button>
-          <!-- Preset 4 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-mascot.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-mascot.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mascot</span>
-          </button>
-          <!-- Preset 5 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-portrait.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-portrait.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Portrait</span>
-          </button>
-          <!-- Preset 6 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-stealth-agent.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-stealth-agent.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Stealth</span>
-          </button>
-          <!-- Preset 7 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-sunset-coral.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-sunset-coral.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Coral Badge</span>
-          </button>
-          <!-- Preset 8 -->
-          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-neon-matrix.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
-            <img src="/avatars/raccoon-neon-matrix.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
-            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Neon Operative</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- TAB 3: DICE GENERATOR -->
-      <div id="tab-panel-dice" class="hidden space-y-3">
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
-          <div>
-            <p class="font-bold text-xs text-slate-800">Generative Avatar Studio</p>
-            <p class="text-[11px] text-slate-400">Roll the dice to generate unique avatar variations</p>
-          </div>
-          <button type="button" onclick="rollDiceAvatars()" id="dice-roll-btn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs transition active:scale-95 cursor-pointer">
-            <i data-lucide="dices" class="h-4 w-4 text-[#F68D72] transition-transform duration-300" id="dice-icon-spin"></i>
-            <span>Roll Dice</span>
-          </button>
-        </div>
-        <div id="dice-grid" class="grid grid-cols-6 gap-2 pt-1">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </div>
-
-      <!-- TAB 4: WEB LINK -->
-      <div id="tab-panel-url" class="hidden space-y-3">
-        <div>
-          <label class="block font-bold text-xs text-slate-700 mb-1">Image URL</label>
-          <div class="flex gap-2">
-            <input type="url" id="avatar-url-input" placeholder="https://example.com/photo.jpg" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-slate-800" />
-            <button type="button" onclick="previewCustomUrl()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition cursor-pointer">Preview</button>
-          </div>
-        </div>
-        <p class="text-[11px] text-slate-400">Enter a direct link to any public image (HTTPS recommended).</p>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-5">
-        <button type="button" onclick="resetAvatarToDefault()" class="text-xs font-semibold text-slate-400 hover:text-rose-600 hover:bg-rose-50 px-3 py-2 rounded-xl transition cursor-pointer flex items-center gap-1.5" title="Revert to original mascot">
-          <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
-          <span>Reset Default</span>
-        </button>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="closeAvatarModal()" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 font-semibold text-xs text-slate-700 cursor-pointer">Cancel</button>
-          <button type="button" id="save-avatar-btn" onclick="saveSelectedAvatar()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2">
-            <i data-lucide="check" class="h-4 w-4"></i>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button type="button" onclick="closeAvatarModal()" class="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 rounded-xl border border-slate-200 hover:bg-slate-100 font-semibold text-xs text-slate-700 cursor-pointer text-center">Cancel</button>
+          <button type="button" id="save-avatar-btn" onclick="saveSelectedAvatar()" class="flex-1 sm:flex-none justify-center px-5 py-2.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2 text-center">
+            <i data-lucide="check" class="h-4 w-4 shrink-0"></i>
             <span>Save Photo</span>
           </button>
         </div>
@@ -2994,7 +2998,12 @@ function cleanMimeEmailContent(raw) {
     let pendingAvatarUploadFile = null;
     let currentActiveAvatarTab = 'upload';
 
-    function openAvatarModal() {
+    let openedFromSettings = false;
+    function openAvatarModal(fromSettings = false) {
+      if (fromSettings) {
+        openedFromSettings = true;
+        closeSettingsModal();
+      }
       const modal = document.getElementById('modal-change-avatar');
       if (!modal) return;
       modal.classList.remove('hidden');
@@ -3022,6 +3031,10 @@ function cleanMimeEmailContent(raw) {
       if (modal) modal.classList.add('hidden');
       pendingAvatarBlob = null;
       pendingAvatarUploadFile = null;
+      if (openedFromSettings) {
+        openedFromSettings = false;
+        openSettingsModal();
+      }
     }
 
     function switchAvatarTab(tab) {
