@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # 1. High-Speed Rust Search & Ranking Engine (BM25 + Candidate Scoring)
+  raccon-search-engine:
+    build:
+      context: ./raccon-search-engine-rust
+      dockerfile: Dockerfile
+    container_name: raccon-search-engine
+    ports:
+      - "8088:8088"
+    environment:
+      - BIND_ADDR=0.0.0.0:8088
+      - RUST_LOG=info
+    restart: unless-stopped
+
+  # 2. Python AI & Recommendation Service (Grok Assistant + Classifier)
+  raccon-ai-service:
+    build:
+      context: ./raccon-ai-service-python
+      dockerfile: Dockerfile
+    container_name: raccon-ai-service
+    ports:
+      - "8089:8089"
+    environment:
+      - RUST_SEARCH_URL=http://raccon-search-engine:8088
+    depends_on:
+      - raccon-search-engine
+    restart: unless-stopped
