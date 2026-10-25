@@ -313,10 +313,14 @@
           <span class="text-xl">🦝</span>
         </h1>
         
-        <!-- Tabs: Publications | Sources -->
+        <!-- Tabs: Primary Live Wire | Special Dispatches | Sources -->
         <div class="flex items-center gap-6 mt-2 border-b border-slate-200">
-          <button onclick="setNewsSubTab('articles')" id="tab-articles" class="pb-2.5 text-xs sm:text-sm font-extrabold text-slate-900 border-b-2 border-slate-900 transition cursor-pointer">
-            Publications
+          <button onclick="setNewsSubTab('live')" id="tab-live" class="pb-2.5 text-xs sm:text-sm font-extrabold text-slate-900 border-b-2 border-slate-900 transition cursor-pointer flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+            <span>Live Wire (Primary)</span>
+          </button>
+          <button onclick="setNewsSubTab('articles')" id="tab-articles" class="pb-2.5 text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition cursor-pointer">
+            Special Dispatches
           </button>
           <button onclick="setNewsSubTab('channels')" id="tab-channels" class="pb-2.5 text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition cursor-pointer flex items-center gap-1.5">
             <span>Verified Sources</span>
@@ -553,24 +557,55 @@
         <!-- ===================================================================
              VIEW A: ARTICLES STREAM FEED (Active by default)
              =================================================================== -->
-        <div id="news-feed-view" class="space-y-4">
-          <!-- Results Header Bar: Count + Active Author Filter Chip -->
-          <div class="flex items-center justify-between pb-2">
-            <div class="flex items-center gap-2">
-              <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="results-count-label">Articles found: 32</span>
-              <div id="active-author-chip-container" class="hidden">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFEFEA] border border-[#F68D72]/40 text-[#E06748] text-xs font-bold">
-                  <span id="active-author-chip-text">@artem_sec</span>
-                  <button onclick="clearAuthorFilter()" class="hover:text-slate-900 cursor-pointer font-bold">&times;</button>
+        <div id="news-feed-view" class="space-y-6">
+          
+          <!-- PRIMARY LIVE NEWS SOURCE: RSS.APP WALL (Primary Feed) -->
+          <div id="primary-news-source-wall" class="w-full bg-white rounded-[28px] border border-slate-200/90 p-3.5 sm:p-6 shadow-2xs space-y-4 overflow-hidden">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2.5">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                 </span>
+                <h2 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight font-display flex items-center gap-2">
+                  <span>Live News Wire</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60">Primary Source</span>
+                </h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-semibold text-slate-400 hidden sm:inline">Real-time Syndication</span>
+                <span class="text-[10px] font-mono text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">Live RSS Wall</span>
               </div>
             </div>
-            <span class="text-[11px] text-slate-400 font-mono hidden sm:inline">24/7 Verified Syndication</span>
+            
+            <!-- RSS.app Wall Widget -->
+            <div class="w-full overflow-hidden rounded-2xl min-h-[480px]">
+              <rssapp-wall id="tda2lK8oGsPYIFW8"></rssapp-wall>
+              <script src="https://widget.rss.app/v1/wall.js" type="text/javascript" async></script>
+            </div>
           </div>
 
-          <!-- NEWS CARDS GRID (2 Columns on Desktop, 1 Column on Mobile - Seamless Scroll Down) -->
-          <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
-            <!-- Dynamically populated via JS renderNewsGrid() -->
+          <!-- Section: Special Dispatches & Investigative Archive -->
+          <div id="secondary-dispatches-section" class="space-y-4 pt-2">
+            <!-- Results Header Bar: Count + Active Author Filter Chip -->
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <i data-lucide="newspaper" class="w-4 h-4 text-slate-500"></i>
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 font-display">Special Dispatches &amp; Investigative Archive</h3>
+                <div id="active-author-chip-container" class="hidden">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFEFEA] border border-[#F68D72]/40 text-[#E06748] text-xs font-bold">
+                    <span id="active-author-chip-text">@artem_sec</span>
+                    <button onclick="clearAuthorFilter()" class="hover:text-slate-900 cursor-pointer font-bold">&times;</button>
+                  </span>
+                </div>
+              </div>
+              <span class="text-[11px] text-slate-400 font-mono hidden sm:inline" id="results-count-label">Articles found: 32</span>
+            </div>
+
+            <!-- NEWS CARDS GRID (2 Columns on Desktop, 1 Column on Mobile - Seamless Scroll Down) -->
+            <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+              <!-- Dynamically populated via JS renderNewsGrid() -->
+            </div>
           </div>
 
           <!-- Empty State -->
@@ -1370,23 +1405,39 @@
       if (tagSrc && tagDest) tagDest.innerHTML = tagSrc.innerHTML;
     }
 
-    // Sub-Tabs (Publications | Sources)
+    // Sub-Tabs (Live Wire | Special Dispatches | Sources)
     function setNewsSubTab(tab) {
-      const t1 = document.getElementById('tab-articles');
-      const t2 = document.getElementById('tab-channels');
-      if (tab === 'articles') {
-        t1?.classList.add('text-slate-900', 'border-slate-900');
-        t1?.classList.remove('text-slate-400', 'border-transparent');
-        t2?.classList.add('text-slate-400', 'border-transparent');
-        t2?.classList.remove('text-slate-900', 'border-slate-900');
+      const tLive = document.getElementById('tab-live');
+      const tArticles = document.getElementById('tab-articles');
+      const tChannels = document.getElementById('tab-channels');
+      const wallContainer = document.getElementById('primary-news-source-wall');
+      const dispatchesSection = document.getElementById('secondary-dispatches-section');
+
+      [tLive, tArticles, tChannels].forEach(t => {
+        t?.classList.remove('text-slate-900', 'border-slate-900');
+        t?.classList.add('text-slate-400', 'border-transparent');
+      });
+
+      if (tab === 'live') {
+        tLive?.classList.add('text-slate-900', 'border-slate-900');
+        tLive?.classList.remove('text-slate-400', 'border-transparent');
+        closeArticleView();
+        if (wallContainer) wallContainer.style.display = 'block';
+        if (dispatchesSection) dispatchesSection.style.display = 'block';
+        wallContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (tab === 'articles') {
+        tArticles?.classList.add('text-slate-900', 'border-slate-900');
+        tArticles?.classList.remove('text-slate-400', 'border-transparent');
         closeArticleView();
         currentCategory = 'all';
         applyAllFilters();
+        if (dispatchesSection) {
+          dispatchesSection.style.display = 'block';
+          dispatchesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       } else {
-        t2?.classList.add('text-slate-900', 'border-slate-900');
-        t2?.classList.remove('text-slate-400', 'border-transparent');
-        t1?.classList.add('text-slate-400', 'border-transparent');
-        t1?.classList.remove('text-slate-900', 'border-slate-900');
+        tChannels?.classList.add('text-slate-900', 'border-slate-900');
+        tChannels?.classList.remove('text-slate-400', 'border-transparent');
         showToast('Viewing verified editorial channels.');
       }
     }
