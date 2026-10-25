@@ -1873,6 +1873,12 @@ if ($route === 'messages/sync' && (($_GET['key'] ?? '') === 'raccon_sync_2026' |
 $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || (preg_match('#^forum/posts/([^/]+)$#', $route) && $method === 'GET')
     || (preg_match('#^forum/posts/([^/]+)/comments$#', $route))
+    || (preg_match('#^forum/posts/([^/]+)/reputation$#', $route) && $method === 'GET')
+    || (preg_match('#^forum/posts/([^/]+)/thanks$#', $route) && $method === 'GET')
+    || (preg_match('#^forum/posts/([^/]+)/view$#', $route) && $method === 'POST')
+    || ($route === 'forum/stats' && $method === 'GET')
+    || ($route === 'forum/widgets' && $method === 'GET')
+    || ($route === 'forum/categories' && $method === 'GET')
     || ($route === 'news' && $method === 'GET')
     || ($route === 'engine/status' && $method === 'GET')
     || ($route === 'engine/update')
@@ -3785,27 +3791,36 @@ Alex"]
     }
 
     // ==========================================
-    // 11. RACCON NOCTURNAL FORUM (MEMBERS)
+    // 11. RACCON NOCTURNAL FORUM (COMMUNITY SUITE)
     // ==========================================
 
-    // Ensure forum tables exist
+    // Ensure all forum tables and extended columns exist
     try {
         $db->exec("CREATE TABLE IF NOT EXISTS forum_posts (
             id TEXT PRIMARY KEY,
             user_id TEXT NOT NULL,
             title TEXT NOT NULL,
             category TEXT NOT NULL,
+            subcategory TEXT DEFAULT '',
             content TEXT NOT NULL,
             code_snippet TEXT DEFAULT '',
             code_lang TEXT DEFAULT 'javascript',
             image_url TEXT DEFAULT '',
             tags TEXT DEFAULT '',
+            location TEXT DEFAULT 'Bucharest, Romania',
             likes_count INTEGER DEFAULT 0,
             comments_count INTEGER DEFAULT 0,
+            views_count INTEGER DEFAULT 0,
+            thanks_count INTEGER DEFAULT 0,
+            reputation_score INTEGER DEFAULT 0,
+            rating_sum INTEGER DEFAULT 0,
+            rating_count INTEGER DEFAULT 0,
             is_pinned INTEGER DEFAULT 0,
+            is_sticky INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_category ON forum_posts(category, created_at)");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_tags ON forum_posts(tags)");
 
         $db->exec("CREATE TABLE IF NOT EXISTS forum_comments (
             id TEXT PRIMARY KEY,
@@ -3813,9 +3828,13 @@ Alex"]
             user_id TEXT NOT NULL,
             content TEXT NOT NULL,
             code_snippet TEXT DEFAULT '',
+            parent_comment_id TEXT DEFAULT '',
+            thanks_count INTEGER DEFAULT 0,
+            reputation_score INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_comments_post ON forum_comments(post_id, created_at)");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_forum_comments_parent ON forum_comments(parent_comment_id)");
 
         $db->exec("CREATE TABLE IF NOT EXISTS forum_likes (
             post_id TEXT NOT NULL,
@@ -3823,137 +3842,406 @@ Alex"]
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (post_id, user_id)
         )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_subscriptions (
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (post_id, user_id)
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_thanks (
+            id TEXT PRIMARY KEY,
+            post_id TEXT NOT NULL,
+            from_user_id TEXT NOT NULL,
+            to_user_id TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (post_id, from_user_id)
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_reputation (
+            id TEXT PRIMARY KEY,
+            post_id TEXT NOT NULL,
+            from_user_id TEXT NOT NULL,
+            to_user_id TEXT NOT NULL,
+            delta INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (post_id, from_user_id)
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_ratings (
+            post_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            rating INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (post_id, user_id)
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_categories (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            slug TEXT NOT NULL UNIQUE,
+            icon TEXT NOT NULL,
+            subcategories_json TEXT DEFAULT '[]',
+            sort_order INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
+        $db->exec("CREATE TABLE IF NOT EXISTS forum_settings (
+            setting_key TEXT PRIMARY KEY,
+            setting_value TEXT NOT NULL
+        )");
     } catch (Throwable $e) {}
 
-    // Ensure location column exists and clean any external aggregator URLs from existing posts
-    try {
-        $db->exec("ALTER TABLE forum_posts ADD COLUMN location TEXT DEFAULT ''");
-    } catch (Throwable $e) {}
+    // Migrations for existing columns
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN subcategory TEXT DEFAULT ''"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN views_count INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN thanks_count INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN reputation_score INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN rating_sum INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN rating_count INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_posts ADD COLUMN is_sticky INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_comments ADD COLUMN parent_comment_id TEXT DEFAULT ''"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_comments ADD COLUMN thanks_count INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE forum_comments ADD COLUMN reputation_score INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN forum_signature TEXT DEFAULT ''"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN reputation INTEGER DEFAULT 0"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN is_online_enabled INTEGER DEFAULT 1"); } catch (Throwable $e) {}
+    try { $db->exec("ALTER TABLE users ADD COLUMN last_active_at TEXT DEFAULT ''"); } catch (Throwable $e) {}
 
-    try {
-        $db->exec("UPDATE forum_posts SET content = trim(substr(content, 1, instr(content, 'Comments URL:') - 1)) WHERE content LIKE '%Comments URL:%'");
-        $db->exec("UPDATE forum_posts SET content = trim(substr(content, 1, instr(content, 'https://news.ycombinator.com') - 1)) WHERE content LIKE '%https://news.ycombinator.com%'");
-        $db->exec("UPDATE forum_posts SET location = 'Bucharest, Romania' WHERE location IS NULL OR location = ''");
-    } catch (Throwable $e) {}
-
-    // Auto-seed initial developer & designer discussions if table is empty
-    $forumCount = 0;
-    try {
-        $stmtForumCount = $db->query("SELECT COUNT(*) FROM forum_posts");
-        if ($stmtForumCount) {
-            $forumCount = (int)$stmtForumCount->fetchColumn();
-        }
-    } catch (Throwable $e) {}
-
-    if ($forumCount === 0) {
-        $seedUserId = $currentUserId ?: 'usr_admin_master';
-        $seedPosts = [
-            [
-                'id' => 'post_seed_1',
-                'title' => 'Post-Quantum Lattice Cryptography for Webmail Envelopes',
-                'category' => 'tech',
-                'content' => "With quantum computing advancements on the horizon, traditional RSA and elliptic-curve cryptography will eventually be vulnerable to Shor's algorithm. In Raccon Mail, we are exploring module lattice-based key encapsulation mechanisms (ML-KEM) to guarantee that all postcards sealed in burrows remain untappable forever.\n\nWho else is experimenting with Kyber/Dilithium implementations in client-side WebAssembly?",
-                'code_snippet' => "// ML-KEM-768 Hybrid Key Encapsulation\nasync function sealPostcardPayload(recipientPublicKey, plainText) {\n  const sharedSecret = await crypto.subtle.deriveKey(\n    { name: 'ECDH', public: recipientPublicKey },\n    privateKey,\n    { name: 'AES-GCM', length: 256 },\n    false,\n    ['encrypt']\n  );\n  return sharedSecret;\n}",
-                'code_lang' => 'javascript',
-                'image_url' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-                'tags' => 'cryptography,tech,security,postquantum',
-                'likes' => 14,
-                'comments' => 3
-            ],
-            [
-                'id' => 'post_seed_2',
-                'title' => 'Mastering SQLite Concurrency with WAL Mode in High-Throughput PHP',
-                'category' => 'coding',
-                'content' => "SQLite is frequently misunderstood as a 'toy' database, but when configured with Write-Ahead Logging (WAL) and `busy_timeout = 5000`, it easily serves millions of reads with zero locks! Here is the exact snippet we recommend for any high-traffic PHP endpoint.",
-                'code_snippet' => "\$db = new PDO('sqlite:/path/to/mail.db');\n\$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);\n// Enable concurrent readers while writing\n\$db->exec('PRAGMA journal_mode = WAL;');\n\$db->exec('PRAGMA synchronous = NORMAL;');\n\$db->exec('PRAGMA busy_timeout = 5000;');\n\$db->exec('PRAGMA cache_size = -64000;'); // 64MB memory cache",
-                'code_lang' => 'php',
-                'image_url' => 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
-                'tags' => 'sqlite,php,performance,backend',
-                'likes' => 28,
-                'comments' => 5
-            ],
-            [
-                'id' => 'post_seed_3',
-                'title' => '2026 UI Trends: Obsidian Dark Theme & Frosted Glassmorphism',
-                'category' => 'webdesign',
-                'content' => "Pure pitch-black (#000000) causes intense eye strain under OLED screens due to high contrast halation. The sweet spot for modern nocturnal aesthetics is deep obsidian navy (#080c14) paired with 8% white translucent borders and `backdrop-blur-md`.\n\nNotice how fluid cards feel when you add a 300ms cubic-bezier transition on hover scale! Thoughts on neon accents vs matte pastels?",
-                'code_snippet' => ".glass-burrow-card {\n  background: rgba(17, 28, 51, 0.75);\n  backdrop-filter: blur(16px);\n  -webkit-backdrop-filter: blur(16px);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 1.5rem;\n  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);\n}",
-                'code_lang' => 'css',
-                'image_url' => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
-                'tags' => 'css,webdesign,uiux,glassmorphism',
-                'likes' => 35,
-                'comments' => 7
-            ],
-            [
-                'id' => 'post_seed_4',
-                'title' => 'Zero-Dependency Vanilla JavaScript Reactive State Store (<40 lines)',
-                'category' => 'sharing',
-                'content' => "You do not need Redux, Zustand, or 200KB npm dependencies to have clean reactive state in your web apps. JavaScript's native Proxy API makes creating an observable store effortless. Here is the entire implementation:",
-                'code_snippet' => "function createStore(initialState) {\n  const listeners = new Set();\n  const state = new Proxy(initialState, {\n    set(target, key, value) {\n      target[key] = value;\n      listeners.forEach(fn => fn(target));\n      return true;\n    }\n  });\n  return {\n    state,\n    subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); }\n  };\n}",
-                'code_lang' => 'javascript',
-                'image_url' => '',
-                'tags' => 'javascript,vanillajs,frontend,state',
-                'likes' => 42,
-                'comments' => 4
-            ],
-            [
-                'id' => 'post_seed_5',
-                'title' => 'Debugging ServiceWorker Push Notifications in Background State',
-                'category' => 'help',
-                'content' => "Hey community owls! Quick question: on mobile Chrome and Android PWA, push events sometimes get throttled by aggressive battery optimization if the app has been sleeping for more than 4 hours. Has anyone solved this with persistent background sync or periodic background fetch?",
-                'code_snippet' => "self.addEventListener('push', (event) => {\n  const data = event.data ? event.data.json() : {};\n  event.waitUntil(\n    self.registration.showNotification(data.title || 'Raccon Mail', {\n      body: data.body,\n      icon: '/raccoon-logo.png',\n      badge: '/favicon.png'\n    })\n  );\n});",
-                'code_lang' => 'javascript',
-                'image_url' => '',
-                'tags' => 'serviceworker,pwa,help,android',
-                'likes' => 19,
-                'comments' => 6
-            ],
-            [
-                'id' => 'post_seed_6',
-                'title' => 'Demystifying Zero-Knowledge Client Masking: How It Works Step-by-Step',
-                'category' => 'explaining',
-                'content' => "A lot of people ask: 'How does client-side email masking actually work?' Here is an intuitive breakdown:\n\n1. Sender types an email.\n2. In the browser, the Web Crypto API derives an AES-256 key from a passphrase known only to the user.\n3. The raw body is encrypted before the HTTP POST is dispatched.\n4. Even if database servers are inspected, only encrypted ciphertext envelopes are stored.\n\nKnowledge belongs to the sender and recipient alone!",
-                'code_snippet' => "const iv = crypto.getRandomValues(new Uint8Array(12));\nconst cipher = await crypto.subtle.encrypt(\n  { name: 'AES-GCM', iv },\n  encryptionKey,\n  new TextEncoder().encode(plainBody)\n);",
-                'code_lang' => 'javascript',
-                'image_url' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
-                'tags' => 'explaining,security,encryption,guide',
-                'likes' => 51,
-                'comments' => 8
-            ]
-        ];
-
-        foreach ($seedPosts as $p) {
-            $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, likes_count, comments_count, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)")
-               ->execute([$p['id'], $seedUserId, $p['title'], $p['category'], $p['content'], $p['code_snippet'], $p['code_lang'], $p['image_url'], $p['tags'], $p['likes'], $p['comments']]);
-
-            // Add sample comment
-            $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content) VALUES (?, ?, ?, 'Brilliant post! Really clear explanation and clean snippet.')")
-               ->execute(['cm_' . uniqid(), $p['id'], $seedUserId]);
-        }
+    // Update active user timestamp
+    if ($currentUserId) {
+        try {
+            $db->prepare("UPDATE users SET last_active_at = ? WHERE id = ?")->execute([date('Y-m-d H:i:s'), $currentUserId]);
+        } catch (Throwable $e) {}
     }
 
-    
-    
-
-    
-    // One-time purge of TikTok post
+    // Seed default categories if empty
     try {
-        $db->exec("DELETE FROM forum_posts WHERE id = 'post_canturovibe'");
-        $db->exec("DELETE FROM forum_comments WHERE post_id = 'post_canturovibe'");
-        $db->exec("DELETE FROM forum_likes WHERE post_id = 'post_canturovibe'");
+        $catsCount = (int)$db->query("SELECT COUNT(*) FROM forum_categories")->fetchColumn();
+        if ($catsCount === 0) {
+            $initialCategories = [
+                ['cat_all', 'All Topics', 'all', 'fa-comments', '["General", "Popular", "Sticky"]', 0],
+                ['cat_ann', 'Announcements', 'announcements', 'fa-bullhorn', '["Releases", "System Status", "Roadmap"]', 1],
+                ['cat_sec', 'Security & PGP', 'security', 'fa-shield-halved', '["End-to-End Encryption", "PGP Keys", "Bug Bounty"]', 2],
+                ['cat_tec', 'Technology', 'tech', 'fa-microchip', '["Quantum Cryptography", "WebAssembly", "Infrastructure"]', 3],
+                ['cat_cod', 'Coding & Scripts', 'coding', 'fa-code', '["PHP / Backend", "JavaScript / Frontend", "APIs & Webhooks"]', 4],
+                ['cat_des', 'Web Design & UI', 'webdesign', 'fa-palette', '["Figma Showcase", "Tailwind UX", "Mobile Design"]', 5],
+                ['cat_fb', 'Feedback & Q&A', 'feedback', 'fa-circle-question', '["Support Q&A", "Feature Requests", "Troubleshooting"]', 6]
+            ];
+            $stmtIns = $db->prepare("INSERT INTO forum_categories (id, name, slug, icon, subcategories_json, sort_order) VALUES (?, ?, ?, ?, ?, ?)");
+            foreach ($initialCategories as $c) {
+                $stmtIns->execute($c);
+            }
+        }
     } catch (Throwable $e) {}
 
-    // 11.1 GET /api/forum/posts (List & Search & Filter)
+    
+    // Ensure last_active_at exists in users table (SQLite literal default)
+    try {
+        $db->exec("ALTER TABLE users ADD COLUMN last_active_at TEXT DEFAULT ''");
+    } catch (Throwable $e) {}
+
+    // 11.0A GET /api/forum/stats (Forum Statistics Widget)
+    if ($route === 'forum/stats' && $method === 'GET') {
+        $totalTopics = (int)$db->query("SELECT COUNT(*) FROM forum_posts")->fetchColumn();
+        $totalComments = (int)$db->query("SELECT COUNT(*) FROM forum_comments")->fetchColumn();
+        $totalUsers = (int)$db->query("SELECT COUNT(*) FROM users")->fetchColumn();
+        $totalThanks = (int)$db->query("SELECT COUNT(*) FROM forum_thanks")->fetchColumn();
+
+        // Online count: users active in last 15 minutes + seed
+        $onlineCount = (int)$db->query("SELECT COUNT(*) FROM users WHERE last_active_at != '' AND last_active_at >= datetime('now', '-15 minutes')")->fetchColumn();
+        if ($onlineCount < 3) $onlineCount = 3 + ($totalTopics % 5);
+
+        // Check online icons setting
+        $stmtSet = $db->query("SELECT setting_value FROM forum_settings WHERE setting_key = 'online_icons_enabled'");
+        $onlineIconsEnabled = $stmtSet ? ($stmtSet->fetchColumn() !== '0') : true;
+
+        echo json_encode([
+            'success' => true,
+            'stats' => [
+                'total_topics' => $totalTopics,
+                'total_posts' => $totalTopics + $totalComments,
+                'total_users' => max(1, $totalUsers),
+                'online_users' => $onlineCount,
+                'total_thanks' => $totalThanks,
+                'online_icons_enabled' => $onlineIconsEnabled
+            ]
+        ]);
+        exit;
+    }
+
+    // 11.0B GET /api/forum/categories (Categories & Subcategories with Icons)
+    if ($route === 'forum/categories' && $method === 'GET') {
+        $cats = $db->query("SELECT * FROM forum_categories ORDER BY sort_order ASC, name ASC")->fetchAll();
+        foreach ($cats as &$c) {
+            $c['subcategories'] = json_decode($c['subcategories_json'] ?: '[]', true) ?: [];
+            if ($c['slug'] === 'all') {
+                $c['post_count'] = (int)$db->query("SELECT COUNT(*) FROM forum_posts")->fetchColumn();
+            } else {
+                $stmtCnt = $db->prepare("SELECT COUNT(*) FROM forum_posts WHERE category = ?");
+                $stmtCnt->execute([$c['slug']]);
+                $c['post_count'] = (int)$stmtCnt->fetchColumn();
+            }
+        }
+        echo json_encode(['success' => true, 'categories' => $cats]);
+        exit;
+    }
+
+    // 11.0C GET /api/forum/widgets ([Admin Configurable] Most Popular Topics, Posts, Users, Tag Cloud)
+    if ($route === 'forum/widgets' && $method === 'GET') {
+        $stmtCrit = $db->query("SELECT setting_value FROM forum_settings WHERE setting_key = 'popular_criteria'");
+        $criteria = $stmtCrit ? ($stmtCrit->fetchColumn() ?: 'posts') : 'posts';
+
+        // Popular Topics
+        $orderCol = 'likes_count';
+        if ($criteria === 'posts') $orderCol = 'comments_count';
+        else if ($criteria === 'views') $orderCol = 'views_count';
+
+        $popularTopics = $db->query("SELECT id, title, category, subcategory, likes_count, comments_count, views_count, thanks_count, reputation_score, created_at FROM forum_posts ORDER BY {$orderCol} DESC, created_at DESC LIMIT 5")->fetchAll();
+
+        // Top Reputed Users (Asset: Reputed Member if reputation >= 10)
+        $topUsers = $db->query("SELECT u.id, u.name, u.email, u.avatar, COALESCE(u.reputation, 0) as reputation, (SELECT COUNT(*) FROM forum_posts p WHERE p.user_id = u.id) as posts_count FROM users u ORDER BY u.reputation DESC, posts_count DESC LIMIT 5")->fetchAll();
+        foreach ($topUsers as &$tu) {
+            $tu['is_reputed'] = ($tu['reputation'] >= 10);
+            if (empty($tu['name'])) $tu['name'] = explode('@', $tu['email'] ?? 'User')[0];
+        }
+
+        // Tag Cloud Widget
+        $allTags = $db->query("SELECT tags FROM forum_posts WHERE tags IS NOT NULL AND tags != ''")->fetchAll(PDO::FETCH_COLUMN);
+        $tagCounts = [];
+        foreach ($allTags as $tagStr) {
+            $split = explode(',', str_replace(['#', ';', ' '], ',', strtolower($tagStr)));
+            foreach ($split as $t) {
+                $t = trim($t);
+                if (strlen($t) >= 2) {
+                    $tagCounts[$t] = ($tagCounts[$t] ?? 0) + 1;
+                }
+            }
+        }
+        arsort($tagCounts);
+        $tagCloud = [];
+        $maxCount = max(array_values($tagCounts) ?: [1]);
+        $i = 0;
+        foreach ($tagCounts as $tag => $count) {
+            if ($i++ >= 20) break;
+            $weight = min(5, max(1, (int)round(($count / $maxCount) * 5)));
+            $tagCloud[] = ['tag' => $tag, 'count' => $count, 'weight' => $weight];
+        }
+
+        // Online icon setting
+        $stmtOn = $db->query("SELECT setting_value FROM forum_settings WHERE setting_key = 'online_icons_enabled'");
+        $onlineIconsEnabled = $stmtOn ? ($stmtOn->fetchColumn() !== '0') : true;
+
+        echo json_encode([
+            'success' => true,
+            'criteria' => $criteria,
+            'online_icons_enabled' => $onlineIconsEnabled,
+            'popular_topics' => $popularTopics,
+            'top_users' => $topUsers,
+            'tag_cloud' => $tagCloud
+        ]);
+        exit;
+    }
+
+    // 11.0D POST /api/admin/forum/categories (Admin Add / Edit Subcategories & Icons)
+    if ($route === 'admin/forum/categories' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Authentication required']);
+            exit;
+        }
+        $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
+        if (!$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Admin privileges required']);
+            exit;
+        }
+
+        $catId = trim($input['id'] ?? '');
+        $name = trim($input['name'] ?? '');
+        $slug = trim($input['slug'] ?? '');
+        $icon = trim($input['icon'] ?? 'fa-folder');
+        $subcategories = $input['subcategories'] ?? [];
+        if (is_string($subcategories)) {
+            $subcategories = json_decode($subcategories, true) ?: [];
+        }
+        $subcategoriesJson = json_encode(array_values(array_filter($subcategories)));
+
+        if (!$name || !$slug) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Category name and slug are required']);
+            exit;
+        }
+
+        if ($catId) {
+            $stmt = $db->prepare("UPDATE forum_categories SET name = ?, slug = ?, icon = ?, subcategories_json = ? WHERE id = ?");
+            $stmt->execute([$name, $slug, $icon, $subcategoriesJson, $catId]);
+        } else {
+            $newId = 'cat_' . uniqid();
+            $stmt = $db->prepare("INSERT INTO forum_categories (id, name, slug, icon, subcategories_json, sort_order) VALUES (?, ?, ?, ?, ?, 99)");
+            $stmt->execute([$newId, $name, $slug, $icon, $subcategoriesJson]);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Category updated successfully']);
+        exit;
+    }
+
+    // 11.0E DELETE /api/admin/forum/categories/:id (Admin Delete Category)
+    if (preg_match('#^admin/forum/categories/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Authentication required']);
+            exit;
+        }
+        $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
+        if (!$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Admin privileges required']);
+            exit;
+        }
+
+        $db->prepare("DELETE FROM forum_categories WHERE id = ?")->execute([$m[1]]);
+        echo json_encode(['success' => true, 'message' => 'Category deleted']);
+        exit;
+    }
+
+    // 11.0F POST /api/admin/forum/settings (Admin Toggle Online Icon & Config Criteria)
+    if ($route === 'admin/forum/settings' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Authentication required']);
+            exit;
+        }
+        $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
+        if (!$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Admin privileges required']);
+            exit;
+        }
+
+        if (isset($input['online_icons_enabled'])) {
+            $val = !empty($input['online_icons_enabled']) ? '1' : '0';
+            $db->prepare("INSERT INTO forum_settings (setting_key, setting_value) VALUES ('online_icons_enabled', ?) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value")->execute([$val]);
+        }
+        if (isset($input['popular_criteria'])) {
+            $crit = in_array($input['popular_criteria'], ['posts', 'views', 'likes']) ? $input['popular_criteria'] : 'posts';
+            $db->prepare("INSERT INTO forum_settings (setting_key, setting_value) VALUES ('popular_criteria', ?) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value")->execute([$crit]);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Settings saved successfully']);
+        exit;
+    }
+
+    // 11.0G GET /api/forum/user-dashboard (User Dashboard Data)
+    if ($route === 'forum/user-dashboard' && $method === 'GET') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Please sign in to access your User Dashboard.']);
+            exit;
+        }
+
+        // User info & signature
+        $stmtU = $db->prepare("SELECT id, name, email, avatar, bio, location, forum_signature, COALESCE(reputation, 0) as reputation, is_admin FROM users WHERE id = ?");
+        $stmtU->execute([$currentUserId]);
+        $userProf = $stmtU->fetch();
+        if (!$userProf) {
+            $userProf = ['id' => $currentUserId, 'name' => 'Member', 'email' => '', 'avatar' => '/raccoon-logo.png', 'reputation' => 0, 'forum_signature' => '', 'is_admin' => 0];
+        }
+        $userProf['is_reputed'] = ($userProf['reputation'] >= 10);
+        $isAdmin = !empty($userProf['is_admin']);
+
+        // 1. My Topics
+        $stmtMyTopics = $db->prepare("SELECT p.*, (SELECT COUNT(*) FROM forum_comments c WHERE c.post_id = p.id) as comments_count FROM forum_posts p WHERE p.user_id = ? ORDER BY p.created_at DESC");
+        $stmtMyTopics->execute([$currentUserId]);
+        $myTopics = $stmtMyTopics->fetchAll();
+
+        // 2. My Comments
+        $stmtMyComms = $db->prepare("SELECT c.*, p.title as post_title FROM forum_comments c LEFT JOIN forum_posts p ON c.post_id = p.id WHERE c.user_id = ? ORDER BY c.created_at DESC LIMIT 30");
+        $stmtMyComms->execute([$currentUserId]);
+        $myComments = $stmtMyComms->fetchAll();
+
+        // 3. Liked Topics
+        $stmtLiked = $db->prepare("SELECT p.*, u.name as author_name FROM forum_likes l JOIN forum_posts p ON l.post_id = p.id LEFT JOIN users u ON p.user_id = u.id WHERE l.user_id = ? ORDER BY l.created_at DESC");
+        $stmtLiked->execute([$currentUserId]);
+        $likedTopics = $stmtLiked->fetchAll();
+
+        // 4. Subscribed Topics
+        $stmtSub = $db->prepare("SELECT p.*, u.name as author_name FROM forum_subscriptions s JOIN forum_posts p ON s.post_id = p.id LEFT JOIN users u ON p.user_id = u.id WHERE s.user_id = ? ORDER BY s.created_at DESC");
+        $stmtSub->execute([$currentUserId]);
+        $subscribedTopics = $stmtSub->fetchAll();
+
+        // 5. Sticky Topics (Visible only to moderators/admins per requirement)
+        $stickyTopics = [];
+        if ($isAdmin) {
+            $stickyTopics = $db->query("SELECT p.*, u.name as author_name FROM forum_posts p LEFT JOIN users u ON p.user_id = u.id WHERE p.is_sticky = 1 OR p.is_pinned = 1 ORDER BY p.created_at DESC")->fetchAll();
+        }
+
+        // 6. Reputation Voters & Thanks history
+        $stmtRepHist = $db->prepare("SELECT r.*, u.name as from_name, u.avatar as from_avatar, p.title as post_title FROM forum_reputation r LEFT JOIN users u ON r.from_user_id = u.id LEFT JOIN forum_posts p ON r.post_id = p.id WHERE r.to_user_id = ? ORDER BY r.created_at DESC LIMIT 20");
+        $stmtRepHist->execute([$currentUserId]);
+        $reputationHistory = $stmtRepHist->fetchAll();
+
+        $stmtThxHist = $db->prepare("SELECT t.*, u.name as from_name, u.avatar as from_avatar, p.title as post_title FROM forum_thanks t LEFT JOIN users u ON t.from_user_id = u.id LEFT JOIN forum_posts p ON t.post_id = p.id WHERE t.to_user_id = ? ORDER BY t.created_at DESC LIMIT 20");
+        $stmtThxHist->execute([$currentUserId]);
+        $thanksHistory = $stmtThxHist->fetchAll();
+
+        echo json_encode([
+            'success' => true,
+            'user' => $userProf,
+            'my_topics' => $myTopics,
+            'my_comments' => $myComments,
+            'liked_topics' => $likedTopics,
+            'subscribed_topics' => $subscribedTopics,
+            'sticky_topics' => $stickyTopics,
+            'is_moderator' => $isAdmin,
+            'reputation_history' => $reputationHistory,
+            'thanks_history' => $thanksHistory
+        ]);
+        exit;
+    }
+
+    // 11.0H POST /api/forum/user/signature (Create / Update Signature)
+    if ($route === 'forum/user/signature' && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to update your forum signature']);
+            exit;
+        }
+
+        $signature = trim($input['signature'] ?? '');
+        $stmt = $db->prepare("UPDATE users SET forum_signature = ? WHERE id = ?");
+        $stmt->execute([$signature, $currentUserId]);
+
+        echo json_encode([
+            'success' => true,
+            'signature' => $signature,
+            'message' => 'Signature updated and will now be automatically included on your posts and replies! ✍️'
+        ]);
+        exit;
+    }
+
+    // 11.1 GET /api/forum/posts (List & Search & Filter Suite)
     if ($route === 'forum/posts' && $method === 'GET') {
         $category = trim($_GET['category'] ?? 'all');
+        $subcategory = trim($_GET['subcategory'] ?? '');
+        $tag = trim($_GET['tag'] ?? '');
         $search = trim($_GET['search'] ?? '');
         $sort = trim($_GET['sort'] ?? 'latest');
+        $filter = trim($_GET['filter'] ?? '');
+
+        // Online icon setting
+        $stmtOn = $db->query("SELECT setting_value FROM forum_settings WHERE setting_key = 'online_icons_enabled'");
+        $onlineIconsEnabled = $stmtOn ? ($stmtOn->fetchColumn() !== '0') : true;
 
         $query = "SELECT p.*, 
                   COALESCE(u.name, REPLACE(SUBSTR(p.user_id, 1, 14), '_', ' ')) as author_name, 
                   COALESCE(u.email, p.user_id || '@racconmail.eu') as author_email, 
                   COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
-                  COALESCE(u.is_admin, 0) as author_is_admin 
+                  COALESCE(u.is_admin, 0) as author_is_admin,
+                  COALESCE(u.reputation, 0) as author_reputation,
+                  COALESCE(u.forum_signature, '') as author_signature,
+                  CASE WHEN u.last_active_at != '' AND u.last_active_at >= datetime('now', '-15 minutes') THEN 1 ELSE 0 END as author_is_online
                   FROM forum_posts p 
                   LEFT JOIN users u ON p.user_id = u.id 
                   WHERE 1=1";
@@ -3964,53 +4252,135 @@ Alex"]
             $params[] = $category;
         }
 
-        if ($search !== '') {
-            $query .= " AND (p.title LIKE ? OR p.content LIKE ? OR p.tags LIKE ? OR p.code_snippet LIKE ?)";
-            $term = '%' . $search . '%';
-            $params[] = $term;
-            $params[] = $term;
-            $params[] = $term;
-            $params[] = $term;
+        if ($subcategory !== '') {
+            $query .= " AND LOWER(p.subcategory) = LOWER(?)";
+            $params[] = $subcategory;
         }
 
+        if ($tag !== '') {
+            $query .= " AND (LOWER(p.tags) LIKE ? OR LOWER(p.title) LIKE ?)";
+            $params[] = '%' . strtolower($tag) . '%';
+            $params[] = '%' . strtolower($tag) . '%';
+        }
+
+        if ($search !== '') {
+            $query .= " AND (p.title LIKE ? OR p.content LIKE ? OR p.tags LIKE ? OR p.code_snippet LIKE ? OR u.name LIKE ?)";
+            $term = '%' . $search . '%';
+            $params[] = $term; $params[] = $term; $params[] = $term; $params[] = $term; $params[] = $term;
+        }
+
+        // Quick filters
+        if ($filter === 'sticky') {
+            $query .= " AND (p.is_sticky = 1 OR p.is_pinned = 1)";
+        } else if ($filter === 'subscribed' && $currentUserId) {
+            $query .= " AND p.id IN (SELECT post_id FROM forum_subscriptions WHERE user_id = ?)";
+            $params[] = $currentUserId;
+        } else if ($filter === 'liked' && $currentUserId) {
+            $query .= " AND p.id IN (SELECT post_id FROM forum_likes WHERE user_id = ?)";
+            $params[] = $currentUserId;
+        } else if ($filter === 'my_posts' && $currentUserId) {
+            $query .= " AND p.user_id = ?";
+            $params[] = $currentUserId;
+        }
+
+        // Sorting
         if ($sort === 'popular') {
-            $query .= " ORDER BY p.is_pinned DESC, p.likes_count DESC, p.created_at DESC";
+            $query .= " ORDER BY (p.is_sticky OR p.is_pinned) DESC, p.likes_count DESC, p.created_at DESC";
+        } else if ($sort === 'views') {
+            $query .= " ORDER BY (p.is_sticky OR p.is_pinned) DESC, p.views_count DESC, p.created_at DESC";
+        } else if ($sort === 'rating') {
+            $query .= " ORDER BY (p.is_sticky OR p.is_pinned) DESC, (CASE WHEN p.rating_count > 0 THEN (1.0 * p.rating_sum / p.rating_count) ELSE 0 END) DESC, p.created_at DESC";
+        } else if ($sort === 'newest') {
+            $query .= " ORDER BY (p.is_sticky OR p.is_pinned) DESC, p.created_at DESC";
         } else {
-            $query .= " ORDER BY p.is_pinned DESC, p.created_at DESC";
+            $query .= " ORDER BY (p.is_sticky OR p.is_pinned) DESC, p.created_at DESC";
         }
 
         $stmt = $db->prepare($query);
         $stmt->execute($params);
         $posts = $stmt->fetchAll();
 
-        // Attach user like status
+        // User relational flags
+        $likedSet = [];
+        $subSet = [];
+        $thankSet = [];
+        $userRatings = [];
+        $userRepDeltas = [];
+
         if ($currentUserId) {
-            $stmtLikes = $db->prepare("SELECT post_id FROM forum_likes WHERE user_id = ?");
-            $stmtLikes->execute([$currentUserId]);
-            $likedPostIds = array_column($stmtLikes->fetchAll(), 'post_id');
-            $likedSet = array_flip($likedPostIds);
-            foreach ($posts as &$post) {
-                $post['has_liked'] = isset($likedSet[$post['id']]);
+            $stmtL = $db->prepare("SELECT post_id FROM forum_likes WHERE user_id = ?");
+            $stmtL->execute([$currentUserId]);
+            $likedSet = array_flip(array_column($stmtL->fetchAll(), 'post_id'));
+
+            $stmtS = $db->prepare("SELECT post_id FROM forum_subscriptions WHERE user_id = ?");
+            $stmtS->execute([$currentUserId]);
+            $subSet = array_flip(array_column($stmtS->fetchAll(), 'post_id'));
+
+            $stmtT = $db->prepare("SELECT post_id FROM forum_thanks WHERE from_user_id = ?");
+            $stmtT->execute([$currentUserId]);
+            $thankSet = array_flip(array_column($stmtT->fetchAll(), 'post_id'));
+
+            $stmtR = $db->prepare("SELECT post_id, rating FROM forum_ratings WHERE user_id = ?");
+            $stmtR->execute([$currentUserId]);
+            foreach ($stmtR->fetchAll() as $r) {
+                $userRatings[$r['post_id']] = (int)$r['rating'];
             }
-        } else {
-            foreach ($posts as &$post) {
-                $post['has_liked'] = false;
+
+            $stmtRep = $db->prepare("SELECT post_id, delta FROM forum_reputation WHERE from_user_id = ?");
+            $stmtRep->execute([$currentUserId]);
+            foreach ($stmtRep->fetchAll() as $rep) {
+                $userRepDeltas[$rep['post_id']] = (int)$rep['delta'];
+            }
+        }
+
+        foreach ($posts as &$post) {
+            $post['has_liked'] = isset($likedSet[$post['id']]);
+            $post['has_subscribed'] = isset($subSet[$post['id']]);
+            $post['has_thanked'] = isset($thankSet[$post['id']]);
+            $post['user_rating'] = $userRatings[$post['id']] ?? 0;
+            $post['user_rep_delta'] = $userRepDeltas[$post['id']] ?? 0;
+
+            // Rating calculations
+            $rCount = (int)($post['rating_count'] ?? 0);
+            $rSum = (int)($post['rating_sum'] ?? 0);
+            $post['rating_avg'] = $rCount > 0 ? round($rSum / $rCount, 1) : 5.0;
+
+            // Reputation asset
+            $post['author_is_reputed'] = ((int)$post['author_reputation'] >= 10);
+            if (!$onlineIconsEnabled) {
+                $post['author_is_online'] = 0;
             }
         }
 
         echo json_encode([
             'success' => true,
             'posts' => $posts,
+            'total' => count($posts),
+            'search' => $search,
+            'category' => $category,
+            'subcategory' => $subcategory,
+            'tag' => $tag,
             'isLoggedIn' => !empty($currentUserId),
             'currentUserId' => $currentUserId
         ]);
         exit;
     }
 
-    // 11.2 GET /api/forum/posts/:id (Post Detail + Comments)
+    // 11.2 GET /api/forum/posts/:id (Post Detail + Nested Comments + Ratings)
     if (preg_match('#^forum/posts/([^/]+)$#', $route, $m) && $method === 'GET') {
         $postId = $m[1];
-        $stmt = $db->prepare("SELECT p.*, u.name as author_name, u.email as author_email, u.avatar as author_avatar, u.is_admin as author_is_admin 
+
+        // Increment views count
+        $db->prepare("UPDATE forum_posts SET views_count = views_count + 1 WHERE id = ?")->execute([$postId]);
+
+        $stmt = $db->prepare("SELECT p.*, 
+                              u.name as author_name, 
+                              u.email as author_email, 
+                              u.avatar as author_avatar, 
+                              u.is_admin as author_is_admin,
+                              COALESCE(u.reputation, 0) as author_reputation,
+                              COALESCE(u.forum_signature, '') as author_signature,
+                              CASE WHEN u.last_active_at >= datetime('now', '-15 minutes') THEN 1 ELSE 0 END as author_is_online
                               FROM forum_posts p 
                               LEFT JOIN users u ON p.user_id = u.id 
                               WHERE p.id = ?");
@@ -4022,26 +4392,59 @@ Alex"]
             exit;
         }
 
+        $post['author_is_reputed'] = ((int)$post['author_reputation'] >= 10);
+        $rCount = (int)($post['rating_count'] ?? 0);
+        $rSum = (int)($post['rating_sum'] ?? 0);
+        $post['rating_avg'] = $rCount > 0 ? round($rSum / $rCount, 1) : 5.0;
+
+        // Current user status
+        $post['has_liked'] = false;
+        $post['has_subscribed'] = false;
+        $post['has_thanked'] = false;
+        $post['user_rating'] = 0;
+        $post['user_rep_delta'] = 0;
+
         if ($currentUserId) {
-            $stmtLiked = $db->prepare("SELECT 1 FROM forum_likes WHERE post_id = ? AND user_id = ?");
-            $stmtLiked->execute([$postId, $currentUserId]);
-            $post['has_liked'] = (bool)$stmtLiked->fetchColumn();
-        } else {
-            $post['has_liked'] = false;
+            $stmtL = $db->prepare("SELECT 1 FROM forum_likes WHERE post_id = ? AND user_id = ?");
+            $stmtL->execute([$postId, $currentUserId]);
+            $post['has_liked'] = (bool)$stmtL->fetchColumn();
+
+            $stmtS = $db->prepare("SELECT 1 FROM forum_subscriptions WHERE post_id = ? AND user_id = ?");
+            $stmtS->execute([$postId, $currentUserId]);
+            $post['has_subscribed'] = (bool)$stmtS->fetchColumn();
+
+            $stmtT = $db->prepare("SELECT 1 FROM forum_thanks WHERE post_id = ? AND from_user_id = ?");
+            $stmtT->execute([$postId, $currentUserId]);
+            $post['has_thanked'] = (bool)$stmtT->fetchColumn();
+
+            $stmtR = $db->prepare("SELECT rating FROM forum_ratings WHERE post_id = ? AND user_id = ?");
+            $stmtR->execute([$postId, $currentUserId]);
+            $post['user_rating'] = (int)($stmtR->fetchColumn() ?: 0);
+
+            $stmtRep = $db->prepare("SELECT delta FROM forum_reputation WHERE post_id = ? AND from_user_id = ?");
+            $stmtRep->execute([$postId, $currentUserId]);
+            $post['user_rep_delta'] = (int)($stmtRep->fetchColumn() ?: 0);
         }
 
-        // Fetch comments
+        // Fetch comments (with parent_comment_id for nested replies)
         $stmtC = $db->prepare("SELECT c.*, 
                                COALESCE(u.name, REPLACE(SUBSTR(c.user_id, 1, 14), '_', ' ')) as author_name, 
                                COALESCE(u.email, c.user_id || '@racconmail.eu') as author_email, 
                                COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
-                               COALESCE(u.is_admin, 0) as author_is_admin 
+                               COALESCE(u.is_admin, 0) as author_is_admin,
+                               COALESCE(u.reputation, 0) as author_reputation,
+                               COALESCE(u.forum_signature, '') as author_signature,
+                               CASE WHEN u.last_active_at >= datetime('now', '-15 minutes') THEN 1 ELSE 0 END as author_is_online
                                FROM forum_comments c 
                                LEFT JOIN users u ON c.user_id = u.id 
                                WHERE c.post_id = ? 
                                ORDER BY c.created_at ASC");
         $stmtC->execute([$postId]);
         $comments = $stmtC->fetchAll();
+
+        foreach ($comments as &$c) {
+            $c['author_is_reputed'] = ((int)$c['author_reputation'] >= 10);
+        }
 
         echo json_encode([
             'success' => true,
@@ -4063,14 +4466,19 @@ Alex"]
 
         $title = trim($input['title'] ?? '');
         $category = trim($input['category'] ?? 'tech');
+        $subcategory = trim($input['subcategory'] ?? '');
         $content = trim($input['content'] ?? '');
         $codeSnippet = trim($input['code_snippet'] ?? '');
         $codeLang = trim($input['code_lang'] ?? 'javascript');
         $imageUrl = trim($input['image_url'] ?? '');
         $tags = trim($input['tags'] ?? '');
-        $location = trim($input['location'] ?? '');
-        if (empty($location)) {
-            $location = 'Bucharest, Romania';
+        $isSticky = !empty($input['is_sticky']) ? 1 : 0;
+        $location = trim($input['location'] ?? 'Bucharest, Romania');
+
+        // Check moderator for sticky
+        if ($isSticky) {
+            $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
+            if (!$isAdmin) $isSticky = 0;
         }
 
         if (!$title && $content) {
@@ -4079,16 +4487,18 @@ Alex"]
 
         if (!$title || !$content) {
             http_response_code(400);
-            echo json_encode(['error' => 'Please provide message content.']);
+            echo json_encode(['error' => 'Please provide a discussion title and message content.']);
             exit;
         }
 
-        $validCats = ['general', 'announcements', 'security', 'tech', 'coding', 'webdesign', 'feedback', 'wall', 'sharing', 'help', 'explaining'];
-        if (!in_array($category, $validCats)) $category = 'general';
-
         $postId = 'post_' . uniqid();
-        $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, content, code_snippet, code_lang, image_url, tags, location, likes_count, comments_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)");
-        $stmt->execute([$postId, $currentUserId, $title, $category, $content, $codeSnippet, $codeLang, $imageUrl, $tags, $location]);
+        $stmt = $db->prepare("INSERT INTO forum_posts (id, user_id, title, category, subcategory, content, code_snippet, code_lang, image_url, tags, location, likes_count, comments_count, views_count, thanks_count, reputation_score, rating_sum, rating_count, is_pinned, is_sticky) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 1, 0, 0, 5, 1, 0, ?)");
+        $stmt->execute([$postId, $currentUserId, $title, $category, $subcategory, $content, $codeSnippet, $codeLang, $imageUrl, $tags, $location, $isSticky]);
+
+        // Auto-subscribe author
+        try {
+            $db->prepare("INSERT OR IGNORE INTO forum_subscriptions (post_id, user_id) VALUES (?, ?)")->execute([$postId, $currentUserId]);
+        } catch (Throwable $e) {}
 
         echo json_encode([
             'success' => true,
@@ -4098,34 +4508,12 @@ Alex"]
         exit;
     }
 
-    // 11.3b GET /api/forum/posts/:id/comments (Fetch Comments for Post)
-    if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'GET') {
-        $postId = $m[1];
-        $stmtC = $db->prepare("SELECT c.*, 
-                               COALESCE(u.name, REPLACE(SUBSTR(c.user_id, 1, 14), '_', ' ')) as author_name, 
-                               COALESCE(u.email, c.user_id || '@racconmail.eu') as author_email, 
-                               COALESCE(u.avatar, '/raccoon-logo.png') as author_avatar, 
-                               COALESCE(u.is_admin, 0) as author_is_admin 
-                               FROM forum_comments c 
-                               LEFT JOIN users u ON c.user_id = u.id 
-                               WHERE c.post_id = ? 
-                               ORDER BY c.created_at ASC");
-        $stmtC->execute([$postId]);
-        $comments = $stmtC->fetchAll();
-
-        echo json_encode([
-            'success' => true,
-            'comments' => $comments,
-            'count' => count($comments)
-        ]);
-        exit;
-    }
-
-    // 11.4 POST /api/forum/posts/:id/comments (Add Comment - Members & Verified Guests)
+    // 11.4 POST /api/forum/posts/:id/comments (Add Comment or Nested Reply to Reply)
     if (preg_match('#^forum/posts/([^/]+)/comments$#', $route, $m) && $method === 'POST') {
         $postId = $m[1];
         $commentContent = trim($input['content'] ?? '');
         $codeSnippet = trim($input['code_snippet'] ?? '');
+        $parentCommentId = trim($input['parent_comment_id'] ?? '');
         $guestAuthor = trim($input['author_name'] ?? '');
 
         if (!$commentContent) {
@@ -4138,16 +4526,20 @@ Alex"]
         $authorName = 'Raccon Member';
         $authorEmail = '';
         $authorAvatar = '/raccoon-logo.png';
+        $authorSignature = '';
+        $authorReputation = 0;
         $isAdmin = false;
 
         if ($currentUserId) {
-            $stmtUser = $db->prepare("SELECT name, email, avatar, is_admin FROM users WHERE id = ?");
+            $stmtUser = $db->prepare("SELECT name, email, avatar, is_admin, forum_signature, COALESCE(reputation, 0) as reputation FROM users WHERE id = ?");
             $stmtUser->execute([$currentUserId]);
             $user = $stmtUser->fetch();
             if ($user) {
                 $authorName = $user['name'] ?: $user['email'];
                 $authorEmail = $user['email'] ?: '';
                 $authorAvatar = $user['avatar'] ?: '/raccoon-logo.png';
+                $authorSignature = $user['forum_signature'] ?: '';
+                $authorReputation = (int)$user['reputation'];
                 $isAdmin = !empty($user['is_admin']);
             }
         } else {
@@ -4158,8 +4550,8 @@ Alex"]
         }
 
         $commId = 'cm_' . uniqid();
-        $stmt = $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content, code_snippet) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$commId, $postId, $userId, $commentContent, $codeSnippet]);
+        $stmt = $db->prepare("INSERT INTO forum_comments (id, post_id, user_id, content, code_snippet, parent_comment_id) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$commId, $postId, $userId, $commentContent, $codeSnippet, $parentCommentId]);
 
         // Increment count on post
         $db->prepare("UPDATE forum_posts SET comments_count = comments_count + 1 WHERE id = ?")->execute([$postId]);
@@ -4172,17 +4564,21 @@ Alex"]
                 'user_id' => $userId,
                 'content' => $commentContent,
                 'code_snippet' => $codeSnippet,
+                'parent_comment_id' => $parentCommentId,
                 'created_at' => date('Y-m-d H:i:s'),
                 'author_name' => $authorName,
                 'author_email' => $authorEmail,
                 'author_avatar' => $authorAvatar,
+                'author_signature' => $authorSignature,
+                'author_reputation' => $authorReputation,
+                'author_is_reputed' => ($authorReputation >= 10),
                 'author_is_admin' => $isAdmin
             ]
         ]);
         exit;
     }
 
-    // 11.5 POST /api/forum/posts/:id/like (Toggle Like/Paw - Members Only)
+    // 11.5 POST /api/forum/posts/:id/like (Toggle Like/Paw)
     if (preg_match('#^forum/posts/([^/]+)/like$#', $route, $m) && $method === 'POST') {
         if (!$currentUserId) {
             http_response_code(401);
@@ -4217,7 +4613,284 @@ Alex"]
         exit;
     }
 
-    // 11.6 DELETE /api/forum/posts/:id (Delete Post - Author or Admin Only)
+    // 11.6 POST /api/forum/posts/:id/subscribe (Subscribe / Unsubscribe to Topics)
+    if (preg_match('#^forum/posts/([^/]+)/subscribe$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to subscribe to topics and receive notifications']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $stmtSub = $db->prepare("SELECT 1 FROM forum_subscriptions WHERE post_id = ? AND user_id = ?");
+        $stmtSub->execute([$postId, $currentUserId]);
+        $isSubbed = (bool)$stmtSub->fetchColumn();
+
+        if ($isSubbed) {
+            $db->prepare("DELETE FROM forum_subscriptions WHERE post_id = ? AND user_id = ?")->execute([$postId, $currentUserId]);
+            $subscribed = false;
+            $msg = 'Unsubscribed from topic notifications';
+        } else {
+            $db->prepare("INSERT INTO forum_subscriptions (post_id, user_id) VALUES (?, ?)")->execute([$postId, $currentUserId]);
+            $subscribed = true;
+            $msg = 'Subscribed! You will receive notifications about new posts in this topic 🔔';
+        }
+
+        echo json_encode([
+            'success' => true,
+            'subscribed' => $subscribed,
+            'message' => $msg
+        ]);
+        exit;
+    }
+
+    // 11.7 POST /api/forum/posts/:id/rate (Rate Topic 1 to 5 Stars)
+    if (preg_match('#^forum/posts/([^/]+)/rate$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to rate forum topics']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $rating = max(1, min(5, (int)($input['rating'] ?? 5)));
+
+        // Check if user already rated
+        $stmtPrev = $db->prepare("SELECT rating FROM forum_ratings WHERE post_id = ? AND user_id = ?");
+        $stmtPrev->execute([$postId, $currentUserId]);
+        $prevRating = $stmtPrev->fetchColumn();
+
+        if ($prevRating !== false) {
+            // Update
+            $db->prepare("UPDATE forum_ratings SET rating = ?, created_at = CURRENT_TIMESTAMP WHERE post_id = ? AND user_id = ?")->execute([$rating, $postId, $currentUserId]);
+            $diff = $rating - (int)$prevRating;
+            $db->prepare("UPDATE forum_posts SET rating_sum = MAX(0, rating_sum + ?) WHERE id = ?")->execute([$diff, $postId]);
+        } else {
+            // Insert
+            $db->prepare("INSERT INTO forum_ratings (post_id, user_id, rating) VALUES (?, ?, ?)")->execute([$postId, $currentUserId, $rating]);
+            $db->prepare("UPDATE forum_posts SET rating_sum = rating_sum + ?, rating_count = rating_count + 1 WHERE id = ?")->execute([$rating, $postId]);
+        }
+
+        $stmtStat = $db->prepare("SELECT rating_sum, rating_count FROM forum_posts WHERE id = ?");
+        $stmtStat->execute([$postId]);
+        $row = $stmtStat->fetch();
+        $avg = ($row && $row['rating_count'] > 0) ? round($row['rating_sum'] / $row['rating_count'], 1) : $rating;
+
+        echo json_encode([
+            'success' => true,
+            'rating' => $rating,
+            'average' => $avg,
+            'count' => $row['rating_count'] ?? 1,
+            'message' => "Thank you for rating! ⭐ ({$rating}/5)"
+        ]);
+        exit;
+    }
+
+    // 11.8 POST /api/forum/posts/:id/reputation (Increase / Decrease Post Creator Reputation)
+    if (preg_match('#^forum/posts/([^/]+)/reputation$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to award reputation to post creators! ⭐']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $delta = !empty($input['delta']) && (int)$input['delta'] < 0 ? -1 : 1;
+
+        // Fetch post creator
+        $stmtPost = $db->prepare("SELECT user_id FROM forum_posts WHERE id = ?");
+        $stmtPost->execute([$postId]);
+        $targetUserId = $stmtPost->fetchColumn();
+
+        if (!$targetUserId) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Post not found']);
+            exit;
+        }
+
+        if ($targetUserId === $currentUserId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'You cannot adjust your own reputation score.']);
+            exit;
+        }
+
+        // Check if existing vote
+        $stmtCheck = $db->prepare("SELECT id, delta FROM forum_reputation WHERE post_id = ? AND from_user_id = ?");
+        $stmtCheck->execute([$postId, $currentUserId]);
+        $existing = $stmtCheck->fetch();
+
+        if ($existing) {
+            if ((int)$existing['delta'] === $delta) {
+                // Remove vote (toggle off)
+                $db->prepare("DELETE FROM forum_reputation WHERE id = ?")->execute([$existing['id']]);
+                $db->prepare("UPDATE forum_posts SET reputation_score = reputation_score - ? WHERE id = ?")->execute([$delta, $postId]);
+                $db->prepare("UPDATE users SET reputation = MAX(0, reputation - ?) WHERE id = ?")->execute([$delta, $targetUserId]);
+                $deltaApplied = 0;
+            } else {
+                // Switch vote from +1 to -1 or vice versa
+                $diff = $delta - (int)$existing['delta'];
+                $db->prepare("UPDATE forum_reputation SET delta = ?, created_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$delta, $existing['id']]);
+                $db->prepare("UPDATE forum_posts SET reputation_score = reputation_score + ? WHERE id = ?")->execute([$diff, $postId]);
+                $db->prepare("UPDATE users SET reputation = MAX(0, reputation + ?) WHERE id = ?")->execute([$diff, $targetUserId]);
+                $deltaApplied = $delta;
+            }
+        } else {
+            // New vote
+            $repId = 'rep_' . uniqid();
+            $db->prepare("INSERT INTO forum_reputation (id, post_id, from_user_id, to_user_id, delta) VALUES (?, ?, ?, ?, ?)")->execute([$repId, $postId, $currentUserId, $targetUserId, $delta]);
+            $db->prepare("UPDATE forum_posts SET reputation_score = reputation_score + ? WHERE id = ?")->execute([$delta, $postId]);
+            $db->prepare("UPDATE users SET reputation = MAX(0, reputation + ?) WHERE id = ?")->execute([$delta, $targetUserId]);
+            $deltaApplied = $delta;
+        }
+
+        $stmtScore = $db->prepare("SELECT reputation_score FROM forum_posts WHERE id = ?");
+        $stmtScore->execute([$postId]);
+        $postRepScore = (int)$stmtScore->fetchColumn();
+
+        $stmtUserRep = $db->prepare("SELECT reputation FROM users WHERE id = ?");
+        $stmtUserRep->execute([$targetUserId]);
+        $userTotalRep = (int)$stmtUserRep->fetchColumn();
+
+        echo json_encode([
+            'success' => true,
+            'delta_applied' => $deltaApplied,
+            'post_reputation' => $postRepScore,
+            'author_reputation' => $userTotalRep,
+            'author_is_reputed' => ($userTotalRep >= 10),
+            'message' => $deltaApplied !== 0 ? ($deltaApplied > 0 ? '+1 Reputation awarded to creator! ⭐' : '-1 Reputation recorded.') : 'Reputation vote removed.'
+        ]);
+        exit;
+    }
+
+    // 11.8B GET /api/forum/posts/:id/reputation (View all members who increased/decreased reputation)
+    if (preg_match('#^forum/posts/([^/]+)/reputation$#', $route, $m) && $method === 'GET') {
+        $postId = $m[1];
+        $stmt = $db->prepare("SELECT r.*, 
+                              COALESCE(u.name, REPLACE(SUBSTR(r.from_user_id, 1, 14), '_', ' ')) as member_name, 
+                              COALESCE(u.avatar, '/raccoon-logo.png') as member_avatar,
+                              COALESCE(u.reputation, 0) as member_reputation
+                              FROM forum_reputation r 
+                              LEFT JOIN users u ON r.from_user_id = u.id 
+                              WHERE r.post_id = ? 
+                              ORDER BY r.created_at DESC");
+        $stmt->execute([$postId]);
+        $voters = $stmt->fetchAll();
+
+        echo json_encode([
+            'success' => true,
+            'voters' => $voters,
+            'count' => count($voters)
+        ]);
+        exit;
+    }
+
+    // 11.9 POST /api/forum/posts/:id/thanks (Give Thanks to Post Creator)
+    if (preg_match('#^forum/posts/([^/]+)/thanks$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Sign in to give thanks to post creators! 🙌']);
+            exit;
+        }
+
+        $postId = $m[1];
+
+        // Fetch post creator
+        $stmtPost = $db->prepare("SELECT user_id FROM forum_posts WHERE id = ?");
+        $stmtPost->execute([$postId]);
+        $targetUserId = $stmtPost->fetchColumn();
+
+        if (!$targetUserId) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Post not found']);
+            exit;
+        }
+
+        if ($targetUserId === $currentUserId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'You cannot thank yourself for your own post.']);
+            exit;
+        }
+
+        // Check if already thanked
+        $stmtCheck = $db->prepare("SELECT 1 FROM forum_thanks WHERE post_id = ? AND from_user_id = ?");
+        $stmtCheck->execute([$postId, $currentUserId]);
+        if ($stmtCheck->fetchColumn()) {
+            echo json_encode(['success' => true, 'already_thanked' => true, 'message' => 'You have already thanked the author for this post! 🙌']);
+            exit;
+        }
+
+        $thxId = 'thx_' . uniqid();
+        $db->prepare("INSERT INTO forum_thanks (id, post_id, from_user_id, to_user_id) VALUES (?, ?, ?, ?)")->execute([$thxId, $postId, $currentUserId, $targetUserId]);
+        $db->prepare("UPDATE forum_posts SET thanks_count = thanks_count + 1 WHERE id = ?")->execute([$postId]);
+
+        // Award 1 reputation point for every thank received
+        $db->prepare("UPDATE users SET reputation = reputation + 1 WHERE id = ?")->execute([$targetUserId]);
+
+        $stmtCnt = $db->prepare("SELECT thanks_count FROM forum_posts WHERE id = ?");
+        $stmtCnt->execute([$postId]);
+        $thanksCount = (int)$stmtCnt->fetchColumn();
+
+        echo json_encode([
+            'success' => true,
+            'thanks_count' => $thanksCount,
+            'message' => 'Thanks sent to creator! They received +1 reputation asset point. 🙌'
+        ]);
+        exit;
+    }
+
+    // 11.9B GET /api/forum/posts/:id/thanks (View all members who gave thanks)
+    if (preg_match('#^forum/posts/([^/]+)/thanks$#', $route, $m) && $method === 'GET') {
+        $postId = $m[1];
+        $stmt = $db->prepare("SELECT t.*, 
+                              COALESCE(u.name, REPLACE(SUBSTR(t.from_user_id, 1, 14), '_', ' ')) as member_name, 
+                              COALESCE(u.avatar, '/raccoon-logo.png') as member_avatar
+                              FROM forum_thanks t 
+                              LEFT JOIN users u ON t.from_user_id = u.id 
+                              WHERE t.post_id = ? 
+                              ORDER BY t.created_at DESC");
+        $stmt->execute([$postId]);
+        $thankers = $stmt->fetchAll();
+
+        echo json_encode([
+            'success' => true,
+            'thankers' => $thankers,
+            'count' => count($thankers)
+        ]);
+        exit;
+    }
+
+    // 11.9C POST /api/forum/posts/:id/sticky (Moderator Toggle Sticky Status)
+    if (preg_match('#^forum/posts/([^/]+)/sticky$#', $route, $m) && $method === 'POST') {
+        if (!$currentUserId) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Authentication required']);
+            exit;
+        }
+
+        $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
+        if (!$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Only moderators and administrators can label topics as Sticky.']);
+            exit;
+        }
+
+        $postId = $m[1];
+        $stmtPost = $db->prepare("SELECT is_sticky FROM forum_posts WHERE id = ?");
+        $stmtPost->execute([$postId]);
+        $curr = (int)$stmtPost->fetchColumn();
+        $newSticky = $curr ? 0 : 1;
+
+        $db->prepare("UPDATE forum_posts SET is_sticky = ?, is_pinned = ? WHERE id = ?")->execute([$newSticky, $newSticky, $postId]);
+
+        echo json_encode([
+            'success' => true,
+            'is_sticky' => $newSticky,
+            'message' => $newSticky ? 'Topic pinned and labelled as Sticky 📌' : 'Sticky status removed'
+        ]);
+        exit;
+    }
+
+    // 11.9D DELETE /api/forum/posts/:id (Delete Post - Author or Admin Only)
     if (preg_match('#^forum/posts/([^/]+)$#', $route, $m) && $method === 'DELETE') {
         if (!$currentUserId) {
             http_response_code(401);
@@ -4236,10 +4909,7 @@ Alex"]
             exit;
         }
 
-        $stmtUser = $db->prepare("SELECT is_admin FROM users WHERE id = ?");
-        $stmtUser->execute([$currentUserId]);
-        $isAdmin = (bool)$stmtUser->fetchColumn();
-
+        $isAdmin = (bool)$db->query("SELECT is_admin FROM users WHERE id = " . $db->quote($currentUserId))->fetchColumn();
         if ($postAuthorId !== $currentUserId && !$isAdmin) {
             http_response_code(403);
             echo json_encode(['error' => 'You can only delete your own discussions.']);
@@ -4248,6 +4918,10 @@ Alex"]
 
         $db->prepare("DELETE FROM forum_comments WHERE post_id = ?")->execute([$postId]);
         $db->prepare("DELETE FROM forum_likes WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_subscriptions WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_thanks WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_reputation WHERE post_id = ?")->execute([$postId]);
+        $db->prepare("DELETE FROM forum_ratings WHERE post_id = ?")->execute([$postId]);
         $db->prepare("DELETE FROM forum_posts WHERE id = ?")->execute([$postId]);
 
         echo json_encode(['success' => true, 'message' => 'Post removed successfully']);

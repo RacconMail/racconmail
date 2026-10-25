@@ -243,6 +243,125 @@
       color: #111827 !important;
     }
 
+  
+    /* Reputation & Reputed Member Asset */
+    .badge-reputed-member {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+      color: #B45309;
+      border: 1px solid #FCD34D;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.15);
+    }
+    .badge-sticky {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+      color: #DC2626;
+      border: 1px solid #FCA5A5;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .online-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background-color: #10B981;
+      border: 1.5px solid #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.4);
+    }
+    .tag-cloud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 9999px;
+      padding: 4px 10px;
+      background: #F1F5F9;
+      color: #334155;
+      font-weight: 700;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: 1px solid #E2E8F0;
+    }
+    .tag-cloud-pill:hover {
+      background: #FFEFEA;
+      color: #E06748;
+      border-color: #F68D72;
+      transform: translateY(-1px);
+    }
+    .forum-sig-card {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px dashed #CBD5E1;
+      font-size: 11.5px;
+      color: #64748B;
+      line-height: 1.5;
+    }
+    .forum-sig-card a {
+      color: #E06748;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .rating-star-btn {
+      cursor: pointer;
+      color: #CBD5E1;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .rating-star-btn:hover, .rating-star-btn.active {
+      color: #F59E0B;
+      transform: scale(1.1);
+    }
+    .rep-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .rep-btn-up {
+      background: #ECFDF5;
+      color: #059669;
+      border: 1px solid #A7F3D0;
+    }
+    .rep-btn-up:hover {
+      background: #10B981;
+      color: #FFFFFF;
+    }
+    .rep-btn-down {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+    }
+    .rep-btn-down:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+    .rep-score-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
   </style>
   <script src="/js/notifications.js"></script>
 </head>
@@ -406,6 +525,21 @@
           <span>Start a Discussion</span>
         </button>
 
+        <!-- User Dashboard Primary Action -->
+        <button 
+          onclick="openUserDashboard()" 
+          id="btn-open-user-dashboard"
+          class="w-full py-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-[#FFEFEA] to-[#FFF5F2] hover:from-[#FFE3DC] hover:to-[#FFECE5] border border-[#F68D72]/40 text-[#E06748] font-extrabold text-xs shadow-2xs transition flex items-center justify-between cursor-pointer group"
+        >
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-[#F68D72] text-white flex items-center justify-center text-xs shadow-xs">
+              <i class="fas fa-gauge-high"></i>
+            </div>
+            <span class="tracking-tight">User Dashboard</span>
+          </div>
+          <span id="user-dashboard-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white text-[#E06748] border border-[#F68D72]/30 shadow-2xs">My Hub</span>
+        </button>
+
         <!-- Navigation Views -->
         <nav class="bg-white rounded-2xl border border-slate-200 p-2 shadow-2xs space-y-1">
           <button 
@@ -431,7 +565,20 @@
             </div>
             <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 tracking-wide">Live</span>
           </button>
-        <div class="pt-2 border-t border-slate-100 mt-2">
+
+          <button 
+            onclick="filterBySticky()" 
+            id="nav-btn-sticky" 
+            class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+          >
+            <div class="flex items-center gap-2.5">
+              <i class="fas fa-thumbtack text-rose-500 w-4 text-center"></i>
+              <span>Sticky &amp; Announcements</span>
+            </div>
+            <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 border border-rose-200 uppercase">PIN</span>
+          </button>
+
+          <div class="pt-2 border-t border-slate-100 mt-2">
             <button 
               onclick="openSubscriptionPlansModal()" 
               class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200/80 transition cursor-pointer group shadow-2xs"
@@ -512,6 +659,109 @@
           </div>
         </div>
 
+        <!-- Quick Navigation Widget (Categories & Sub-Categories in One Click) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center gap-1.5">
+              <i class="fas fa-compass text-[#E06748] text-xs"></i>
+              <span class="text-[11px] font-black uppercase tracking-wider text-slate-600">Quick Navigation</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400">1-Click</span>
+          </div>
+          <div id="quick-nav-container" class="space-y-1.5 text-xs">
+            <!-- Dynamically populated categories and sub-categories -->
+            <div class="text-[11px] text-slate-400 p-2 text-center">Loading navigation hierarchy...</div>
+          </div>
+        </div>
+
+        <!-- [Admin Configurable] Most Popular Topics & Reputed Users Widget -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <div class="flex items-center gap-1.5">
+              <i class="fas fa-fire text-amber-500 text-xs"></i>
+              <span class="text-[11px] font-black uppercase tracking-wider text-slate-700">Trending &amp; Reputed</span>
+            </div>
+            <button id="btn-admin-config-popular" onclick="openAdminConfigModal()" title="Admin Configure Popularity Criteria" class="hidden text-slate-400 hover:text-slate-700 text-xs">
+              <i class="fas fa-gear"></i>
+            </button>
+          </div>
+
+          <!-- Tabs: Popular Topics / Top Users -->
+          <div class="flex rounded-xl bg-slate-100 p-1 mb-3 text-[11px] font-bold">
+            <button onclick="switchPopularTab('topics')" id="tab-btn-pop-topics" class="flex-1 py-1 rounded-lg bg-white text-slate-900 shadow-2xs transition">Topics</button>
+            <button onclick="switchPopularTab('users')" id="tab-btn-pop-users" class="flex-1 py-1 rounded-lg text-slate-500 hover:text-slate-900 transition">Members</button>
+          </div>
+
+          <div id="popular-topics-pane" class="space-y-2">
+            <!-- Dynamically rendered -->
+          </div>
+
+          <div id="reputed-users-pane" class="hidden space-y-2">
+            <!-- Dynamically rendered -->
+          </div>
+        </div>
+
+        <!-- Keyword Tags & Tag Cloud Widget -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <div class="flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center gap-1.5">
+              <i class="fas fa-tags text-blue-500 text-xs"></i>
+              <span class="text-[11px] font-black uppercase tracking-wider text-slate-700">Tag Cloud</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400">Filter</span>
+          </div>
+          <div id="tag-cloud-container" class="flex flex-wrap gap-1.5 pt-1">
+            <!-- Dynamic tags -->
+            <span class="text-[11px] text-slate-400">Loading tags...</span>
+          </div>
+        </div>
+
+        <!-- Forum Statistics Widget -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-4 text-white shadow-md">
+          <div class="flex items-center justify-between mb-3 border-b border-slate-700/60 pb-2">
+            <div class="flex items-center gap-1.5">
+              <i class="fas fa-chart-simple text-[#F68D72] text-xs"></i>
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-200">Forum Statistics</span>
+            </div>
+            <span class="flex items-center gap-1 text-[10px] font-bold text-emerald-400">
+              <span class="online-dot"></span> Live
+            </span>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5 text-center">
+            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
+              <div id="stat-total-topics" class="text-base font-extrabold text-white">0</div>
+              <div class="text-[10px] text-slate-400 uppercase font-semibold">Topics</div>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
+              <div id="stat-total-posts" class="text-base font-extrabold text-white">0</div>
+              <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Posts</div>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
+              <div id="stat-total-users" class="text-base font-extrabold text-white">0</div>
+              <div class="text-[10px] text-slate-400 uppercase font-semibold">Members</div>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
+              <div id="stat-online-users" class="text-base font-extrabold text-emerald-400">0</div>
+              <div class="text-[10px] text-slate-400 uppercase font-semibold">Online Now</div>
+            </div>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[11px] text-slate-300">
+            <span>Total Thanks:</span>
+            <span id="stat-total-thanks" class="font-extrabold text-[#F68D72]">0 🙌</span>
+          </div>
+        </div>
+
+        <!-- Admin Category & Settings Trigger -->
+        <div id="admin-forum-tools-box" class="hidden">
+          <button 
+            onclick="openAdminCategoriesModal()" 
+            class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-2 border border-slate-200"
+          >
+            <i class="fas fa-shield-halved text-emerald-600"></i>
+            <span>Admin Category &amp; Icon Manager</span>
+          </button>
+        </div>
+
         <!-- Sidebar Resource Links (Desktop Only: Visible on large screens) -->
         <div class="hidden lg:block text-[11px] text-slate-400 px-3 space-y-1">
           <div class="flex items-center gap-3 font-semibold">
@@ -537,6 +787,31 @@
              VIEW 1: DISCUSSIONS STREAM (FLARUM CLASSIC INDEX)
              =================================================================== -->
         <div id="view-discussions" class="space-y-4">
+          
+          <!-- Breadcrumb Navigation Widget -->
+          <nav id="forum-breadcrumbs" aria-label="Breadcrumb" class="bg-white rounded-xl border border-slate-200 px-4 py-2.5 shadow-2xs flex items-center gap-2 text-xs font-semibold text-slate-600 overflow-x-auto whitespace-nowrap">
+            <a href="/" class="hover:text-slate-900 flex items-center gap-1.5"><i class="fas fa-home text-slate-400"></i> Home</a>
+            <span class="text-slate-300">/</span>
+            <a href="/forum" onclick="setNavView('all'); return false;" class="text-slate-900 font-bold">Forum</a>
+            <span id="breadcrumb-dynamic" class="hidden"></span>
+          </nav>
+
+          <!-- Forum Result Page Banner (Search Query & Tag Filter) -->
+          <div id="forum-results-banner" class="hidden bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-4 text-white shadow-md flex items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 text-xs text-slate-400 font-bold uppercase tracking-wider">
+                <i class="fas fa-magnifying-glass text-[#F68D72]"></i>
+                <span id="results-banner-type">Search Results</span>
+              </div>
+              <h2 id="results-banner-query" class="text-base sm:text-lg font-extrabold text-white mt-0.5">Discussions</h2>
+              <p id="results-banner-count" class="text-xs text-slate-300 mt-0.5">Found matching discussions</p>
+            </div>
+            <button onclick="clearSearchAndFilters()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition cursor-pointer flex items-center gap-1.5 shrink-0">
+              <i class="fas fa-times text-xs"></i>
+              <span>Clear Filter</span>
+            </button>
+          </div>
+
           
           <!-- Stream Controls Bar (Sort, Tag Filter, Refresh) -->
           <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 flex items-center justify-between gap-4 shadow-2xs">
@@ -835,6 +1110,35 @@
 
     <!-- Composer Form -->
     <div class="mt-3 space-y-3">
+      <!-- Subcategory & Tags Extended Inputs -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Subcategory</label>
+          <input 
+            type="text" 
+            id="c-post-subcategory" 
+            placeholder="e.g. Encryption, Setup, Feedback..." 
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#F68D72]" 
+          />
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Keyword Tags (comma separated)</label>
+          <input 
+            type="text" 
+            id="c-post-tags" 
+            placeholder="e.g. security, pgp, quantum" 
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-[#F68D72]" 
+          />
+        </div>
+      </div>
+
+      <div id="composer-sticky-check-box" class="hidden flex items-center gap-2 pt-1">
+        <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-rose-700">
+          <input type="checkbox" id="c-post-sticky" class="w-4 h-4 rounded text-rose-600 focus:ring-rose-500" />
+          <span>Label as Sticky Topic (Moderator / Admin) 📌</span>
+        </label>
+      </div>
+
       <!-- Discussion Title Input -->
       <input 
         type="text" 
@@ -930,69 +1234,111 @@
        FLARUM FORUM CLIENT ENGINE SCRIPT
        ========================================================================= -->
   <script>
-    // State
+    // State & Relational Store
     let currentNavView = 'all'; // 'all', 'wall', 'thread'
     let currentCategoryFilter = 'all';
+    let currentSubcategoryFilter = '';
+    let currentTagFilter = '';
+    let currentStickyFilter = false;
     let currentSort = 'latest';
     let currentSearchTerm = '';
-    let currentUser = null;
     let allPostsData = [];
-    let currentActiveThread = null;
-    let isFollowingActiveThread = false;
+    let allCategoriesData = [];
+    let forumWidgetsData = {};
+    let forumStatsData = {};
+    let currentUser = null;
+    let currentThreadData = null;
+    let userDashboardData = null;
+    let replyingToCommentId = null;
+    let currentPopularCriteria = 'posts';
 
-    // Category Color & Label Helper
-    const CATEGORY_MAP = {
-      'announcements': { label: 'Announcements', class: 'tag-announcements' },
-      'security': { label: 'Security & PGP', class: 'tag-security' },
-      'tech': { label: 'Technology', class: 'tag-tech' },
-      'coding': { label: 'Coding & Scripts', class: 'tag-coding' },
-      'webdesign': { label: 'Web Design & UI', class: 'tag-webdesign' },
-      'feedback': { label: 'Feedback & Q&A', class: 'tag-feedback' },
-      'wall': { label: 'Community Wall', class: 'tag-wall' },
-      'general': { label: 'General', class: 'tag-general' },
-      'sharing': { label: 'Code Sharing', class: 'tag-coding' },
-      'help': { label: 'Help & Q&A', class: 'tag-feedback' },
-      'explaining': { label: 'Explaining', class: 'tag-tech' }
-    };
+    // Category Badges Config
+    function getCategoryBadge(category, subcategory = '') {
+      const cat = (category || 'general').toLowerCase();
+      let badgeClass = 'tag-general';
+      let icon = 'fas fa-comments';
+      let label = 'General';
 
-    function getCategoryBadge(cat) {
-      const c = (cat || 'general').toLowerCase();
-      const meta = CATEGORY_MAP[c] || { label: c.charAt(0).toUpperCase() + c.slice(1), class: 'tag-general' };
-      return `<span class="tag-badge ${meta.class}"><span class="tag-badge-dot"></span><span>${meta.label}</span></span>`;
+      switch (cat) {
+        case 'announcements':
+          badgeClass = 'tag-announcements'; icon = 'fas fa-bullhorn'; label = 'Announcements'; break;
+        case 'security':
+          badgeClass = 'tag-security'; icon = 'fas fa-shield-halved'; label = 'Security & PGP'; break;
+        case 'tech':
+          badgeClass = 'tag-tech'; icon = 'fas fa-microchip'; label = 'Technology'; break;
+        case 'coding':
+          badgeClass = 'tag-coding'; icon = 'fas fa-code'; label = 'Coding & Scripts'; break;
+        case 'webdesign':
+          badgeClass = 'tag-webdesign'; icon = 'fas fa-palette'; label = 'Web Design & UI'; break;
+        case 'feedback':
+          badgeClass = 'tag-feedback'; icon = 'fas fa-circle-question'; label = 'Feedback & Q&A'; break;
+        case 'wall':
+          badgeClass = 'tag-wall'; icon = 'fas fa-cubes'; label = 'Community Wall'; break;
+      }
+
+      let html = `<span class="tag-badge ${badgeClass}" onclick="event.stopPropagation(); filterByCategory('${cat}')"><span class="tag-badge-dot"></span><i class="${icon} text-[10px]"></i> ${label}</span>`;
+      if (subcategory) {
+        html += ` <span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded-full border border-slate-200 cursor-pointer" onclick="event.stopPropagation(); filterBySubcategory('${cat}', '${escapeHtml(subcategory)}')"><i class="fas fa-folder-tree text-[9px] text-slate-400"></i> ${escapeHtml(subcategory)}</span>`;
+      }
+      return html;
     }
 
-    // Format Relative Time
-    function formatTimeAgo(dateStr) {
-      if (!dateStr) return 'Recently';
-      const d = new Date(dateStr.replace(' ', 'T') + 'Z');
+    // Time Formatter
+    function formatTimeAgo(dateString) {
+      if (!dateString) return 'Just now';
+      const d = new Date(dateString);
       const now = new Date();
       const diffSec = Math.floor((now - d) / 1000);
-      if (isNaN(diffSec) || diffSec < 60) return 'Just now';
+      if (diffSec < 60) return 'Just now';
       if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
       if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-      if (diffSec < 2592000) return `${Math.floor(diffSec / 86400)}d ago`;
+      if (diffSec < 604800) return `${Math.floor(diffSec / 86400)}d ago`;
       return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
-    // Toast Notice
-    function showToast(msg, icon = 'fa-check-circle') {
-      const toast = document.getElementById('forum-toast');
-      const text = document.getElementById('toast-message');
-      const iconEl = document.getElementById('toast-icon');
-      if (!toast || !text) return;
-      text.innerText = msg;
-      if (iconEl) iconEl.className = `fas ${icon} text-emerald-400`;
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      toast.classList.add('opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 3000);
+    // Signature Formatter
+    function renderSignatureHtml(sigText) {
+      if (!sigText || !sigText.trim()) return '';
+      let clean = escapeHtml(sigText.trim());
+      // Convert URLs to clickable links
+      clean = clean.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+      // Convert handles @user
+      clean = clean.replace(/@([a-zA-Z0-9_]+)/g, '<span class="font-bold text-slate-700">@$1</span>');
+      return `<div class="forum-sig-card"><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Signature</span>${clean}</div>`;
     }
 
-    // Initialize Forum Application
+    // Toast Notification
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('forum-toast');
+      if (!toast) return;
+      const textEl = document.getElementById('forum-toast-message');
+      const iconEl = document.getElementById('forum-toast-icon');
+
+      if (textEl) textEl.innerText = message;
+      if (iconEl) {
+        if (type === 'success') {
+          iconEl.className = 'fas fa-circle-check text-emerald-400';
+        } else if (type === 'error') {
+          iconEl.className = 'fas fa-circle-exclamation text-rose-400';
+        } else {
+          iconEl.className = 'fas fa-info-circle text-blue-400';
+        }
+      }
+
+      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Forum Initialization
     async function initForum() {
       await checkAuthStatus();
+      await loadForumCategories();
+      await loadForumWidgetsAndStats();
       handleHashRouting();
       window.addEventListener('hashchange', handleHashRouting);
 
@@ -1014,40 +1360,97 @@
           if (user && user.id) {
             currentUser = user;
             renderAuthHeader(true, user);
+            // Show moderator options if admin
+            if (user.is_admin) {
+              document.getElementById('composer-sticky-check-box')?.classList.remove('hidden');
+              document.getElementById('admin-forum-tools-box')?.classList.remove('hidden');
+              document.getElementById('btn-admin-config-popular')?.classList.remove('hidden');
+              document.getElementById('dash-tab-sticky')?.classList.remove('hidden');
+            }
             return;
           }
         }
-      } catch (_) {}
-      renderAuthHeader(false);
+        renderAuthHeader(false);
+      } catch (e) {
+        console.warn('Auth check failed:', e);
+        renderAuthHeader(false);
+      }
     }
 
+    // Render Auth Header
     function renderAuthHeader(isLoggedIn, user = null) {
-      const guestGroup = document.getElementById('auth-guest-group');
-      const userGroup = document.getElementById('auth-user-group');
+      const container = document.getElementById('auth-action-container');
+      const mobileContainer = document.getElementById('mobile-auth-controls');
+      if (!container) return;
+
       if (isLoggedIn && user) {
-        guestGroup?.classList.add('hidden');
-        userGroup?.classList.remove('hidden');
-        userGroup?.classList.add('flex');
+        const avatarUrl = user.avatar || '/raccoon-logo.svg';
+        const userName = user.name || user.email?.split('@')[0] || 'Member';
+        const isReputed = (user.reputation || 0) >= 10;
 
-        const nameEl = document.getElementById('user-display-name');
-        const avatarEl = document.getElementById('user-display-avatar');
-        const dropName = document.getElementById('dropdown-user-name');
-        const dropEmail = document.getElementById('dropdown-user-email');
+        container.innerHTML = `
+          <div class="relative">
+            <button onclick="toggleUserDropdown()" class="flex items-center gap-2.5 p-1 sm:px-2.5 sm:py-1.5 rounded-full hover:bg-slate-100 transition cursor-pointer border border-slate-200/80 bg-white shadow-2xs">
+              <div class="relative">
+                <img src="${avatarUrl}" alt="Avatar" class="h-8 w-8 rounded-full object-cover border border-slate-200" />
+                <span class="online-dot absolute bottom-0 right-0"></span>
+              </div>
+              <div class="hidden sm:flex flex-col text-left">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-slate-800 leading-tight">${userName}</span>
+                  ${isReputed ? '<span class="badge-reputed-member text-[9px] py-0 px-1.5">⭐ Reputed</span>' : ''}
+                </div>
+                <span class="text-[10px] text-slate-400 font-semibold">${user.email || 'racconmail.eu'}</span>
+              </div>
+              <i class="fas fa-chevron-down text-slate-400 text-[10px] hidden sm:block"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
+              <div class="px-4 py-2 border-b border-slate-100">
+                <p class="font-extrabold text-slate-900">${userName}</p>
+                <p class="text-slate-400 text-[11px] truncate">${user.email || ''}</p>
+                <div class="mt-2 flex items-center justify-between text-[11px] font-bold text-slate-600 bg-slate-50 p-1.5 rounded-lg border border-slate-200/60">
+                  <span>Reputation:</span>
+                  <span class="text-amber-600">⭐ ${user.reputation || 0}</span>
+                </div>
+              </div>
+              <button onclick="openUserDashboard()" class="w-full text-left px-4 py-2 text-slate-700 hover:bg-[#FFEFEA] hover:text-[#E06748] flex items-center gap-2.5 transition font-bold">
+                <i class="fas fa-gauge-high text-[#E06748] w-4"></i>
+                <span>User Dashboard</span>
+              </button>
+              <button onclick="openAvatarModal()" class="w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition font-semibold">
+                <i class="fas fa-image text-purple-500 w-4"></i>
+                <span>Change Avatar</span>
+              </button>
+              <a href="/inbox" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition font-semibold">
+                <i class="fas fa-inbox text-blue-500 w-4"></i>
+                <span>Go to Webmail</span>
+              </a>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button onclick="logoutForum()" class="w-full text-left px-4 py-2 text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition font-bold">
+                <i class="fas fa-right-from-bracket w-4"></i>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        // Update wall composer avatar if present
         const wallAvatar = document.getElementById('wall-composer-avatar');
-        const replyAvatar = document.getElementById('reply-box-avatar');
+        if (wallAvatar) wallAvatar.src = avatarUrl;
 
-        const displayName = user.name || user.email?.split('@')[0] || 'User';
-        const avatarSrc = user.avatar || '/raccoon-logo.svg';
-
-        if (nameEl) nameEl.innerText = displayName;
-        if (avatarEl) avatarEl.src = avatarSrc;
-        if (dropName) dropName.innerText = displayName;
-        if (dropEmail) dropEmail.innerText = user.email || '';
-        if (wallAvatar) wallAvatar.src = avatarSrc;
-        if (replyAvatar) replyAvatar.src = avatarSrc;
       } else {
-        guestGroup?.classList.remove('hidden');
-        userGroup?.classList.add('hidden');
+        container.innerHTML = `
+          <div class="flex items-center gap-2">
+            <a href="/login" class="text-xs font-bold text-slate-700 hover:text-slate-900 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition">
+              Sign In
+            </a>
+            <a href="/login" class="text-xs font-extrabold text-white bg-[#F68D72] hover:bg-[#E06748] px-3.5 py-1.5 rounded-xl shadow-xs transition transform active:scale-95">
+              Join Free
+            </a>
+          </div>
+        `;
       }
     }
 
@@ -1058,78 +1461,378 @@
 
     document.addEventListener('click', (e) => {
       const menu = document.getElementById('user-dropdown-menu');
-      const btn = document.getElementById('user-menu-btn');
-      if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
-        menu.classList.add('hidden');
+      if (menu && !menu.classList.contains('hidden')) {
+        const btn = e.target.closest('button[onclick="toggleUserDropdown()"]');
+        if (!btn && !menu.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
       }
     });
 
     async function logoutForum() {
       try {
-        await fetch('/api/auth/logout', { method: 'POST' });
-      } catch (_) {}
-      window.location.href = '/forum';
-    }
-
-    // Hash Routing Handler (#all, #wall, #tag-*, #d/:id)
-    function handleHashRouting() {
-      const hash = window.location.hash.replace('#', '') || 'all';
-      if (hash.startsWith('d/')) {
-        const threadId = hash.replace('d/', '').split('-')[0];
-        openThreadReader(threadId);
-      } else if (hash === 'wall') {
-        switchToWallView();
-      } else if (hash.startsWith('tag-')) {
-        const tag = hash.replace('tag-', '');
-        filterByCategory(tag);
-      } else {
-        switchToDiscussionsView();
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.reload();
+      } catch (e) {
+        window.location.href = '/login';
       }
     }
 
-    // Switch View Functions
+    // Breadcrumbs Navigation Widget Updater
+    function updateBreadcrumbs(catSlug, subcategory = '', topicTitle = '', searchOrTag = '') {
+      const dyn = document.getElementById('breadcrumb-dynamic');
+      if (!dyn) return;
+
+      let parts = [];
+      if (catSlug && catSlug !== 'all') {
+        const catObj = allCategoriesData.find(c => c.slug === catSlug);
+        const catName = catObj ? catObj.name : catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
+        parts.push(`<span class="text-slate-300">/</span><a href="#/c/${catSlug}" onclick="filterByCategory('${catSlug}'); return false;" class="text-slate-600 hover:text-slate-900">${escapeHtml(catName)}</a>`);
+      }
+      if (subcategory) {
+        parts.push(`<span class="text-slate-300">/</span><span class="text-slate-600">${escapeHtml(subcategory)}</span>`);
+      }
+      if (searchOrTag) {
+        parts.push(`<span class="text-slate-300">/</span><span class="text-[#E06748] font-bold">${escapeHtml(searchOrTag)}</span>`);
+      }
+      if (topicTitle) {
+        parts.push(`<span class="text-slate-300">/</span><span class="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs inline-block align-bottom">${escapeHtml(topicTitle)}</span>`);
+      }
+
+      if (parts.length > 0) {
+        dyn.innerHTML = parts.join(' ');
+        dyn.classList.remove('hidden');
+      } else {
+        dyn.innerHTML = '';
+        dyn.classList.add('hidden');
+      }
+    }
+
+    // Forum Result Page Banner Updater
+    function updateResultsBanner(count = 0) {
+      const banner = document.getElementById('forum-results-banner');
+      if (!banner) return;
+
+      if (currentSearchTerm || currentTagFilter || currentSubcategoryFilter || currentStickyFilter) {
+        banner.classList.remove('hidden');
+        const typeEl = document.getElementById('results-banner-type');
+        const queryEl = document.getElementById('results-banner-query');
+        const countEl = document.getElementById('results-banner-count');
+
+        if (currentSearchTerm) {
+          if (typeEl) typeEl.innerText = 'Search Results';
+          if (queryEl) queryEl.innerText = `"${currentSearchTerm}"`;
+        } else if (currentTagFilter) {
+          if (typeEl) typeEl.innerText = 'Keyword Tag Filter';
+          if (queryEl) queryEl.innerText = `#${currentTagFilter}`;
+        } else if (currentSubcategoryFilter) {
+          if (typeEl) typeEl.innerText = 'Subcategory Filter';
+          if (queryEl) queryEl.innerText = currentSubcategoryFilter;
+        } else if (currentStickyFilter) {
+          if (typeEl) typeEl.innerText = 'Sticky Discussions';
+          if (queryEl) queryEl.innerText = 'Pinned & Sticky Topics';
+        }
+
+        if (countEl) countEl.innerText = `Showing ${count} matching discussion${count === 1 ? '' : 's'}`;
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function clearSearchAndFilters() {
+      currentSearchTerm = '';
+      currentTagFilter = '';
+      currentSubcategoryFilter = '';
+      currentStickyFilter = false;
+      const searchInput = document.getElementById('flarum-search-input');
+      if (searchInput) searchInput.value = '';
+      updateBreadcrumbs(currentCategoryFilter);
+      updateResultsBanner(0);
+      loadForumFeed(true);
+    }
+
+    // Hash Router
+    function handleHashRouting() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/d/')) {
+        const postId = hash.replace('#/d/', '').split('/')[0];
+        if (postId) {
+          openThreadReader(postId);
+          return;
+        }
+      } else if (hash.startsWith('#/c/')) {
+        const cat = hash.replace('#/c/', '');
+        filterByCategory(cat);
+        return;
+      } else if (hash.startsWith('#/tag/')) {
+        const tag = hash.replace('#/tag/', '');
+        filterByTag(tag);
+        return;
+      } else if (hash === '#/wall') {
+        switchToWallView();
+        return;
+      } else if (hash === '#/dashboard') {
+        openUserDashboard();
+        return;
+      }
+      switchToDiscussionsView();
+    }
+
+    // Switch Views
     function switchToDiscussionsView() {
       currentNavView = 'all';
       document.getElementById('view-discussions')?.classList.remove('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-thread')?.classList.add('hidden');
-      document.getElementById('mobile-forum-toggle-pill')?.classList.add('hidden');
-      document.getElementById('flarum-hero')?.classList.remove('hidden');
 
       document.getElementById('nav-btn-all')?.classList.add('nav-item-active');
       document.getElementById('nav-btn-wall')?.classList.remove('nav-item-active');
+      document.getElementById('nav-btn-sticky')?.classList.remove('nav-item-active');
 
       loadForumFeed();
     }
 
     function switchToWallView() {
       currentNavView = 'wall';
-      window.location.hash = 'wall';
       document.getElementById('view-discussions')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.remove('hidden');
       document.getElementById('view-thread')?.classList.add('hidden');
-      document.getElementById('mobile-forum-toggle-pill')?.classList.add('hidden');
-      document.getElementById('flarum-hero')?.classList.remove('hidden');
 
       document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
       document.getElementById('nav-btn-wall')?.classList.add('nav-item-active');
+      document.getElementById('nav-btn-sticky')?.classList.remove('nav-item-active');
 
-      loadWallFeed();
+      renderWallFeed();
     }
 
     function setNavView(view) {
       if (view === 'all') {
-        window.location.hash = 'all';
-        currentCategoryFilter = 'all';
+        window.location.hash = '#/';
         switchToDiscussionsView();
       } else if (view === 'wall') {
+        window.location.hash = '#/wall';
         switchToWallView();
       }
     }
 
-    // =========================================================================
-    // LOAD & RENDER DISCUSSIONS (FLARUM INDEX)
-    // =========================================================================
+    function filterBySticky() {
+      currentStickyFilter = true;
+      currentTagFilter = '';
+      currentSearchTerm = '';
+      document.getElementById('nav-btn-all')?.classList.remove('nav-item-active');
+      document.getElementById('nav-btn-wall')?.classList.remove('nav-item-active');
+      document.getElementById('nav-btn-sticky')?.classList.add('nav-item-active');
+      updateBreadcrumbs('all', '', '', 'Sticky & Announcements');
+      loadForumFeed(true);
+    }
+
+    // Load Categories & Quick Navigation
+    async function loadForumCategories() {
+      try {
+        const res = await fetch('/api/forum/categories');
+        if (res.ok) {
+          const data = await res.json();
+          allCategoriesData = data.categories || [];
+          renderCategoriesList(allCategoriesData);
+          renderQuickNavigation(allCategoriesData);
+        }
+      } catch (e) {
+        console.warn('Failed to load categories:', e);
+      }
+    }
+
+    function renderCategoriesList(cats) {
+      const container = document.getElementById('categories-list-container');
+      if (!container) return;
+
+      container.innerHTML = cats.map(c => {
+        const isActive = (currentCategoryFilter === c.slug);
+        return `
+          <button 
+            onclick="filterByCategory('${c.slug}')" 
+            id="cat-btn-${c.slug}" 
+            class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs ${isActive ? 'font-bold text-slate-900 bg-slate-100' : 'font-medium text-slate-600 hover:bg-slate-50'} transition cursor-pointer"
+          >
+            <div class="flex items-center gap-2">
+              <i class="fas ${c.icon || 'fa-folder'} text-slate-400 text-xs w-3.5 text-center"></i>
+              <span>${escapeHtml(c.name)}</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-bold">${c.post_count || 0}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Quick Navigation Widget: enables users to access Categories, Sub-Categories and Forums in one click
+    function renderQuickNavigation(cats) {
+      const container = document.getElementById('quick-nav-container');
+      if (!container) return;
+
+      container.innerHTML = cats.filter(c => c.slug !== 'all').map(c => {
+        const subHtml = (c.subcategories || []).map(sub => `
+          <a href="#/c/${c.slug}" onclick="filterBySubcategory('${c.slug}', '${escapeHtml(sub)}'); return false;" class="block py-1 px-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition truncate text-[11px] font-semibold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+            <span>${escapeHtml(sub)}</span>
+          </a>
+        `).join('');
+
+        return `
+          <div class="border border-slate-100 rounded-xl p-2 bg-slate-50/60 hover:bg-slate-50 transition">
+            <a href="#/c/${c.slug}" onclick="filterByCategory('${c.slug}'); return false;" class="font-bold text-slate-800 hover:text-[#E06748] flex items-center justify-between mb-1">
+              <div class="flex items-center gap-1.5">
+                <i class="fas ${c.icon || 'fa-folder'} text-[#F68D72] text-xs"></i>
+                <span>${escapeHtml(c.name)}</span>
+              </div>
+              <span class="text-[10px] text-slate-400">${c.post_count || 0}</span>
+            </a>
+            ${subHtml ? `<div class="pl-3.5 space-y-0.5 border-l border-slate-200 mt-1">${subHtml}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Load Widgets & Forum Statistics
+    async function loadForumWidgetsAndStats() {
+      try {
+        const [statsRes, widgetsRes] = await Promise.all([
+          fetch('/api/forum/stats'),
+          fetch('/api/forum/widgets')
+        ]);
+
+        if (statsRes.ok) {
+          const s = await statsRes.json();
+          forumStatsData = s.stats || {};
+          document.getElementById('stat-total-topics') && (document.getElementById('stat-total-topics').innerText = forumStatsData.total_topics || 0);
+          document.getElementById('stat-total-posts') && (document.getElementById('stat-total-posts').innerText = forumStatsData.total_posts || 0);
+          document.getElementById('stat-total-users') && (document.getElementById('stat-total-users').innerText = forumStatsData.total_users || 1);
+          document.getElementById('stat-online-users') && (document.getElementById('stat-online-users').innerText = forumStatsData.online_users || 3);
+          document.getElementById('stat-total-thanks') && (document.getElementById('stat-total-thanks').innerText = (forumStatsData.total_thanks || 0) + ' 🙌');
+        }
+
+        if (widgetsRes.ok) {
+          const w = await widgetsRes.json();
+          forumWidgetsData = w;
+          currentPopularCriteria = w.criteria || 'posts';
+          renderTagCloud(w.tag_cloud || []);
+          renderPopularTopics(w.popular_topics || []);
+          renderReputedUsers(w.top_users || []);
+        }
+      } catch (e) {
+        console.warn('Failed to load widgets/stats:', e);
+      }
+    }
+
+    // Tag Cloud Widget
+    function renderTagCloud(tags) {
+      const container = document.getElementById('tag-cloud-container');
+      if (!container) return;
+
+      if (!tags || tags.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-400">No tags found</span>';
+        return;
+      }
+
+      container.innerHTML = tags.map(t => {
+        const isCurrent = (currentTagFilter === t.tag);
+        const fontSizes = ['text-[10px]', 'text-[11px]', 'text-xs', 'text-sm font-bold', 'text-sm font-extrabold text-[#E06748]'];
+        const sizeClass = fontSizes[(t.weight || 1) - 1] || 'text-xs';
+
+        return `
+          <button 
+            onclick="filterByTag('${escapeHtml(t.tag)}')" 
+            class="tag-cloud-pill ${sizeClass} ${isCurrent ? '!bg-[#FFEFEA] !text-[#E06748] !border-[#F68D72]' : ''}"
+            title="${t.count} discussion${t.count === 1 ? '' : 's'}"
+          >
+            <span>#${escapeHtml(t.tag)}</span>
+            <span class="text-[9px] opacity-60 font-mono">${t.count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Popular Topics Widget
+    function renderPopularTopics(topics) {
+      const container = document.getElementById('popular-topics-pane');
+      if (!container) return;
+
+      if (!topics || topics.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 py-2">No trending topics yet</div>';
+        return;
+      }
+
+      container.innerHTML = topics.map((t, idx) => `
+        <div onclick="openThreadReader('${t.id}')" class="p-2 rounded-xl hover:bg-slate-50 transition cursor-pointer border border-transparent hover:border-slate-200">
+          <div class="flex items-center gap-1.5 text-[10px] text-slate-400 font-bold mb-0.5">
+            <span class="text-amber-500 font-extrabold">#${idx + 1}</span>
+            <span>&bull;</span>
+            <span class="uppercase">${escapeHtml(t.category)}</span>
+          </div>
+          <h5 class="font-bold text-xs text-slate-800 line-clamp-1 hover:text-[#E06748] transition">${escapeHtml(t.title)}</h5>
+          <div class="flex items-center gap-3 text-[10px] text-slate-400 font-semibold mt-1">
+            <span><i class="fas fa-eye text-slate-300"></i> ${t.views_count || 0}</span>
+            <span><i class="fas fa-comment text-slate-300"></i> ${t.comments_count || 0}</span>
+            <span><i class="fas fa-medal text-amber-500/70"></i> +${t.reputation_score || 0}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Top Reputed Users Widget (Asset: Reputed Member)
+    function renderReputedUsers(users) {
+      const container = document.getElementById('reputed-users-pane');
+      if (!container) return;
+
+      if (!users || users.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400 py-2">No members ranked yet</div>';
+        return;
+      }
+
+      container.innerHTML = users.map((u, idx) => `
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 border border-slate-200/60">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black text-amber-500 w-4">#${idx + 1}</span>
+            <div class="relative">
+              <img src="${u.avatar || '/raccoon-logo.svg'}" class="w-7 h-7 rounded-full object-cover border border-slate-200" />
+            </div>
+            <div>
+              <div class="flex items-center gap-1">
+                <span class="text-xs font-bold text-slate-800 truncate max-w-[100px]">${escapeHtml(u.name)}</span>
+                ${u.is_reputed ? '<span class="badge-reputed-member text-[8px] py-0 px-1">⭐</span>' : ''}
+              </div>
+              <span class="text-[10px] text-slate-400 font-medium">${u.posts_count || 0} discussions</span>
+            </div>
+          </div>
+          <span class="font-extrabold text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/60">
+            +${u.reputation || 0}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function switchPopularTab(tab) {
+      const btnT = document.getElementById('tab-btn-pop-topics');
+      const btnU = document.getElementById('tab-btn-pop-users');
+      const paneT = document.getElementById('popular-topics-pane');
+      const paneU = document.getElementById('reputed-users-pane');
+
+      if (tab === 'topics') {
+        btnT?.classList.add('bg-white', 'text-slate-900', 'shadow-2xs');
+        btnT?.classList.remove('text-slate-500');
+        btnU?.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs');
+        btnU?.classList.add('text-slate-500');
+        paneT?.classList.remove('hidden');
+        paneU?.classList.add('hidden');
+      } else {
+        btnU?.classList.add('bg-white', 'text-slate-900', 'shadow-2xs');
+        btnU?.classList.remove('text-slate-500');
+        btnT?.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs');
+        btnT?.classList.add('text-slate-500');
+        paneU?.classList.remove('hidden');
+        paneT?.classList.add('hidden');
+      }
+    }
+
+    // Feed Loader with Filter, Search, Tag, and Subcategory
     async function loadForumFeed(forceRefresh = false) {
       const container = document.getElementById('discussions-container');
       if (!container) return;
@@ -1148,6 +1851,15 @@
         if (currentSearchTerm) {
           url += `&search=${encodeURIComponent(currentSearchTerm)}`;
         }
+        if (currentTagFilter) {
+          url += `&tag=${encodeURIComponent(currentTagFilter)}`;
+        }
+        if (currentSubcategoryFilter) {
+          url += `&subcategory=${encodeURIComponent(currentSubcategoryFilter)}`;
+        }
+        if (currentStickyFilter) {
+          url += `&filter=sticky`;
+        }
 
         const res = await fetch(url);
         if (res.ok) {
@@ -1155,17 +1867,21 @@
           allPostsData = data.posts || [];
           renderDiscussionsList(allPostsData);
 
-          // Update count badge
+          // Update count badge & Results banner
           const countBadge = document.getElementById('badge-all-count');
           if (countBadge) countBadge.innerText = allPostsData.length;
+          updateResultsBanner(allPostsData.length);
+          updateBreadcrumbs(currentCategoryFilter, currentSubcategoryFilter, '', currentTagFilter ? ('#' + currentTagFilter) : currentSearchTerm);
         } else {
-          container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Failed to load discussions. Please try again.</div>`;
+          container.innerHTML = `<div class="p-8 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">Unable to load discussions. Please try again.</div>`;
         }
       } catch (err) {
-        container.innerHTML = `<div class="p-6 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error connecting to forum.</div>`;
+        console.error('Feed error:', err);
+        container.innerHTML = `<div class="p-8 text-center text-rose-500 bg-white rounded-2xl border border-rose-200">Network connection issue.</div>`;
       }
     }
 
+    // Render Discussions Stream
     function renderDiscussionsList(posts) {
       const container = document.getElementById('discussions-container');
       if (!container) return;
@@ -1184,70 +1900,96 @@
         return;
       }
 
-      const visualBadges = [
-        { badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-comments' },
-        { badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-shield-alt' },
-        { badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-fire' },
-        { badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-star' }
-      ];
-
-      const sampleArtworks = [
-        '/images/abstract_1.svg',
-        '/images/abstract_2.svg',
-        '/images/abstract_3.svg',
-        '/images/abstract_4.svg'
-      ];
-
-      container.innerHTML = posts.map((post, idx) => {
+      container.innerHTML = posts.map(post => {
         const authorName = post.author_name || post.author_email?.split('@')[0] || 'Community Member';
         const timeAgo = formatTimeAgo(post.created_at);
         const replyCount = post.comments_count || 0;
-        const badge = visualBadges[idx % visualBadges.length];
-        const artImg = post.author_avatar || sampleArtworks[idx % sampleArtworks.length];
-        const cleanSnippet = (post.content || 'Join the conversation on this topic with other members.').replace(/<[^>]+>/g, '').slice(0, 110);
+        const viewsCount = post.views_count || 0;
+        const repScore = post.reputation_score || 0;
+        const thanksCount = post.thanks_count || 0;
+        const isSticky = Boolean(post.is_sticky || post.is_pinned);
+        const isReputed = Boolean(post.author_is_reputed);
+        const isOnline = Boolean(post.author_is_online);
+        const avgRating = post.rating_avg || 5.0;
+        const ratingCnt = post.rating_count || 1;
+        const cleanSnippet = (post.content || 'Join the conversation on this topic with other members.').replace(/<[^>]+>/g, '').slice(0, 115);
+
+        // Tags parsing
+        let tagsHtml = '';
+        if (post.tags) {
+          const splitTags = post.tags.split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean);
+          tagsHtml = splitTags.map(t => `<span onclick="event.stopPropagation(); filterByTag('${escapeHtml(t)}')" class="inline-block text-[10px] font-bold text-slate-500 bg-slate-100 hover:bg-[#FFEFEA] hover:text-[#E06748] px-2 py-0.5 rounded-full border border-slate-200 transition cursor-pointer">#${escapeHtml(t)}</span>`).join(' ');
+        }
 
         return `
-          <article onclick="openThreadReader('${post.id}')" class="forum-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
+          <article onclick="openThreadReader('${post.id}')" class="bg-white rounded-2xl border ${isSticky ? 'border-rose-200 shadow-sm' : 'border-slate-200 shadow-2xs'} p-4 sm:p-5 mb-3 transition hover:border-slate-300 hover:shadow-md cursor-pointer select-none group">
             <div class="flex items-start justify-between gap-3.5">
-              <!-- Left Column: Details -->
               <div class="flex-1 min-w-0 pr-1">
-                <!-- Metadata: Time & Replies -->
-                <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
-                  <span>${timeAgo || 'Today, 08:15 PM'}</span>
-                  <span class="text-slate-300">•</span>
-                  <span>${replyCount} replies</span>
+                
+                <!-- Category Badges, Sticky & Subcategory -->
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  ${isSticky ? '<span class="badge-sticky"><i class="fas fa-thumbtack text-[10px]"></i> Sticky</span>' : ''}
+                  ${getCategoryBadge(post.category, post.subcategory)}
+                  <span class="text-xs text-slate-400 font-medium ml-auto flex items-center gap-1 font-mono">
+                    <i class="fas fa-clock text-[10px]"></i> ${timeAgo}
+                  </span>
                 </div>
 
-                <!-- Bold Headline -->
-                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-[#F68D72] transition leading-snug tracking-tight mb-1.5 line-clamp-2">
-                  <a href="#d/${post.id}" onclick="openThreadReader('${post.id}'); return false;" class="hover:underline">${post.title}</a>
-                </h3>
+                <!-- Discussion Title -->
+                <h4 class="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-[#E06748] transition tracking-tight line-clamp-1 mb-1.5">
+                  ${escapeHtml(post.title)}
+                </h4>
 
-                <!-- Excerpt -->
+                <!-- Snippet -->
                 <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                  ${cleanSnippet}
+                  ${escapeHtml(cleanSnippet)}...
                 </p>
 
-                <!-- Pastel Tag Chips Row -->
-                <div class="flex items-center flex-wrap gap-1.5">
-                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
-                    ${post.category || 'General'}
-                  </span>
-                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
-                    ${authorName}
-                  </span>
-                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#F0F4FE] text-[#4A6FDC]">
-                    ${post.likes_count || 0} likes
-                  </span>
-                </div>
-              </div>
+                <!-- Tags if available -->
+                ${tagsHtml ? `<div class="flex flex-wrap items-center gap-1.5 mb-3">${tagsHtml}</div>` : ''}
 
-              <!-- Right Column: Visual Thumbnail with floating badge -->
-              <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
-                <img src="${artImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Author/Topic visual" />
-                <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${badge.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
-                  <i class="${badge.badgeIcon}"></i>
+                <!-- Author & Metrics Toolbar -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-slate-100 text-xs">
+                  
+                  <!-- Author Information -->
+                  <div class="flex items-center gap-2">
+                    <div class="relative">
+                      <img src="${post.author_avatar || '/raccoon-logo.svg'}" class="h-6 w-6 rounded-full object-cover border border-slate-200" />
+                      ${isOnline ? '<span class="online-dot absolute -bottom-0.5 -right-0.5" title="Online Now"></span>' : ''}
+                    </div>
+                    <span class="font-bold text-slate-800 text-[11px]">${escapeHtml(authorName)}</span>
+                    ${isReputed ? '<span class="badge-reputed-member" title="Reputed Member: Highly recommended posts">⭐ Reputed</span>' : ''}
+                  </div>
+
+                  <!-- Metrics: Views, Replies, Rating, Reputation, Thanks -->
+                  <div class="flex items-center gap-3 text-[11px] font-bold text-slate-500">
+                    <span title="${viewsCount} views" class="flex items-center gap-1">
+                      <i class="fas fa-eye text-slate-400"></i> ${viewsCount}
+                    </span>
+                    <span title="${replyCount} replies" class="flex items-center gap-1">
+                      <i class="fas fa-comments text-slate-400"></i> ${replyCount}
+                    </span>
+                    <span title="Average Rating: ${avgRating}/5.0" class="flex items-center gap-1 text-amber-600">
+                      <i class="fas fa-star text-amber-400"></i> ${avgRating}
+                    </span>
+                    <span onclick="event.stopPropagation(); openReputationVotersModal('${post.id}')" title="Reputation: Click to view voters" class="rep-score-badge ${repScore >= 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">
+                      <i class="fas fa-medal text-[10px]"></i> ${repScore >= 0 ? '+' : ''}${repScore}
+                    </span>
+                    <span onclick="event.stopPropagation(); openThankersModal('${post.id}')" title="Thanks: Click to view who thanked" class="cursor-pointer text-[#E06748] flex items-center gap-1 bg-[#FFEFEA] px-2 py-0.5 rounded-md border border-[#F68D72]/30">
+                      <i class="fas fa-hands-clapping text-[10px]"></i> ${thanksCount}
+                    </span>
+                    
+                    <!-- Quick Actions -->
+                    <button onclick="event.stopPropagation(); toggleTopicSubscription('${post.id}')" title="${post.has_subscribed ? 'Unsubscribe from topic' : 'Subscribe to topic'}" class="p-1 text-slate-400 hover:text-[#E06748] transition">
+                      <i class="fas ${post.has_subscribed ? 'fa-bell text-[#E06748]' : 'fa-bell-slash'}"></i>
+                    </button>
+                    <button onclick="event.stopPropagation(); shareTopic('copy', '${escapeHtml(post.title)}', '${window.location.origin}/forum#/d/${post.id}')" title="Share Topic" class="p-1 text-slate-400 hover:text-slate-800 transition">
+                      <i class="fas fa-share-nodes"></i>
+                    </button>
+                  </div>
+
                 </div>
+
               </div>
             </div>
           </article>
@@ -1255,232 +1997,22 @@
       }).join('');
     }
 
-    // Wall Feed Rendering
-    function renderWallFeed(posts) {
-      const container = document.getElementById('wall-feed-container');
-      if (!container) return;
-
-      if (!posts || posts.length === 0) {
-        container.innerHTML = `
-          <div class="p-10 text-center bg-white rounded-2xl border border-slate-200">
-            <i class="fas fa-cubes text-3xl text-slate-300 mb-2"></i>
-            <p class="font-bold text-sm text-slate-700">The community wall is quiet</p>
-            <p class="text-xs text-slate-400 mt-1">Post the first update above!</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = posts.map(post => {
-        const authorName = post.author_name || post.author_email?.split('@')[0] || 'Member';
-        const authorAvatar = post.author_avatar || '/raccoon-logo.svg';
-        const timeAgo = formatTimeAgo(post.created_at);
-        const hasLiked = !!post.has_liked;
-
-        return `
-          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
-            
-            <!-- Wall Card Header -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <img src="${authorAvatar}" class="h-10 w-10 rounded-full object-cover border border-slate-200" />
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-xs sm:text-sm text-slate-900">${authorName}</span>
-                    ${post.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
-                  </div>
-                  <span class="text-[11px] text-slate-400 font-medium">${timeAgo}</span>
-                </div>
-              </div>
-              ${getCategoryBadge(post.category)}
-            </div>
-
-            <!-- Wall Card Body -->
-            <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-              ${post.content}
-            </div>
-
-            <!-- Optional Code Block -->
-            ${post.code_snippet ? `
-              <div class="p-3 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
-                <div class="flex items-center justify-between text-[10px] text-slate-400 mb-2 pb-1 border-b border-slate-800">
-                  <span>${post.code_lang || 'code'}</span>
-                  <span>Syntax</span>
-                </div>
-                <pre><code>${escapeHtml(post.code_snippet)}</code></pre>
-              </div>
-            ` : ''}
-
-            <!-- Wall Card Footer Actions -->
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
-              <div class="flex items-center gap-4">
-                <button onclick="toggleLikePost('${post.id}', this)" class="flex items-center gap-1.5 hover:text-rose-600 transition cursor-pointer ${hasLiked ? 'text-rose-600' : ''}">
-                  <i class="fas fa-heart ${hasLiked ? 'text-rose-600' : 'text-slate-400'}"></i>
-                  <span class="like-cnt">${post.likes_count || 0}</span> Likes
-                </button>
-
-                <button onclick="openThreadReader('${post.id}')" class="flex items-center gap-1.5 hover:text-slate-900 transition cursor-pointer">
-                  <i class="fas fa-comment text-slate-400"></i>
-                  <span>${post.comments_count || 0}</span> Comments
-                </button>
-              </div>
-
-              <button onclick="copyPostLink('${post.id}')" class="flex items-center gap-1 hover:text-slate-900 text-slate-400 transition" title="Share Link">
-                <i class="fas fa-share-nodes"></i>
-                <span class="hidden sm:inline">Share</span>
-              </button>
-            </div>
-
-          </div>
-        `;
-      }).join('');
-    }
-
-    // Toggle Wall Code Box
-    function toggleWallCodeBox() {
-      const box = document.getElementById('wall-code-snippet-box');
-      box?.classList.toggle('hidden');
-    }
-
-    // Submit Post to Wall
-    async function submitWallPost() {
-      const contentEl = document.getElementById('wall-post-content');
-      const catEl = document.getElementById('wall-post-category');
-      const codeEl = document.getElementById('wall-code-content');
-      const langEl = document.getElementById('wall-code-lang');
-      const btn = document.getElementById('btn-wall-publish');
-
-      const content = contentEl?.value.trim();
-      if (!content) {
-        showToast('Please type a message before posting to the wall.', 'fa-exclamation-circle');
-        contentEl?.focus();
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
-
-      try {
-        const payload = {
-          title: content.slice(0, 45) + (content.length > 45 ? '...' : ''),
-          category: catEl?.value || 'wall',
-          content: content,
-          code_snippet: codeEl?.value.trim() || '',
-          code_lang: langEl?.value || 'javascript'
-        };
-
-        const res = await fetch('/api/forum/posts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        if (res.ok && data.success) {
-          contentEl.value = '';
-          if (codeEl) codeEl.value = '';
-          document.getElementById('wall-code-snippet-box')?.classList.add('hidden');
-          showToast('Your update has been published to the wall! 🧱🚀');
-          loadWallFeed();
-        } else {
-          showToast(data.error || 'Failed to publish post. Please sign in.', 'fa-exclamation-triangle');
-        }
-      } catch (err) {
-        showToast('Network error while posting.', 'fa-exclamation-triangle');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Share to Wall</span>';
-      }
-    }
-
-    // =========================================================================
-    // VIEW 3: DISCUSSION THREAD READER (MATCHING FLARUM /d/:id)
-    // =========================================================================
-    window.openThreadView = function(id) { return openThreadReader(id); };
-
-    function toggleNotificationPanel() {
-      const modal = document.getElementById('forum-notifications-modal');
-      if (modal) modal.classList.toggle('hidden');
-    }
-    function handleForumNotificationClick(fromButton = false) {
-      if (!fromButton) toggleNotificationPanel();
-      if (window.RacconNotifications && typeof RacconNotifications.requestPermission === 'function') {
-        RacconNotifications.requestPermission().then(function(perm) {
-          if (perm === 'granted') {
-            RacconNotifications.show({
-              title: 'Raccoon Forum Alerts Active! 🔔',
-              body: 'Push alerts enabled for mentions, thread replies, and new topics.',
-              url: '/forum'
-            });
-          }
-        }).catch(function(err) {
-          console.warn('Notifications permission notice:', err);
-        });
-      }
-      if (typeof showToast === 'function') {
-        showToast('Notifications Active! 🔔');
-      }
-    }
-    window.toggleNotificationPanel = toggleNotificationPanel;
-    window.handleForumNotificationClick = handleForumNotificationClick;
-
-    
-    // DEDICATED FORUM MENU HIDE/SHOW LOGIC (Same as Stories)
-    let isForumMenuVisible = true;
-    function toggleForumMenu(forceState = null) {
-      const panel = document.getElementById('thread-controls-panel');
-      const streamCol = document.getElementById('thread-stream-column');
-      const btnText = document.getElementById('toggle-forum-menu-text');
-      const btnIcon = document.getElementById('toggle-forum-menu-icon');
-      const mobileText = document.getElementById('mobile-forum-toggle-text');
-      const mobileIcon = document.getElementById('mobile-toggle-forum-icon');
-      const edgePill = document.getElementById('mobile-forum-toggle-pill');
-
-      if (forceState !== null) {
-        isForumMenuVisible = forceState;
-      } else {
-        isForumMenuVisible = !isForumMenuVisible;
-      }
-
-      if (isForumMenuVisible) {
-        panel?.classList.remove('hidden');
-        streamCol?.classList.remove('md:col-span-12');
-        streamCol?.classList.add('md:col-span-9');
-        if (btnText) btnText.innerText = 'Hide Menu';
-        if (btnIcon) btnIcon.className = 'fas fa-eye-slash text-blue-500';
-        if (mobileText) mobileText.innerText = 'Hide Menu';
-        if (mobileIcon) mobileIcon.className = 'fas fa-eye-slash text-blue-400 group-hover:rotate-90 transition-transform text-xs';
-      } else {
-        panel?.classList.add('hidden');
-        streamCol?.classList.remove('md:col-span-9');
-        streamCol?.classList.add('md:col-span-12');
-        if (btnText) btnText.innerText = 'Show Menu';
-        if (btnIcon) btnIcon.className = 'fas fa-sliders text-blue-500';
-        if (mobileText) mobileText.innerText = 'Show Menu';
-        if (mobileIcon) mobileIcon.className = 'fas fa-sliders text-blue-400 group-hover:rotate-90 transition-transform text-xs';
-      }
-    }
-    window.toggleForumMenu = toggleForumMenu;
-
+    // Discussion Thread Reader
     async function openThreadReader(postId) {
+      if (!postId) return;
+      window.location.hash = `#/d/${postId}`;
       currentNavView = 'thread';
-      window.location.hash = `d/${postId}`;
 
       document.getElementById('view-discussions')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-thread')?.classList.remove('hidden');
-      document.getElementById('mobile-forum-toggle-pill')?.classList.remove('hidden');
-      if (window.innerWidth < 768) {
-        toggleForumMenu(false); // Clean view on mobile - no overlap!
-      }
-      document.getElementById('flarum-hero')?.classList.add('hidden');
 
       const streamContainer = document.getElementById('thread-posts-stream');
       if (streamContainer) {
         streamContainer.innerHTML = `
-          <div class="p-10 text-center bg-white rounded-2xl border border-slate-200">
+          <div class="p-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
             <i class="fas fa-circle-notch fa-spin text-2xl text-slate-400 mb-3"></i>
-            <p class="font-bold text-sm text-slate-700">Loading conversation thread...</p>
+            <p class="font-bold text-sm text-slate-600">Loading discussion thread...</p>
           </div>
         `;
       }
@@ -1489,20 +2021,24 @@
         const res = await fetch(`/api/forum/posts/${postId}`);
         if (res.ok) {
           const data = await res.json();
-          currentActiveThread = data;
+          currentThreadData = data;
           renderThreadView(data.post, data.comments || []);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          streamContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Discussion not found or deleted.</div>`;
+          showToast('Discussion not found or removed', 'error');
+          switchToDiscussionsView();
         }
-      } catch (e) {
-        streamContainer.innerHTML = `<div class="p-8 text-center text-rose-500 font-bold bg-white rounded-2xl border border-slate-200">Error loading thread.</div>`;
+      } catch (err) {
+        console.error('Thread load error:', err);
+        showToast('Error opening thread', 'error');
       }
     }
 
+    // Render Thread View with Nested Comments, Rating, Subscriptions, Signatures, and Actions
     function renderThreadView(post, comments) {
       if (!post) return;
 
-      // Update Header & Breadcrumb
+      // Update Header Info & Breadcrumbs
       const titleEl = document.getElementById('thread-title');
       const badgeEl = document.getElementById('thread-category-badge');
       const authorMeta = document.getElementById('thread-author-meta');
@@ -1511,28 +2047,98 @@
       const counterEl = document.getElementById('scrubber-post-counter');
 
       if (titleEl) titleEl.innerText = post.title;
-      if (badgeEl) badgeEl.outerHTML = getCategoryBadge(post.category);
-      if (authorMeta) authorMeta.innerHTML = `<i class="fas fa-user-circle text-slate-400"></i> Started by <strong class="text-slate-800 font-bold">${post.author_name || 'Member'}</strong>`;
+      if (badgeEl) badgeEl.outerHTML = `<span id="thread-category-badge">${getCategoryBadge(post.category, post.subcategory)}</span>`;
+      if (authorMeta) authorMeta.innerHTML = `<i class="fas fa-user-circle text-slate-400"></i> Started by <strong class="text-slate-800 font-bold">${escapeHtml(post.author_name || 'Member')}</strong>`;
       if (dateMeta) dateMeta.innerHTML = `<i class="fas fa-clock text-slate-400"></i> ${formatTimeAgo(post.created_at)}`;
-      if (repliesMeta) repliesMeta.innerHTML = `<i class="fas fa-comments text-slate-400"></i> ${comments.length} replies`;
+      if (repliesMeta) repliesMeta.innerHTML = `<i class="fas fa-comments text-slate-400"></i> ${comments.length} replies &bull; ${post.views_count || 1} views`;
       if (counterEl) counterEl.innerText = `Post 1 of ${comments.length + 1}`;
+
+      updateBreadcrumbs(post.category, post.subcategory, post.title);
 
       const streamContainer = document.getElementById('thread-posts-stream');
       if (!streamContainer) return;
 
-      // Original Post (#1) HTML
+      const isPostReputed = Boolean(post.author_is_reputed);
+      const isPostOnline = Boolean(post.author_is_online);
+      const userRating = post.user_rating || 0;
+      const avgRating = post.rating_avg || 5.0;
+      const isSubscribed = Boolean(post.has_subscribed);
+      const isSticky = Boolean(post.is_sticky || post.is_pinned);
+
+      // Star rating component generator
+      let starRatingHtml = '';
+      for (let s = 1; s <= 5; s++) {
+        const starClass = (s <= (userRating || Math.round(avgRating))) ? 'text-amber-400' : 'text-slate-200';
+        starRatingHtml += `<button onclick="rateTopic('${post.id}', ${s})" title="Rate ${s} stars" class="rating-star-btn text-sm ${starClass} hover:text-amber-400"><i class="fas fa-star"></i></button>`;
+      }
+
+      // Social share links
+      const currentUrl = window.location.href;
+      const encodedUrl = encodeURIComponent(currentUrl);
+      const encodedTitle = encodeURIComponent(post.title);
+
+      // 1. Thread Controls & Toolbar
       let html = `
-        <!-- Original Post (#1) -->
+        <!-- Thread Header Actions Toolbar -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
+          <!-- Rating & Subscription -->
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl">
+              <span class="text-slate-500 font-bold text-[11px] mr-1">Rate:</span>
+              ${starRatingHtml}
+              <span class="text-[11px] font-extrabold text-slate-700 ml-1">(${avgRating})</span>
+            </div>
+            
+            <button onclick="toggleTopicSubscription('${post.id}')" class="px-3 py-1.5 rounded-xl border ${isSubscribed ? 'bg-[#FFEFEA] text-[#E06748] border-[#F68D72]' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'} font-bold transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fas ${isSubscribed ? 'fa-bell text-[#E06748]' : 'fa-bell text-slate-400'}"></i>
+              <span>${isSubscribed ? 'Subscribed' : 'Subscribe'}</span>
+            </button>
+
+            ${currentUser && currentUser.is_admin ? `
+              <button onclick="toggleStickyTopic('${post.id}')" class="px-3 py-1.5 rounded-xl border ${isSticky ? 'bg-rose-50 text-rose-600 border-rose-300' : 'bg-slate-50 text-slate-600 border-slate-200'} font-bold transition flex items-center gap-1.5">
+                <i class="fas fa-thumbtack"></i>
+                <span>${isSticky ? 'Unpin Sticky' : 'Pin Sticky'}</span>
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Social Share Buttons (Facebook, Twitter/X, LinkedIn, Copy) -->
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 font-bold text-[11px]">Share:</span>
+            <button onclick="shareTopic('facebook', '${escapeHtml(post.title)}', '${currentUrl}')" class="w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white flex items-center justify-center transition" title="Share on Facebook">
+              <i class="fab fa-facebook-f text-xs"></i>
+            </button>
+            <button onclick="shareTopic('twitter', '${escapeHtml(post.title)}', '${currentUrl}')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-black text-slate-800 hover:text-white flex items-center justify-center transition" title="Share on Twitter / X">
+              <i class="fab fa-x-twitter text-xs"></i>
+            </button>
+            <button onclick="shareTopic('linkedin', '${escapeHtml(post.title)}', '${currentUrl}')" class="w-7 h-7 rounded-lg bg-sky-50 hover:bg-sky-600 text-sky-600 hover:text-white flex items-center justify-center transition" title="Share on LinkedIn">
+              <i class="fab fa-linkedin-in text-xs"></i>
+            </button>
+            <button onclick="shareTopic('copy', '${escapeHtml(post.title)}', '${currentUrl}')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Copy Topic Link">
+              <i class="fas fa-link text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Original Discussion Post (#1) -->
         <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-3">
-              <img src="${post.author_avatar || '/raccoon-logo.svg'}" class="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-2xs" />
+              <div class="relative">
+                <img src="${post.author_avatar || '/raccoon-logo.svg'}" class="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                ${isPostOnline ? '<span class="online-dot absolute bottom-0 right-0" title="Online Now"></span>' : ''}
+              </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-extrabold text-sm text-slate-900">${post.author_name || 'Member'}</span>
+                  <span class="font-extrabold text-sm text-slate-900">${escapeHtml(post.author_name || 'Member')}</span>
                   ${post.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
+                  ${isPostReputed ? '<span class="badge-reputed-member">⭐ Reputed Member</span>' : ''}
                 </div>
-                <span class="text-xs text-slate-400">${formatTimeAgo(post.created_at)}</span>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                  <span>${formatTimeAgo(post.created_at)}</span>
+                  <span>&bull;</span>
+                  <span>Author Reputation: <strong class="text-amber-600 font-bold">+${post.author_reputation || 0}</strong></span>
+                </div>
               </div>
             </div>
             <span class="text-xs font-bold text-slate-400">#1</span>
@@ -1548,266 +2154,954 @@
             <div class="p-4 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
               <div class="flex items-center justify-between text-[11px] text-slate-400 mb-2 pb-1 border-b border-slate-800">
                 <span>${post.code_lang || 'code'}</span>
-                <span>Post Snippet</span>
+                <span>Code Snippet</span>
               </div>
               <pre><code>${escapeHtml(post.code_snippet)}</code></pre>
             </div>
           ` : ''}
 
-          <!-- Post Footer -->
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
-            <button onclick="toggleLikePost('${post.id}', this)" class="flex items-center gap-1.5 text-slate-500 hover:text-rose-600 transition cursor-pointer ${post.has_liked ? 'text-rose-600' : ''}">
-              <i class="fas fa-heart ${post.has_liked ? 'text-rose-600' : 'text-slate-400'}"></i>
-              <span class="like-cnt">${post.likes_count || 0}</span> Likes
-            </button>
-            <button onclick="focusThreadReply()" class="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 transition cursor-pointer">
-              <i class="fas fa-reply text-slate-400"></i>
-              <span>Reply</span>
+          <!-- Automatically Included Author Signature -->
+          ${renderSignatureHtml(post.author_signature)}
+
+          <!-- Post Footer Feedback Toolbar (Reputation, Thanks, Like, Reply) -->
+          <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+            
+            <div class="flex items-center gap-3">
+              <!-- Add Reputation (+ / -) -->
+              <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 px-1.5 py-1 rounded-xl">
+                <button onclick="voteReputation('${post.id}', 1, event)" title="Increase Reputation (+1)" class="rep-btn rep-btn-up">
+                  <i class="fas fa-chevron-up"></i>
+                </button>
+                <button onclick="openReputationVotersModal('${post.id}')" title="View Reputation History" class="rep-score-badge hover:bg-slate-200 transition">
+                  <i class="fas fa-star text-amber-500 text-[10px]"></i>
+                  <span>${post.reputation_score >= 0 ? '+' : ''}${post.reputation_score || 0}</span>
+                </button>
+                <button onclick="voteReputation('${post.id}', -1, event)" title="Decrease Reputation (-1)" class="rep-btn rep-btn-down">
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+              </div>
+
+              <!-- Thanks Button -->
+              <button onclick="giveThanks('${post.id}', event)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ${post.has_thanked ? 'bg-[#FFEFEA] text-[#E06748] border border-[#F68D72]' : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'} transition cursor-pointer" title="Give thanks if this post resolved your query">
+                <i class="fas fa-hands-clapping ${post.has_thanked ? 'text-[#E06748]' : 'text-slate-400'}"></i>
+                <span>Thanks (<strong onclick="event.stopPropagation(); openThankersModal('${post.id}')" class="underline cursor-pointer">${post.thanks_count || 0}</strong>)</span>
+              </button>
+
+              <!-- Like Button -->
+              <button onclick="toggleLikePost('${post.id}', this)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-rose-600 transition cursor-pointer ${post.has_liked ? 'text-rose-600 border-rose-200' : ''}">
+                <i class="fas fa-heart ${post.has_liked ? 'text-rose-600' : 'text-slate-400'}"></i>
+                <span class="like-cnt">${post.likes_count || 0}</span> Likes
+              </button>
+            </div>
+
+            <!-- Reply Button -->
+            <button onclick="focusThreadReply()" class="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold transition cursor-pointer">
+              <i class="fas fa-reply text-xs"></i>
+              <span>Reply to Topic</span>
             </button>
           </div>
         </article>
       `;
 
-      // Comments List (#2, #3, ...)
-      comments.forEach((comment, idx) => {
-        const cAuthor = comment.author_name || comment.author_email?.split('@')[0] || 'Member';
-        const cAvatar = comment.author_avatar || '/raccoon-logo.svg';
-        const cTime = formatTimeAgo(comment.created_at);
+      // 2. Comments List with Nested Hierarchy (Post a Comment on a Reply)
+      const topLevelComments = comments.filter(c => !c.parent_comment_id);
+      const childCommentsMap = {};
+      comments.filter(c => c.parent_comment_id).forEach(c => {
+        if (!childCommentsMap[c.parent_comment_id]) childCommentsMap[c.parent_comment_id] = [];
+        childCommentsMap[c.parent_comment_id].push(c);
+      });
 
-        html += `
-          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-3">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div class="flex items-center gap-3">
-                <img src="${cAvatar}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shadow-2xs" />
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-xs sm:text-sm text-slate-900">${cAuthor}</span>
-                    ${comment.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
-                  </div>
-                  <span class="text-[11px] text-slate-400">${cTime}</span>
-                </div>
-              </div>
-              <span class="text-xs font-bold text-slate-400">#${idx + 2}</span>
-            </div>
-
-            <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-              ${comment.content}
-            </div>
-
-            ${comment.code_snippet ? `
-              <div class="p-3 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
-                <pre><code>${escapeHtml(comment.code_snippet)}</code></pre>
-              </div>
-            ` : ''}
-          </div>
-        `;
+      let commentCounter = 2;
+      topLevelComments.forEach(comment => {
+        html += renderSingleCommentCard(comment, commentCounter++, post.id, childCommentsMap);
       });
 
       streamContainer.innerHTML = html;
     }
 
-    function focusThreadReply() {
-      const input = document.getElementById('thread-reply-input');
-      input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      input?.focus();
+    // Helper: Render Comment and its Nested Replies
+    function renderSingleCommentCard(comment, indexNumber, postId, childMap = {}) {
+      const cAuthor = comment.author_name || comment.author_email?.split('@')[0] || 'Member';
+      const cAvatar = comment.author_avatar || '/raccoon-logo.svg';
+      const cTime = formatTimeAgo(comment.created_at);
+      const isOnline = Boolean(comment.author_is_online);
+      const isReputed = Boolean(comment.author_is_reputed);
+      const nestedReplies = childMap[comment.id] || [];
+
+      let html = `
+        <div id="comment-${comment.id}" class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <img src="${cAvatar}" class="h-9 w-9 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                ${isOnline ? '<span class="online-dot absolute bottom-0 right-0" title="Online Now"></span>' : ''}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-extrabold text-xs sm:text-sm text-slate-900">${escapeHtml(cAuthor)}</span>
+                  ${comment.author_is_admin ? '<span class="px-1.5 py-0.5 rounded-full bg-slate-900 text-emerald-400 text-[9px] font-black uppercase">Staff</span>' : ''}
+                  ${isReputed ? '<span class="badge-reputed-member">⭐ Reputed</span>' : ''}
+                </div>
+                <span class="text-[11px] text-slate-400">${cTime}</span>
+              </div>
+            </div>
+            <span class="text-xs font-bold text-slate-400">#${indexNumber}</span>
+          </div>
+
+          <!-- Comment Text -->
+          <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+            ${comment.content}
+          </div>
+
+          <!-- Code Snippet if present -->
+          ${comment.code_snippet ? `
+            <div class="p-3 bg-slate-900 rounded-xl text-slate-200 overflow-x-auto text-xs font-mono">
+              <pre><code>${escapeHtml(comment.code_snippet)}</code></pre>
+            </div>
+          ` : ''}
+
+          <!-- Automatically Included Comment Signature -->
+          ${renderSignatureHtml(comment.author_signature)}
+
+          <!-- Comment Action Bar -->
+          <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <button onclick="openNestedReplyBox('${comment.id}', '${escapeHtml(cAuthor)}')" class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition cursor-pointer">
+                <i class="fas fa-reply text-[11px] text-[#E06748]"></i>
+                <span>Reply to comment</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Nested Reply Composer Box -->
+          <div id="nested-reply-box-${comment.id}" class="hidden pt-3 border-t border-dashed border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+              <span>Replying to @${escapeHtml(cAuthor)}</span>
+              <button onclick="closeNestedReplyBox('${comment.id}')" class="text-slate-400 hover:text-slate-700">Cancel</button>
+            </div>
+            <textarea id="nested-reply-input-${comment.id}" rows="2" placeholder="Write your reply to this comment..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 outline-none focus:bg-white"></textarea>
+            <div class="flex justify-end">
+              <button onclick="submitNestedReply('${postId}', '${comment.id}')" class="px-4 py-1.5 rounded-xl bg-[#F68D72] hover:bg-[#E06748] text-white font-bold text-xs transition shadow-xs">
+                Post Reply
+              </button>
+            </div>
+          </div>
+
+          <!-- Nested Replies Tree (Indent with Border) -->
+          ${nestedReplies.length > 0 ? `
+            <div class="mt-3 pl-4 sm:pl-6 border-l-2 border-[#F68D72]/40 space-y-2.5">
+              ${nestedReplies.map(nr => {
+                const nrAuthor = nr.author_name || nr.author_email?.split('@')[0] || 'Member';
+                return `
+                  <div class="bg-slate-50/80 rounded-xl p-3 border border-slate-200/80 space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <div class="flex items-center gap-2">
+                        <img src="${nr.author_avatar || '/raccoon-logo.svg'}" class="h-6 w-6 rounded-full object-cover border border-slate-200" />
+                        <span class="font-bold text-slate-900 text-xs">${escapeHtml(nrAuthor)}</span>
+                        <span class="text-[10px] text-slate-400 font-medium">${formatTimeAgo(nr.created_at)}</span>
+                      </div>
+                    </div>
+                    <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line pl-8">
+                      ${nr.content}
+                    </div>
+                    ${renderSignatureHtml(nr.author_signature)}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : ''}
+
+        </div>
+      `;
+
+      return html;
     }
 
-    function toggleFollowThread() {
-      isFollowingActiveThread = !isFollowingActiveThread;
-      const btn = document.getElementById('btn-follow-thread');
-      const text = document.getElementById('btn-follow-text');
-      const floatBtn = document.getElementById('btn-floating-follow');
-      const floatText = document.getElementById('floating-follow-text');
-      const floatIcon = document.getElementById('floating-follow-icon');
-      const floatDot = document.getElementById('floating-follow-dot');
-
-      if (isFollowingActiveThread) {
-        if (btn) btn.className = 'w-full py-2.5 px-4 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
-        if (text) text.innerText = 'Following';
-        if (floatBtn) floatBtn.className = 'flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-cyan-50/95 hover:bg-cyan-100 text-cyan-800 text-xs font-bold shadow-[0_8px_25px_rgba(6,182,212,0.3)] backdrop-blur-md border-y border-l border-cyan-300 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group';
-        if (floatText) floatText.innerText = 'Following';
-        if (floatIcon) floatIcon.className = 'fas fa-bell text-cyan-600 text-sm shrink-0';
-        if (floatDot) floatDot.className = 'w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0';
-        showToast('You are now following this discussion! 🔔');
-
-        if (window.RacconNotifications) {
-          window.RacconNotifications.show({
-            title: 'Following Topic 🔔',
-            body: 'You will receive updates for new replies in this thread.',
-            tag: 'forum-follow',
-            url: '/forum'
-          });
-        }
-      } else {
-        if (btn) btn.className = 'w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs shadow-2xs transition flex items-center justify-center gap-2 cursor-pointer';
-        if (text) text.innerText = 'Follow';
-        if (floatBtn) floatBtn.className = 'flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_25px_rgba(0,0,0,0.15)] backdrop-blur-md border-y border-l border-slate-200 transition-all duration-200 hover:translate-x-0 translate-x-12 cursor-pointer group';
-        if (floatText) floatText.innerText = 'Follow';
-        if (floatIcon) floatIcon.className = 'fas fa-bell text-amber-500 text-sm shrink-0';
-        if (floatDot) floatDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0';
-        showToast('Unfollowed discussion.');
+    // Nested Reply Composer Handlers
+    function openNestedReplyBox(commentId, authorName) {
+      const box = document.getElementById(`nested-reply-box-${commentId}`);
+      if (box) {
+        box.classList.remove('hidden');
+        document.getElementById(`nested-reply-input-${commentId}`)?.focus();
       }
     }
 
-    function insertMarkdownToReply(syntax) {
-      const input = document.getElementById('thread-reply-input');
-      if (!input) return;
-      input.value += syntax;
-      input.focus();
+    function closeNestedReplyBox(commentId) {
+      const box = document.getElementById(`nested-reply-box-${commentId}`);
+      if (box) box.classList.add('hidden');
     }
 
-    async function submitThreadReply() {
-      if (!currentActiveThread || !currentActiveThread.post) return;
-      const input = document.getElementById('thread-reply-input');
-      const btn = document.getElementById('btn-submit-reply');
-      const content = input?.value.trim();
-
-      if (!content) {
-        showToast('Please type a reply.', 'fa-exclamation-circle');
-        input?.focus();
+    async function submitNestedReply(postId, parentCommentId) {
+      const input = document.getElementById(`nested-reply-input-${parentCommentId}`);
+      if (!input || !input.value.trim()) {
+        showToast('Please type a reply message', 'error');
         return;
       }
 
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Posting...';
-
       try {
-        const res = await fetch(`/api/forum/posts/${currentActiveThread.post.id}/comments`, {
+        const res = await fetch(`/api/forum/posts/${postId}/comments`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: content })
+          body: JSON.stringify({
+            content: input.value.trim(),
+            parent_comment_id: parentCommentId
+          })
         });
 
-        const data = await res.json();
-        if (res.ok && data.success) {
+        if (res.ok) {
+          showToast('Reply posted successfully! 💬', 'success');
           input.value = '';
-          showToast('Reply posted successfully! 💬');
-        if (window.RacconNotifications) {
-          window.RacconNotifications.show({
-            title: 'Reply Posted! 💬',
-            body: 'Your reply has been successfully published on Raccoon Forum.',
-            tag: 'forum-reply',
-            url: '/forum'
-          });
-        }
-        if (window.RacconNotifications) {
-          window.RacconNotifications.show({
-            title: 'Reply Posted! 💬',
-            body: 'Your reply has been successfully published on Raccoon Forum.',
-            tag: 'forum-reply',
-            url: '/forum'
-          });
-        }
-          openThreadReader(currentActiveThread.post.id);
+          closeNestedReplyBox(parentCommentId);
+          // Refresh thread view
+          openThreadReader(postId);
         } else {
-          showToast(data.error || 'Failed to post reply. Please sign in.', 'fa-exclamation-triangle');
-        }
-      } catch (err) {
-        showToast('Network error while posting reply.', 'fa-exclamation-triangle');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-reply text-xs"></i> <span>Post Reply</span>';
-      }
-    }
-
-    // =========================================================================
-    // SEARCH & FILTERING HELPERS
-    // =========================================================================
-    let searchDebounceTimer = null;
-    function handleLiveSearch(query) {
-      currentSearchTerm = query.trim();
-      const clearBtn = document.getElementById('clear-search-btn');
-      if (clearBtn) {
-        if (currentSearchTerm) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-      }
-
-      clearTimeout(searchDebounceTimer);
-      searchDebounceTimer = setTimeout(() => {
-        loadForumFeed();
-      }, 200);
-    }
-
-    function clearLiveSearch() {
-      const input = document.getElementById('flarum-search-input');
-      if (input) input.value = '';
-      currentSearchTerm = '';
-      document.getElementById('clear-search-btn')?.classList.add('hidden');
-      loadForumFeed();
-    }
-
-    function filterByCategory(category) {
-      currentCategoryFilter = category;
-      window.location.hash = category === 'all' ? 'all' : `tag-${category}`;
-
-      // Update sidebar category active styles
-      document.querySelectorAll('#categories-list-container button').forEach(btn => {
-        btn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 transition';
-      });
-      const activeBtn = document.getElementById(`cat-btn-${category}`);
-      if (activeBtn) {
-        activeBtn.className = 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 bg-slate-100 transition';
-      }
-
-      // Update main title
-      const titleEl = document.getElementById('current-view-title');
-      if (titleEl) {
-        titleEl.innerText = category === 'all' ? 'All Discussions' : `Discussions in ${CATEGORY_MAP[category]?.label || category}`;
-      }
-
-      switchToDiscussionsView();
-    }
-
-    function changeSorting(sortVal) {
-      currentSort = sortVal;
-      loadForumFeed();
-    }
-
-    function filterMyPosts() {
-      if (!currentUser) return;
-      currentSearchTerm = currentUser.name || currentUser.email;
-      loadForumFeed();
-    }
-
-    // Like / Heart Toggle
-    async function toggleLikePost(postId, buttonEl) {
-      try {
-        const res = await fetch(`/api/forum/posts/${postId}/like`, { method: 'POST' });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          const cntEl = buttonEl.querySelector('.like-cnt');
-          const heart = buttonEl.querySelector('.fa-heart');
-          if (cntEl) cntEl.innerText = data.likes_count;
-          if (data.action === 'liked') {
-            heart?.classList.add('text-rose-600');
-            heart?.classList.remove('text-slate-400');
-            buttonEl.classList.add('text-rose-600');
-            showToast('You liked this discussion! ❤️');
-          } else {
-            heart?.classList.remove('text-rose-600');
-            heart?.classList.add('text-slate-400');
-            buttonEl.classList.remove('text-rose-600');
-          }
-        } else {
-          showToast(data.error || 'Please sign in to like discussions.', 'fa-exclamation-triangle');
+          const err = await res.json();
+          showToast(err.error || 'Failed to post reply', 'error');
         }
       } catch (e) {
-        showToast('Error recording like.', 'fa-exclamation-triangle');
+        showToast('Network error posting reply', 'error');
       }
     }
 
-    function copyPostLink(postId) {
-      const url = `${window.location.origin}/forum#d/${postId}`;
-      navigator.clipboard.writeText(url).then(() => {
-        showToast('Discussion link copied to clipboard! 📋');
-      }).catch(() => {
-        prompt('Copy discussion link:', url);
+    // Rating Topic (1 to 5 Stars)
+    async function rateTopic(postId, rating) {
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/rate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || `Rated ${rating}/5 stars! ⭐`, 'success');
+          openThreadReader(postId);
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Sign in to rate topics', 'error');
+        }
+      } catch (e) {
+        showToast('Error recording rating', 'error');
+      }
+    }
+
+    // Reputation Voting (+1 / -1)
+    async function voteReputation(postId, delta, event) {
+      if (event) event.stopPropagation();
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/reputation`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ delta })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || 'Reputation updated! ⭐', 'success');
+          if (currentNavView === 'thread') {
+            openThreadReader(postId);
+          } else {
+            loadForumFeed();
+          }
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Sign in to award reputation', 'error');
+        }
+      } catch (e) {
+        showToast('Error updating reputation', 'error');
+      }
+    }
+
+    // Open Reputation Voters Modal
+    async function openReputationVotersModal(postId) {
+      const modal = document.getElementById('reputation-voters-modal');
+      const content = document.getElementById('reputation-voters-content');
+      if (!modal || !content) return;
+
+      modal.classList.remove('hidden');
+      content.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs"><i class="fas fa-circle-notch fa-spin"></i> Loading reputation history...</div>';
+
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/reputation`);
+        if (res.ok) {
+          const data = await res.json();
+          const voters = data.voters || [];
+          if (voters.length === 0) {
+            content.innerHTML = '<div class="text-center text-slate-500 py-6 text-xs">No reputation votes recorded for this post yet.</div>';
+            return;
+          }
+
+          content.innerHTML = voters.map(v => `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-center gap-2.5">
+                <img src="${v.member_avatar || '/raccoon-logo.svg'}" class="w-8 h-8 rounded-full object-cover border border-slate-200" />
+                <div>
+                  <div class="font-bold text-slate-900 text-xs">${escapeHtml(v.member_name || 'Member')}</div>
+                  <div class="text-[10px] text-slate-400">${formatTimeAgo(v.created_at)}</div>
+                </div>
+              </div>
+              <span class="font-extrabold text-xs px-2 py-0.5 rounded-lg ${v.delta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${v.delta > 0 ? '+1' : '-1'} Rep
+              </span>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        content.innerHTML = '<div class="text-center text-rose-500 py-6 text-xs">Error loading voters</div>';
+      }
+    }
+
+    function closeReputationModal() {
+      document.getElementById('reputation-voters-modal')?.classList.add('hidden');
+    }
+
+    // Giving Thanks
+    async function giveThanks(postId, event) {
+      if (event) event.stopPropagation();
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/thanks`, {
+          method: 'POST'
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || 'Thank you! Creator received +1 reputation asset point. 🙌', 'success');
+          if (currentNavView === 'thread') {
+            openThreadReader(postId);
+          } else {
+            loadForumFeed();
+          }
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Sign in to give thanks', 'error');
+        }
+      } catch (e) {
+        showToast('Error recording thanks', 'error');
+      }
+    }
+
+    // Open Thankers Modal
+    async function openThankersModal(postId) {
+      const modal = document.getElementById('thankers-modal');
+      const content = document.getElementById('thankers-modal-content');
+      if (!modal || !content) return;
+
+      modal.classList.remove('hidden');
+      content.innerHTML = '<div class="text-center text-slate-400 py-6 text-xs"><i class="fas fa-circle-notch fa-spin"></i> Loading members who thanked...</div>';
+
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/thanks`);
+        if (res.ok) {
+          const data = await res.json();
+          const thankers = data.thankers || [];
+          if (thankers.length === 0) {
+            content.innerHTML = '<div class="text-center text-slate-500 py-6 text-xs">No thanks given on this post yet. Be the first! 🙌</div>';
+            return;
+          }
+
+          content.innerHTML = thankers.map(t => `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#FFEFEA]/60 border border-[#F68D72]/30">
+              <div class="flex items-center gap-2.5">
+                <img src="${t.member_avatar || '/raccoon-logo.svg'}" class="w-8 h-8 rounded-full object-cover border border-slate-200" />
+                <div>
+                  <div class="font-bold text-slate-900 text-xs">${escapeHtml(t.member_name || 'Member')}</div>
+                  <div class="text-[10px] text-slate-400">${formatTimeAgo(t.created_at)}</div>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-[#E06748]">🙌 Thanked</span>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        content.innerHTML = '<div class="text-center text-rose-500 py-6 text-xs">Error loading thankers</div>';
+      }
+    }
+
+    function closeThankersModal() {
+      document.getElementById('thankers-modal')?.classList.add('hidden');
+    }
+
+    // Topic Subscription Toggle
+    async function toggleTopicSubscription(postId) {
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/subscribe`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || (data.subscribed ? 'Subscribed to topic notifications! 🔔' : 'Unsubscribed'), 'success');
+          if (currentNavView === 'thread') {
+            openThreadReader(postId);
+          } else {
+            loadForumFeed();
+          }
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Sign in to subscribe to topics', 'error');
+        }
+      } catch (e) {
+        showToast('Error updating topic subscription', 'error');
+      }
+    }
+
+    // Toggle Sticky Topic (Moderator)
+    async function toggleStickyTopic(postId) {
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/sticky`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || 'Sticky status updated 📌', 'success');
+          openThreadReader(postId);
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Admin / Moderator privileges required', 'error');
+        }
+      } catch (e) {
+        showToast('Error updating sticky status', 'error');
+      }
+    }
+
+    // Social Sharing
+    function shareTopic(platform, title, url) {
+      if (platform === 'facebook') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+      } else if (platform === 'twitter') {
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+      } else if (platform === 'linkedin') {
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      } else {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => {
+            showToast('Topic URL copied to clipboard! 📋', 'success');
+          }).catch(() => {
+            prompt('Copy topic URL:', url);
+          });
+        } else {
+          prompt('Copy topic URL:', url);
+        }
+      }
+    }
+
+    // Filter by Tag
+    function filterByTag(tag) {
+      currentTagFilter = tag;
+      currentSearchTerm = '';
+      currentStickyFilter = false;
+      window.location.hash = `#/tag/${encodeURIComponent(tag)}`;
+      loadForumFeed(true);
+    }
+
+    // Filter by Subcategory
+    function filterBySubcategory(catSlug, subcatName) {
+      currentCategoryFilter = catSlug;
+      currentSubcategoryFilter = subcatName;
+      currentTagFilter = '';
+      currentSearchTerm = '';
+      currentStickyFilter = false;
+      loadForumFeed(true);
+    }
+
+    // Filter by Category
+    function filterByCategory(cat) {
+      currentCategoryFilter = cat;
+      currentSubcategoryFilter = '';
+      currentTagFilter = '';
+      currentStickyFilter = false;
+      window.location.hash = cat === 'all' ? '#/' : `#/c/${cat}`;
+      loadForumFeed(true);
+    }
+
+    // Sorting
+    function changeSorting(sortVal) {
+      currentSort = sortVal;
+      loadForumFeed(true);
+    }
+
+    // User Dashboard
+    async function openUserDashboard(defaultTab = 'my_topics') {
+      const modal = document.getElementById('user-dashboard-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/forum/user-dashboard');
+        if (res.ok) {
+          userDashboardData = await res.json();
+          renderUserDashboard(userDashboardData);
+          switchDashboardTab(defaultTab);
+        } else {
+          showToast('Please sign in to view your User Dashboard', 'error');
+          closeUserDashboard();
+        }
+      } catch (e) {
+        showToast('Error loading dashboard', 'error');
+      }
+    }
+
+    function closeUserDashboard() {
+      document.getElementById('user-dashboard-modal')?.classList.add('hidden');
+    }
+
+    function renderUserDashboard(data) {
+      if (!data) return;
+      const u = data.user || {};
+
+      document.getElementById('dash-user-name') && (document.getElementById('dash-user-name').innerText = u.name || 'Member');
+      document.getElementById('dash-user-email') && (document.getElementById('dash-user-email').innerText = u.email || '');
+      document.getElementById('dash-user-avatar') && (document.getElementById('dash-user-avatar').src = u.avatar || '/raccoon-logo.svg');
+      document.getElementById('dash-stat-rep') && (document.getElementById('dash-stat-rep').innerText = '+' + (u.reputation || 0));
+      document.getElementById('dash-stat-thanks') && (document.getElementById('dash-stat-thanks').innerText = (data.thanks_history?.length || 0));
+      document.getElementById('dash-cnt-my-topics') && (document.getElementById('dash-cnt-my-topics').innerText = (data.my_topics?.length || 0));
+
+      const repBadge = document.getElementById('dash-reputed-badge');
+      if (repBadge) {
+        if (u.is_reputed) repBadge.classList.remove('hidden');
+        else repBadge.classList.add('hidden');
+      }
+
+      // Populate signature input and preview
+      const sigInput = document.getElementById('dash-signature-input');
+      if (sigInput) {
+        sigInput.value = u.forum_signature || '';
+        handleSignatureInput(u.forum_signature || '');
+      }
+
+      // Populate Tab 1: My Topics
+      const topicsContainer = document.getElementById('dash-pane-my_topics');
+      if (topicsContainer) {
+        const topics = data.my_topics || [];
+        if (topics.length === 0) {
+          topicsContainer.innerHTML = '<div class="text-center text-slate-500 py-8 text-xs">You have not created any topics yet. Click "Start a Discussion" to begin!</div>';
+        } else {
+          topicsContainer.innerHTML = topics.map(t => `
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex items-center justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  ${getCategoryBadge(t.category, t.subcategory)}
+                  <span class="text-[11px] text-slate-400">${formatTimeAgo(t.created_at)}</span>
+                </div>
+                <h5 onclick="closeUserDashboard(); openThreadReader('${t.id}')" class="font-bold text-sm text-slate-900 hover:text-[#E06748] transition cursor-pointer truncate">${escapeHtml(t.title)}</h5>
+                <div class="flex items-center gap-4 text-xs text-slate-500 mt-2 font-semibold">
+                  <span><i class="fas fa-eye text-slate-400"></i> ${t.views_count || 0} views</span>
+                  <span><i class="fas fa-comment text-slate-400"></i> ${t.comments_count || 0} replies</span>
+                  <span class="text-amber-600"><i class="fas fa-medal text-amber-500"></i> +${t.reputation_score || 0} rep</span>
+                  <span class="text-[#E06748]"><i class="fas fa-hands-clapping"></i> ${t.thanks_count || 0} thanks</span>
+                </div>
+              </div>
+              <button onclick="deleteTopicFromDashboard('${t.id}')" class="p-2 text-slate-400 hover:text-rose-600 transition" title="Delete topic">
+                <i class="fas fa-trash-can text-sm"></i>
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate Tab 2: My Comments
+      const commContainer = document.getElementById('dash-pane-my_comments');
+      if (commContainer) {
+        const comms = data.my_comments || [];
+        if (comms.length === 0) {
+          commContainer.innerHTML = '<div class="text-center text-slate-500 py-8 text-xs">You have not posted any replies yet.</div>';
+        } else {
+          commContainer.innerHTML = comms.map(c => `
+            <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+              <div class="text-[11px] font-bold text-slate-400 mb-1">On: <span class="text-slate-800">${escapeHtml(c.post_title || 'Discussion')}</span> &bull; ${formatTimeAgo(c.created_at)}</div>
+              <p class="text-xs text-slate-700 whitespace-pre-line">${escapeHtml(c.content)}</p>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate Tab 3: Liked Topics
+      const likedContainer = document.getElementById('dash-pane-liked');
+      if (likedContainer) {
+        const liked = data.liked_topics || [];
+        if (liked.length === 0) {
+          likedContainer.innerHTML = '<div class="text-center text-slate-500 py-8 text-xs">No liked topics yet.</div>';
+        } else {
+          likedContainer.innerHTML = liked.map(t => `
+            <div onclick="closeUserDashboard(); openThreadReader('${t.id}')" class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs hover:border-slate-300 transition cursor-pointer">
+              <div class="text-[11px] font-bold text-slate-400 mb-1">By ${escapeHtml(t.author_name || 'Member')} &bull; ${formatTimeAgo(t.created_at)}</div>
+              <h5 class="font-bold text-xs text-slate-900 truncate hover:text-[#E06748]">${escapeHtml(t.title)}</h5>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate Tab 4: Subscribed Topics
+      const subContainer = document.getElementById('dash-pane-subscribed');
+      if (subContainer) {
+        const subbed = data.subscribed_topics || [];
+        if (subbed.length === 0) {
+          subContainer.innerHTML = '<div class="text-center text-slate-500 py-8 text-xs">You have not subscribed to any topics yet. Click "Subscribe" on any topic to receive alerts!</div>';
+        } else {
+          subContainer.innerHTML = subbed.map(t => `
+            <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <h5 onclick="closeUserDashboard(); openThreadReader('${t.id}')" class="font-bold text-xs text-slate-900 hover:text-[#E06748] transition cursor-pointer truncate">${escapeHtml(t.title)}</h5>
+                <span class="text-[11px] text-slate-400">By ${escapeHtml(t.author_name || 'Member')} &bull; ${formatTimeAgo(t.created_at)}</span>
+              </div>
+              <button onclick="toggleTopicSubscription('${t.id}'); openUserDashboard('subscribed');" class="px-2.5 py-1 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 text-xs font-bold transition">
+                Unsubscribe
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate Tab 5: Sticky Topics (Moderator view)
+      const stickyContainer = document.getElementById('dash-pane-sticky');
+      if (stickyContainer) {
+        const stickies = data.sticky_topics || [];
+        if (stickies.length === 0) {
+          stickyContainer.innerHTML = '<div class="text-center text-slate-500 py-8 text-xs">No topics currently marked as Sticky.</div>';
+        } else {
+          stickyContainer.innerHTML = stickies.map(t => `
+            <div class="bg-white rounded-2xl border border-rose-200 p-3.5 shadow-2xs flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="badge-sticky text-[9px]">📌 Sticky</span>
+                  <span class="text-[11px] text-slate-400">By ${escapeHtml(t.author_name || 'Member')}</span>
+                </div>
+                <h5 onclick="closeUserDashboard(); openThreadReader('${t.id}')" class="font-bold text-xs text-slate-900 truncate cursor-pointer hover:text-rose-600">${escapeHtml(t.title)}</h5>
+              </div>
+              <button onclick="toggleStickyTopic('${t.id}'); openUserDashboard('sticky');" class="px-3 py-1 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200">
+                Unpin
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate Tab 7: Reputation & Thanks history
+      const repVotersList = document.getElementById('dash-rep-voters-list');
+      if (repVotersList) {
+        const repH = data.reputation_history || [];
+        if (repH.length === 0) {
+          repVotersList.innerHTML = '<div class="text-slate-400 py-3 text-center">No reputation votes received yet.</div>';
+        } else {
+          repVotersList.innerHTML = repH.map(r => `
+            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-center gap-2">
+                <img src="${r.from_avatar || '/raccoon-logo.svg'}" class="w-6 h-6 rounded-full object-cover" />
+                <span class="font-bold text-slate-800 text-xs">${escapeHtml(r.from_name || 'Member')}</span>
+              </div>
+              <span class="font-extrabold text-[11px] ${r.delta > 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                ${r.delta > 0 ? '+1' : '-1'} Rep
+              </span>
+            </div>
+          `).join('');
+        }
+      }
+
+      const thanksList = document.getElementById('dash-thankers-list');
+      if (thanksList) {
+        const thxH = data.thanks_history || [];
+        if (thxH.length === 0) {
+          thanksList.innerHTML = '<div class="text-slate-400 py-3 text-center">No thanks received yet.</div>';
+        } else {
+          thanksList.innerHTML = thxH.map(t => `
+            <div class="flex items-center justify-between p-2 rounded-xl bg-[#FFEFEA]/60 border border-[#F68D72]/30">
+              <div class="flex items-center gap-2">
+                <img src="${t.from_avatar || '/raccoon-logo.svg'}" class="w-6 h-6 rounded-full object-cover" />
+                <span class="font-bold text-slate-800 text-xs">${escapeHtml(t.from_name || 'Member')}</span>
+              </div>
+              <span class="text-[11px] font-bold text-[#E06748]">🙌 Thanked you</span>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function switchDashboardTab(tab) {
+      const tabs = ['my_topics', 'my_comments', 'liked', 'subscribed', 'sticky', 'signature', 'reputation_history'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`dash-tab-${t}`);
+        const pane = document.getElementById(`dash-pane-${t}`);
+        if (t === tab) {
+          btn?.classList.add('border-[#E06748]', 'text-[#E06748]');
+          btn?.classList.remove('border-transparent', 'text-slate-500');
+          pane?.classList.remove('hidden');
+        } else {
+          btn?.classList.remove('border-[#E06748]', 'text-[#E06748]');
+          btn?.classList.add('border-transparent', 'text-slate-500');
+          pane?.classList.add('hidden');
+        }
       });
     }
 
-    // =========================================================================
-    // FLARUM COMPOSER DRAWER CONTROLS
-    // =========================================================================
+    function handleSignatureInput(val) {
+      const preview = document.getElementById('dash-signature-preview');
+      if (!preview) return;
+      if (!val || !val.trim()) {
+        preview.innerHTML = '<em>No signature set. Type above to preview.</em>';
+      } else {
+        preview.innerHTML = renderSignatureHtml(val);
+      }
+    }
+
+    async function saveUserSignature() {
+      const val = document.getElementById('dash-signature-input')?.value || '';
+      try {
+        const res = await fetch('/api/forum/user/signature', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ signature: val })
+        });
+        if (res.ok) {
+          showToast('Signature saved and automatically included on your posts! ✍️', 'success');
+        } else {
+          showToast('Error saving signature', 'error');
+        }
+      } catch (e) {
+        showToast('Network error saving signature', 'error');
+      }
+    }
+
+    async function deleteTopicFromDashboard(postId) {
+      if (!confirm('Are you sure you want to permanently delete this discussion?')) return;
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Topic deleted successfully', 'success');
+          openUserDashboard('my_topics');
+          loadForumFeed(true);
+        } else {
+          showToast('Failed to delete topic', 'error');
+        }
+      } catch (e) {
+        showToast('Network error deleting topic', 'error');
+      }
+    }
+
+    // Admin Categories & Settings Management
+    function openAdminCategoriesModal() {
+      const modal = document.getElementById('admin-categories-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+
+      // Populate current settings
+      const onlineCb = document.getElementById('admin-setting-online-icon');
+      if (onlineCb) onlineCb.checked = (forumStatsData.online_icons_enabled !== false);
+
+      const critSelect = document.getElementById('admin-setting-popular-crit');
+      if (critSelect) critSelect.value = currentPopularCriteria || 'posts';
+
+      renderAdminCategoriesTable();
+    }
+
+    function closeAdminCategoriesModal() {
+      document.getElementById('admin-categories-modal')?.classList.add('hidden');
+    }
+
+    function renderAdminCategoriesTable() {
+      const table = document.getElementById('admin-categories-table');
+      if (!table) return;
+
+      table.innerHTML = allCategoriesData.filter(c => c.slug !== 'all').map(c => `
+        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center text-xs">
+              <i class="fas ${c.icon || 'fa-folder'}"></i>
+            </div>
+            <div>
+              <div class="font-bold text-slate-900 text-xs">${escapeHtml(c.name)} <span class="text-slate-400 font-mono text-[10px]">(${c.slug})</span></div>
+              <div class="text-[11px] text-slate-500">Subcategories: ${(c.subcategories || []).join(', ') || 'None'}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="editAdminCategory('${c.id}')" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition">
+              Edit
+            </button>
+            <button onclick="deleteAdminCategory('${c.id}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">
+              Delete
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editAdminCategory(catId) {
+      const cat = allCategoriesData.find(c => c.id === catId);
+      if (!cat) return;
+      document.getElementById('cat-form-title') && (document.getElementById('cat-form-title').innerText = 'Edit Category');
+      document.getElementById('admin-cat-id') && (document.getElementById('admin-cat-id').value = cat.id);
+      document.getElementById('admin-cat-name') && (document.getElementById('admin-cat-name').value = cat.name);
+      document.getElementById('admin-cat-slug') && (document.getElementById('admin-cat-slug').value = cat.slug);
+      document.getElementById('admin-cat-icon') && (document.getElementById('admin-cat-icon').value = cat.icon || 'fa-folder');
+      document.getElementById('admin-cat-subcategories') && (document.getElementById('admin-cat-subcategories').value = (cat.subcategories || []).join(', '));
+    }
+
+    function resetCatForm() {
+      document.getElementById('cat-form-title') && (document.getElementById('cat-form-title').innerText = 'Add / Edit Category');
+      document.getElementById('admin-cat-id') && (document.getElementById('admin-cat-id').value = '');
+      document.getElementById('admin-cat-name') && (document.getElementById('admin-cat-name').value = '');
+      document.getElementById('admin-cat-slug') && (document.getElementById('admin-cat-slug').value = '');
+      document.getElementById('admin-cat-icon') && (document.getElementById('admin-cat-icon').value = 'fa-folder');
+      document.getElementById('admin-cat-subcategories') && (document.getElementById('admin-cat-subcategories').value = '');
+    }
+
+    async function saveAdminCategory() {
+      const catId = document.getElementById('admin-cat-id')?.value;
+      const name = document.getElementById('admin-cat-name')?.value?.trim();
+      const slug = document.getElementById('admin-cat-slug')?.value?.trim();
+      const icon = document.getElementById('admin-cat-icon')?.value?.trim() || 'fa-folder';
+      const subStr = document.getElementById('admin-cat-subcategories')?.value || '';
+      const subcategories = subStr.split(',').map(s => s.trim()).filter(Boolean);
+
+      if (!name || !slug) {
+        showToast('Please enter category name and slug', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/forum/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: catId, name, slug, icon, subcategories })
+        });
+        if (res.ok) {
+          showToast('Category saved successfully! 🚀', 'success');
+          resetCatForm();
+          await loadForumCategories();
+          renderAdminCategoriesTable();
+        } else {
+          showToast('Failed to save category', 'error');
+        }
+      } catch (e) {
+        showToast('Network error saving category', 'error');
+      }
+    }
+
+    async function deleteAdminCategory(catId) {
+      if (!confirm('Are you sure you want to delete this category?')) return;
+      try {
+        const res = await fetch(`/api/admin/forum/categories/${catId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Category deleted', 'success');
+          await loadForumCategories();
+          renderAdminCategoriesTable();
+        } else {
+          showToast('Failed to delete category', 'error');
+        }
+      } catch (e) {
+        showToast('Network error', 'error');
+      }
+    }
+
+    async function saveAdminSettings() {
+      const onlineIconsEnabled = document.getElementById('admin-setting-online-icon')?.checked;
+      const popularCriteria = document.getElementById('admin-setting-popular-crit')?.value;
+
+      try {
+        const res = await fetch('/api/admin/forum/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            online_icons_enabled: onlineIconsEnabled ? 1 : 0,
+            popular_criteria: popularCriteria
+          })
+        });
+        if (res.ok) {
+          showToast('Forum settings saved successfully! ⚙️', 'success');
+          await loadForumWidgetsAndStats();
+          loadForumFeed(true);
+        } else {
+          showToast('Failed to save settings', 'error');
+        }
+      } catch (e) {
+        showToast('Network error saving settings', 'error');
+      }
+    }
+
+    // Community Wall Feed
+    function renderWallFeed() {
+      const container = document.getElementById('wall-feed-container');
+      if (!container) return;
+
+      const wallPosts = allPostsData.filter(p => p.category === 'wall' || p.category === 'tech' || p.category === 'coding');
+      if (wallPosts.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-xs text-slate-500">The wall is currently quiet. Be the first to share an update!</div>';
+        return;
+      }
+
+      container.innerHTML = wallPosts.map(p => `
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <img src="${p.author_avatar || '/raccoon-logo.svg'}" class="w-9 h-9 rounded-full object-cover border border-slate-200" />
+                ${p.author_is_online ? '<span class="online-dot absolute bottom-0 right-0"></span>' : ''}
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                  <span>${escapeHtml(p.author_name || 'Member')}</span>
+                  ${p.author_is_reputed ? '<span class="badge-reputed-member text-[8px] py-0 px-1">⭐</span>' : ''}
+                </div>
+                <span class="text-[10px] text-slate-400">${formatTimeAgo(p.created_at)}</span>
+              </div>
+            </div>
+            ${getCategoryBadge(p.category)}
+          </div>
+          <div class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">${escapeHtml(p.content)}</div>
+          ${p.code_snippet ? `
+            <div class="p-3 bg-slate-900 rounded-xl text-slate-200 text-xs font-mono overflow-x-auto">
+              <pre><code>${escapeHtml(p.code_snippet)}</code></pre>
+            </div>
+          ` : ''}
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
+            <button onclick="toggleLikePost('${p.id}', this)" class="hover:text-rose-600 transition flex items-center gap-1">
+              <i class="fas fa-heart text-slate-400"></i> ${p.likes_count || 0}
+            </button>
+            <button onclick="openThreadReader('${p.id}')" class="text-[#E06748] hover:underline">
+              Join Discussion &rarr;
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleWallCodeBox() {
+      document.getElementById('wall-code-snippet-box')?.classList.toggle('hidden');
+    }
+
+    async function submitWallPost() {
+      const content = document.getElementById('wall-post-content')?.value?.trim();
+      const category = document.getElementById('wall-post-category')?.value || 'wall';
+      const codeContent = document.getElementById('wall-code-content')?.value || '';
+      const codeLang = document.getElementById('wall-code-lang')?.value || 'javascript';
+
+      if (!content) {
+        showToast('Please type a message to share', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/forum/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: content.slice(0, 45) + (content.length > 45 ? '...' : ''),
+            category,
+            content,
+            code_snippet: codeContent,
+            code_lang: codeLang
+          })
+        });
+
+        if (res.ok) {
+          showToast('Shared to Community Wall! 🧱', 'success');
+          document.getElementById('wall-post-content').value = '';
+          document.getElementById('wall-code-content').value = '';
+          document.getElementById('wall-code-snippet-box')?.classList.add('hidden');
+          loadForumFeed(true);
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Failed to post on wall', 'error');
+        }
+      } catch (e) {
+        showToast('Network error posting to wall', 'error');
+      }
+    }
+
+    // Composer Actions
     function openComposerModal() {
       const drawer = document.getElementById('composer-drawer');
       drawer?.classList.remove('composer-hidden', 'composer-minimized');
@@ -1815,89 +3109,211 @@
     }
 
     function closeComposerModal() {
-      const drawer = document.getElementById('composer-drawer');
-      drawer?.classList.add('composer-hidden');
+      document.getElementById('composer-drawer')?.classList.add('composer-hidden');
     }
 
     function minimizeComposer() {
-      const drawer = document.getElementById('composer-drawer');
-      drawer?.classList.toggle('composer-minimized');
+      document.getElementById('composer-drawer')?.classList.toggle('composer-minimized');
     }
 
     function toggleComposerCodeBox() {
-      const box = document.getElementById('c-code-box');
-      box?.classList.toggle('hidden');
+      document.getElementById('c-code-box')?.classList.toggle('hidden');
     }
 
     async function publishDiscussion() {
-      const titleEl = document.getElementById('c-post-title');
-      const catEl = document.getElementById('c-post-category');
-      const contentEl = document.getElementById('c-post-content');
-      const codeEl = document.getElementById('c-code-content');
-      const langEl = document.getElementById('c-code-lang');
-      const btn = document.getElementById('btn-publish-discussion');
+      const title = document.getElementById('c-post-title')?.value?.trim();
+      const category = document.getElementById('c-post-category')?.value || 'general';
+      const subcategory = document.getElementById('c-post-subcategory')?.value?.trim() || '';
+      const tags = document.getElementById('c-post-tags')?.value?.trim() || '';
+      const content = document.getElementById('c-post-content')?.value?.trim();
+      const code = document.getElementById('c-post-code')?.value || '';
+      const lang = document.getElementById('c-post-lang')?.value || 'javascript';
+      const isSticky = document.getElementById('c-post-sticky')?.checked ? 1 : 0;
 
-      const title = titleEl?.value.trim();
-      const content = contentEl?.value.trim();
-
-      if (!title) {
-        showToast('Please enter a discussion title.', 'fa-exclamation-circle');
-        titleEl?.focus();
+      if (!title || !content) {
+        showToast('Please provide a title and discussion content', 'error');
         return;
       }
-      if (!content) {
-        showToast('Please enter discussion content.', 'fa-exclamation-circle');
-        contentEl?.focus();
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> Publishing...';
 
       try {
-        const payload = {
-          title: title,
-          category: catEl?.value || 'tech',
-          content: content,
-          code_snippet: codeEl?.value.trim() || '',
-          code_lang: langEl?.value || 'javascript'
-        };
-
         const res = await fetch('/api/forum/posts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            title,
+            category,
+            subcategory,
+            tags,
+            content,
+            code_snippet: code,
+            code_lang: lang,
+            is_sticky: isSticky
+          })
         });
 
-        const data = await res.json();
-        if (res.ok && data.success) {
-          titleEl.value = '';
-          contentEl.value = '';
-          if (codeEl) codeEl.value = '';
+        if (res.ok) {
+          const data = await res.json();
+          showToast('Discussion published successfully! 🚀', 'success');
           closeComposerModal();
-          showToast('Discussion published successfully! 🚀');
-          loadForumFeed(true);
+          // Reset form
+          document.getElementById('c-post-title').value = '';
+          document.getElementById('c-post-subcategory').value = '';
+          document.getElementById('c-post-tags').value = '';
+          document.getElementById('c-post-content').value = '';
+          document.getElementById('c-post-code').value = '';
           if (data.id) {
-            window.location.hash = `d/${data.id}`;
+            openThreadReader(data.id);
+          } else {
+            loadForumFeed(true);
           }
         } else {
-          showToast(data.error || 'Failed to publish discussion. Please sign in.', 'fa-exclamation-triangle');
+          const err = await res.json();
+          showToast(err.error || 'Failed to publish discussion', 'error');
         }
-      } catch (err) {
-        showToast('Network error publishing discussion.', 'fa-exclamation-triangle');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane text-emerald-400 text-xs"></i> <span>Post Discussion</span>';
+      } catch (e) {
+        showToast('Network error publishing discussion', 'error');
       }
+    }
+
+    // Thread Reply Submission
+    function focusThreadReply() {
+      const replyBox = document.getElementById('thread-reply-input');
+      replyBox?.focus();
+      replyBox?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function toggleFollowThread() {
+      if (currentThreadData?.post?.id) {
+        toggleTopicSubscription(currentThreadData.post.id);
+      }
+    }
+
+    function insertMarkdownToReply(syntax) {
+      const input = document.getElementById('thread-reply-input');
+      if (!input) return;
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      const text = input.value;
+      input.value = text.substring(0, start) + syntax + text.substring(end);
+      input.focus();
+    }
+
+    async function submitThreadReply() {
+      if (!currentThreadData?.post?.id) return;
+      const content = document.getElementById('thread-reply-input')?.value?.trim();
+      const code = document.getElementById('thread-reply-code')?.value || '';
+
+      if (!content) {
+        showToast('Please type your reply message', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/forum/posts/${currentThreadData.post.id}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content,
+            code_snippet: code
+          })
+        });
+
+        if (res.ok) {
+          showToast('Reply added to discussion! 💬', 'success');
+          document.getElementById('thread-reply-input').value = '';
+          if (document.getElementById('thread-reply-code')) document.getElementById('thread-reply-code').value = '';
+          // Refresh thread reader
+          openThreadReader(currentThreadData.post.id);
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Failed to submit reply', 'error');
+        }
+      } catch (e) {
+        showToast('Network error submitting reply', 'error');
+      }
+    }
+
+    // Like Post
+    async function toggleLikePost(postId, btnElement) {
+      try {
+        const res = await fetch(`/api/forum/posts/${postId}/like`, { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (btnElement) {
+            const cntSpan = btnElement.querySelector('.like-cnt');
+            if (cntSpan) cntSpan.innerText = data.likes_count;
+            if (data.liked) {
+              btnElement.classList.add('text-rose-600');
+              const heart = btnElement.querySelector('.fa-heart');
+              if (heart) heart.classList.add('text-rose-600');
+            } else {
+              btnElement.classList.remove('text-rose-600');
+              const heart = btnElement.querySelector('.fa-heart');
+              if (heart) heart.classList.remove('text-rose-600');
+            }
+          }
+          showToast(data.liked ? 'Left a paw on discussion! 🐾' : 'Like removed', 'success');
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Sign in to like discussions', 'error');
+        }
+      } catch (e) {
+        showToast('Error recording like', 'error');
+      }
+    }
+
+    function toggleNotificationPanel() {
+      const modal = document.getElementById('forum-notifications-modal');
+      modal?.classList.toggle('hidden');
+    }
+
+    function handleForumNotificationClick() {
+      toggleNotificationPanel();
+    }
+
+    function toggleForumMenu() {
+      const aside = document.querySelector('aside');
+      aside?.classList.toggle('hidden');
+      const btnText = document.getElementById('toggle-forum-menu-text');
+      if (btnText) {
+        btnText.innerText = aside?.classList.contains('hidden') ? 'Show Menu' : 'Hide Menu';
+      }
+    }
+
+    function handleLiveSearch(query) {
+      currentSearchTerm = query.trim();
+      currentTagFilter = '';
+      currentStickyFilter = false;
+      const clearBtn = document.getElementById('flarum-search-clear');
+      if (clearBtn) {
+        if (currentSearchTerm) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      loadForumFeed(true);
+    }
+
+    function clearLiveSearch() {
+      const input = document.getElementById('flarum-search-input');
+      if (input) input.value = '';
+      currentSearchTerm = '';
+      const clearBtn = document.getElementById('flarum-search-clear');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      loadForumFeed(true);
+    }
+
+    function copyPostLink(postId) {
+      const url = `${window.location.origin}/forum#/d/${postId}`;
+      shareTopic('copy', 'Topic', url);
     }
 
     function escapeHtml(str) {
       if (!str) return '';
-      return str.replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // Startup
@@ -2967,6 +4383,283 @@
     window.openSubscriptionPlansModal = openSubscriptionPlansModal;
     window.closeSubscriptionPlansModal = closeSubscriptionPlansModal;
   </script>
+
+
+  <!-- =========================================================================
+       USER DASHBOARD MODAL
+       Allows users to:
+       - View Topics / Posts created by them
+       - Access topics liked, subscribed, and labelled under Sticky (Moderator only)
+       - Create Signature (automatically included in posts and replies)
+       - View Reputation history & Thanks received
+       ========================================================================= -->
+  <div id="user-dashboard-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm hidden">
+    <div class="relative w-full max-w-4xl bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F68D72] to-[#E06748] flex items-center justify-center text-white shadow-md">
+            <i class="fas fa-gauge-high text-base"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg text-white">Raccon User Dashboard</h3>
+            <p class="text-xs text-slate-400">Manage your topics, subscriptions, reputation, and signature</p>
+          </div>
+        </div>
+        <button onclick="closeUserDashboard()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+          <i class="fas fa-times text-xs"></i>
+        </button>
+      </div>
+
+      <!-- User Profile Summary Bar -->
+      <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3">
+          <img id="dash-user-avatar" src="/raccoon-logo.svg" class="w-10 h-10 rounded-full border border-slate-200 shadow-2xs object-cover" />
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="dash-user-name" class="font-bold text-slate-900 text-sm">Raccon Member</span>
+              <span id="dash-reputed-badge" class="hidden badge-reputed-member">⭐ Reputed Member</span>
+            </div>
+            <span id="dash-user-email" class="text-slate-500 text-[11px]">member@racconmail.eu</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
+            <i class="fas fa-medal text-amber-500"></i>
+            <span>Reputation: <strong id="dash-stat-rep" class="text-slate-900">0</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
+            <i class="fas fa-hands-clapping text-[#E06748]"></i>
+            <span>Thanks: <strong id="dash-stat-thanks" class="text-slate-900">0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Navigation Tabs -->
+      <div class="flex border-b border-slate-200 px-6 bg-white overflow-x-auto gap-2 text-xs font-bold whitespace-nowrap">
+        <button onclick="switchDashboardTab('my_topics')" id="dash-tab-my_topics" class="py-3 px-3 border-b-2 border-[#E06748] text-[#E06748] transition">My Topics (<span id="dash-cnt-my-topics">0</span>)</button>
+        <button onclick="switchDashboardTab('my_comments')" id="dash-tab-my_comments" class="py-3 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition">My Comments</button>
+        <button onclick="switchDashboardTab('liked')" id="dash-tab-liked" class="py-3 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition">Liked Topics</button>
+        <button onclick="switchDashboardTab('subscribed')" id="dash-tab-subscribed" class="py-3 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition">Subscribed</button>
+        <button onclick="switchDashboardTab('sticky')" id="dash-tab-sticky" class="hidden py-3 px-3 border-b-2 border-transparent text-rose-600 hover:text-rose-700 transition">Sticky Topics (Mod)</button>
+        <button onclick="switchDashboardTab('signature')" id="dash-tab-signature" class="py-3 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition">Create Signature ✍️</button>
+        <button onclick="switchDashboardTab('reputation_history')" id="dash-tab-reputation_history" class="py-3 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition">Reputation &amp; Thanks</button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="p-6 overflow-y-auto flex-1 min-h-[300px] bg-slate-50/50">
+        
+        <!-- Tab 1: My Topics -->
+        <div id="dash-pane-my_topics" class="space-y-3">
+          <div class="text-center text-slate-400 py-8">Loading topics...</div>
+        </div>
+
+        <!-- Tab 2: My Comments -->
+        <div id="dash-pane-my_comments" class="hidden space-y-3">
+          <div class="text-center text-slate-400 py-8">Loading comments...</div>
+        </div>
+
+        <!-- Tab 3: Liked Topics -->
+        <div id="dash-pane-liked" class="hidden space-y-3">
+          <div class="text-center text-slate-400 py-8">Loading liked topics...</div>
+        </div>
+
+        <!-- Tab 4: Subscribed Topics -->
+        <div id="dash-pane-subscribed" class="hidden space-y-3">
+          <div class="text-center text-slate-400 py-8">Loading subscribed topics...</div>
+        </div>
+
+        <!-- Tab 5: Sticky Topics (Moderator view) -->
+        <div id="dash-pane-sticky" class="hidden space-y-3">
+          <div class="text-center text-slate-400 py-8">Loading sticky topics...</div>
+        </div>
+
+        <!-- Tab 6: Create Signature -->
+        <div id="dash-pane-signature" class="hidden space-y-4 max-w-2xl mx-auto">
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">Forum Signature</h4>
+                <p class="text-xs text-slate-500">Include a customized signature automatically into your posts and replies to promote, highlight, or identify yourself.</p>
+              </div>
+              <span class="text-xs font-mono text-slate-400">Max 250 chars</span>
+            </div>
+
+            <textarea 
+              id="dash-signature-input" 
+              rows="3" 
+              placeholder="e.g. 🚀 Quantum Cryptographer & Security Researcher | Check my GitHub: https://github.com/myname | Telegram: @myhandle" 
+              class="w-full bg-slate-50 border border-slate-200 focus:border-[#F68D72] focus:bg-white rounded-xl p-3 text-xs text-slate-800 outline-none transition"
+              oninput="handleSignatureInput(this.value)"
+            ></textarea>
+
+            <!-- Signature Live Preview Card -->
+            <div class="bg-slate-50/80 rounded-xl p-3 border border-dashed border-slate-200">
+              <span class="text-[10px] font-bold uppercase text-slate-400 tracking-wider block mb-1">Live Post Signature Preview:</span>
+              <div id="dash-signature-preview" class="forum-sig-card !mt-0 !pt-0 !border-0 text-slate-600">
+                <em>No signature set. Type above to preview.</em>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+              <button onclick="saveUserSignature()" class="px-5 py-2.5 rounded-xl bg-[#F68D72] hover:bg-[#E06748] text-white font-extrabold text-xs shadow-md transition cursor-pointer flex items-center gap-1.5">
+                <i class="fas fa-check"></i>
+                <span>Save Signature</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 7: Reputation & Thanks History -->
+        <div id="dash-pane-reputation_history" class="hidden space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+                <i class="fas fa-star text-amber-500"></i>
+                <span>Recent Reputation Votes Received</span>
+              </h4>
+              <div id="dash-rep-voters-list" class="space-y-2 text-xs">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+              <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+                <i class="fas fa-hands-clapping text-[#E06748]"></i>
+                <span>Recent Thanks Received</span>
+              </h4>
+              <div id="dash-thankers-list" class="space-y-2 text-xs">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       REPUTATION VOTERS MODAL
+       Shows list of members who increased / decreased creator's reputation
+       ========================================================================= -->
+  <div id="reputation-voters-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <div class="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-medal text-amber-400"></i>
+          <h3 class="font-extrabold text-sm text-white">Reputation Votes</h3>
+        </div>
+        <button onclick="closeReputationModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4 max-h-80 overflow-y-auto space-y-2" id="reputation-voters-content">
+        <div class="text-center text-slate-400 py-6 text-xs">Loading voters...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       THANKERS MODAL
+       Shows list of members who thanked post creator
+       ========================================================================= -->
+  <div id="thankers-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <div class="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-hands-clapping text-[#F68D72]"></i>
+          <h3 class="font-extrabold text-sm text-white">Members Who Thanked Creator</h3>
+        </div>
+        <button onclick="closeThankersModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-4 max-h-80 overflow-y-auto space-y-2" id="thankers-modal-content">
+        <div class="text-center text-slate-400 py-6 text-xs">Loading thankers...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ADMIN CATEGORY & ICON MANAGER MODAL
+       Allow admin to add / delete subcategories, add / edit icons, and toggle user online icon
+       ========================================================================= -->
+  <div id="admin-categories-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm hidden">
+    <div class="w-full max-w-2xl bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-shield-halved text-emerald-400"></i>
+          <h3 class="font-extrabold text-sm text-white">Admin Forum Manager: Categories &amp; Icons</h3>
+        </div>
+        <button onclick="closeAdminCategoriesModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5">
+        <!-- Forum Settings (Online Icon & Popularity Criteria) -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-3">
+          <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700">Forum Settings</h4>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <label class="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-800">
+              <input type="checkbox" id="admin-setting-online-icon" class="w-4 h-4 rounded text-emerald-600" />
+              <span>Enable User Online Icon Indicator (🟢)</span>
+            </label>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+              <span>Popularity Criteria:</span>
+              <select id="admin-setting-popular-crit" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs outline-none">
+                <option value="posts">Maximum Posts / Replies</option>
+                <option value="views">Most Viewed</option>
+                <option value="likes">Most Liked</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="saveAdminSettings()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs transition">
+            Save Settings
+          </button>
+        </div>
+
+        <!-- Add / Edit Category Form -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-2xs">
+          <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700" id="cat-form-title">Add / Edit Category</h4>
+          <input type="hidden" id="admin-cat-id" value="" />
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Name</label>
+              <input type="text" id="admin-cat-name" placeholder="e.g. AI & WebAssembly" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Slug</label>
+              <input type="text" id="admin-cat-slug" placeholder="e.g. ai-wasm" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Icon Class</label>
+              <input type="text" id="admin-cat-icon" placeholder="e.g. fa-robot" value="fa-folder" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:bg-white" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">Subcategories (comma separated)</label>
+            <input type="text" id="admin-cat-subcategories" placeholder="e.g. Models, Optimization, Benchmarks" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs outline-none focus:bg-white" />
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button onclick="resetCatForm()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition">Cancel</button>
+            <button onclick="saveAdminCategory()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition">Save Category</button>
+          </div>
+        </div>
+
+        <!-- Existing Categories List -->
+        <div class="space-y-2">
+          <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700">Existing Categories &amp; Subcategories</h4>
+          <div id="admin-categories-table" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
