@@ -921,38 +921,6 @@ try {
         </div>
       </div>
 
-      <!-- Yahoo Mail Style Sponsored Google Ad Placement (Above Mails, Below Search Bar in Mobile & Desktop) -->
-      <div id="inbox-sponsored-ad-banner" class="px-4 pt-1.5 pb-2 shrink-0 select-none">
-        <div class="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-slate-50 via-white to-amber-50/20 p-2.5 sm:p-3 shadow-2xs relative overflow-hidden transition-all duration-200 hover:border-slate-300">
-          <!-- Top Row: Yahoo Mail Style Sponsored Badge & Action -->
-          <div class="flex items-center justify-between mb-1.5 px-0.5">
-            <div class="flex items-center gap-1.5">
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-200/90 text-slate-600 px-1.5 py-0.5 rounded shadow-2xs">Ad</span>
-              <span class="text-[11px] font-semibold text-slate-500">Sponsored</span>
-            </div>
-            <div class="flex items-center gap-1 text-slate-400">
-              <span class="text-[10px] text-slate-400 font-medium">Google AdSense</span>
-              <button type="button" onclick="document.getElementById('inbox-sponsored-ad-banner').style.display='none'" class="p-1 text-slate-300 hover:text-slate-500 rounded-md transition cursor-pointer" title="Hide Ad">
-                <i data-lucide="x" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Google AdSense Unit (Client ca-pub-4083745907535838) -->
-          <div class="min-h-[60px] sm:min-h-[85px] w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-100/40">
-            <ins class="adsbygoogle"
-                 style="display:block; width:100%; text-align:center;"
-                 data-ad-client="ca-pub-4083745907535838"
-                 data-ad-slot="auto"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-            </script>
-          </div>
-        </div>
-      </div>
-
       <!-- Messages Thread List Container -->
       <div id="threads-container" class="flex-1 overflow-y-auto px-4 py-1 space-y-1.5 pb-24 md:pb-6">
         <!-- Rendered dynamically by renderMessageList() -->
