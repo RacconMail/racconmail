@@ -305,6 +305,39 @@
       color: #111827 !important;
     }
 
+  
+    /* =========================================================================
+       LINKUP SOFT-ELEVATION DESIGN SYSTEM (PURE WHITE CARDS, SOFT MULTI-DIFFUSE SHADOWS)
+       ========================================================================= */
+    body {
+      background-color: #F8F9FB !important;
+      color: #0F172A !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+    }
+
+    .linkup-card {
+      background: #FFFFFF !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(226, 232, 240, 0.7) !important;
+      box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.04), 0 6px 12px -2px rgba(15, 23, 42, 0.02) !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .linkup-card:hover {
+      box-shadow: 0 20px 40px -6px rgba(15, 23, 42, 0.07), 0 8px 16px -3px rgba(15, 23, 42, 0.03) !important;
+      transform: translateY(-2px);
+    }
+
+    .nav-item-active {
+      background: #E8F8F9 !important;
+      color: #0284C7 !important;
+      font-weight: 800 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+    }
+    .nav-item-active i {
+      color: #0284C7 !important;
+    }
+
   </style>
   <script src="/js/notifications.js"></script>
 </head>
@@ -356,7 +389,7 @@
       <!-- Auth & User Actions -->
       <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
         <button 
-          onclick="openSubscriptionPlansModal()" 
+          style="display:none;" 
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-violet-600 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer mr-1"
           title="Pro Plans &amp; Subscriptions"
         >
@@ -487,18 +520,7 @@
             </div>
             <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 tracking-wide">Live</span>
           </button>
-        <div class="pt-2 border-t border-slate-100 mt-2">
-            <button 
-              onclick="openSubscriptionPlansModal()" 
-              class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200/80 transition cursor-pointer group shadow-2xs"
-            >
-              <div class="flex items-center gap-2">
-                <i class="fas fa-gem text-amber-500 group-hover:rotate-12 transition-transform"></i>
-                <span>Pro Subscriptions</span>
-              </div>
-              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-amber-200 text-amber-900 uppercase">PRO</span>
-            </button>
-          </div>
+        
         </nav>
 
         <!-- 1. FICTION GENRES -->
@@ -2399,198 +2421,6 @@
 
     </div>
   </div>
-  <div id="subscription-plans-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden relative animate-in fade-in zoom-in-95 duration-200 my-8">
-      
-      <!-- Close Button -->
-      <button onclick="closeSubscriptionPlansModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-sm transition cursor-pointer z-10" title="Close">
-        <i class="fas fa-times"></i>
-      </button>
-
-      <!-- MODAL STEP 1: PLANS SELECTION -->
-      <div id="sub-step-plans" class="p-6 sm:p-8 space-y-6">
-        <div class="text-center max-w-xl mx-auto space-y-2">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/10 to-violet-500/10 border border-amber-500/20 text-amber-700 text-[11px] font-bold tracking-wide uppercase">
-            <i class="fas fa-crown text-amber-500"></i>
-            <span>Raccon Pro &amp; Premium Upgrades</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Choose Your Subscription Plan</h2>
-          <p class="text-xs sm:text-sm text-slate-500 font-medium">Unlock VIP Forum access, complete Stories catalog, expanded NVMe storage, and unlimited PGP E2EE privacy.</p>
-          
-          <!-- Billing Cycle Toggle -->
-          <div class="pt-3 inline-flex items-center p-1 rounded-full bg-slate-100 border border-slate-200/80">
-            <button type="button" id="sub-cycle-monthly" onclick="setSubBillingCycle('monthly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition bg-white text-slate-900 shadow-2xs">Monthly</button>
-            <button type="button" id="sub-cycle-yearly" onclick="setSubBillingCycle('yearly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
-              <span>Yearly</span>
-              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-tight">-20% Discount</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Plans Grid (Dynamically Populated with Robust Fallback) -->
-        <div id="sub-plans-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-          <!-- Dynamically populated by renderSubscriptionPlans() -->
-        </div>
-
-        <!-- Money-back guarantee footer note -->
-        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-shield-alt text-emerald-500"></i>
-            <span>30-Day Money-Back Guarantee • Zero Hidden Fees</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <i class="fab fa-cc-visa text-slate-400 text-base"></i>
-            <i class="fab fa-cc-mastercard text-slate-400 text-base"></i>
-            <i class="fab fa-cc-paypal text-slate-400 text-base"></i>
-            <i class="fas fa-lock text-slate-400 text-xs"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- MODAL STEP 2: CHECKOUT & PAYMENT WINDOW -->
-      <div id="sub-step-checkout" class="hidden p-6 sm:p-8 space-y-6">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-          <button type="button" onclick="backToPlansSelection()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer">
-            <i class="fas fa-arrow-left text-[10px]"></i>
-            <span>Back to Plans</span>
-          </button>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-lock text-emerald-600 text-xs"></i>
-            <span class="text-xs font-bold text-slate-700">256-Bit SSL Encrypted Checkout</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-          
-          <!-- Left Column: Payment Form (7 cols) -->
-          <div class="md:col-span-7 space-y-4">
-            <div>
-              <h3 class="text-base font-extrabold text-slate-900">Secure Payment Checkout</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Select your payment method to activate your subscription.</p>
-            </div>
-
-            <!-- Payment Method Tabs -->
-            <div class="grid grid-cols-2 gap-3 pt-1">
-              <button type="button" id="btn-pay-card" onclick="selectPayMethod('card')" class="p-3 rounded-2xl border-2 border-[#6c4ff5] bg-indigo-50/30 flex items-center justify-center gap-2 text-xs font-bold text-slate-900 transition cursor-pointer">
-                <i class="far fa-credit-card text-[#6c4ff5]"></i>
-                <span>Credit / Debit Card</span>
-              </button>
-              <button type="button" id="btn-pay-paypal" onclick="selectPayMethod('paypal')" class="p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center gap-2 text-xs font-bold text-slate-700 transition cursor-pointer">
-                <i class="fab fa-paypal text-blue-600"></i>
-                <span>PayPal Express</span>
-              </button>
-            </div>
-
-            <!-- Card Form Fields -->
-            <form id="sub-checkout-form" onsubmit="handleSubscriptionPaymentSubmit(event)" class="space-y-3 pt-2">
-              <div id="card-fields-container" class="space-y-3">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Cardholder Name</label>
-                  <input type="text" id="chk-card-name" required placeholder="e.g. Alex Hunter" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-medium" />
-                </div>
-
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Card Number</label>
-                  <div class="relative">
-                    <input type="text" id="chk-card-number" required maxlength="19" placeholder="4532 •••• •••• 8892" oninput="formatCardNumberInput(this)" class="w-full pl-3.5 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono" />
-                    <i class="far fa-credit-card text-slate-400 absolute right-3.5 top-3 text-sm"></i>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Expiration (MM/YY)</label>
-                    <input type="text" id="chk-card-exp" required maxlength="5" placeholder="12/28" oninput="formatCardExpInput(this)" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono text-center" />
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">CVC / CVV</label>
-                    <input type="password" id="chk-card-cvc" required maxlength="4" placeholder="•••" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono text-center tracking-widest" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- PayPal notice when selected -->
-              <div id="paypal-notice-container" class="hidden p-4 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1">
-                <div class="font-bold flex items-center gap-1.5">
-                  <i class="fab fa-paypal text-blue-600"></i>
-                  <span>Authenticate PayPal Express Checkout</span>
-                </div>
-                <p class="text-[11px] text-blue-700 leading-relaxed">You will be securely redirected to PayPal Express to authorize your billing schedule.</p>
-              </div>
-
-              <div class="pt-3">
-                <button type="submit" id="sub-pay-submit-btn" class="w-full py-3 px-5 rounded-2xl bg-[#6c4ff5] hover:bg-[#583bcc] active:scale-98 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition flex items-center justify-center gap-2 cursor-pointer">
-                  <i class="fas fa-lock text-xs"></i>
-                  <span id="sub-pay-btn-label">Pay Now €9.99</span>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Right Column: Order Summary (5 cols) -->
-          <div class="md:col-span-5 bg-slate-50 rounded-2xl p-5 border border-slate-200/80 flex flex-col justify-between space-y-4">
-            <div>
-              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Order Summary</h4>
-              <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 mb-4">
-                <div class="flex items-center justify-between">
-                  <span id="summary-plan-name" class="font-bold text-slate-900 text-sm">Pro Creator</span>
-                  <span id="summary-plan-badge" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-violet-100 text-violet-800 uppercase">POPULAR</span>
-                </div>
-                <div id="summary-plan-period" class="text-xs text-slate-500 font-medium">Billed monthly • Automatic renewal</div>
-              </div>
-
-              <div class="space-y-2 text-xs text-slate-600 border-b border-slate-200/80 pb-3">
-                <div class="flex justify-between">
-                  <span>Subtotal</span>
-                  <span id="summary-subtotal" class="font-bold text-slate-900">€9.99</span>
-                </div>
-                <div class="flex justify-between">
-                  <span>Taxes & Fees Included</span>
-                  <span class="font-bold text-emerald-600">€0.00</span>
-                </div>
-              </div>
-
-              <div class="flex justify-between items-center pt-3">
-                <span class="font-bold text-sm text-slate-900">Total Amount:</span>
-                <span id="summary-total" class="font-extrabold text-xl text-[#6c4ff5]">€9.99</span>
-              </div>
-            </div>
-
-            <div class="p-3 rounded-xl bg-white border border-slate-200/60 text-[11px] text-slate-500 space-y-1">
-              <div class="font-bold text-slate-800 flex items-center gap-1">
-                <i class="fas fa-check-circle text-emerald-500"></i> Instant VIP Benefits
-              </div>
-              <p class="leading-relaxed">Instant account activation. PGP E2EE vault, Forum VIP Badge, and unlimited Stories reading.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MODAL STEP 3: SUCCESS CONFIRMATION -->
-      <div id="sub-step-success" class="hidden p-8 sm:p-12 text-center space-y-4">
-        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mx-auto shadow-inner animate-bounce">
-          <i class="fas fa-check"></i>
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-2xl font-extrabold text-slate-900">Congratulations! Subscription Activated 🎉</h3>
-          <p id="sub-success-message" class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">Your account has been successfully upgraded. You now enjoy all VIP features across the entire network!</p>
-        </div>
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 max-w-sm mx-auto text-xs space-y-1 text-left font-mono">
-          <div class="flex justify-between"><span class="text-slate-400">Transaction ID:</span><span id="sub-success-txid" class="text-slate-800 font-bold">TX-89214</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Status:</span><span class="text-emerald-600 font-bold">Active / Confirmed</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Plan:</span><span id="sub-success-plan" class="text-[#6c4ff5] font-bold">Pro Creator</span></div>
-        </div>
-        <div class="pt-4">
-          <button type="button" onclick="closeSubscriptionPlansModal()" class="px-8 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition cursor-pointer">
-            Start Using Pro 🦝
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Subscription Logic Script -->
   <script>
     let activeSubCycle = 'monthly';
     let currentSelectedPlan = null;

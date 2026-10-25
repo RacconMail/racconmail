@@ -67,6 +67,86 @@
   </script>
 
   <style>
+    
+    /* =========================================================================
+       LINKUP SOFT-ELEVATION DESIGN SYSTEM (PURE WHITE CARDS, SOFT MULTI-DIFFUSE SHADOWS)
+       ========================================================================= */
+    body {
+      background-color: #F8F9FB !important;
+      color: #0F172A !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+    }
+
+    /* Soft Elevated White Cards */
+    .linkup-card {
+      background: #FFFFFF !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(226, 232, 240, 0.7) !important;
+      box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.04), 0 6px 12px -2px rgba(15, 23, 42, 0.02) !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .linkup-card:hover {
+      box-shadow: 0 20px 40px -6px rgba(15, 23, 42, 0.07), 0 8px 16px -3px rgba(15, 23, 42, 0.03) !important;
+      transform: translateY(-2px);
+    }
+
+    .linkup-stat-card {
+      background: #FFFFFF !important;
+      border-radius: 20px !important;
+      border: 1px solid rgba(226, 232, 240, 0.7) !important;
+      box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.04) !important;
+      padding: 16px 20px !important;
+    }
+
+    /* Active Nav Item - Soft Turquoise/Cyan Pill like reference "Dashboard" */
+    .nav-item-active {
+      background: #E8F8F9 !important;
+      color: #0284C7 !important;
+      font-weight: 800 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08) !important;
+    }
+    .nav-item-active i {
+      color: #0284C7 !important;
+    }
+
+    /* Soft Pastel Status Pills (matching screenshot: Done, +98%, -6%) */
+    .pill-pastel-mint {
+      background: #E8F8F0 !important;
+      color: #10B981 !important;
+      border: 1px solid #D1FAE5 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-cyan {
+      background: #E0F7FA !important;
+      color: #0097A7 !important;
+      border: 1px solid #B2EBF2 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-rose {
+      background: #FFF1F2 !important;
+      color: #F43F5E !important;
+      border: 1px solid #FFE4E6 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-amber {
+      background: #FFFBEB !important;
+      color: #D97706 !important;
+      border: 1px solid #FEF3C7 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-purple {
+      background: #F5F3FF !important;
+      color: #8B5CF6 !important;
+      border: 1px solid #EDE9FE !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+
     /* Custom Flarum Precision Styles */
     html, body {
       background-color: #F2F4F7;
@@ -405,7 +485,7 @@
       <!-- Auth & User Actions -->
       <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
         <button 
-          onclick="openSubscriptionPlansModal()" 
+          style="display:none;" 
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-violet-600 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer mr-1"
           title="Pro Plans &amp; Subscriptions"
         >
@@ -578,18 +658,7 @@
             <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-600 border border-rose-200 uppercase">PIN</span>
           </button>
 
-          <div class="pt-2 border-t border-slate-100 mt-2">
-            <button 
-              onclick="openSubscriptionPlansModal()" 
-              class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200/80 transition cursor-pointer group shadow-2xs"
-            >
-              <div class="flex items-center gap-2">
-                <i class="fas fa-gem text-amber-500 group-hover:rotate-12 transition-transform"></i>
-                <span>Pro Subscriptions</span>
-              </div>
-              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-amber-200 text-amber-900 uppercase">PRO</span>
-            </button>
-          </div>
+          
         </nav>
 
         <!-- Flarum Iconic Tags & Categories -->
@@ -717,35 +786,35 @@
         </div>
 
         <!-- Forum Statistics Widget -->
-        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-4 text-white shadow-md">
+        <div class="bg-white rounded-3xl border border-slate-200/70 p-5 shadow-[0_10px_30px_-4px_rgba(15,23,42,0.04)] text-slate-900">
           <div class="flex items-center justify-between mb-3 border-b border-slate-700/60 pb-2">
             <div class="flex items-center gap-1.5">
               <i class="fas fa-chart-simple text-[#F68D72] text-xs"></i>
-              <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-200">Forum Statistics</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-800">Forum Statistics</span>
             </div>
             <span class="flex items-center gap-1 text-[10px] font-bold text-emerald-400">
               <span class="online-dot"></span> Live
             </span>
           </div>
           <div class="grid grid-cols-2 gap-2.5 text-center">
-            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
-              <div id="stat-total-topics" class="text-base font-extrabold text-white">0</div>
+            <div class="bg-[#F8F9FB] rounded-2xl p-2.5 border border-slate-200/60">
+              <div id="stat-total-topics" class="text-xl font-black text-slate-900">0</div>
               <div class="text-[10px] text-slate-400 uppercase font-semibold">Topics</div>
             </div>
-            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
-              <div id="stat-total-posts" class="text-base font-extrabold text-white">0</div>
+            <div class="bg-[#F8F9FB] rounded-2xl p-2.5 border border-slate-200/60">
+              <div id="stat-total-posts" class="text-xl font-black text-slate-900">0</div>
               <div class="text-[10px] text-slate-400 uppercase font-semibold">Total Posts</div>
             </div>
-            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
-              <div id="stat-total-users" class="text-base font-extrabold text-white">0</div>
+            <div class="bg-[#F8F9FB] rounded-2xl p-2.5 border border-slate-200/60">
+              <div id="stat-total-users" class="text-xl font-black text-slate-900">0</div>
               <div class="text-[10px] text-slate-400 uppercase font-semibold">Members</div>
             </div>
-            <div class="bg-slate-800/80 rounded-xl p-2 border border-slate-700/50">
+            <div class="bg-[#F8F9FB] rounded-2xl p-2.5 border border-slate-200/60">
               <div id="stat-online-users" class="text-base font-extrabold text-emerald-400">0</div>
               <div class="text-[10px] text-slate-400 uppercase font-semibold">Online Now</div>
             </div>
           </div>
-          <div class="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[11px] text-slate-300">
+          <div class="mt-2.5 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[11px] text-slate-600">
             <span>Total Thanks:</span>
             <span id="stat-total-thanks" class="font-extrabold text-[#F68D72]">0 🙌</span>
           </div>
@@ -791,7 +860,7 @@
           <!-- Breadcrumb Navigation Widget -->
           <nav id="forum-breadcrumbs" aria-label="Breadcrumb" class="bg-white rounded-xl border border-slate-200 px-4 py-2.5 shadow-2xs flex items-center gap-2 text-xs font-semibold text-slate-600 overflow-x-auto whitespace-nowrap">
             <a href="/" class="hover:text-slate-900 flex items-center gap-1.5"><i class="fas fa-home text-slate-400"></i> Home</a>
-            <span class="text-slate-300">/</span>
+            <span class="text-slate-600">/</span>
             <a href="/forum" onclick="setNavView('all'); return false;" class="text-slate-900 font-bold">Forum</a>
             <span id="breadcrumb-dynamic" class="hidden"></span>
           </nav>
@@ -804,7 +873,7 @@
                 <span id="results-banner-type">Search Results</span>
               </div>
               <h2 id="results-banner-query" class="text-base sm:text-lg font-extrabold text-white mt-0.5">Discussions</h2>
-              <p id="results-banner-count" class="text-xs text-slate-300 mt-0.5">Found matching discussions</p>
+              <p id="results-banner-count" class="text-xs text-slate-600 mt-0.5">Found matching discussions</p>
             </div>
             <button onclick="clearSearchAndFilters()" class="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition cursor-pointer flex items-center gap-1.5 shrink-0">
               <i class="fas fa-times text-xs"></i>
@@ -813,20 +882,31 @@
           </div>
 
           
-          <!-- Stream Controls Bar (Sort, Tag Filter, Refresh) -->
-          <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 flex items-center justify-between gap-4 shadow-2xs">
-            <div class="flex items-center gap-2">
-              <span id="current-view-title" class="text-sm font-extrabold text-slate-900">All Discussions</span>
+          <!-- Stream Controls Bar (Hide Menu, Sort, Refresh) -->
+          <div class="bg-white rounded-3xl border border-slate-200/70 p-3 sm:px-5 flex items-center justify-between gap-3 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)]">
+            <div class="flex items-center gap-3">
+              <!-- Prominent Hide / Show Menu Toggle Button -->
+              <button 
+                id="btn-toggle-forum-menu-main" 
+                onclick="toggleForumMenu()" 
+                class="inline-flex items-center gap-2 py-2 px-3.5 rounded-2xl bg-[#F8F9FB] hover:bg-[#F1F4F9] text-slate-700 text-xs font-bold transition shadow-2xs cursor-pointer border border-slate-200/60"
+                title="Hide or Show Forum Menu"
+              >
+                <i class="fas fa-bars-staggered text-slate-500" id="main-toggle-menu-icon"></i>
+                <span id="main-toggle-menu-text">Hide Menu</span>
+              </button>
+
+              <span id="current-view-title" class="text-sm font-extrabold text-slate-900 tracking-tight">All Discussions</span>
               <span id="active-tag-indicator" class="hidden tag-badge tag-general">All</span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
               <!-- Sort Dropdown -->
               <div class="relative">
                 <select 
                   id="forum-sort-select" 
                   onchange="changeSorting(this.value)" 
-                  class="bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-xl border border-slate-200 outline-none cursor-pointer transition"
+                  class="bg-[#F8F9FB] hover:bg-[#F1F4F9] text-slate-700 text-xs font-bold py-2 px-3 sm:px-3.5 rounded-2xl border border-slate-200/60 outline-none cursor-pointer transition"
                 >
                   <option value="latest">Latest Activity</option>
                   <option value="popular">Top Liked</option>
@@ -838,9 +918,10 @@
               <button 
                 onclick="loadForumFeed(true)" 
                 title="Refresh Feed" 
-                class="p-2 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+                class="p-2 sm:px-3 py-2 rounded-2xl bg-[#F8F9FB] hover:bg-[#F1F4F9] text-slate-500 hover:text-slate-900 transition cursor-pointer border border-slate-200/60 flex items-center gap-1.5 text-xs font-bold"
               >
                 <i class="fas fa-arrows-rotate text-xs"></i>
+                <span class="hidden sm:inline">Refresh</span>
               </button>
             </div>
           </div>
@@ -907,7 +988,7 @@
                 <div id="wall-code-snippet-box" class="hidden mt-3 p-3 bg-slate-900 rounded-xl text-slate-200 space-y-2">
                   <div class="flex items-center justify-between text-xs font-mono text-slate-400">
                     <span>Code Snippet</span>
-                    <select id="wall-code-lang" class="bg-slate-800 text-xs text-slate-300 rounded px-2 py-0.5 border border-slate-700 outline-none">
+                    <select id="wall-code-lang" class="bg-slate-800 text-xs text-slate-600 rounded px-2 py-0.5 border border-slate-700 outline-none">
                       <option value="javascript">JavaScript</option>
                       <option value="php">PHP</option>
                       <option value="python">Python</option>
@@ -1065,17 +1146,17 @@
     <div class="max-w-4xl mx-auto space-y-3">
       <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-bold text-slate-700">
         <a href="/" class="hover:text-slate-900 transition">Home</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/legal/terms" class="hover:text-slate-900 transition">Terms of Service</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/legal/privacy" class="hover:text-slate-900 transition">Privacy Policy</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/news" class="hover:text-[#E06748] transition">News Wire</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/stories" class="hover:text-[#4A6FDC] transition">Stories</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/forum" class="text-[#7052ff] font-extrabold">Forum</a>
-        <span class="text-slate-300">&bull;</span>
+        <span class="text-slate-600">&bull;</span>
         <a href="/inbox" class="hover:text-slate-900 transition">Webmail</a>
       </div>
       <div class="flex items-center justify-center gap-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500 font-medium">
@@ -1173,7 +1254,7 @@
       <div id="c-code-box" class="hidden p-3 bg-slate-900 rounded-xl text-slate-200 space-y-2">
         <div class="flex items-center justify-between text-xs font-mono text-slate-400">
           <span>Code Block</span>
-          <select id="c-code-lang" class="bg-slate-800 text-xs text-slate-300 rounded px-2 py-0.5 border border-slate-700 outline-none">
+          <select id="c-code-lang" class="bg-slate-800 text-xs text-slate-600 rounded px-2 py-0.5 border border-slate-700 outline-none">
             <option value="javascript">JavaScript</option>
             <option value="php">PHP</option>
             <option value="python">Python</option>
@@ -1487,16 +1568,16 @@
       if (catSlug && catSlug !== 'all') {
         const catObj = allCategoriesData.find(c => c.slug === catSlug);
         const catName = catObj ? catObj.name : catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
-        parts.push(`<span class="text-slate-300">/</span><a href="#/c/${catSlug}" onclick="filterByCategory('${catSlug}'); return false;" class="text-slate-600 hover:text-slate-900">${escapeHtml(catName)}</a>`);
+        parts.push(`<span class="text-slate-600">/</span><a href="#/c/${catSlug}" onclick="filterByCategory('${catSlug}'); return false;" class="text-slate-600 hover:text-slate-900">${escapeHtml(catName)}</a>`);
       }
       if (subcategory) {
-        parts.push(`<span class="text-slate-300">/</span><span class="text-slate-600">${escapeHtml(subcategory)}</span>`);
+        parts.push(`<span class="text-slate-600">/</span><span class="text-slate-600">${escapeHtml(subcategory)}</span>`);
       }
       if (searchOrTag) {
-        parts.push(`<span class="text-slate-300">/</span><span class="text-[#E06748] font-bold">${escapeHtml(searchOrTag)}</span>`);
+        parts.push(`<span class="text-slate-600">/</span><span class="text-[#E06748] font-bold">${escapeHtml(searchOrTag)}</span>`);
       }
       if (topicTitle) {
-        parts.push(`<span class="text-slate-300">/</span><span class="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs inline-block align-bottom">${escapeHtml(topicTitle)}</span>`);
+        parts.push(`<span class="text-slate-600">/</span><span class="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs inline-block align-bottom">${escapeHtml(topicTitle)}</span>`);
       }
 
       if (parts.length > 0) {
@@ -1769,8 +1850,8 @@
           </div>
           <h5 class="font-bold text-xs text-slate-800 line-clamp-1 hover:text-[#E06748] transition">${escapeHtml(t.title)}</h5>
           <div class="flex items-center gap-3 text-[10px] text-slate-400 font-semibold mt-1">
-            <span><i class="fas fa-eye text-slate-300"></i> ${t.views_count || 0}</span>
-            <span><i class="fas fa-comment text-slate-300"></i> ${t.comments_count || 0}</span>
+            <span><i class="fas fa-eye text-slate-600"></i> ${t.views_count || 0}</span>
+            <span><i class="fas fa-comment text-slate-600"></i> ${t.comments_count || 0}</span>
             <span><i class="fas fa-medal text-amber-500/70"></i> +${t.reputation_score || 0}</span>
           </div>
         </div>
@@ -1922,7 +2003,7 @@
         }
 
         return `
-          <article onclick="openThreadReader('${post.id}')" class="bg-white rounded-2xl border ${isSticky ? 'border-rose-200 shadow-sm' : 'border-slate-200 shadow-2xs'} p-4 sm:p-5 mb-3 transition hover:border-slate-300 hover:shadow-md cursor-pointer select-none group">
+          <article onclick="openThreadReader('${post.id}')" class="linkup-card p-5 sm:p-6 mb-4 cursor-pointer select-none group">
             <div class="flex items-start justify-between gap-3.5">
               <div class="flex-1 min-w-0 pr-1">
                 
@@ -3273,11 +3354,47 @@
 
     function toggleForumMenu() {
       const aside = document.querySelector('aside');
-      aside?.classList.toggle('hidden');
-      const btnText = document.getElementById('toggle-forum-menu-text');
-      if (btnText) {
-        btnText.innerText = aside?.classList.contains('hidden') ? 'Show Menu' : 'Hide Menu';
+      const mainSection = document.querySelector('section.lg\\:col-span-9, section.lg\\:col-span-12');
+      if (!aside) return;
+
+      const isHidden = aside.classList.contains('hidden');
+      if (isHidden) {
+        // Show menu
+        aside.classList.remove('hidden');
+        if (mainSection) {
+          mainSection.classList.remove('lg:col-span-12');
+          mainSection.classList.add('lg:col-span-9');
+        }
+        updateToggleButtons(false);
+      } else {
+        // Hide menu
+        aside.classList.add('hidden');
+        if (mainSection) {
+          mainSection.classList.remove('lg:col-span-9');
+          mainSection.classList.add('lg:col-span-12');
+        }
+        updateToggleButtons(true);
       }
+    }
+
+    function updateToggleButtons(isHidden) {
+      const label = isHidden ? 'Show Menu' : 'Hide Menu';
+      const icon = isHidden ? 'fas fa-bars text-slate-500' : 'fas fa-bars-staggered text-slate-500';
+
+      const t1 = document.getElementById('main-toggle-menu-text');
+      const i1 = document.getElementById('main-toggle-menu-icon');
+      if (t1) t1.innerText = label;
+      if (i1) i1.className = icon;
+
+      const t2 = document.getElementById('toggle-forum-menu-text');
+      const i2 = document.getElementById('toggle-forum-menu-icon');
+      if (t2) t2.innerText = label;
+      if (i2) i2.className = icon;
+
+      const t3 = document.getElementById('mobile-forum-toggle-text');
+      const i3 = document.getElementById('mobile-toggle-forum-icon');
+      if (t3) t3.innerText = label;
+      if (i3) i3.className = isHidden ? 'fas fa-bars text-blue-400' : 'fas fa-sliders text-blue-400';
     }
 
     function handleLiveSearch(query) {
@@ -3616,198 +3733,6 @@
 
     </div>
   </div>
-  <div id="subscription-plans-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-100 overflow-hidden relative animate-in fade-in zoom-in-95 duration-200 my-8">
-      
-      <!-- Close Button -->
-      <button onclick="closeSubscriptionPlansModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-sm transition cursor-pointer z-10" title="Close">
-        <i class="fas fa-times"></i>
-      </button>
-
-      <!-- MODAL STEP 1: PLANS SELECTION -->
-      <div id="sub-step-plans" class="p-6 sm:p-8 space-y-6">
-        <div class="text-center max-w-xl mx-auto space-y-2">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/10 to-violet-500/10 border border-amber-500/20 text-amber-700 text-[11px] font-bold tracking-wide uppercase">
-            <i class="fas fa-crown text-amber-500"></i>
-            <span>Raccon Pro &amp; Premium Upgrades</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Choose Your Subscription Plan</h2>
-          <p class="text-xs sm:text-sm text-slate-500 font-medium">Unlock VIP Forum access, complete Stories catalog, expanded NVMe storage, and unlimited PGP E2EE privacy.</p>
-          
-          <!-- Billing Cycle Toggle -->
-          <div class="pt-3 inline-flex items-center p-1 rounded-full bg-slate-100 border border-slate-200/80">
-            <button type="button" id="sub-cycle-monthly" onclick="setSubBillingCycle('monthly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition bg-white text-slate-900 shadow-2xs">Monthly</button>
-            <button type="button" id="sub-cycle-yearly" onclick="setSubBillingCycle('yearly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
-              <span>Yearly</span>
-              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-tight">-20% Discount</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Plans Grid (Dynamically Populated with Robust Fallback) -->
-        <div id="sub-plans-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-          <!-- Dynamically populated by renderSubscriptionPlans() -->
-        </div>
-
-        <!-- Money-back guarantee footer note -->
-        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-shield-alt text-emerald-500"></i>
-            <span>30-Day Money-Back Guarantee • Zero Hidden Fees</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <i class="fab fa-cc-visa text-slate-400 text-base"></i>
-            <i class="fab fa-cc-mastercard text-slate-400 text-base"></i>
-            <i class="fab fa-cc-paypal text-slate-400 text-base"></i>
-            <i class="fas fa-lock text-slate-400 text-xs"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- MODAL STEP 2: CHECKOUT & PAYMENT WINDOW -->
-      <div id="sub-step-checkout" class="hidden p-6 sm:p-8 space-y-6">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-          <button type="button" onclick="backToPlansSelection()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer">
-            <i class="fas fa-arrow-left text-[10px]"></i>
-            <span>Back to Plans</span>
-          </button>
-          <div class="flex items-center gap-2">
-            <i class="fas fa-lock text-emerald-600 text-xs"></i>
-            <span class="text-xs font-bold text-slate-700">256-Bit SSL Encrypted Checkout</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-          
-          <!-- Left Column: Payment Form (7 cols) -->
-          <div class="md:col-span-7 space-y-4">
-            <div>
-              <h3 class="text-base font-extrabold text-slate-900">Secure Payment Checkout</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Select your payment method to activate your subscription.</p>
-            </div>
-
-            <!-- Payment Method Tabs -->
-            <div class="grid grid-cols-2 gap-3 pt-1">
-              <button type="button" id="btn-pay-card" onclick="selectPayMethod('card')" class="p-3 rounded-2xl border-2 border-[#6c4ff5] bg-indigo-50/30 flex items-center justify-center gap-2 text-xs font-bold text-slate-900 transition cursor-pointer">
-                <i class="far fa-credit-card text-[#6c4ff5]"></i>
-                <span>Credit / Debit Card</span>
-              </button>
-              <button type="button" id="btn-pay-paypal" onclick="selectPayMethod('paypal')" class="p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center gap-2 text-xs font-bold text-slate-700 transition cursor-pointer">
-                <i class="fab fa-paypal text-blue-600"></i>
-                <span>PayPal Express</span>
-              </button>
-            </div>
-
-            <!-- Card Form Fields -->
-            <form id="sub-checkout-form" onsubmit="handleSubscriptionPaymentSubmit(event)" class="space-y-3 pt-2">
-              <div id="card-fields-container" class="space-y-3">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Cardholder Name</label>
-                  <input type="text" id="chk-card-name" required placeholder="e.g. Alex Hunter" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-medium" />
-                </div>
-
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Card Number</label>
-                  <div class="relative">
-                    <input type="text" id="chk-card-number" required maxlength="19" placeholder="4532 •••• •••• 8892" oninput="formatCardNumberInput(this)" class="w-full pl-3.5 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono" />
-                    <i class="far fa-credit-card text-slate-400 absolute right-3.5 top-3 text-sm"></i>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Expiration (MM/YY)</label>
-                    <input type="text" id="chk-card-exp" required maxlength="5" placeholder="12/28" oninput="formatCardExpInput(this)" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono text-center" />
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">CVC / CVV</label>
-                    <input type="password" id="chk-card-cvc" required maxlength="4" placeholder="•••" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono text-center tracking-widest" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- PayPal notice when selected -->
-              <div id="paypal-notice-container" class="hidden p-4 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1">
-                <div class="font-bold flex items-center gap-1.5">
-                  <i class="fab fa-paypal text-blue-600"></i>
-                  <span>Authenticate PayPal Express Checkout</span>
-                </div>
-                <p class="text-[11px] text-blue-700 leading-relaxed">You will be securely redirected to PayPal Express to authorize your billing schedule.</p>
-              </div>
-
-              <div class="pt-3">
-                <button type="submit" id="sub-pay-submit-btn" class="w-full py-3 px-5 rounded-2xl bg-[#6c4ff5] hover:bg-[#583bcc] active:scale-98 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition flex items-center justify-center gap-2 cursor-pointer">
-                  <i class="fas fa-lock text-xs"></i>
-                  <span id="sub-pay-btn-label">Pay Now €9.99</span>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Right Column: Order Summary (5 cols) -->
-          <div class="md:col-span-5 bg-slate-50 rounded-2xl p-5 border border-slate-200/80 flex flex-col justify-between space-y-4">
-            <div>
-              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Order Summary</h4>
-              <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 mb-4">
-                <div class="flex items-center justify-between">
-                  <span id="summary-plan-name" class="font-bold text-slate-900 text-sm">Pro Creator</span>
-                  <span id="summary-plan-badge" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-violet-100 text-violet-800 uppercase">POPULAR</span>
-                </div>
-                <div id="summary-plan-period" class="text-xs text-slate-500 font-medium">Billed monthly • Automatic renewal</div>
-              </div>
-
-              <div class="space-y-2 text-xs text-slate-600 border-b border-slate-200/80 pb-3">
-                <div class="flex justify-between">
-                  <span>Subtotal</span>
-                  <span id="summary-subtotal" class="font-bold text-slate-900">€9.99</span>
-                </div>
-                <div class="flex justify-between">
-                  <span>Taxes & Fees Included</span>
-                  <span class="font-bold text-emerald-600">€0.00</span>
-                </div>
-              </div>
-
-              <div class="flex justify-between items-center pt-3">
-                <span class="font-bold text-sm text-slate-900">Total Amount:</span>
-                <span id="summary-total" class="font-extrabold text-xl text-[#6c4ff5]">€9.99</span>
-              </div>
-            </div>
-
-            <div class="p-3 rounded-xl bg-white border border-slate-200/60 text-[11px] text-slate-500 space-y-1">
-              <div class="font-bold text-slate-800 flex items-center gap-1">
-                <i class="fas fa-check-circle text-emerald-500"></i> Instant VIP Benefits
-              </div>
-              <p class="leading-relaxed">Instant account activation. PGP E2EE vault, Forum VIP Badge, and unlimited Stories reading.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MODAL STEP 3: SUCCESS CONFIRMATION -->
-      <div id="sub-step-success" class="hidden p-8 sm:p-12 text-center space-y-4">
-        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mx-auto shadow-inner animate-bounce">
-          <i class="fas fa-check"></i>
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-2xl font-extrabold text-slate-900">Congratulations! Subscription Activated 🎉</h3>
-          <p id="sub-success-message" class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">Your account has been successfully upgraded. You now enjoy all VIP features across the entire network!</p>
-        </div>
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 max-w-sm mx-auto text-xs space-y-1 text-left font-mono">
-          <div class="flex justify-between"><span class="text-slate-400">Transaction ID:</span><span id="sub-success-txid" class="text-slate-800 font-bold">TX-89214</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Status:</span><span class="text-emerald-600 font-bold">Active / Confirmed</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Plan:</span><span id="sub-success-plan" class="text-[#6c4ff5] font-bold">Pro Creator</span></div>
-        </div>
-        <div class="pt-4">
-          <button type="button" onclick="closeSubscriptionPlansModal()" class="px-8 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition cursor-pointer">
-            Start Using Pro 🦝
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Subscription Logic Script -->
   <script>
     let activeSubCycle = 'monthly';
     let currentSelectedPlan = null;
@@ -4407,7 +4332,7 @@
             <p class="text-xs text-slate-400">Manage your topics, subscriptions, reputation, and signature</p>
           </div>
         </div>
-        <button onclick="closeUserDashboard()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+        <button onclick="closeUserDashboard()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-600 hover:text-white flex items-center justify-center transition">
           <i class="fas fa-times text-xs"></i>
         </button>
       </div>
@@ -4551,7 +4476,7 @@
           <i class="fas fa-medal text-amber-400"></i>
           <h3 class="font-extrabold text-sm text-white">Reputation Votes</h3>
         </div>
-        <button onclick="closeReputationModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+        <button onclick="closeReputationModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-600 flex items-center justify-center text-xs">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -4572,7 +4497,7 @@
           <i class="fas fa-hands-clapping text-[#F68D72]"></i>
           <h3 class="font-extrabold text-sm text-white">Members Who Thanked Creator</h3>
         </div>
-        <button onclick="closeThankersModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+        <button onclick="closeThankersModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-600 flex items-center justify-center text-xs">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -4593,7 +4518,7 @@
           <i class="fas fa-shield-halved text-emerald-400"></i>
           <h3 class="font-extrabold text-sm text-white">Admin Forum Manager: Categories &amp; Icons</h3>
         </div>
-        <button onclick="closeAdminCategoriesModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+        <button onclick="closeAdminCategoriesModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-600 flex items-center justify-center text-xs">
           <i class="fas fa-times"></i>
         </button>
       </div>

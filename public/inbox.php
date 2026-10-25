@@ -346,51 +346,97 @@ try {
       stroke: #94A3B8;
     }
 
-    /* Active Black Capsule Pill matching user's design */
+    /* =========================================================================
+       LINKUP SOFT-ELEVATION DESIGN SYSTEM (PURE WHITE CARDS & PASTEL SOFT PILLS)
+       ========================================================================= */
+    body {
+      background-color: #F8F9FB !important;
+      color: #0F172A !important;
+    }
+
+    /* Active Nav Item - Soft Turquoise/Cyan Pill like reference "Dashboard" */
     .nav-pill-active {
-      background: linear-gradient(180deg, #27272A 0%, #09090B 100%) !important;
-      color: #FFFFFF !important;
-      border-radius: 14px !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+      background: #E8F8F9 !important;
+      color: #0284C7 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.08) !important;
+      font-weight: 800 !important;
     }
     .nav-pill-active i, .nav-pill-active svg {
-      color: #FFFFFF !important;
-      stroke: #FFFFFF !important;
+      color: #0284C7 !important;
+      stroke: #0284C7 !important;
     }
 
     /* Inactive nav items */
     .nav-pill-inactive {
       color: #64748B;
-      border-radius: 12px;
-      transition: all 0.15s ease;
+      border-radius: 16px;
+      transition: all 0.16s ease;
       cursor: pointer;
     }
     .nav-pill-inactive:hover {
-      background-color: #F8FAFC;
+      background-color: #F1F4F9;
       color: #0F172A;
     }
-    .nav-pill-inactive:hover i {
-      color: #64748B;
-      stroke: #64748B;
+    .nav-pill-inactive:hover i, .nav-pill-inactive:hover svg {
+      color: #475569;
+      stroke: #475569;
     }
 
     /* Active Message Card Elevation */
     .msg-card-active {
       background: #FFFFFF !important;
-      border-radius: 18px !important;
-      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04) !important;
-      border: 1px solid #F1F5F9 !important;
+      border-radius: 20px !important;
+      box-shadow: 0 12px 32px -4px rgba(14, 165, 233, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.03) !important;
+      border: 1.5px solid #0EA5E9 !important;
     }
 
-    /* Inactive message row */
+    /* Inactive message card - Clean White Card with soft elevation */
     .msg-card-inactive {
-      background: transparent;
-      border-radius: 14px;
-      transition: background-color 0.15s ease;
+      background: #FFFFFF !important;
+      border-radius: 18px !important;
+      border: 1px solid rgba(226, 232, 240, 0.7) !important;
+      box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.03) !important;
+      margin-bottom: 6px;
+      transition: all 0.18s ease;
       cursor: pointer;
     }
     .msg-card-inactive:hover {
-      background-color: #F8FAFC;
+      background: #FFFFFF !important;
+      border-color: #CBD5E1 !important;
+      box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.06) !important;
+      transform: translateY(-1px);
+    }
+
+    /* Linkup Elevated Surface */
+    .linkup-card {
+      background: #FFFFFF !important;
+      border-radius: 24px !important;
+      border: 1px solid rgba(226, 232, 240, 0.7) !important;
+      box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.04), 0 6px 12px -2px rgba(15, 23, 42, 0.02) !important;
+    }
+
+    /* Pastel Status Pills */
+    .pill-pastel-mint {
+      background: #E8F8F0 !important;
+      color: #10B981 !important;
+      border: 1px solid #D1FAE5 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-cyan {
+      background: #E0F7FA !important;
+      color: #0097A7 !important;
+      border: 1px solid #B2EBF2 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+    }
+    .pill-pastel-rose {
+      background: #FFF1F2 !important;
+      color: #F43F5E !important;
+      border: 1px solid #FFE4E6 !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
     }
 
     
@@ -792,14 +838,7 @@ try {
           <span class="sidebar-text truncate">Templates</span>
         </button>
 
-        <!-- 7. Pro Suite & Value Extensions Hub -->
-        <button onclick="openProFeaturesModal()" class="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-amber-700 bg-amber-50/70 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl transition cursor-pointer group mt-2">
-          <div class="flex items-center gap-2 truncate">
-            <i data-lucide="sparkles" class="h-3.5 w-3.5 text-amber-500"></i>
-            <span class="sidebar-text truncate">Pro Plan Hub</span>
-          </div>
-          <span class="sidebar-badge text-[9px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded">PRO</span>
-        </button>
+        
 
       </div>
 
@@ -995,10 +1034,7 @@ try {
         </button>
       </div>
 
-      <!-- Bottom Pro Plan Trigger -->
-      <button onclick="openProFeaturesModal()" title="Explore Pro Features & Business Plan" class="w-10 h-10 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 hover:bg-amber-100 transition cursor-pointer active:scale-95">
-        <i data-lucide="sparkles" class="h-5 w-5"></i>
-      </button>
+      
     </div>
 
 
@@ -4056,71 +4092,7 @@ try {
   <!-- ========================================================================= -->
   <!-- ⚙️ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL (Full Multi-Tab Showcase) -->
   <!-- ========================================================================= -->
-  <div id="pro-features-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-5">
-    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-      
-      <!-- Modal Top Header -->
-      <div class="p-5 pb-3 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/80">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-2xs">
-            <i data-lucide="sparkles" class="h-5 w-5"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight">Raccon Pro & Enterprise Hub</h2>
-              <span class="text-[10px] font-black uppercase tracking-wider bg-amber-200/90 text-amber-900 px-2 py-0.5 rounded-full">Included</span>
-            </div>
-            <p class="text-xs text-slate-400">High-value modern extensions ready for commercial and enterprise deployment</p>
-          </div>
-        </div>
-
-        <button onclick="closeProFeaturesModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer">
-          <i data-lucide="x" class="h-5 w-5"></i>
-        </button>
-      </div>
-
-      <!-- 4 Value Proposition Tabs -->
-      <div class="grid grid-cols-4 border-b border-slate-100 bg-white text-xs font-bold text-slate-500 shrink-0 select-none">
-        <button onclick="switchProTab('infra')" id="pro-tab-infra" class="py-3 text-center border-b-2 border-amber-500 text-amber-800 bg-amber-50/40 transition cursor-pointer flex items-center justify-center gap-1.5">
-          <i data-lucide="server" class="h-3.5 w-3.5 text-amber-600"></i>
-          <span class="hidden sm:inline">Infrastructure & Storage</span>
-          <span class="sm:hidden">Infra</span>
-        </button>
-        <button onclick="switchProTab('security')" id="pro-tab-security" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
-          <i data-lucide="shield-check" class="h-3.5 w-3.5 text-emerald-600"></i>
-          <span class="hidden sm:inline">Privacy & Security</span>
-          <span class="sm:hidden">Security</span>
-        </button>
-        <button onclick="switchProTab('productivity')" id="pro-tab-productivity" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
-          <i data-lucide="zap" class="h-3.5 w-3.5 text-cyan-600"></i>
-          <span class="hidden sm:inline">AI & Productivity</span>
-          <span class="sm:hidden">Productivity</span>
-        </button>
-        <button onclick="switchProTab('business')" id="pro-tab-business" class="py-3 text-center border-b-2 border-transparent hover:text-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5">
-          <i data-lucide="briefcase" class="h-3.5 w-3.5 text-purple-600"></i>
-          <span class="hidden sm:inline">Business & CRM</span>
-          <span class="sm:hidden">Business</span>
-        </button>
-      </div>
-
-      <!-- Modal Body (Dynamic Tab Content) -->
-      <div id="pro-tab-content-container" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
-        <!-- Rendered by renderProTabContent() -->
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="p-4 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-2 text-xs text-slate-500">
-          <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
-          <span>100% Native PHP + SQLite Architecture &mdash; Zero External SaaS Dependency</span>
-        </div>
-        <button onclick="closeProFeaturesModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition cursor-pointer">
-          Close Hub
-        </button>
-      </div>
-
-    </div>
-  </div>
+  
 
   <!-- ========================================================================= -->
   <!-- ADD / CONNECT EXTERNAL ACCOUNT MODAL                                      -->
