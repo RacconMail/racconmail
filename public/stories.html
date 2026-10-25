@@ -523,8 +523,8 @@
         
         </nav>
 
-        <!-- 1. FICTION GENRES -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- 1. FICTION GENRES (Desktop) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">1. Fiction Genres</span>
             <span class="text-[10px] font-bold text-slate-400">Browse</span>
@@ -712,11 +712,21 @@
              =================================================================== -->
         <div id="view-stories" class="space-y-4">
           
-          <!-- Stream Controls Bar (Sort, Category Title, Format Filter) -->
-          <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:px-5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 shadow-2xs text-center sm:text-left max-w-3xl mx-auto">
-            <div class="flex items-center justify-center sm:justify-start gap-2">
-              <span id="current-view-title" class="text-sm font-extrabold text-slate-900">All Stories</span>
+          <!-- Stream Controls Bar (Sort, Category Title, Mobile Genre Explorer) -->
+          <div class="bg-white rounded-3xl border border-slate-200/70 p-3.5 sm:px-5 flex flex-wrap items-center justify-between gap-3 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] max-w-3xl mx-auto">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <span id="current-view-title" class="text-sm font-extrabold text-slate-900 tracking-tight">All Stories</span>
               <span id="active-tag-indicator" class="hidden tag-badge tag-general">All</span>
+
+              <!-- Mobile Stories Genre Explorer Trigger -->
+              <button 
+                onclick="toggleMobileStoriesNav()" 
+                class="lg:hidden inline-flex items-center gap-1.5 py-1.5 px-3 rounded-2xl bg-[#F5F3FF] hover:bg-[#EDE9FE] text-[#8B5CF6] text-xs font-bold transition shadow-2xs cursor-pointer border border-[#8B5CF6]/20 active:scale-95"
+                title="Browse Genres & Tropes"
+              >
+                <i class="fas fa-compass text-xs"></i>
+                <span>Explore Genres</span>
+              </button>
             </div>
 
             <div class="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 w-full sm:w-auto">
@@ -1244,7 +1254,44 @@
     }
 
     // Initialize Stories App
-    async function initStories() {
+    async 
+    function toggleMobileStoriesNav(forceState = null) {
+      const drawer = document.getElementById('mobile-stories-nav-drawer');
+      if (!drawer) return;
+      if (forceState !== null) {
+        if (forceState) drawer.classList.remove('hidden');
+        else drawer.classList.add('hidden');
+      } else {
+        drawer.classList.toggle('hidden');
+      }
+    }
+
+    function switchStoriesNavTab(tab) {
+      const tabs = ['genres', 'tropes', 'moods'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-snav-${t}`);
+        const pane = document.getElementById(`pane-snav-${t}`);
+        if (t === tab) {
+          btn?.classList.add('bg-white', 'text-slate-900', 'shadow-2xs');
+          btn?.classList.remove('text-slate-500');
+          pane?.classList.remove('hidden');
+        } else {
+          btn?.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs');
+          btn?.classList.add('text-slate-500');
+          pane?.classList.add('hidden');
+        }
+      });
+    }
+
+    function filterByTrope(trope) {
+      const input = document.getElementById('story-search-input');
+      if (input) {
+        input.value = trope;
+        if (typeof handleLiveSearch === 'function') handleLiveSearch(trope);
+      }
+    }
+
+    function initStories() {
       await checkAuthStatus();
       handleHashRouting();
       window.addEventListener('hashchange', handleHashRouting);
@@ -2996,6 +3043,97 @@
     window.openSubscriptionPlansModal = openSubscriptionPlansModal;
     window.closeSubscriptionPlansModal = closeSubscriptionPlansModal;
   </script>
+
+
+  <!-- =========================================================================
+       MOBILE STORIES QUICK NAVIGATION SHEET (GENRE & TROPE EXPLORER)
+       ========================================================================= -->
+  <div id="mobile-stories-nav-drawer" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200">
+    <div class="w-full max-w-lg bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl p-5 max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-200">
+      <!-- Drag Handle -->
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-3.5"></div>
+      
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#F5F3FF] text-[#8B5CF6] flex items-center justify-center text-sm font-bold shadow-2xs">
+            <i class="fas fa-compass"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900">Genre &amp; Trope Explorer</h3>
+            <p class="text-[11px] text-slate-400">Jump directly to your favorite fiction style</p>
+          </div>
+        </div>
+        <button onclick="toggleMobileStoriesNav(false)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs transition">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Segment Tabs (Genres / Tropes / Moods) -->
+      <div class="flex rounded-2xl bg-slate-100 p-1 my-3 text-xs font-bold">
+        <button onclick="switchStoriesNavTab('genres')" id="tab-btn-snav-genres" class="flex-1 py-1.5 rounded-xl bg-white text-slate-900 shadow-2xs transition">Genres</button>
+        <button onclick="switchStoriesNavTab('tropes')" id="tab-btn-snav-tropes" class="flex-1 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Tropes</button>
+        <button onclick="switchStoriesNavTab('moods')" id="tab-btn-snav-moods" class="flex-1 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Moods</button>
+      </div>
+
+      <!-- Content Area -->
+      <div class="overflow-y-auto py-2 flex-1 text-xs">
+        <!-- Pane 1: Genres -->
+        <div id="pane-snav-genres" class="grid grid-cols-2 gap-2">
+          <button onclick="filterByCategory('all'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left font-bold text-slate-800 flex items-center gap-2">
+            <i class="fas fa-layer-group text-slate-400"></i>
+            <span>All Stories</span>
+          </button>
+          <button onclick="filterByCategory('romance'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-pink-200 bg-pink-50/60 hover:bg-pink-100 text-left font-bold text-pink-700 flex items-center gap-2">
+            <i class="fas fa-heart text-pink-500"></i>
+            <span>Romance</span>
+          </button>
+          <button onclick="filterByCategory('fantasy'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-purple-200 bg-purple-50/60 hover:bg-purple-100 text-left font-bold text-purple-700 flex items-center gap-2">
+            <i class="fas fa-wand-magic-sparkles text-purple-500"></i>
+            <span>Fantasy</span>
+          </button>
+          <button onclick="filterByCategory('scifi'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-cyan-200 bg-cyan-50/60 hover:bg-cyan-100 text-left font-bold text-cyan-700 flex items-center gap-2">
+            <i class="fas fa-rocket text-cyan-500"></i>
+            <span>Sci-Fi</span>
+          </button>
+          <button onclick="filterByCategory('mystery'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100 text-left font-bold text-amber-700 flex items-center gap-2">
+            <i class="fas fa-magnifying-glass text-amber-500"></i>
+            <span>Mystery</span>
+          </button>
+          <button onclick="filterByCategory('thriller'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-left font-bold text-rose-700 flex items-center gap-2">
+            <i class="fas fa-bolt text-rose-500"></i>
+            <span>Thriller</span>
+          </button>
+          <button onclick="filterByCategory('historical'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-yellow-200 bg-yellow-50/60 hover:bg-yellow-100 text-left font-bold text-yellow-800 flex items-center gap-2">
+            <i class="fas fa-landmark text-yellow-600"></i>
+            <span>Historical</span>
+          </button>
+          <button onclick="filterByCategory('horror'); toggleMobileStoriesNav(false);" class="p-2.5 rounded-xl border border-red-200 bg-red-50/60 hover:bg-red-100 text-left font-bold text-red-700 flex items-center gap-2">
+            <i class="fas fa-ghost text-red-500"></i>
+            <span>Horror</span>
+          </button>
+        </div>
+
+        <!-- Pane 2: Tropes -->
+        <div id="pane-snav-tropes" class="hidden flex flex-wrap gap-2">
+          <button onclick="filterByTrope('Enemies to Lovers'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">⚔️ Enemies to Lovers</button>
+          <button onclick="filterByTrope('Slow Burn'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">🔥 Slow Burn</button>
+          <button onclick="filterByTrope('Fake Dating'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">💍 Fake Dating</button>
+          <button onclick="filterByTrope('Found Family'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">🫂 Found Family</button>
+          <button onclick="filterByTrope('Time Loop'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">⏳ Time Loop</button>
+          <button onclick="filterByTrope('Grumpy x Sunshine'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 text-slate-700 font-bold">☀️ Grumpy x Sunshine</button>
+        </div>
+
+        <!-- Pane 3: Moods -->
+        <div id="pane-snav-moods" class="hidden flex flex-wrap gap-2">
+          <button onclick="filterByTrope('Cozy'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 font-bold">☕ Cozy &amp; Heartwarming</button>
+          <button onclick="filterByTrope('Dark'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-300 text-slate-800 font-bold">🖤 Dark &amp; Atmospheric</button>
+          <button onclick="filterByTrope('Thrilling'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-bold">⚡ High Stakes &amp; Fast-Paced</button>
+          <button onclick="filterByTrope('Emotional'); toggleMobileStoriesNav(false);" class="px-3 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 font-bold">💧 Emotional Tearjerker</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

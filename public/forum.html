@@ -728,8 +728,8 @@
           </div>
         </div>
 
-        <!-- Quick Navigation Widget (Categories & Sub-Categories in One Click) -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <!-- Quick Navigation Widget (Desktop Only) -->
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <div class="flex items-center gap-1.5">
               <i class="fas fa-compass text-[#E06748] text-xs"></i>
@@ -882,18 +882,28 @@
           </div>
 
           
-          <!-- Stream Controls Bar (Hide Menu, Sort, Refresh) -->
+          <!-- Stream Controls Bar (Hide Menu, Mobile Quick Nav, Sort, Refresh) -->
           <div class="bg-white rounded-3xl border border-slate-200/70 p-3 sm:px-5 flex items-center justify-between gap-3 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)]">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
               <!-- Prominent Hide / Show Menu Toggle Button -->
               <button 
                 id="btn-toggle-forum-menu-main" 
                 onclick="toggleForumMenu()" 
-                class="inline-flex items-center gap-2 py-2 px-3.5 rounded-2xl bg-[#F8F9FB] hover:bg-[#F1F4F9] text-slate-700 text-xs font-bold transition shadow-2xs cursor-pointer border border-slate-200/60"
+                class="inline-flex items-center gap-2 py-2 px-3 sm:px-3.5 rounded-2xl bg-[#F8F9FB] hover:bg-[#F1F4F9] text-slate-700 text-xs font-bold transition shadow-2xs cursor-pointer border border-slate-200/60"
                 title="Hide or Show Forum Menu"
               >
                 <i class="fas fa-bars-staggered text-slate-500" id="main-toggle-menu-icon"></i>
                 <span id="main-toggle-menu-text">Hide Menu</span>
+              </button>
+
+              <!-- Mobile Quick Navigation Menu Trigger -->
+              <button 
+                onclick="toggleMobileQuickNav()" 
+                class="lg:hidden inline-flex items-center gap-1.5 py-2 px-3 rounded-2xl bg-[#E8F8F9] hover:bg-[#D7F3F5] text-[#0284C7] text-xs font-bold transition shadow-2xs cursor-pointer border border-[#0284C7]/20 active:scale-95"
+                title="Quick Navigation & Categories"
+              >
+                <i class="fas fa-compass text-xs"></i>
+                <span>Quick Nav</span>
               </button>
 
               <span id="current-view-title" class="text-sm font-extrabold text-slate-900 tracking-tight">All Discussions</span>
@@ -1745,31 +1755,48 @@
     }
 
     // Quick Navigation Widget: enables users to access Categories, Sub-Categories and Forums in one click
+    
+    function toggleMobileQuickNav(forceState = null) {
+      const drawer = document.getElementById('mobile-quicknav-drawer');
+      if (!drawer) return;
+      if (forceState !== null) {
+        if (forceState) drawer.classList.remove('hidden');
+        else drawer.classList.add('hidden');
+      } else {
+        drawer.classList.toggle('hidden');
+      }
+    }
+
     function renderQuickNavigation(cats) {
       const container = document.getElementById('quick-nav-container');
-      if (!container) return;
+      const mobileContainer = document.getElementById('mobile-quicknav-content');
 
-      container.innerHTML = cats.filter(c => c.slug !== 'all').map(c => {
+      const itemsHtml = cats.filter(c => c.slug !== 'all').map(c => {
         const subHtml = (c.subcategories || []).map(sub => `
-          <a href="#/c/${c.slug}" onclick="filterBySubcategory('${c.slug}', '${escapeHtml(sub)}'); return false;" class="block py-1 px-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition truncate text-[11px] font-semibold flex items-center gap-1.5">
+          <button onclick="filterBySubcategory('${c.slug}', '${escapeHtml(sub)}'); toggleMobileQuickNav(false);" class="text-left py-1 px-2.5 rounded-xl text-slate-600 hover:text-[#0284C7] bg-white hover:bg-[#E8F8F9] border border-slate-200/80 transition truncate text-[11px] font-semibold flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
             <span>${escapeHtml(sub)}</span>
-          </a>
+          </button>
         `).join('');
 
         return `
-          <div class="border border-slate-100 rounded-xl p-2 bg-slate-50/60 hover:bg-slate-50 transition">
-            <a href="#/c/${c.slug}" onclick="filterByCategory('${c.slug}'); return false;" class="font-bold text-slate-800 hover:text-[#E06748] flex items-center justify-between mb-1">
-              <div class="flex items-center gap-1.5">
-                <i class="fas ${c.icon || 'fa-folder'} text-[#F68D72] text-xs"></i>
+          <div class="border border-slate-200/70 rounded-2xl p-3 bg-[#F8F9FB] transition">
+            <div class="flex items-center justify-between mb-2">
+              <button onclick="filterByCategory('${c.slug}'); toggleMobileQuickNav(false);" class="font-bold text-slate-900 hover:text-[#0284C7] flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs text-[#0284C7]">
+                  <i class="fas ${c.icon || 'fa-folder'}"></i>
+                </div>
                 <span>${escapeHtml(c.name)}</span>
-              </div>
-              <span class="text-[10px] text-slate-400">${c.post_count || 0}</span>
-            </a>
-            ${subHtml ? `<div class="pl-3.5 space-y-0.5 border-l border-slate-200 mt-1">${subHtml}</div>` : ''}
+              </button>
+              <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-full border border-slate-200/80">${c.post_count || 0}</span>
+            </div>
+            ${subHtml ? `<div class="flex flex-wrap gap-1.5 mt-2 pl-2 border-l-2 border-slate-200">${subHtml}</div>` : ''}
           </div>
         `;
       }).join('');
+
+      if (container) container.innerHTML = itemsHtml;
+      if (mobileContainer) mobileContainer.innerHTML = itemsHtml;
     }
 
     // Load Widgets & Forum Statistics
@@ -3478,6 +3505,14 @@
       <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
     </a>
 
+    <!-- Mobile Quick Nav Thumb Pill -->
+    <button onclick="toggleMobileQuickNav()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-[#0284C7] transition group" title="Quick Navigation">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <i class="fas fa-compass text-base text-[#0284C7]"></i>
+      </div>
+      <span class="text-[9px] font-bold text-slate-600">Quick Nav</span>
+    </button>
+
     <!-- Pencil / Start a Discussion -->
     <button onclick="openComposerModal()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Start a Discussion">
       <div class="w-6 h-6 flex items-center justify-center">
@@ -4582,6 +4617,39 @@
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       MOBILE QUICK NAVIGATION BOTTOM SHEET (DRAWER)
+       Enables 1-tap thumb access to categories & sub-categories on mobile
+       ========================================================================= -->
+  <div id="mobile-quicknav-drawer" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200">
+    <div class="w-full max-w-lg bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl p-5 max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-200">
+      <!-- Drag Handle -->
+      <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mb-3.5"></div>
+      
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#E8F8F9] text-[#0284C7] flex items-center justify-center text-sm font-bold shadow-2xs">
+            <i class="fas fa-compass"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900">Quick Navigation</h3>
+            <p class="text-[11px] text-slate-400">1-Click categories &amp; subcategories</p>
+          </div>
+        </div>
+        <button onclick="toggleMobileQuickNav(false)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs transition">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Categories & Subcategories List -->
+      <div id="mobile-quicknav-content" class="overflow-y-auto py-3 space-y-2.5 flex-1 text-xs">
+        <!-- Dynamically rendered -->
       </div>
     </div>
   </div>
