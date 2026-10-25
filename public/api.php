@@ -38,6 +38,8 @@ try {
         PDO::ATTR_TIMEOUT => 15
     ]);
     $db->exec("CREATE TABLE IF NOT EXISTS deleted_messages (message_id TEXT NOT NULL, user_id TEXT NOT NULL, subject TEXT DEFAULT '', sender_email TEXT DEFAULT '', deleted_at DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (message_id, user_id));");
+    $db->exec("CREATE TABLE IF NOT EXISTS user_subscriptions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, plan_id TEXT NOT NULL, plan_name TEXT NOT NULL, billing_cycle TEXT NOT NULL DEFAULT 'monthly', amount REAL NOT NULL, status TEXT NOT NULL DEFAULT 'active', payment_method TEXT NOT NULL DEFAULT 'card', created_at DATETIME DEFAULT CURRENT_TIMESTAMP);");
+    $db->exec("CREATE TABLE IF NOT EXISTS custom_news (id TEXT PRIMARY KEY, title TEXT NOT NULL, category TEXT NOT NULL DEFAULT 'Tech & AI', snippet TEXT NOT NULL, content TEXT NOT NULL, source TEXT NOT NULL DEFAULT 'Raccon Editorial', url TEXT NOT NULL DEFAULT '', image_url TEXT NOT NULL DEFAULT '', author TEXT NOT NULL DEFAULT 'Admin', is_published INTEGER NOT NULL DEFAULT 1, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);");
 
     $db->exec('PRAGMA busy_timeout = 15000;');
     $db->exec('PRAGMA journal_mode = WAL;');
@@ -265,6 +267,32 @@ if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
                     is_active INTEGER DEFAULT 1,
                     is_popular INTEGER DEFAULT 0,
                     sort_order INTEGER DEFAULT 0,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS custom_news (
+                    id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    category TEXT NOT NULL DEFAULT 'Tech & AI',
+                    snippet TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    source TEXT NOT NULL DEFAULT 'Raccon Editorial',
+                    url TEXT NOT NULL DEFAULT '',
+                    image_url TEXT NOT NULL DEFAULT '',
+                    author TEXT NOT NULL DEFAULT 'Admin',
+                    is_published INTEGER NOT NULL DEFAULT 1,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )");
+
+                $db->exec("CREATE TABLE IF NOT EXISTS user_subscriptions (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    plan_id TEXT NOT NULL,
+                    plan_name TEXT NOT NULL,
+                    billing_cycle TEXT NOT NULL DEFAULT 'monthly',
+                    amount REAL NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'active',
+                    payment_method TEXT NOT NULL DEFAULT 'card',
                     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 )");
   
@@ -1485,6 +1513,86 @@ if (strpos($route, 'admin/') === 0) {
         echo json_encode(['success' => true, 'broadcast_count' => $count]);
         exit;
     }
+
+    // Admin News Wire Control Panel
+    if ($route === 'admin/news') {
+        if ($method === 'GET') {
+            $custom = $db->query("SELECT * FROM custom_news ORDER BY created_at DESC")->fetchAll();
+            $syndicated = [];
+            $newsFile = __DIR__ . '/data/news_cache.json';
+            if (file_exists($newsFile)) {
+                $raw = @json_decode(file_get_contents($newsFile), true);
+                if (is_array($raw)) {
+                    $syndicated = $raw['items'] ?? ($raw['tech'] ?? []);
+                }
+            }
+            echo json_encode([
+                'success' => true,
+                'custom_news' => $custom,
+                'syndicated_news' => array_slice($syndicated, 0, 50)
+            ]);
+            exit;
+        } elseif ($method === 'POST') {
+            $title = trim($input['title'] ?? '');
+            $category = trim($input['category'] ?? 'Tech & AI');
+            $snippet = trim($input['snippet'] ?? '');
+            $content = trim($input['content'] ?? '');
+            $source = trim($input['source'] ?? 'Raccon Editorial');
+            $author = trim($input['author'] ?? 'Admin');
+            $imageUrl = trim($input['image_url'] ?? '/raccoon-logo.svg');
+
+            if (!$title || !$snippet) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Title and snippet are required.']);
+                exit;
+            }
+
+            $id = 'news_' . uniqid();
+            $stmtIns = $db->prepare("INSERT INTO custom_news (id, title, category, snippet, content, source, author, image_url, is_published, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, datetime('now'))");
+            $stmtIns->execute([$id, $title, $category, $snippet, $content, $source, $author, $imageUrl]);
+
+            // Also prepend to news_cache.json for instant front-facing live display
+            $newsFile = __DIR__ . '/data/news_cache.json';
+            if (file_exists($newsFile)) {
+                $cache = @json_decode(file_get_contents($newsFile), true) ?: [];
+                $newArt = [
+                    'id' => $id,
+                    'title' => $title,
+                    'category' => $category,
+                    'snippet' => $snippet,
+                    'content' => $content,
+                    'source' => $source,
+                    'author' => $author,
+                    'image' => $imageUrl,
+                    'date' => date('Y-m-d H:i:s'),
+                    'url' => '/news.html#' . $id
+                ];
+                if (!isset($cache['items'])) $cache['items'] = [];
+                array_unshift($cache['items'], $newArt);
+                @file_put_contents($newsFile, json_encode($cache, JSON_PRETTY_PRINT));
+            }
+
+            echo json_encode(['success' => true, 'id' => $id, 'message' => 'Article published successfully']);
+            exit;
+        }
+    }
+
+    if (preg_match('#^admin/news/([^/]+)$#', $route, $m) && $method === 'DELETE') {
+        $newsId = $m[1];
+        $db->prepare("DELETE FROM custom_news WHERE id = ?")->execute([$newsId]);
+
+        // Remove from cache if present
+        $newsFile = __DIR__ . '/data/news_cache.json';
+        if (file_exists($newsFile)) {
+            $cache = @json_decode(file_get_contents($newsFile), true);
+            if (is_array($cache) && isset($cache['items'])) {
+                $cache['items'] = array_values(array_filter($cache['items'], fn($item) => ($item['id'] ?? '') !== $newsId));
+                @file_put_contents($newsFile, json_encode($cache, JSON_PRETTY_PRINT));
+            }
+        }
+        echo json_encode(['success' => true, 'message' => 'Article removed']);
+        exit;
+    }
 }
 
 // Allow cron or background sync with secret key
@@ -1513,7 +1621,9 @@ $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || (preg_match('#^community/stories/([^/]+)$#', $route) && $method === 'GET')
     || (preg_match('#^community/stories/([^/]+)/comments$#', $route) && $method === 'GET')
     || ($route === 'marketplace/items' && $method === 'GET')
-    || (preg_match('#^marketplace/items/([^/]+)$#', $route) && $method === 'GET');
+    || (preg_match('#^marketplace/items/([^/]+)$#', $route) && $method === 'GET')
+    || (($route === 'plans' || $route === 'subscription/plans') && $method === 'GET')
+    || ($route === 'subscription/checkout' && $method === 'POST');
 
 // Enforce login for private mailbox endpoints
 if (!$currentUserId && !$isPublicRoute) {
@@ -1524,6 +1634,114 @@ if (!$currentUserId && !$isPublicRoute) {
 
 // Router
 try {
+    // ==========================================
+    // PUBLIC SUBSCRIPTION PLANS & CHECKOUT API
+    // ==========================================
+    if (($route === 'plans' || $route === 'subscription/plans') && $method === 'GET') {
+        $stmt = $db->query("SELECT * FROM subscription_plans WHERE is_active = 1 ORDER BY sort_order ASC, price_monthly ASC");
+        $plans = $stmt ? $stmt->fetchAll() : [];
+        if (empty($plans)) {
+            // Default seed plans if table was empty
+            $plans = [
+                [
+                    'id' => 'plan_free',
+                    'name' => 'Starter Free',
+                    'badge' => 'Free Forever',
+                    'price_monthly' => 0.00,
+                    'price_yearly' => 0.00,
+                    'storage_gb' => 15,
+                    'max_accounts' => 1,
+                    'features' => [
+                        '15 GB Secure SSD Storage',
+                        '1 Primary Raccon Mailbox',
+                        'Standard Spam & Phishing Shield',
+                        'Community Forum & Support',
+                        'Responsive Web & Mobile APK'
+                    ],
+                    'is_popular' => 0
+                ],
+                [
+                    'id' => 'plan_pro',
+                    'name' => 'Pro Creator',
+                    'badge' => 'Most Popular',
+                    'price_monthly' => 9.99,
+                    'price_yearly' => 99.00,
+                    'storage_gb' => 200,
+                    'max_accounts' => 5,
+                    'features' => [
+                        '200 GB High-Speed NVMe Storage',
+                        '5 Connected Mailbox Accounts',
+                        'End-to-End Encryption (E2EE PGP Vault)',
+                        'Priority Raccon Forum VIP Badge',
+                        'Unlimited Stealth Burrow Aliases',
+                        'Full Access to Premium World Stories'
+                    ],
+                    'is_popular' => 1
+                ],
+                [
+                    'id' => 'plan_business',
+                    'name' => 'Enterprise Stealth',
+                    'badge' => 'Maximum Power',
+                    'price_monthly' => 29.99,
+                    'price_yearly' => 299.00,
+                    'storage_gb' => 2000,
+                    'max_accounts' => 999,
+                    'features' => [
+                        '2,000 GB (2TB) Enterprise Storage',
+                        'Unlimited Mailbox & IMAP Connections',
+                        'Custom Domain Support (@yourdomain.com)',
+                        'Dedicated 24/7 Priority Support & SLA',
+                        'Permanent Zero-Telemetry Guarantee'
+                    ],
+                    'is_popular' => 0
+                ]
+            ];
+        } else {
+            foreach ($plans as &$p) {
+                $p['features'] = json_decode($p['features_json'] ?? '[]', true);
+            }
+        }
+        echo json_encode(['success' => true, 'plans' => $plans]);
+        exit;
+    }
+
+    if ($route === 'subscription/checkout' && $method === 'POST') {
+        $planId = trim($input['plan_id'] ?? '');
+        $cycle = (strtolower($input['billing_cycle'] ?? 'monthly') === 'yearly') ? 'yearly' : 'monthly';
+        $paymentMethod = trim($input['payment_method'] ?? 'card');
+        $cardHolder = trim($input['card_holder'] ?? ($input['name'] ?? 'Raccon Member'));
+        $userEmail = trim($input['email'] ?? '');
+
+        // Fetch plan
+        $stmtPlan = $db->prepare("SELECT * FROM subscription_plans WHERE id = ?");
+        $stmtPlan->execute([$planId]);
+        $plan = $stmtPlan->fetch();
+
+        $planName = $plan ? $plan['name'] : 'Pro Creator';
+        $amount = $plan ? (($cycle === 'yearly') ? (float)$plan['price_yearly'] : (float)$plan['price_monthly']) : (($cycle === 'yearly') ? 99.00 : 9.99);
+
+        $subId = 'sub_' . uniqid();
+        $targetUid = $currentUserId ?: ('guest_' . uniqid());
+
+        $db->exec("CREATE TABLE IF NOT EXISTS user_subscriptions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, plan_id TEXT NOT NULL, plan_name TEXT NOT NULL, billing_cycle TEXT NOT NULL DEFAULT 'monthly', amount REAL NOT NULL, status TEXT NOT NULL DEFAULT 'active', payment_method TEXT NOT NULL DEFAULT 'card', created_at DATETIME DEFAULT CURRENT_TIMESTAMP);");
+        @$db->prepare("INSERT INTO user_subscriptions (id, user_id, plan_id, plan_name, billing_cycle, amount, status, payment_method) VALUES (?, ?, ?, ?, ?, ?, 'active', ?)")
+           ->execute([$subId, $targetUid, $planId, $planName, $cycle, $amount, $paymentMethod]);
+
+        if ($currentUserId) {
+            @$db->prepare("UPDATE users SET is_pro = 1 WHERE id = ?")->execute([$currentUserId]);
+        }
+
+        echo json_encode([
+            'success' => true,
+            'subscription_id' => $subId,
+            'plan_name' => $planName,
+            'amount' => $amount,
+            'cycle' => $cycle,
+            'currency' => 'EUR',
+            'message' => 'Plata a fost procesată cu succes! Subscripția ' . $planName . ' este acum activă.'
+        ]);
+        exit;
+    }
     // 1. GET/POST /api/user and /api/user/profile
     if ($route === 'user' || $route === 'user/profile' || $route === 'user/settings') {
         if ($method === 'GET') {
