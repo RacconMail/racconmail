@@ -62,6 +62,22 @@ function cleanMimeEmailContent($raw) {
     if (empty($raw) || !is_string($raw)) return '';
     $str = trim($raw);
 
+    // Detect ZIP or GZIP binary data stored directly in message body (e.g. DMARC automated reports)
+    if (str_starts_with($str, "PK\x03\x04")) {
+        return "[Binary Archive: ZIP file / DMARC Report attachment]";
+    }
+    if (str_starts_with($str, "\x1f\x8b")) {
+        return "[Binary Archive: GZIP compressed data attachment]";
+    }
+
+    // Strip null bytes
+    $str = str_replace("\0", '', $str);
+
+    // Ensure initial UTF-8 validity
+    if (!mb_check_encoding($str, 'UTF-8')) {
+        $str = mb_convert_encoding($str, 'UTF-8', 'UTF-8, ISO-8859-1, Windows-1252');
+    }
+
     if (str_contains($str, '--') || preg_match('/content-type:\s*(text\/plain|text\/html|multipart)/i', $str)) {
         if (preg_match('/content-type:\s*text\/plain[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i', $str, $pm)) {
             $candidate = trim($pm[1]);
@@ -88,6 +104,10 @@ function cleanMimeEmailContent($raw) {
 
     if (str_contains($str, '=20') || str_contains($str, '=0A') || str_contains($str, "=\r\n")) {
         $str = quoted_printable_decode($str);
+    }
+
+    if (!mb_check_encoding($str, 'UTF-8')) {
+        $str = @iconv('UTF-8', 'UTF-8//IGNORE', $str) ?: '';
     }
 
     return trim($str);
@@ -156,7 +176,10 @@ try {
     $stmtMsgs->execute([$uid]);
     $initialInboxMessages = $stmtMsgs->fetchAll();
     foreach ($initialInboxMessages as &$im) {
-        $im['body'] = cleanMimeEmailContent($im['body']);
+        $im['body'] = cleanMimeEmailContent($im['body'] ?? '');
+        $im['subject'] = cleanMimeEmailContent($im['subject'] ?? '');
+        $im['sender_name'] = cleanMimeEmailContent($im['sender_name'] ?? '');
+        $im['sender_email'] = cleanMimeEmailContent($im['sender_email'] ?? '');
     }
     unset($im);
 } catch (Throwable $e) {}
@@ -450,10 +473,11 @@ try {
         type="button"
         id="btn-toggle-sidebar"
         onclick="toggleSidebarAction()"
-        class="p-2 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition cursor-pointer flex items-center justify-center shadow-2xs"
-        title="Toggle Sidebar"
+        class="p-2 sm:p-2 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition cursor-pointer flex items-center justify-center shadow-2xs"
+        title="Toggle Folders & Menu"
       >
-        <i data-lucide="panel-left" class="h-4 w-4"></i>
+        <i data-lucide="menu" class="h-4 w-4 md:hidden text-slate-700"></i>
+        <i data-lucide="panel-left" class="h-4 w-4 hidden md:inline text-slate-700"></i>
       </button>
     </div>
 
@@ -576,8 +600,19 @@ try {
     <!-- ========================================================================= -->
     <!-- COLUMN 1: SIDEBAR NAVIGATION WITH ALL MAIL FOLDERS                        -->
     <!-- ========================================================================= -->
-    <aside id="sidebar-panel" class="w-60 border-r border-slate-100 flex flex-col shrink-0 bg-white h-full p-3 overflow-y-auto select-none fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 transition-all duration-200 -translate-x-full md:flex">
+    <aside id="sidebar-panel" class="w-72 max-w-[85vw] border-r border-slate-200 flex flex-col shrink-0 bg-white h-full p-3 overflow-y-auto select-none fixed inset-y-0 left-0 z-50 md:relative md:w-60 md:translate-x-0 transition-transform duration-200 -translate-x-full md:flex shadow-2xl md:shadow-none">
       
+      <!-- Mobile Sidebar Close Header -->
+      <div class="flex items-center justify-between pb-3 pt-1 border-b border-slate-100 md:hidden mb-2">
+        <div class="flex items-center gap-2">
+          <img src="/raccoon-logo.svg" alt="Raccon" class="h-6 w-6 object-contain" />
+          <span class="font-extrabold text-xs text-slate-900 tracking-tight">Mailbox Folders</span>
+        </div>
+        <button onclick="toggleSidebarAction()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Close">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
       <!-- Primary New Message Black Capsule Button at Top of Sidebar -->
       <div class="pb-3 pt-1">
         <button onclick="openComposeCard()" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white py-2.5 px-4 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer">
@@ -1502,7 +1537,10 @@ try {
 
 
     // Database of messages across all folders initialized from real SQLite database
-    const initialDbMessages = <?php echo json_encode($initialInboxMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?> || [];
+    const initialDbMessages = <?php 
+        $jsonMsgs = json_encode($initialInboxMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE);
+        echo ($jsonMsgs !== false && strlen($jsonMsgs) > 0) ? $jsonMsgs : '[]';
+    ?> || [];
 
     // Real-Time High-Speed Inbound Mail Engine (Fast 3-Second Cycle + Instant Focus Triggers)
     const knownMessageIds = new Set(initialDbMessages.map(m => m.id));
@@ -1700,9 +1738,11 @@ try {
     }
     window.escapeHtml = escapeHtml;
 
-function cleanMimeEmailContent(raw) {
+    function cleanMimeEmailContent(raw) {
       if (!raw || typeof raw !== 'string') return '';
       let str = raw.trim();
+      if (str.startsWith('PK\x03\x04')) return '[Binary Archive: ZIP file / DMARC Report attachment]';
+      if (str.startsWith('\x1f\x8b')) return '[Binary Archive: GZIP compressed data attachment]';
       if (str.includes('--') || /content-type:\s*(text\/plain|text\/html|multipart)/i.test(str)) {
         const plainMatch = str.match(/content-type:\s*text\/plain[^]*?\r?\n\r?\n([\s\S]*?)(?=--[a-zA-Z0-9_\-\.]+|\z)/i);
         if (plainMatch && plainMatch[1] && plainMatch[1].trim()) {
@@ -1778,6 +1818,7 @@ function cleanMimeEmailContent(raw) {
         sidebar.classList.toggle('sidebar-collapsed', isSidebarCollapsed);
       }
     }
+    window.toggleSidebarAction = toggleSidebarAction;
 
     // Switch Folder (Inbox, Unread, Starred, Sent, Drafts, Archive, Spam, Trash, All)
     window.selectFolder = function(f) { return switchFolder(f); };
@@ -3038,14 +3079,17 @@ function cleanMimeEmailContent(raw) {
       if (e) e.stopPropagation();
       document.getElementById('account-dropdown')?.classList.toggle('hidden');
     }
+    window.toggleUserDropdown = toggleUserDropdown;
 
     function toggleAppSwitcher() {
       document.getElementById('app-switcher-modal')?.classList.toggle('hidden');
     }
+    window.toggleAppSwitcher = toggleAppSwitcher;
 
     function openSettingsModal() {
       document.getElementById('settings-modal')?.classList.remove('hidden');
     }
+    window.openSettingsModal = openSettingsModal;
 
     function closeSettingsModal() {
       document.getElementById('settings-modal')?.classList.add('hidden');
@@ -3591,37 +3635,45 @@ function cleanMimeEmailContent(raw) {
   <!-- ========================================================================= -->
   
   <!-- Fixed Modern Bottom Navigation Bar (Matches Reference Image) -->
-  <nav id="mobile-app-bottom-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-3.5 px-6 flex items-center justify-around select-none">
+  <nav id="mobile-app-bottom-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-2.5 px-3 flex items-center justify-around select-none">
     <!-- Inbox Tray (Active Coral) -->
     <button onclick="switchFolder('Inbox'); backToMobileInbox();" class="flex flex-col items-center gap-1 cursor-pointer group" title="Inbox">
       <div class="w-6 h-6 flex items-center justify-center text-[#F68D72]">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-[#F68D72]"></span>
+      <span class="text-[10px] font-bold text-slate-800">Inbox</span>
+    </button>
+
+    <!-- Folders / Toggle Menu -->
+    <button onclick="toggleSidebarAction()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Folders & Menu">
+      <div class="w-6 h-6 flex items-center justify-center">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </div>
+      <span class="text-[10px] font-bold text-slate-600">Folders</span>
     </button>
 
     <!-- Pencil / Compose -->
-    <button onclick="openComposeCard()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Compose Email">
+    <button onclick="openComposeCard()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Compose Email">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+      <span class="text-[10px] font-bold text-slate-600">Compose</span>
     </button>
 
     <!-- Community / Forum & Stories -->
-    <a href="/forum" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Community Forum">
+    <a href="/forum" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Community Forum">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+      <span class="text-[10px] font-bold text-slate-600">Forum</span>
     </a>
 
     <!-- Notifications Bell -->
-    <button onclick="handleInboxNotificationClick()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Notifications">
+    <button onclick="handleInboxNotificationClick()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Notifications">
       <div class="w-6 h-6 flex items-center justify-center">
         <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+      <span class="text-[10px] font-bold text-slate-600">Alerts</span>
     </button>
   </nav>
 
