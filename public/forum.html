@@ -3756,7 +3756,7 @@
 
 
   <!-- MODERN PROFILE PHOTO MODAL (#modal-change-avatar) -->
-  <div id="modal-change-avatar" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
+  <div id="modal-change-avatar" style="z-index: 99999 !important;" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
     <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 relative my-auto overflow-hidden">
       
       <!-- Modal Header (Fixed at top) -->
@@ -4289,60 +4289,47 @@
         return;
       }
 
-      if (file.size > 12 * 1024 * 1024) {
+      if (file.size > 20 * 1024 * 1024) {
         if (statusMsg) {
           statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
-          statusMsg.innerText = 'Image size exceeds 12MB. Please select a smaller photo.';
+          statusMsg.innerText = 'Image size exceeds 20MB. Please select a smaller photo.';
         }
         return;
       }
 
-      const reader = new FileReader();
-      const loading = document.getElementById('avatar-preview-loading');
-      if (loading) loading.classList.remove('hidden');
+      pendingAvatarUploadFile = file;
+      pendingAvatarBlob = file;
 
-      reader.onload = function(evt) {
+      const objectUrl = URL.createObjectURL(file);
+      currentSelectedAvatar = objectUrl;
+      const preview = document.getElementById('avatar-preview-img');
+      if (preview) preview.src = objectUrl;
+
+      if (statusMsg) {
+        statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-semibold flex items-center gap-1.5';
+        statusMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Photo selected! Click "Save Photo" below to apply.';
+      }
+
+      try {
         const img = new Image();
         img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 400;
-          canvas.width = maxDim;
-          canvas.height = maxDim;
-          const ctx = canvas.getContext('2d');
-
-          const minSide = Math.min(img.width, img.height);
-          const startX = (img.width - minSide) / 2;
-          const startY = (img.height - minSide) / 2;
-
-          ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, maxDim, maxDim);
-
-          canvas.toBlob(blob => {
-            if (loading) loading.classList.add('hidden');
-            if (blob) {
-              pendingAvatarBlob = blob;
-              pendingAvatarUploadFile = file;
-              const croppedUrl = URL.createObjectURL(blob);
-              currentSelectedAvatar = croppedUrl;
-              const preview = document.getElementById('avatar-preview-img');
-              if (preview) preview.src = croppedUrl;
-
-              if (statusMsg) {
-                statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-semibold flex items-center gap-1.5';
-                statusMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Photo auto-cropped and ready! Click "Save Photo" below to apply.';
-              }
-            }
-          }, 'image/jpeg', 0.92);
+          try {
+            const canvas = document.createElement('canvas');
+            const maxDim = 400;
+            canvas.width = maxDim;
+            canvas.height = maxDim;
+            const ctx = canvas.getContext('2d');
+            const minSide = Math.min(img.width, img.height);
+            const startX = (img.width - minSide) / 2;
+            const startY = (img.height - minSide) / 2;
+            ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, maxDim, maxDim);
+            canvas.toBlob(blob => {
+              if (blob) pendingAvatarBlob = blob;
+            }, 'image/jpeg', 0.92);
+          } catch (_) {}
         };
-        img.onerror = function() {
-          if (loading) loading.classList.add('hidden');
-          if (statusMsg) {
-            statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
-            statusMsg.innerText = 'Unable to decode image. Please try another file.';
-          }
-        };
-        img.src = evt.target.result;
-      };
-      reader.readAsDataURL(file);
+        img.src = objectUrl;
+      } catch (_) {}
     }
 
     function rollDiceAvatars() {
@@ -4405,12 +4392,17 @@
 
       try {
         let finalAvatarUrl = null;
+        const tok = typeof getAuthToken === 'function' ? getAuthToken() : '';
+        const authHeader = tok ? { 'Authorization': 'Bearer ' + tok } : {};
 
-        if (pendingAvatarBlob) {
+        if (pendingAvatarBlob || pendingAvatarUploadFile) {
+          const fileToSend = pendingAvatarBlob || pendingAvatarUploadFile;
           const formData = new FormData();
-          formData.append('avatar', pendingAvatarBlob, 'avatar.jpg');
+          formData.append('avatar', fileToSend, fileToSend.name || 'avatar.jpg');
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
+            credentials: 'include',
+            headers: authHeader,
             body: formData
           });
           const d = await res.json();
@@ -4419,10 +4411,14 @@
           } else {
             throw new Error(d.error || 'Avatar upload failed.');
           }
-        } else if (currentSelectedAvatar) {
+        } else if (currentSelectedAvatar && !currentSelectedAvatar.startsWith('blob:')) {
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeader
+            },
             body: JSON.stringify({ avatar: currentSelectedAvatar })
           });
           const d = await res.json();
@@ -4431,6 +4427,8 @@
           } else {
             throw new Error(d.error || 'Failed to save avatar.');
           }
+        } else {
+          throw new Error('Please select an image or avatar first.');
         }
 
         if (finalAvatarUrl) {
@@ -4438,6 +4436,7 @@
           const cleanAvatar = finalAvatarUrl + cacheBuster;
 
           if (currentUser) currentUser.avatar = finalAvatarUrl;
+          try { localStorage.setItem('raccon_user_avatar', finalAvatarUrl); } catch (_) {}
 
           const avatarEl = document.getElementById('user-display-avatar');
           const wallAvatar = document.getElementById('wall-composer-avatar');
@@ -4445,6 +4444,7 @@
           if (avatarEl) avatarEl.src = cleanAvatar;
           if (wallAvatar) wallAvatar.src = cleanAvatar;
           if (replyAvatar) replyAvatar.src = cleanAvatar;
+          document.querySelectorAll('.user-avatar-img').forEach(img => { img.src = cleanAvatar; });
           
           closeAvatarModal();
           showAvatarToast('Profile photo updated successfully! 🦝');

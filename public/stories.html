@@ -1558,7 +1558,7 @@
       document.getElementById('view-stories')?.classList.remove('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.add('hidden');
-      document.getElementById('mobile-story-floating-pill')?.classList.add('hidden');
+      // floating Follow & Reply pill removed
       document.getElementById('stories-hero')?.classList.remove('hidden');
 
       // Restore main sidebar and column layouts
@@ -1912,7 +1912,7 @@
       document.getElementById('view-stories')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.remove('hidden');
-      document.getElementById('mobile-story-floating-pill')?.classList.remove('hidden');
+      // floating Follow & Reply pill removed
       document.getElementById('stories-hero')?.classList.add('hidden');
 
       // Detect mobile view or Android APK / Native mode
@@ -2350,36 +2350,7 @@
 
 
   
-  <!-- Floating Right-Middle Action Pill Menu (Follow Story & Reply/Review) -->
-  <div 
-    id="mobile-story-floating-pill" 
-    class="hidden fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 transition-all duration-200 select-none md:hidden"
-    aria-label="Story Actions"
-  >
-    <!-- Follow / Bookmark Pill Button -->
-    <button 
-      onclick="toggleBookmarkStory()" 
-      id="floating-pill-story-bookmark" 
-      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-white/95 hover:bg-white text-slate-800 text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.18)] backdrop-blur-md border-y border-l border-slate-200 active:scale-95 transition cursor-pointer select-none group"
-      title="Follow & Bookmark Story"
-    >
-      <i class="fas fa-bookmark text-purple-500 text-xs transition-transform group-hover:scale-110" id="floating-story-bookmark-icon"></i>
-      <span id="floating-story-bookmark-text" class="whitespace-nowrap tracking-tight">Follow</span>
-      <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
-    </button>
-
-    <!-- Reply / Review Pill Button -->
-    <button 
-      onclick="focusReviewReply()" 
-      id="floating-pill-story-reply" 
-      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/95 hover:bg-black text-white text-xs font-bold shadow-[0_8px_24px_rgba(15,23,42,0.28)] backdrop-blur-md border-y border-l border-white/20 active:scale-95 transition cursor-pointer select-none group"
-      title="Reply & Leave Review"
-    >
-      <i class="fas fa-comment-dots text-purple-400 text-xs transition-transform group-hover:-translate-x-0.5"></i>
-      <span class="whitespace-nowrap tracking-tight">Reply</span>
-      <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
-    </button>
-  </div>
+  <!-- Floating Action Menu: Removed Follow & Reply per user request; Show Menu pill preserved below -->
 
 
   <!-- Floating Edge Reading Settings Pill (Centered Vertically Along Edge - No Text Overlap) -->
@@ -2390,12 +2361,12 @@
   >
     <button 
       onclick="toggleReaderMenu()" 
-      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900/90 hover:bg-black text-white text-xs font-bold shadow-[0_10px_30px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/25 active:scale-95 transition cursor-pointer select-none group"
+      class="flex items-center gap-2 pl-3.5 pr-2.5 py-2.5 rounded-l-2xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-[0_10px_30px_rgba(15,23,42,0.4)] backdrop-blur-md border-y border-l border-white/25 active:scale-95 transition cursor-pointer select-none group"
       title="Toggle reading settings & canvas menu"
       aria-label="Toggle reading menu"
     >
       <i class="fas fa-sliders text-purple-400 group-hover:rotate-90 transition-transform text-xs"></i>
-      <span id="mobile-toggle-text" class="whitespace-nowrap tracking-tight">Hide Menu</span>
+      <span id="mobile-toggle-text" class="whitespace-nowrap tracking-tight">Show Menu</span>
       <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
     </button>
   </div>
@@ -2500,7 +2471,7 @@
 
 
   <!-- MODERN PROFILE PHOTO MODAL (#modal-change-avatar) -->
-  <div id="modal-change-avatar" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
+  <div id="modal-change-avatar" style="z-index: 99999 !important;" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
     <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 relative my-auto overflow-hidden">
       
       <!-- Modal Header (Fixed at top) -->
@@ -2569,13 +2540,17 @@
 
         <!-- TAB 1: UPLOAD PHOTO -->
         <div id="tab-panel-upload" class="space-y-3">
+          <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="handleAvatarFileSelect(event)" />
           <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-5 sm:p-6 text-center cursor-pointer group">
-            <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" class="hidden" onchange="handleAvatarFileSelect(event)" />
             <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
               <i class="fa-regular fa-image text-xl"></i>
             </div>
             <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag &amp; drop</p>
-            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG (Up to 10MB) &bull; Auto square cropped</p>
+            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG &bull; Auto square cropped</p>
+            <button type="button" onclick="event.stopPropagation(); document.getElementById('avatar-file-input').click()" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer">
+              <i class="fa-solid fa-folder-open text-xs"></i>
+              <span>Choose Photo</span>
+            </button>
           </div>
           <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
         </div>
@@ -3033,60 +3008,48 @@
         return;
       }
 
-      if (file.size > 12 * 1024 * 1024) {
+      if (file.size > 20 * 1024 * 1024) {
         if (statusMsg) {
           statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
-          statusMsg.innerText = 'Image size exceeds 12MB. Please select a smaller photo.';
+          statusMsg.innerText = 'Image size exceeds 20MB. Please select a smaller photo.';
         }
         return;
       }
 
-      const reader = new FileReader();
-      const loading = document.getElementById('avatar-preview-loading');
-      if (loading) loading.classList.remove('hidden');
+      // Immediately save reference to raw file so save works 100%
+      pendingAvatarUploadFile = file;
+      pendingAvatarBlob = file;
 
-      reader.onload = function(evt) {
+      const objectUrl = URL.createObjectURL(file);
+      currentSelectedAvatar = objectUrl;
+      const preview = document.getElementById('avatar-preview-img');
+      if (preview) preview.src = objectUrl;
+
+      if (statusMsg) {
+        statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-semibold flex items-center gap-1.5';
+        statusMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Photo selected! Click "Save Photo" below to apply.';
+      }
+
+      try {
         const img = new Image();
         img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 400;
-          canvas.width = maxDim;
-          canvas.height = maxDim;
-          const ctx = canvas.getContext('2d');
-
-          const minSide = Math.min(img.width, img.height);
-          const startX = (img.width - minSide) / 2;
-          const startY = (img.height - minSide) / 2;
-
-          ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, maxDim, maxDim);
-
-          canvas.toBlob(blob => {
-            if (loading) loading.classList.add('hidden');
-            if (blob) {
-              pendingAvatarBlob = blob;
-              pendingAvatarUploadFile = file;
-              const croppedUrl = URL.createObjectURL(blob);
-              currentSelectedAvatar = croppedUrl;
-              const preview = document.getElementById('avatar-preview-img');
-              if (preview) preview.src = croppedUrl;
-
-              if (statusMsg) {
-                statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-semibold flex items-center gap-1.5';
-                statusMsg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Photo auto-cropped and ready! Click "Save Photo" below to apply.';
-              }
-            }
-          }, 'image/jpeg', 0.92);
+          try {
+            const canvas = document.createElement('canvas');
+            const maxDim = 400;
+            canvas.width = maxDim;
+            canvas.height = maxDim;
+            const ctx = canvas.getContext('2d');
+            const minSide = Math.min(img.width, img.height);
+            const startX = (img.width - minSide) / 2;
+            const startY = (img.height - minSide) / 2;
+            ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, maxDim, maxDim);
+            canvas.toBlob(blob => {
+              if (blob) pendingAvatarBlob = blob;
+            }, 'image/jpeg', 0.92);
+          } catch (_) {}
         };
-        img.onerror = function() {
-          if (loading) loading.classList.add('hidden');
-          if (statusMsg) {
-            statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
-            statusMsg.innerText = 'Unable to decode image. Please try another file.';
-          }
-        };
-        img.src = evt.target.result;
-      };
-      reader.readAsDataURL(file);
+        img.src = objectUrl;
+      } catch (_) {}
     }
 
     function rollDiceAvatars() {
@@ -3149,12 +3112,17 @@
 
       try {
         let finalAvatarUrl = null;
+        const tok = typeof getAuthToken === 'function' ? getAuthToken() : '';
+        const authHeader = tok ? { 'Authorization': 'Bearer ' + tok } : {};
 
-        if (pendingAvatarBlob) {
+        if (pendingAvatarBlob || pendingAvatarUploadFile) {
+          const fileToSend = pendingAvatarBlob || pendingAvatarUploadFile;
           const formData = new FormData();
-          formData.append('avatar', pendingAvatarBlob, 'avatar.jpg');
+          formData.append('avatar', fileToSend, fileToSend.name || 'avatar.jpg');
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
+            credentials: 'include',
+            headers: authHeader,
             body: formData
           });
           const d = await res.json();
@@ -3163,10 +3131,14 @@
           } else {
             throw new Error(d.error || 'Avatar upload failed.');
           }
-        } else if (currentSelectedAvatar) {
+        } else if (currentSelectedAvatar && !currentSelectedAvatar.startsWith('blob:')) {
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeader
+            },
             body: JSON.stringify({ avatar: currentSelectedAvatar })
           });
           const d = await res.json();
@@ -3175,6 +3147,8 @@
           } else {
             throw new Error(d.error || 'Failed to save avatar.');
           }
+        } else {
+          throw new Error('Please select an image or avatar first.');
         }
 
         if (finalAvatarUrl) {
@@ -3182,6 +3156,7 @@
           const cleanAvatar = finalAvatarUrl + cacheBuster;
 
           if (currentUser) currentUser.avatar = finalAvatarUrl;
+          try { localStorage.setItem('raccon_user_avatar', finalAvatarUrl); } catch (_) {}
 
           const avatarEl = document.getElementById('user-display-avatar');
           const wallAvatar = document.getElementById('wall-composer-avatar');
@@ -3189,6 +3164,7 @@
           if (avatarEl) avatarEl.src = cleanAvatar;
           if (wallAvatar) wallAvatar.src = cleanAvatar;
           if (reviewAvatar) reviewAvatar.src = cleanAvatar;
+          document.querySelectorAll('.user-avatar-img').forEach(img => { img.src = cleanAvatar; });
           
           closeAvatarModal();
           showAvatarToast('Profile photo updated successfully! 🦝');

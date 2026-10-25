@@ -1476,13 +1476,17 @@ try {
 
         <!-- TAB 1: UPLOAD PHOTO -->
         <div id="tab-panel-upload" class="space-y-3">
+          <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="handleAvatarFileSelect(event)" />
           <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-5 sm:p-6 text-center cursor-pointer group">
-            <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" class="hidden" onchange="handleAvatarFileSelect(event)" />
             <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
               <i data-lucide="image-plus" class="h-6 w-6"></i>
             </div>
             <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag &amp; drop</p>
-            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG (Up to 10MB) &bull; Auto square cropped</p>
+            <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG &bull; Auto square cropped</p>
+            <button type="button" onclick="event.stopPropagation(); document.getElementById('avatar-file-input').click()" class="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              <span>Choose Photo</span>
+            </button>
           </div>
           <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
         </div>
@@ -4089,6 +4093,18 @@ try {
     let currentActiveAvatarTab = 'upload';
 
     let openedFromSettings = false;
+    
+    function getAuthToken() {
+      const urlTok = new URLSearchParams(window.location.search).get('token');
+      if (urlTok) return urlTok;
+      try {
+        const loc = localStorage.getItem('raccon_token');
+        if (loc) return loc;
+      } catch (_) {}
+      const match = document.cookie.match(/(?:^|;\s*)raccon_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
+  
     function openAvatarModal(fromSettings = false) {
       if (fromSettings) {
         openedFromSettings = true;
@@ -4334,12 +4350,17 @@ try {
 
       try {
         let finalAvatarUrl = null;
+        const tok = typeof getAuthToken === 'function' ? getAuthToken() : '';
+        const authHeader = tok ? { 'Authorization': 'Bearer ' + tok } : {};
 
-        if (pendingAvatarBlob) {
+        if (pendingAvatarBlob || pendingAvatarUploadFile) {
+          const fileToSend = pendingAvatarBlob || pendingAvatarUploadFile;
           const formData = new FormData();
-          formData.append('avatar', pendingAvatarBlob, 'avatar.jpg');
+          formData.append('avatar', fileToSend, fileToSend.name || 'avatar.jpg');
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
+            credentials: 'include',
+            headers: authHeader,
             body: formData
           });
           const d = await res.json();
@@ -4348,10 +4369,14 @@ try {
           } else {
             throw new Error(d.error || 'Avatar upload failed.');
           }
-        } else if (currentSelectedAvatar) {
+        } else if (currentSelectedAvatar && !currentSelectedAvatar.startsWith('blob:')) {
           const res = await fetch('/api/user/avatar', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...authHeader
+            },
             body: JSON.stringify({ avatar: currentSelectedAvatar })
           });
           const d = await res.json();
@@ -4360,22 +4385,39 @@ try {
           } else {
             throw new Error(d.error || 'Failed to save avatar.');
           }
+        } else {
+          throw new Error('Please select an image or avatar first.');
         }
 
         if (finalAvatarUrl) {
-          // Instantly update ALL user avatars in DOM
           const cacheBuster = (finalAvatarUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+          const cleanUrl = finalAvatarUrl + cacheBuster;
+
+          // Instantly update ALL user avatars in DOM
           document.querySelectorAll('.user-avatar-img').forEach(img => {
-            img.src = finalAvatarUrl + cacheBuster;
+            img.src = cleanUrl;
             img.style.display = 'block';
           });
           const mobLarge = document.getElementById('mobile-profile-large-img');
-          if (mobLarge) mobLarge.src = finalAvatarUrl + cacheBuster;
+          if (mobLarge) mobLarge.src = cleanUrl;
+          const prevImg = document.getElementById('avatar-preview-img');
+          if (prevImg) prevImg.src = cleanUrl;
           const fallback = document.getElementById('mobile-header-initial-fallback');
           if (fallback) fallback.style.display = 'none';
+
+          if (typeof currentUser === 'object' && currentUser) {
+            currentUser.avatar = finalAvatarUrl;
+          }
+          try { localStorage.setItem('raccon_user_avatar', finalAvatarUrl); } catch (_) {}
           
           closeAvatarModal();
-          showAvatarToast('Profile photo updated successfully! 🦝');
+          if (typeof showToast === 'function') {
+            showToast('Profile photo updated successfully! 🦝', 'success');
+          } else if (typeof showAvatarToast === 'function') {
+            showAvatarToast('Profile photo updated successfully! 🦝');
+          } else {
+            alert('Profile photo updated successfully!');
+          }
         }
       } catch (err) {
         alert('Could not save profile photo: ' + err.message);
@@ -6239,12 +6281,12 @@ try {
         <!-- Big Profile Avatar with Camera Edit Badge -->
         <!-- Direct Photo Upload Input -->
         <input type="file" id="mobile-direct-photo-input" accept="image/*" class="hidden" onchange="handleDirectPhotoUpload(event)" />
-        <div class="relative w-24 h-24 mx-auto mb-3 cursor-pointer group" onclick="openAvatarModal()" title="Tap to change profile picture">
+        <div class="relative w-24 h-24 mx-auto mb-3 cursor-pointer group" onclick="document.getElementById('mobile-direct-photo-input').click()" title="Tap to change profile photo">
           <div class="w-24 h-24 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 relative">
             <img id="mobile-profile-large-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover group-hover:scale-105 transition duration-200" alt="Profile Photo" onerror="this.src='/raccoon-logo.svg'" />
           </div>
           <!-- Camera badge docked on bottom-right of avatar -->
-          <button type="button" class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-slate-800 hover:bg-black text-white flex items-center justify-center ring-2 ring-white shadow-md transition group-hover:scale-110 cursor-pointer" title="Change Photo">
+          <button type="button" onclick="event.stopPropagation(); document.getElementById('mobile-direct-photo-input').click()" class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-slate-900 hover:bg-black text-white flex items-center justify-center ring-2 ring-white shadow-md transition group-hover:scale-110 cursor-pointer" title="Take or Choose Photo">
             <i data-lucide="camera" class="w-4 h-4 text-white"></i>
           </button>
         </div>
