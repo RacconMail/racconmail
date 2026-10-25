@@ -523,6 +523,22 @@
         </div>
 
         <!-- Header Nav Links & Actions (Desktop Only - Completely Hidden on Mobile) -->
+        <!-- Mobile Header Quick Links (Visible on Smartphones < 768px) -->
+        <div class="flex md:hidden items-center gap-1.5 shrink-0" id="mobile-header-links">
+          <a href="/news" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border border-slate-200/90 rounded-full shadow-2xs hover:bg-slate-50 transition flex items-center gap-1">
+            <i class="fas fa-newspaper text-[10px] text-[#E06748]"></i>
+            <span>News</span>
+          </a>
+          <a href="/stories" class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-white border border-slate-200/90 rounded-full shadow-2xs hover:bg-slate-50 transition flex items-center gap-1">
+            <i class="fas fa-book-open text-[10px] text-[#4A6FDC]"></i>
+            <span>Stories</span>
+          </a>
+          <a href="/auth?tab=login" onclick="openAuthModal('login'); return false;" class="px-3 py-1 text-xs font-bold text-white bg-slate-900 rounded-full shadow-2xs hover:bg-black transition flex items-center gap-1 cursor-pointer">
+            <span>Sign In</span>
+          </a>
+        </div>
+
+        <!-- Header Nav Links & Actions (Desktop Only) -->
         <div class="hidden md:flex items-center gap-2 shrink-0 top-menu-auth-group" id="auth-nav-container">
           <a href="/news" class="text-xs font-bold text-[#333333] hover:text-slate-900 transition px-2.5 py-1.5 flex items-center gap-1">
             <i class="fas fa-newspaper text-xs text-slate-600"></i>
@@ -1273,6 +1289,35 @@
             </div>
           </a>
 
+        </div>
+
+        <!-- Raccon Ecosystem Navigation Row -->
+        <div class="py-6 border-b border-[#E2E8F0] flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Raccon Ecosystem:</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 sm:gap-6 text-xs font-bold text-slate-700">
+            <a href="/news" class="hover:text-[#E06748] transition flex items-center gap-1.5">
+              <i class="fas fa-newspaper text-slate-500"></i>
+              <span>News Wire</span>
+            </a>
+            <a href="/stories" class="hover:text-[#4A6FDC] transition flex items-center gap-1.5">
+              <i class="fas fa-book-open text-slate-500"></i>
+              <span>Community Stories</span>
+            </a>
+            <a href="/forum" class="hover:text-[#7052ff] transition flex items-center gap-1.5">
+              <i class="fas fa-comments text-slate-500"></i>
+              <span>Public Forum</span>
+            </a>
+            <a href="/inbox" class="hover:text-slate-900 transition flex items-center gap-1.5">
+              <i class="fas fa-envelope text-slate-500"></i>
+              <span>Webmail Inbox</span>
+            </a>
+            <a href="/privacy.html" class="hover:text-slate-900 transition flex items-center gap-1.5">
+              <i class="fas fa-shield-alt text-slate-500"></i>
+              <span>Privacy Policy</span>
+            </a>
+          </div>
         </div>
 
         <!-- Bottom Copyright Row -->

@@ -78,7 +78,9 @@ $migratedFlagFile = __DIR__ . '/.db_migrated_v19_reply_updates';
         $db->exec('ALTER TABLE messages ADD COLUMN is_reply INTEGER DEFAULT 0');
     } catch (Throwable $e) {}
     try {
-        $db->exec('UPDATE messages SET category = "updates", folder_id = "updates", is_reply = 1 WHERE (subject LIKE "Re:%" OR subject LIKE "RE:%" OR (in_reply_to IS NOT NULL AND in_reply_to != "") OR body LIKE "%a%scris:%" OR body LIKE "%wrote:%") AND is_trashed = 0');
+        // Keep all incoming emails and replies in the Inbox folder!
+    $db->exec('UPDATE messages SET is_reply = 1, category = "updates" WHERE (subject LIKE "Re:%" OR subject LIKE "RE:%" OR (in_reply_to IS NOT NULL AND in_reply_to != "") OR body LIKE "%a%scris:%" OR body LIKE "%wrote:%")');
+    $db->exec('UPDATE messages SET folder_id = "inbox" WHERE folder_id = "updates"');
     } catch (Throwable $e) {}
 if (!file_exists($migratedFlagFile) || $dbNeedsInit) {
     try {
@@ -2344,13 +2346,13 @@ try {
             $userEmail = $stmtUser->fetchColumn() ?: '';
 
             // Inbox counts (guaranteed inbox delivery for registered members)
-            $stmt = $db->prepare('SELECT COUNT(*) as total, SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread FROM messages WHERE user_id = ? AND LOWER(recipient_email) = LOWER(?) AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = "" OR folder_id = "inbox")');
-            $stmt->execute([$currentUserId, $userEmail]);
+            $stmt = $db->prepare('SELECT COUNT(*) as total, SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = "" OR folder_id = "inbox" OR folder_id = "updates")');
+            $stmt->execute([$currentUserId]);
             $inboxStats = $stmt->fetch();
 
             // Unread
-            $stmt = $db->prepare('SELECT COUNT(*) as total FROM messages WHERE user_id = ? AND LOWER(recipient_email) = LOWER(?) AND is_read = 0 AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0');
-            $stmt->execute([$currentUserId, $userEmail]);
+            $stmt = $db->prepare('SELECT COUNT(*) as total FROM messages WHERE user_id = ? AND is_read = 0 AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0');
+            $stmt->execute([$currentUserId]);
             $unreadStats = $stmt->fetch();
 
             // Favorites
@@ -2466,7 +2468,7 @@ try {
                 $where[] = 'is_trashed = 0';
             }
         } elseif ($folder === 'inbox') {
-            $where[] = 'is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = "" OR folder_id = "inbox")';
+            $where[] = 'is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = "" OR folder_id = "inbox" OR folder_id = "updates")';
         } elseif ($folder === 'unread') {
             $where[] = 'is_read = 0 AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0';
         } elseif ($folder === 'favorites' || $folder === 'starred') {
@@ -2531,8 +2533,8 @@ try {
             $m['quoted_text'] = $parsed['quotedText'];
             if ($isReply) {
                 $m['category'] = 'updates';
-                if (empty($m['folder_id']) || $m['folder_id'] === 'inbox') {
-                    $m['computed_folder'] = 'Updates';
+                if (empty($m['folder_id']) || $m['folder_id'] === 'inbox' || $m['folder_id'] === 'updates') {
+                    $m['computed_folder'] = 'Inbox';
                 }
             }
         }

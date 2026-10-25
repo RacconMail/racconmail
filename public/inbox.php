@@ -110,7 +110,7 @@ $initialInboxMessages = [];
 
 try {
     // 1. Inbox counts
-    $stmt = $db->prepare("SELECT COUNT(*) as total, SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox')");
+    $stmt = $db->prepare("SELECT COUNT(*) as total, SUM(CASE WHEN is_read = 0 THEN 1 ELSE 0 END) as unread FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox' OR folder_id = 'updates')");
     $stmt->execute([$uid]);
     $row = $stmt->fetch();
     $counts['inbox_total'] = (int)($row['total'] ?? 0);
@@ -152,7 +152,7 @@ try {
     $counts['trash_total'] = (int)$stmt->fetchColumn();
 
     // Fetch initial messages for Inbox
-    $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox') ORDER BY created_at DESC LIMIT 50");
+    $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox' OR folder_id = 'updates') ORDER BY created_at DESC LIMIT 50");
     $stmtMsgs->execute([$uid]);
     $initialInboxMessages = $stmtMsgs->fetchAll();
     foreach ($initialInboxMessages as &$im) {
@@ -653,19 +653,19 @@ try {
           <span id="badge-spam" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['spam_total']; ?></span>
         </button>
 
-        <!-- 8. TRASH -->
-        <div class="flex items-center justify-between w-full">
-          <button onclick="switchFolder('Trash')" id="folder-btn-trash" class="flex-1 flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
-            <div class="flex items-center gap-2.5 truncate">
-              <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
-              <span class="sidebar-text truncate">Trash</span>
-            </div>
+        <!-- 8. TRASH (Perfect Right Alignment) -->
+        <button onclick="switchFolder('Trash')" id="folder-btn-trash" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group cursor-pointer">
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Trash</span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
             <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['trash_total']; ?></span>
-          </button>
-          <button onclick="emptyTrashAction()" title="Empty Trash" class="p-1.5 text-slate-400 hover:text-rose-600 transition cursor-pointer">
-            <i data-lucide="eraser" class="h-3.5 w-3.5"></i>
-          </button>
-        </div>
+            <span onclick="event.stopPropagation(); emptyTrashAction();" title="Empty Trash" class="opacity-0 group-hover:opacity-100 p-1 hover:text-rose-600 rounded transition cursor-pointer text-slate-400">
+              <i data-lucide="eraser" class="h-3 w-3"></i>
+            </span>
+          </div>
+        </button>
 
         <!-- 9. ALL MAIL -->
         <button onclick="switchFolder('All')" id="folder-btn-all" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
@@ -2251,10 +2251,11 @@ function cleanMimeEmailContent(raw) {
           const data = await res.json();
           if (data && data.standard) {
             const std = data.standard;
+            const unreadCount = (typeof std.inbox?.unread === 'number') ? std.inbox.unread : (std.inbox?.total || 0);
             const bInbox = document.getElementById('badge-inbox');
-            if (bInbox) bInbox.innerText = std.inbox?.total || 0;
+            if (bInbox) bInbox.innerText = unreadCount;
             const bCoral = document.getElementById('coral-inbox-badge');
-            if (bCoral && currentFolder === 'Inbox') bCoral.innerText = std.inbox?.total || 0;
+            if (bCoral && currentFolder === 'Inbox') bCoral.innerText = unreadCount;
             const bUnread = document.getElementById('badge-unread');
             if (bUnread) bUnread.innerText = std.unread?.total || 0;
             const bStarred = document.getElementById('badge-starred');
@@ -2275,10 +2276,11 @@ function cleanMimeEmailContent(raw) {
     }
 
     function updateBadgeCounts() {
+      const unreadInbox = (mailDatabase['Inbox'] || []).filter(m => !m.isRead).length;
       const bInbox = document.getElementById('badge-inbox');
-      if (bInbox && mailDatabase['Inbox']) bInbox.innerText = mailDatabase['Inbox'].length;
+      if (bInbox) bInbox.innerText = unreadInbox;
       const bCoral = document.getElementById('coral-inbox-badge');
-      if (bCoral && mailDatabase[currentFolder]) bCoral.innerText = mailDatabase[currentFolder].length;
+      if (bCoral && currentFolder === 'Inbox') bCoral.innerText = unreadInbox;
       const bTrash = document.getElementById('badge-trash');
       if (bTrash && mailDatabase['Trash']) bTrash.innerText = mailDatabase['Trash'].length;
     }

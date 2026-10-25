@@ -1105,7 +1105,9 @@
             <div class="space-y-1.5 flex-1 mb-4">
               <span class="text-[11px] font-mono text-slate-400 block">${dateStr}</span>
               <h3 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-[#E06748] transition leading-snug line-clamp-2 font-display">
-                ${art.title}
+                <a href="/news?id=${art.id}" onclick="event.preventDefault(); openArticleOnSamePage('${art.id}', event);" class="hover:text-[#E06748] transition">
+                  ${art.title}
+                </a>
               </h3>
               <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
                 ${cleanSnippet}
@@ -1150,7 +1152,8 @@
     // =========================================================================
     // SAME-PAGE ARTICLE VIEWER (NO POPUP WINDOW, NO REDIRECTION!)
     // =========================================================================
-    function openArticleOnSamePage(id) {
+    function openArticleOnSamePage(id, event) {
+      if (event && event.preventDefault) event.preventDefault();
       const art = allArticles.find(a => a.id === id);
       if (!art) return;
 
@@ -1171,10 +1174,11 @@
       document.getElementById('inpage-likes-count').innerText = art.likes || 128;
 
       const bodyEl = document.getElementById('inpage-body');
-      const paragraphs = (art.content || art.snippet || art.desc || '')
+      const rawContent = art.content || art.snippet || art.desc || '';
+      const paragraphs = rawContent
         .split('\n')
         .filter(p => p.trim())
-        .map(p => `<p class="text-slate-700 leading-relaxed text-base">${p.trim()}</p>`)
+        .map(p => `<p class="text-slate-700 leading-relaxed text-base mb-4">${p.trim()}</p>`)
         .join('');
 
       bodyEl.innerHTML = paragraphs || '<p class="text-slate-500">Full article content is synchronized via the live wire.</p>';
@@ -1182,8 +1186,14 @@
       feedView?.classList.add('hidden');
       readerView?.classList.remove('hidden');
 
-      window.location.hash = art.id;
-      window.scrollTo({ top: 120, behavior: 'smooth' });
+      // Update URL to independent link /news?id=... without full page reload
+      try {
+        history.pushState({ articleId: art.id }, art.title, '/news?id=' + encodeURIComponent(art.id));
+      } catch (_) {
+        window.location.hash = art.id;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if (window.lucide) lucide.createIcons();
     }
 
@@ -1194,7 +1204,9 @@
       if (!readerView?.classList.contains('hidden')) {
         readerView?.classList.add('hidden');
         feedView?.classList.remove('hidden');
-        history.pushState('', document.title, window.location.pathname + window.location.search);
+        try {
+          history.pushState('', document.title, '/news');
+        } catch (_) {}
         window.scrollTo({ top: savedScrollPosition || 0, behavior: 'smooth' });
       }
     }
@@ -1229,7 +1241,7 @@
     // Share Article
     function shareArticle(id, title) {
       const art = allArticles.find(a => a.id === id);
-      const url = window.location.origin + '/news#' + id;
+      const url = window.location.origin + '/news?id=' + encodeURIComponent(id);
       const text = (title || 'News article') + ' by ' + (art?.author_handle || '@raccoon_wire') + ' on Raccon News Wire';
 
       if (navigator.share) {
@@ -1367,16 +1379,30 @@
     }
 
     function setupUrlHashNavigation() {
-      const hash = window.location.hash.replace('#', '');
-      if (hash) {
-        setTimeout(() => openArticleOnSamePage(hash), 400);
-      }
       const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('id') || window.location.hash.replace('#', '');
+      if (articleId && articleId.trim()) {
+        setTimeout(() => openArticleOnSamePage(articleId.trim()), 300);
+      }
       const author = params.get('author');
       if (author) {
         filterByAuthor(author);
       }
     }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+      const params = new URLSearchParams(window.location.search);
+      const artId = params.get('id') || (e.state && e.state.articleId);
+      if (artId) {
+        openArticleOnSamePage(artId);
+      } else {
+        const feedView = document.getElementById('news-feed-view');
+        const readerView = document.getElementById('news-article-view');
+        readerView?.classList.add('hidden');
+        feedView?.classList.remove('hidden');
+      }
+    });
 
     function escapeJs(str) {
       return (str || '').replace(/'/g, "\\'");

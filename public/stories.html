@@ -322,7 +322,11 @@
           <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-xs" />
           <span class="tracking-tight font-extrabold text-slate-900">Raccon <span class="text-purple-600 font-bold">Stories</span></span>
         </a>
-        <a href="/forum" class="hidden sm:inline-flex items-center gap-1.5 ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Raccon Forum">
+        <a href="/news" class="hidden sm:inline-flex items-center gap-1.5 ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Raccon News Wire">
+          <i class="fas fa-newspaper text-[10px]"></i>
+          <span>News</span>
+        </a>
+        <a href="/forum" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Raccon Forum">
           <i class="fas fa-comments text-[10px]"></i>
           <span>Forum</span>
         </a>
@@ -1286,8 +1290,15 @@
       window.location.href = '/stories';
     }
 
-    // Hash Routing Handler (#all, #wall, #tag-*, #read/:id)
+    // Independent URL & Hash Routing Handler (/stories?id=..., #read/:id, #wall)
     function handleHashRouting() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryId = urlParams.get('id') || urlParams.get('story');
+      if (queryId && queryId.trim()) {
+        openStoryReader(queryId.trim());
+        return;
+      }
+
       const hash = window.location.hash.replace('#', '') || 'all';
       if (hash.startsWith('read/')) {
         const storyId = hash.replace('read/', '').split('-')[0];
@@ -1304,6 +1315,11 @@
 
     function switchToStoriesView() {
       currentNavView = 'all';
+      try {
+        if (window.location.search.includes('id=')) {
+          history.pushState('', document.title, '/stories');
+        }
+      } catch (_) {}
       document.getElementById('view-stories')?.classList.remove('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
       document.getElementById('view-reader')?.classList.add('hidden');
@@ -1442,9 +1458,11 @@
                   <span>${readTime} min read</span>
                 </div>
 
-                <!-- Bold Headline -->
-                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-slate-700 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
-                  ${st.title}
+                <!-- Bold Headline with Direct Independent Link -->
+                <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-purple-600 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
+                  <a href="/stories?id=${st.id}" onclick="openStoryReader('${st.id}', event);" class="hover:text-purple-600 transition">
+                    ${st.title}
+                  </a>
                 </h3>
 
                 <!-- Excerpt -->
@@ -1523,7 +1541,7 @@
 
             <!-- Story Title Link -->
             <h3 class="text-base sm:text-lg font-bold text-slate-900 font-serif">
-              <a href="#read/${st.id}" onclick="openStoryReader('${st.id}'); return false;" class="hover:text-purple-600 transition">
+              <a href="/stories?id=${st.id}" onclick="openStoryReader('${st.id}', event); return false;" class="hover:text-purple-600 transition">
                 ${st.title}
               </a>
             </h3>
@@ -1646,9 +1664,14 @@
       localStorage.setItem('raccon_reader_menu_hidden', isReaderMenuVisible ? '0' : '1');
     }
 
-    async function openStoryReader(storyId) {
+    async function openStoryReader(storyId, event) {
+      if (event && event.preventDefault) event.preventDefault();
       currentNavView = 'reader';
-      window.location.hash = `read/${storyId}`;
+      try {
+        history.pushState({ storyId }, document.title, '/stories?id=' + encodeURIComponent(storyId));
+      } catch (_) {
+        window.location.hash = `read/${storyId}`;
+      }
 
       document.getElementById('view-stories')?.classList.add('hidden');
       document.getElementById('view-wall')?.classList.add('hidden');
@@ -1884,7 +1907,7 @@
     }
 
     function copyStoryLink(storyId) {
-      const url = `${window.location.origin}/stories#read/${storyId}`;
+      const url = `${window.location.origin}/stories?id=${encodeURIComponent(storyId)}`;
       navigator.clipboard.writeText(url).then(() => {
         showToast('Story link copied to clipboard! 📋');
       }).catch(() => {
