@@ -944,7 +944,41 @@
         }
       });
       closeArticleView();
+
+      const wallContainer = document.getElementById('primary-news-source-wall');
+      const dispatchesSection = document.getElementById('secondary-dispatches-section');
+      const tabLive = document.getElementById('tab-live');
+      const tabArticles = document.getElementById('tab-articles');
+
+      if (cat !== 'all') {
+        if (wallContainer) wallContainer.style.display = 'none';
+        if (dispatchesSection) dispatchesSection.style.display = 'block';
+        if (tabLive) {
+          tabLive.classList.remove('text-slate-900', 'border-slate-900');
+          tabLive.classList.add('text-slate-400', 'border-transparent');
+        }
+        if (tabArticles) {
+          tabArticles.classList.add('text-slate-900', 'border-slate-900');
+          tabArticles.classList.remove('text-slate-400', 'border-transparent');
+        }
+      } else {
+        if (wallContainer) wallContainer.style.display = 'block';
+        if (dispatchesSection) dispatchesSection.style.display = 'block';
+        if (tabLive) {
+          tabLive.classList.add('text-slate-900', 'border-slate-900');
+          tabLive.classList.remove('text-slate-400', 'border-transparent');
+        }
+        if (tabArticles) {
+          tabArticles.classList.remove('text-slate-900', 'border-slate-900');
+          tabArticles.classList.add('text-slate-400', 'border-transparent');
+        }
+      }
+
       applyAllFilters();
+
+      if (cat !== 'all') {
+        document.getElementById('archive-section-header')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     // Filter by Tag (#News, #Security, etc.)
@@ -991,6 +1025,12 @@
       if (searchQuery.startsWith('@')) {
         currentAuthor = searchQuery;
       }
+      
+      const wallContainer = document.getElementById('primary-news-source-wall');
+      if (wallContainer) {
+        wallContainer.style.display = searchQuery ? 'none' : (currentCategory === 'all' ? 'block' : 'none');
+      }
+
       closeArticleView();
       applyAllFilters();
     }
@@ -1006,12 +1046,22 @@
       if (input3) input3.value = '';
       if (input4) input4.value = '';
       document.getElementById('search-clear-btn')?.classList.add('hidden');
+      
+      const wallContainer = document.getElementById('primary-news-source-wall');
+      if (wallContainer && currentCategory === 'all') {
+        wallContainer.style.display = 'block';
+      }
+
       applyAllFilters();
     }
 
     // Sort Handler
     function applySort(val) {
       currentSort = val;
+      const s1 = document.getElementById('sidebar-sort-select');
+      const s2 = document.getElementById('drawer-sort-select');
+      if (s1 && s1.value !== val) s1.value = val;
+      if (s2 && s2.value !== val) s2.value = val;
       applyAllFilters();
     }
 
@@ -1027,6 +1077,18 @@
       applyAllFilters();
     }
 
+    function parseArticleDate(d) {
+      if (!d) return 0;
+      if (typeof d === 'number') return d;
+      if (/^\d{4}-\d{2}-\d{2}/.test(d)) return new Date(d).getTime() || 0;
+      if (/^\d{2}\.\d{2}\.\d{4}/.test(d)) {
+        const parts = d.split('.');
+        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime() || 0;
+      }
+      const t = Date.parse(d);
+      return isNaN(t) ? 0 : t;
+    }
+
     // Master Filter Engine
     function applyAllFilters() {
       filteredArticles = allArticles.filter(art => {
@@ -1034,7 +1096,24 @@
         if (currentCategory !== 'all') {
           const c = (art.category || '').toLowerCase();
           const cl = (art.catLabel || '').toLowerCase();
-          if (!c.includes(currentCategory) && !cl.includes(currentCategory)) return false;
+          const t = (art.title || '').toLowerCase();
+          const s = (art.snippet || art.desc || '').toLowerCase();
+          const tags = Array.isArray(art.tags) ? art.tags.join(' ').toLowerCase() : (art.tags || '').toLowerCase();
+
+          const catMatches = {
+            'cybersecurity': ['cybersecurity', 'security', 'cyber', 'hack', 'malware', 'breach', 'vulnerability', 'ransomware', 'cve', 'infosec', 'phishing', 'exploit', 'scada'],
+            'tech': ['tech', 'ai', 'artificial intelligence', 'software', 'hardware', 'deep learning', 'neural', 'computing', 'algorithm', 'silicon', 'chips', 'robotics'],
+            'privacy': ['privacy', 'encryption', 'gdpr', 'surveillance', 'tracking', 'anonymity', 'sovereignty', 'e2ee', 'identity', 'fingerprint'],
+            'crypto': ['crypto', 'web3', 'bitcoin', 'ethereum', 'blockchain', 'token', 'defi', 'wallet', 'solana', 'btc', 'eth', 'depin', 'hashrate'],
+            'opensource': ['opensource', 'open source', 'linux', 'git', 'github', 'foss', 'kernel', 'debian', 'ubuntu', 'apache', 'rust', 'zig', 'osi'],
+            'cloud': ['cloud', 'devops', 'kubernetes', 'docker', 'aws', 'azure', 'serverless', 'infrastructure', 'datacenter', 'k8s', 'ebpf', 'gitops'],
+            'gadgets': ['gadgets', 'gadget', 'hardware', 'phone', 'smartphone', 'laptop', 'device', 'wearable', 'foldable', 'tablet', 'display', 'notebook', 'glasses'],
+            'gaming': ['gaming', 'game', 'games', 'unreal', 'steam', 'playstation', 'xbox', 'nintendo', 'vulkan', 'esports', 'gpu', 'godot', 'acoustic']
+          };
+
+          const keywords = catMatches[currentCategory] || [currentCategory];
+          const matched = keywords.some(k => c === k || c.includes(k) || cl.includes(k) || tags.includes(k) || t.includes(k) || s.includes(k));
+          if (!matched) return false;
         }
 
         // Tag filter
@@ -1057,7 +1136,10 @@
           const s = (art.snippet || art.desc || '').toLowerCase();
           const a = (art.author || '').toLowerCase();
           const h = (art.author_handle || '').toLowerCase();
-          if (!t.includes(searchQuery) && !s.includes(searchQuery) && !a.includes(searchQuery) && !h.includes(searchQuery)) {
+          const c = (art.category || '').toLowerCase();
+          const cl = (art.catLabel || '').toLowerCase();
+          const tags = Array.isArray(art.tags) ? art.tags.join(' ').toLowerCase() : (art.tags || '').toLowerCase();
+          if (!t.includes(searchQuery) && !s.includes(searchQuery) && !a.includes(searchQuery) && !h.includes(searchQuery) && !c.includes(searchQuery) && !cl.includes(searchQuery) && !tags.includes(searchQuery)) {
             return false;
           }
         }
@@ -1071,9 +1153,9 @@
       } else if (currentSort === 'most_liked') {
         filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
       } else if (currentSort === 'oldest') {
-        filteredArticles.sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+        filteredArticles.sort((a, b) => parseArticleDate(a.date) - parseArticleDate(b.date));
       } else {
-        filteredArticles.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+        filteredArticles.sort((a, b) => parseArticleDate(b.date) - parseArticleDate(a.date));
       }
 
       renderNewsGrid();
@@ -1110,6 +1192,23 @@
       if (s1) s1.value = 'newest';
       if (s2) s2.value = 'newest';
 
+      const wallContainer = document.getElementById('primary-news-source-wall');
+      if (wallContainer) wallContainer.style.display = 'block';
+
+      const dispatchesSection = document.getElementById('secondary-dispatches-section');
+      if (dispatchesSection) dispatchesSection.style.display = 'block';
+
+      const tabLive = document.getElementById('tab-live');
+      const tabArticles = document.getElementById('tab-articles');
+      if (tabLive) {
+        tabLive.classList.add('text-slate-900', 'border-slate-900');
+        tabLive.classList.remove('text-slate-400', 'border-transparent');
+      }
+      if (tabArticles) {
+        tabArticles.classList.remove('text-slate-900', 'border-slate-900');
+        tabArticles.classList.add('text-slate-400', 'border-transparent');
+      }
+
       closeArticleView();
       applyAllFilters();
       showToast('Filters reset to default view.');
@@ -1124,7 +1223,23 @@
       if (!container) return;
 
       if (countLabel) {
-        countLabel.innerText = 'Articles found: ' + filteredArticles.length;
+        const catNames = {
+          'cybersecurity': 'Cybersecurity',
+          'tech': 'AI & Tech',
+          'privacy': 'Privacy',
+          'crypto': 'Crypto & Web3',
+          'opensource': 'Open Source',
+          'cloud': 'Cloud & DevOps',
+          'gadgets': 'Gadgets',
+          'gaming': 'Gaming',
+          'all': 'All Wire'
+        };
+        const catName = catNames[currentCategory] || currentCategory;
+        if (currentCategory !== 'all') {
+          countLabel.innerText = `${filteredArticles.length} articles in ${catName}`;
+        } else {
+          countLabel.innerText = 'Articles found: ' + filteredArticles.length;
+        }
       }
 
       if (filteredArticles.length === 0) {
