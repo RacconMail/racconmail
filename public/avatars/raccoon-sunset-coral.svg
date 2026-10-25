@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="coral-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F68D72" />
+      <stop offset="100%" stop-color="#E06748" />
+    </linearGradient>
+    <linearGradient id="soft-white" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FFEFEA" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="100" fill="url(#coral-grad)" />
+  <circle cx="100" cy="100" r="92" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-opacity="0.3" />
+  <!-- Raccoon Ears -->
+  <polygon points="56,76 38,28 84,52" fill="#0F172A" />
+  <polygon points="60,70 48,38 78,54" fill="#FFEFEA" opacity="0.9" />
+  <polygon points="144,76 162,28 116,52" fill="#0F172A" />
+  <polygon points="140,70 152,38 122,54" fill="#FFEFEA" opacity="0.9" />
+  <!-- Raccoon Face Main -->
+  <path d="M48,95 Q100,48 152,95 Q172,142 100,166 Q28,142 48,95 Z" fill="url(#soft-white)" />
+  <!-- Bandit Mask -->
+  <path d="M52,94 Q100,82 148,94 Q136,132 100,120 Q64,132 52,94 Z" fill="#0F172A" />
+  <!-- Eyes -->
+  <ellipse cx="78" cy="106" rx="9" ry="11" fill="#FFFFFF" />
+  <circle cx="78" cy="107" r="6" fill="#F68D72" />
+  <circle cx="76" cy="104" r="2.5" fill="#FFFFFF" />
+  <ellipse cx="122" cy="106" rx="9" ry="11" fill="#FFFFFF" />
+  <circle cx="122" cy="107" r="6" fill="#F68D72" />
+  <circle cx="120" cy="104" r="2.5" fill="#FFFFFF" />
+  <!-- Snout -->
+  <ellipse cx="100" cy="138" rx="16" ry="12" fill="#FFFFFF" />
+  <polygon points="93,132 107,132 100,140" fill="#E06748" />
+  <path d="M96,142 Q100,146 104,142" stroke="#E06748" stroke-width="2" fill="none" stroke-linecap="round" />
+  <!-- Whiskers -->
+  <line x1="42" y1="126" x2="74" y2="130" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+  <line x1="40" y1="136" x2="72" y2="136" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+  <line x1="158" y1="126" x2="126" y2="130" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+  <line x1="160" y1="136" x2="128" y2="136" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.9" />
+</svg>

@@ -29,7 +29,12 @@
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <!-- Google Fonts matching Webmail exactly (DM Sans & Space Grotesk) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Schema.org JSON-LD High-Ranking Google Structured Data -->
   <script type="application/ld+json">
@@ -71,7 +76,7 @@
   }
   </script>
 
-  <!-- Dynamic Article Schema Container (populated dynamically for Google News bots) -->
+  <!-- Dynamic Article Schema Container -->
   <script id="dynamic-news-jsonld" type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,18 +93,19 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a'
+            coral: {
+              DEFAULT: '#F68D72',
+              dark: '#E06748',
+              light: '#FFEFEA'
+            },
+            purple: {
+              brand: '#6C4FF5',
+              dark: '#583BCC'
             }
           }
         }
@@ -107,103 +113,167 @@
     }
   </script>
 
-  <!-- Lucide Icons & FontAwesome -->
+  <!-- Lucide Icons & FontAwesome (Exact match with Webmail) -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
-    /* Clean Modern Soft-UI Scroll & Foundations */
-    html, body {
-      min-height: 100%;
-      background-color: #f8fafc;
-      color: #0f172a;
+    /* Full Natural Scroll Down Across Entire Page */
+    html {
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-x: hidden !important;
+      overflow-y: scroll !important;
+      scroll-behavior: smooth;
+    }
+    body {
+      min-height: 100vh !important;
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: visible !important;
+      background-color: #FFFFFF !important;
+      color: #0F172A !important;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
     }
-    .scrollbar-none::-webkit-scrollbar { display: none; }
-    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Active filter pill styling */
+
+    /* Webmail Default Gray Icons ("iconite gri") */
+    i[data-lucide], .lucide {
+      color: #94A3B8;
+      stroke: #94A3B8;
+    }
+
+    /* Webmail Active Category / Filter Pill (Warm Coral) */
     .filter-chip-active {
-      background-color: #eff6ff !important;
-      color: #2563eb !important;
-      border-color: #bfdbfe !important;
+      background-color: #F68D72 !important;
+      color: #FFFFFF !important;
+      border-color: #F68D72 !important;
       font-weight: 700 !important;
+      box-shadow: 0 4px 14px rgba(246, 141, 114, 0.35) !important;
     }
+    .filter-chip-active i[data-lucide], .filter-chip-active .lucide {
+      color: #FFFFFF !important;
+      stroke: #FFFFFF !important;
+    }
+
+    /* Webmail Active Hashtag Tag Pill (Dark Slate Capsule) */
     .tag-chip-active {
-      background-color: #2563eb !important;
-      color: #ffffff !important;
-      border-color: #2563eb !important;
+      background: linear-gradient(180deg, #27272A 0%, #09090B 100%) !important;
+      color: #FFFFFF !important;
+      border-color: #09090B !important;
       font-weight: 700 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important;
+    }
+
+    /* Webmail Card Inactive & Hover */
+    .news-card-webmail {
+      background: #F8F9FA;
+      border: 1px solid rgba(241, 245, 249, 0.95);
+      border-radius: 24px;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .news-card-webmail:hover {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Custom Webmail Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
     }
   </style>
 </head>
-<body class="flex flex-col min-h-screen text-slate-800 bg-[#f8fafc] selection:bg-blue-100 selection:text-blue-900 pb-20 lg:pb-12">
+<body class="flex flex-col min-h-screen bg-white text-slate-900 selection:bg-[#FFEFEA] selection:text-[#E06748] pb-24 lg:pb-16">
 
   <!-- =========================================================================
-       1. TOP HEADER BAR (Web & Mobile, matching reference screenshot)
+       1. TOP HEADER BAR (Exact match with Webmail Header)
        ========================================================================= -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
-    <div class="max-w-[1520px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+  <header class="h-14 border-b border-slate-200/90 bg-white sticky top-0 z-40 flex items-center justify-between px-3 sm:px-6 shrink-0 w-full select-none shadow-2xs">
+    
+    <!-- Left: App Switcher + Logo + Brand (Matching Webmail) -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
+      <!-- App Switcher (Waffle 9-dots) -->
+      <a href="/inbox" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Raccon Mail Apps">
+        <i data-lucide="layout-grid" class="h-4 w-4"></i>
+      </a>
+
+      <!-- Brand Mascot Logo & Name -->
+      <a href="/news" class="flex items-center gap-2 group cursor-pointer mr-2" title="Raccon News Wire">
+        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-7 w-7 object-contain group-hover:scale-105 transition shrink-0" />
+        <span class="font-bold text-base tracking-tight hidden sm:inline" style="color: #64748B !important;">Raccon News</span>
+      </a>
+
+      <!-- Desktop Section Links -->
+      <nav class="hidden md:flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+        <a href="/news" class="px-3 py-1 rounded-full text-slate-900 font-bold bg-slate-100 hover:bg-slate-200 transition">Headlines</a>
+        <a href="/forum" class="px-3 py-1 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">Forum</a>
+        <a href="/stories" class="px-3 py-1 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">Stories</a>
+        <button onclick="filterByTag('#Breaking')" class="px-3 py-1 rounded-full text-[#E06748] font-bold bg-[#FFEFEA] hover:bg-[#F68D72]/20 border border-[#F68D72]/40 transition flex items-center gap-1 cursor-pointer">
+          <span>Special Coverage</span>
+          <span class="text-xs">+</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Center: Global Search Bar with Webmail Cyan Glow Magnifying Glass -->
+    <div class="hidden lg:block flex-1 max-w-md mx-6">
+      <div class="relative w-full flex items-center">
+        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.3)]"></i>
+        <input
+          id="global-news-search"
+          type="text"
+          placeholder="Search all publications, @author, topics..."
+          oninput="handleNewsSearch(this.value)"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-full border border-slate-200/90 pl-10 pr-10 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition shadow-2xs"
+        />
+        <button onclick="clearSearch()" id="search-clear-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="h-3.5 w-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Action Icons (Matching Webmail Header Exactly) -->
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       
-      <!-- Left: Brand Logo & Editorial Sections (Desktop) -->
-      <div class="flex items-center gap-6 shrink-0 min-w-0">
-        <a href="/news" class="flex items-center gap-2.5 group shrink-0" title="Raccon News Wire">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center p-1.5 shadow-xs shadow-blue-500/20 group-hover:scale-105 transition">
-            <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="w-full h-full object-contain filter brightness-0 invert" />
-          </div>
-          <div class="flex items-baseline gap-1">
-            <span class="font-black text-lg tracking-tight text-slate-900 leading-none">Raccon<span class="text-blue-600">News</span></span>
-            <span class="hidden sm:inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Wire</span>
-          </div>
-        </a>
+      <!-- Live Sync Refresh Button -->
+      <button onclick="refreshNewsWire()" id="btn-top-refresh" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Refresh Live Wire">
+        <i data-lucide="rotate-cw" class="h-4 w-4"></i>
+      </button>
 
-        <!-- Desktop Nav Links -->
-        <nav class="hidden md:flex items-center gap-1 text-xs font-semibold text-slate-600">
-          <a href="/news" class="px-3 py-1.5 rounded-full text-slate-900 font-bold bg-slate-100 hover:bg-slate-200 transition">Headlines</a>
-          <a href="/forum" class="px-3 py-1.5 rounded-full hover:text-slate-900 hover:bg-slate-100 transition">Community Wall</a>
-          <a href="/stories" class="px-3 py-1.5 rounded-full hover:text-slate-900 hover:bg-slate-100 transition">Chronicles</a>
-          <button onclick="filterByTag('#Breaking')" class="px-3 py-1.5 rounded-full text-blue-600 font-bold bg-blue-50 hover:bg-blue-100 border border-blue-200/70 transition flex items-center gap-1 cursor-pointer">
-            <span>Special Coverage</span>
-            <span class="text-xs">+</span>
-          </button>
-        </nav>
+      <!-- Bookmarks / Saved Pill -->
+      <button onclick="toggleBookmarksView()" id="header-btn-bookmarks" class="relative p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer" title="Saved Publications">
+        <i data-lucide="bookmark" class="h-4 w-4"></i>
+        <span id="header-bookmark-badge" class="hidden absolute top-1 right-1 px-1.5 py-0.2 rounded-full bg-[#F68D72] text-[9px] font-bold text-white shadow-2xs">0</span>
+      </button>
+
+      <!-- Active Black Capsule (Matching Webmail .nav-pill-active) -->
+      <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-xs">
+        <i data-lucide="newspaper" class="w-3.5 h-3.5 text-white"></i>
+        <span>News Wire</span>
       </div>
 
-      <!-- Right: Action Icons (Notifications, Bookmarks, Active Media Tab, Profile) -->
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-        
-        <!-- Live Sync Status Indicator -->
-        <div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-bold text-emerald-700">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Live Syndication OK</span>
+      <!-- Webmail Profile Pill -->
+      <a href="/inbox" class="flex items-center gap-1.5 p-1 sm:px-2.5 sm:py-1 rounded-full border border-slate-200/90 hover:bg-slate-50 transition cursor-pointer select-none shadow-2xs ml-1" title="Open Webmail">
+        <div class="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
+          <i data-lucide="mail" class="w-3.5 h-3.5 text-[#F68D72]"></i>
         </div>
-
-        <!-- Notifications Bell -->
-        <button onclick="showToast('No new unread wire alerts at this time.')" class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Notifications">
-          <i data-lucide="bell" class="w-4 h-4"></i>
-          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
-        </button>
-
-        <!-- Bookmarks / Favorites Toggle Button -->
-        <button onclick="toggleBookmarksView()" id="header-btn-bookmarks" class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Saved Articles">
-          <i data-lucide="bookmark" class="w-4 h-4"></i>
-          <span id="header-bookmark-badge" class="hidden absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-blue-600 text-[9px] font-bold text-white">0</span>
-        </button>
-
-        <!-- Media / News Wire Active Tab (Matches Screenshot) -->
-        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold shadow-2xs">
-          <i data-lucide="newspaper" class="w-3.5 h-3.5"></i>
-          <span>News Wire</span>
-        </div>
-
-        <!-- Webmail Inbox / User Profile Avatar -->
-        <a href="/inbox" class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer" title="Open Webmail">
-          <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
-            <i data-lucide="mail" class="w-3.5 h-3.5 text-blue-400"></i>
-          </div>
-          <span class="hidden md:inline text-xs font-bold text-slate-800">Webmail</span>
-        </a>
-      </div>
+        <span class="text-xs font-medium text-slate-700 hidden lg:inline">Webmail</span>
+      </a>
 
     </div>
   </header>
@@ -211,19 +281,19 @@
   <!-- =========================================================================
        2. SUB-HEADER BAR (Title, Tabs, Search & Mobile Filter Button)
        ========================================================================= -->
-  <section class="max-w-[1520px] mx-auto w-full px-4 sm:px-6 pt-5 pb-3">
+  <section class="max-w-[1520px] mx-auto w-full px-4 sm:px-6 pt-5 pb-2">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       
-      <!-- Left: Title & Articles / Channels Tabs (Matches Screenshot) -->
+      <!-- Left: Title & Articles / Sources Tabs -->
       <div>
-        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-display flex items-center gap-2">
           <span>News Wire</span>
-          <span class="text-xl">📰</span>
+          <span class="text-xl">🦝</span>
         </h1>
         
-        <!-- Tabs: Articles | Channels -->
+        <!-- Tabs: Publications | Sources -->
         <div class="flex items-center gap-6 mt-2 border-b border-slate-200">
-          <button onclick="setNewsSubTab('articles')" id="tab-articles" class="pb-2.5 text-xs sm:text-sm font-extrabold text-blue-600 border-b-2 border-blue-600 transition cursor-pointer">
+          <button onclick="setNewsSubTab('articles')" id="tab-articles" class="pb-2.5 text-xs sm:text-sm font-extrabold text-slate-900 border-b-2 border-slate-900 transition cursor-pointer">
             Publications
           </button>
           <button onclick="setNewsSubTab('channels')" id="tab-channels" class="pb-2.5 text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition cursor-pointer flex items-center gap-1.5">
@@ -233,40 +303,37 @@
         </div>
       </div>
 
-      <!-- Right: Search Bar + Mobile Filter Trigger (Matches Screenshot) -->
+      <!-- Right: Mobile Search & Mobile Filter Button -->
       <div class="flex items-center gap-2.5 w-full sm:w-auto">
-        <!-- Search Input Field -->
-        <div class="relative flex-1 sm:w-72 md:w-80">
-          <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+        <!-- Search input for mobile / tablet -->
+        <div class="lg:hidden relative flex-1 sm:w-72">
+          <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-cyan-500 stroke-[2.5] pointer-events-none"></i>
           <input 
             type="text" 
-            id="news-search-input" 
+            id="mobile-news-search" 
             oninput="handleNewsSearch(this.value)"
-            placeholder="Search keywords, @author, topics..." 
-            class="w-full pl-9 pr-8 py-2 rounded-2xl bg-white border border-slate-200/90 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 shadow-2xs transition"
+            placeholder="Search keywords or @tag..." 
+            class="w-full pl-9 pr-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:bg-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 shadow-2xs transition"
           />
-          <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-slate-400 hover:text-slate-600 cursor-pointer">
-            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-          </button>
         </div>
 
-        <!-- Mobile Filter Button (Matches Blue Filter Button in Middle Screen) -->
+        <!-- Mobile Filter Button (Webmail Dark Solid Capsule) -->
         <button 
           onclick="toggleMobileFilterDrawer(true)" 
-          class="lg:hidden p-2 sm:px-3.5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
+          class="lg:hidden p-2 sm:px-3.5 py-2 rounded-2xl bg-slate-900 hover:bg-black active:scale-95 text-white shadow-md shadow-slate-900/15 transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
           title="Open Filters"
         >
-          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-white"></i>
           <span class="text-xs font-bold hidden sm:inline">Filters</span>
-          <span id="mobile-filter-badge" class="hidden w-2 h-2 rounded-full bg-white"></span>
+          <span id="mobile-filter-badge" class="hidden w-2 h-2 rounded-full bg-[#F68D72]"></span>
         </button>
 
-        <!-- View Mode Switcher (Desktop) -->
+        <!-- View Switcher (Desktop) -->
         <div class="hidden lg:flex items-center gap-1 p-1 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
-          <button onclick="setViewLayout('grid')" id="btn-layout-grid" class="p-1.5 rounded-xl bg-slate-100 text-blue-600 transition" title="Grid View">
-            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          <button onclick="setViewLayout('grid')" id="btn-layout-grid" class="p-1.5 rounded-xl bg-slate-100 text-slate-900 transition" title="Grid View">
+            <i data-lucide="layout-grid" class="w-4 h-4 text-slate-800"></i>
           </button>
-          <button onclick="setViewLayout('list')" id="btn-layout-list" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 transition" title="Compact List">
+          <button onclick="setViewLayout('list')" id="btn-layout-list" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 transition" title="List View">
             <i data-lucide="list" class="w-4 h-4"></i>
           </button>
         </div>
@@ -276,40 +343,40 @@
   </section>
 
   <!-- =========================================================================
-       3. MAIN LAYOUT: DESKTOP FILTER SIDEBAR + ARTICLES GRID
+       3. MAIN LAYOUT: DESKTOP FILTER SIDEBAR + NEWS STAGE (SAME-PAGE RENDERING)
        ========================================================================= -->
   <main class="flex-1 max-w-[1520px] mx-auto w-full px-4 sm:px-6 py-4">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
       
       <!-- =====================================================================
-           LEFT COLUMN: DESKTOP FILTERS SIDEBAR (Matches Left Screen)
+           LEFT COLUMN: DESKTOP FILTERS SIDEBAR (Sticky, Never Blocks Scroll Down)
            ===================================================================== -->
-      <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24 space-y-5">
-        <div class="rounded-[28px] bg-white border border-slate-200/80 p-5 sm:p-6 shadow-2xs space-y-5">
+      <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto space-y-5 pr-1">
+        <div class="rounded-[28px] bg-white border border-slate-200/90 p-5 sm:p-6 shadow-2xs space-y-5">
           
           <!-- Filter Header -->
           <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-2">
-              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
-              <h3 class="font-extrabold text-sm text-slate-900">Filters</h3>
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-700"></i>
+              <h3 class="font-extrabold text-sm text-slate-900 font-display">Filters</h3>
             </div>
-            <button onclick="resetAllFilters()" class="text-[11px] font-bold text-slate-400 hover:text-blue-600 transition cursor-pointer flex items-center gap-1">
+            <button onclick="resetAllFilters()" class="text-[11px] font-bold text-slate-400 hover:text-[#E06748] transition cursor-pointer flex items-center gap-1">
               <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
               <span>Reset</span>
             </button>
           </div>
 
-          <!-- 1. Search Publication Input inside filter -->
+          <!-- 1. Search Publication Input -->
           <div class="space-y-1.5">
             <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Search Publications</label>
             <div class="relative">
-              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cyan-500"></i>
               <input 
                 type="text" 
                 id="sidebar-search-input" 
                 oninput="handleNewsSearch(this.value)"
                 placeholder="Enter keywords or @tag..." 
-                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition"
+                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition"
               />
             </div>
           </div>
@@ -321,7 +388,7 @@
               <select 
                 id="sidebar-sort-select" 
                 onchange="applySort(this.value)"
-                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none pr-8"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-slate-400 transition cursor-pointer appearance-none pr-8"
               >
                 <option value="newest">Latest First</option>
                 <option value="most_viewed">Most Viewed &amp; Popular</option>
@@ -332,7 +399,7 @@
             </div>
           </div>
 
-          <!-- 3. Categories / Sports & Topics Pills (Matches Screenshot) -->
+          <!-- 3. Topics & Domains Pills (Matches Webmail Category Pills) -->
           <div class="space-y-2">
             <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Topics &amp; Domains</label>
             <div class="flex flex-wrap gap-1.5" id="sidebar-categories-container">
@@ -366,7 +433,7 @@
             </div>
           </div>
 
-          <!-- 4. Tags / Hashtags Pills (Matches Screenshot) -->
+          <!-- 4. Hashtags & Desks -->
           <div class="space-y-2">
             <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Hashtags &amp; Desks</label>
             <div class="flex flex-wrap gap-1.5" id="sidebar-tags-container">
@@ -397,7 +464,7 @@
             </div>
           </div>
 
-          <!-- 5. Period / Date Range Picker (Matches Screenshot) -->
+          <!-- 5. Period / Published Date -->
           <div class="space-y-1.5">
             <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Period / Published Date</label>
             <div class="relative">
@@ -405,7 +472,7 @@
               <select 
                 id="sidebar-period-select" 
                 onchange="applyPeriod(this.value)"
-                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none"
+                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-slate-400 transition cursor-pointer appearance-none"
               >
                 <option value="all">All Dates &bull; Complete Archive</option>
                 <option value="today">Today &bull; Past 24 Hours</option>
@@ -416,14 +483,14 @@
             </div>
           </div>
 
-          <!-- 6. Format Dropdown (Matches Screenshot) -->
+          <!-- 6. Format Dropdown -->
           <div class="space-y-1.5">
             <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Format</label>
             <div class="relative">
               <select 
                 id="sidebar-format-select" 
                 onchange="applyFormat(this.value)"
-                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none pr-8"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-slate-400 transition cursor-pointer appearance-none pr-8"
               >
                 <option value="all">All Formats</option>
                 <option value="standard">Standard Article</option>
@@ -435,18 +502,18 @@
             </div>
           </div>
 
-          <!-- 7. Action Buttons (Reset & Apply - Matches Screenshot) -->
+          <!-- 7. Action Buttons -->
           <div class="space-y-2 pt-2 border-t border-slate-100">
             <button 
               onclick="resetAllFilters()" 
               class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-98 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
             >
-              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
               <span>Reset Filters</span>
             </button>
             <button 
               onclick="applyAllFilters()" 
-              class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white text-xs font-extrabold transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 cursor-pointer"
+              class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black active:scale-95 text-white text-xs font-extrabold transition shadow-md shadow-slate-900/15 flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <i data-lucide="check" class="w-3.5 h-3.5 text-white"></i>
               <span>Apply Filters</span>
@@ -457,39 +524,117 @@
       </aside>
 
       <!-- =====================================================================
-           RIGHT COLUMN: NEWS STAGE & CARDS GRID (Matches Center Screen)
+           RIGHT COLUMN: NEWS FEED & IN-PAGE ARTICLE READER (SAME PAGE)
            ===================================================================== -->
-      <section class="lg:col-span-8 xl:col-span-9 space-y-4">
+      <section class="lg:col-span-8 xl:col-span-9 space-y-4 min-h-[600px]">
         
-        <!-- Results Header Bar: Count + Active Author Filter Chip -->
-        <div class="flex items-center justify-between pb-2">
-          <div class="flex items-center gap-2">
-            <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="results-count-label">Articles found: 32</span>
-            <div id="active-author-chip-container" class="hidden">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
-                <span id="active-author-chip-text">@artem_sec</span>
-                <button onclick="clearAuthorFilter()" class="hover:text-blue-900 cursor-pointer font-bold">&times;</button>
-              </span>
+        <!-- ===================================================================
+             VIEW A: ARTICLES STREAM FEED (Active by default)
+             =================================================================== -->
+        <div id="news-feed-view" class="space-y-4">
+          <!-- Results Header Bar: Count + Active Author Filter Chip -->
+          <div class="flex items-center justify-between pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="results-count-label">Articles found: 32</span>
+              <div id="active-author-chip-container" class="hidden">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFEFEA] border border-[#F68D72]/40 text-[#E06748] text-xs font-bold">
+                  <span id="active-author-chip-text">@artem_sec</span>
+                  <button onclick="clearAuthorFilter()" class="hover:text-slate-900 cursor-pointer font-bold">&times;</button>
+                </span>
+              </div>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono hidden sm:inline">24/7 Verified Syndication</span>
+          </div>
+
+          <!-- NEWS CARDS GRID (2 Columns on Desktop, 1 Column on Mobile - Seamless Scroll Down) -->
+          <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+            <!-- Dynamically populated via JS renderNewsGrid() -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="news-empty-state" class="hidden rounded-[28px] bg-white border border-slate-200/80 p-12 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mx-auto">
+              <i data-lucide="newspaper" class="w-7 h-7"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">No articles match your filters</h3>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto">Try clearing search keywords, selecting another domain, or resetting filters to view all dispatches.</p>
+            <button onclick="resetAllFilters()" class="px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-black transition cursor-pointer">
+              Reset All Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             VIEW B: IN-PAGE FULL ARTICLE READER (NO POPUP WINDOW - SAME PAGE!)
+             =================================================================== -->
+        <div id="news-article-view" class="hidden rounded-[28px] bg-white border border-slate-200/90 shadow-sm overflow-hidden space-y-6">
+          
+          <!-- Back Button Header -->
+          <div class="p-4 sm:p-6 pb-0 flex items-center justify-between border-b border-slate-100 pb-4">
+            <button onclick="closeArticleView()" class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 transition cursor-pointer shadow-2xs">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>Back to News Wire</span>
+            </button>
+            <div class="flex items-center gap-2">
+              <button onclick="likeCurrentReaderArticle()" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-rose-50 hover:text-rose-600 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
+                <span id="inpage-likes-count">128</span>
+              </button>
+              <button onclick="shareCurrentArticle()" class="px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                <i data-lucide="share-2" class="w-3.5 h-3.5 text-white"></i>
+                <span>Share</span>
+              </button>
             </div>
           </div>
-          <span class="text-[11px] text-slate-400 font-mono hidden sm:inline">24/7 Verified Syndication</span>
-        </div>
 
-        <!-- NEWS CARDS GRID (2 Columns on Desktop, 1 Column on Mobile - Matches Screenshot) -->
-        <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
-          <!-- Dynamically populated via JS renderNewsGrid() -->
-        </div>
-
-        <!-- Empty State -->
-        <div id="news-empty-state" class="hidden rounded-[28px] bg-white border border-slate-200/80 p-12 text-center space-y-3">
-          <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
-            <i data-lucide="newspaper" class="w-7 h-7"></i>
+          <!-- Cover Image Banner -->
+          <div class="relative w-full aspect-[21/9] sm:aspect-[21/8] bg-slate-900 overflow-hidden mx-auto">
+            <img id="inpage-image" src="" alt="Article Banner" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+            <span id="inpage-category" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-slate-950/80 text-white backdrop-blur-md border border-white/20 shadow-xs">
+              Tech
+            </span>
+            <div class="absolute bottom-5 left-5 right-5 text-white">
+              <p class="text-xs text-slate-300 font-mono mb-1" id="inpage-date">25.10.2026</p>
+              <h2 id="inpage-title" class="text-xl sm:text-2xl md:text-3xl font-black leading-tight tracking-tight drop-shadow-sm font-display"></h2>
+            </div>
           </div>
-          <h3 class="text-base font-bold text-slate-900">No articles match your filters</h3>
-          <p class="text-xs text-slate-400 max-w-sm mx-auto">Try clearing search keywords, selecting another domain, or resetting filters to view all dispatches.</p>
-          <button onclick="resetAllFilters()" class="px-5 py-2 rounded-full bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition cursor-pointer">
-            Reset All Filters
-          </button>
+
+          <!-- Author Byline -->
+          <div class="px-6 sm:px-8 flex items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <img id="inpage-author-avatar" src="" class="w-12 h-12 rounded-full object-cover border border-slate-200" alt="Author" />
+              <div>
+                <div class="flex items-center gap-2">
+                  <span id="inpage-author-name" class="font-black text-sm text-slate-900 font-display"></span>
+                  <span class="text-[#E06748] font-bold text-xs" id="inpage-author-handle">@handle</span>
+                </div>
+                <p id="inpage-author-role" class="text-xs text-slate-400 font-medium"></p>
+              </div>
+            </div>
+            <div class="text-right text-xs text-slate-400 hidden sm:block">
+              <span>Verified Wire Dispatch</span>
+              <p class="font-mono text-[11px] text-emerald-600 font-bold">&bull; 100% Uncensored</p>
+            </div>
+          </div>
+
+          <!-- Full Article Body -->
+          <div class="px-6 sm:px-8 pb-10 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed" id="inpage-body">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Back to Top / Return to Stream Footer Button -->
+          <div class="px-6 sm:px-8 pb-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+            <button onclick="closeArticleView()" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs cursor-pointer">
+              <i data-lucide="arrow-left" class="w-4 h-4 text-white"></i>
+              <span>Return to Publications Feed</span>
+            </button>
+            <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="text-xs font-bold text-slate-400 hover:text-slate-700 transition cursor-pointer flex items-center gap-1">
+              <span>Back to Top</span>
+              <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
         </div>
 
       </section>
@@ -507,8 +652,8 @@
         <!-- Header: Filters + Close X -->
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <div class="flex items-center gap-2">
-            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
-            <h3 class="font-black text-base text-slate-900">Filters</h3>
+            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-900"></i>
+            <h3 class="font-black text-base text-slate-900 font-display">Filters</h3>
           </div>
           <button onclick="toggleMobileFilterDrawer(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer">
             <i data-lucide="x" class="w-5 h-5"></i>
@@ -580,12 +725,12 @@
           onclick="resetAllFilters()" 
           class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5"
         >
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
           <span>Reset Filters</span>
         </button>
         <button 
           onclick="applyAllFilters(); toggleMobileFilterDrawer(false);" 
-          class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-extrabold transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5"
+          class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black active:scale-95 text-white text-xs font-extrabold transition shadow-md shadow-slate-900/15 flex items-center justify-center gap-1.5"
         >
           <span>Apply Filters</span>
         </button>
@@ -595,86 +740,31 @@
   </div>
 
   <!-- =========================================================================
-       5. FULL ARTICLE READER MODAL (Integrated, Zero popups)
-       ========================================================================= -->
-  <div id="article-reader-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-4 sm:p-6 md:p-10">
-    <div class="max-w-3xl mx-auto bg-white rounded-[32px] border border-slate-200 shadow-2xl overflow-hidden my-auto space-y-6">
-      
-      <!-- Reader Header -->
-      <div class="relative w-full h-64 sm:h-80 bg-slate-900">
-        <img id="reader-image" src="" alt="Article Banner" class="w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-        <button onclick="closeArticleReader()" class="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black text-white backdrop-blur-md transition cursor-pointer">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-        <span id="reader-category" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-blue-600 text-white shadow-xs">
-          Tech
-        </span>
-        <div class="absolute bottom-5 left-5 right-5 text-white">
-          <p class="text-xs text-blue-300 font-mono mb-1" id="reader-date">25.10.2026</p>
-          <h2 id="reader-title" class="text-xl sm:text-2xl md:text-3xl font-black leading-tight tracking-tight drop-shadow-sm"></h2>
-        </div>
-      </div>
-
-      <!-- Author Byline & Social Engagement in Reader -->
-      <div class="px-6 sm:px-8 flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
-        <div class="flex items-center gap-3">
-          <img id="reader-author-avatar" src="" class="w-11 h-11 rounded-full object-cover border border-slate-200" alt="Author Avatar" />
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span id="reader-author-name" class="font-black text-sm text-slate-900"></span>
-              <span class="text-blue-600 font-bold text-xs" id="reader-author-handle">@handle</span>
-            </div>
-            <p id="reader-author-role" class="text-[11px] text-slate-400 font-medium"></p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="likeCurrentReaderArticle()" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
-            <span id="reader-likes-count">128</span>
-          </button>
-          <button onclick="shareCurrentArticle()" class="px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
-            <i data-lucide="share-2" class="w-3.5 h-3.5 text-white"></i>
-            <span>Share</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Full Article Body -->
-      <div class="px-6 sm:px-8 pb-8 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed" id="reader-body">
-        <!-- Rendered by JS -->
-      </div>
-
-    </div>
-  </div>
-
-  <!-- =========================================================================
-       6. MOBILE APP BOTTOM NAVIGATION BAR (Matches Middle Screen in Screenshot)
+       5. MOBILE APP BOTTOM NAVIGATION BAR (Exact Webmail Styling)
        ========================================================================= -->
   <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 py-2 px-6 flex items-center justify-around text-slate-500 shadow-lg">
-    <a href="/" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+    <a href="/" class="flex flex-col items-center gap-1 hover:text-slate-900 transition">
       <i data-lucide="home" class="w-4 h-4"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
-    <button onclick="toggleBookmarksView()" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+    <button onclick="toggleBookmarksView()" class="flex flex-col items-center gap-1 hover:text-slate-900 transition cursor-pointer">
       <i data-lucide="bookmark" class="w-4 h-4"></i>
       <span class="text-[10px] font-bold">Saved</span>
     </button>
-    <a href="/news" class="flex flex-col items-center gap-1 text-blue-600 transition">
-      <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-        <i data-lucide="newspaper" class="w-4 h-4"></i>
+    <a href="/news" class="flex flex-col items-center gap-1 text-slate-900 transition">
+      <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center">
+        <i data-lucide="newspaper" class="w-4 h-4 text-slate-900"></i>
       </div>
       <span class="text-[10px] font-extrabold">News Wire</span>
     </a>
-    <a href="/inbox" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+    <a href="/inbox" class="flex flex-col items-center gap-1 hover:text-slate-900 transition">
       <i data-lucide="mail" class="w-4 h-4"></i>
       <span class="text-[10px] font-bold">Webmail</span>
     </a>
   </nav>
 
   <!-- =========================================================================
-       7. JAVASCRIPT APP LOGIC & GOOGLE NEWS SYNDICATION ENGINE
+       6. JAVASCRIPT APP LOGIC & SAME-PAGE ARTICLE VIEWER
        ========================================================================= -->
   <script>
     // App State
@@ -689,6 +779,7 @@
     let currentSort = 'newest';
     let searchQuery = '';
     let currentReaderArticle = null;
+    let savedScrollPosition = 0;
 
     // Initialize Application
     document.addEventListener('DOMContentLoaded', async () => {
@@ -711,7 +802,7 @@
       }
     }
 
-    // Google SEO: Inject schema.org NewsArticle markup for high search engine visibility
+    // Google SEO: Inject schema.org NewsArticle markup
     function injectDynamicJsonLd(articles) {
       try {
         const script = document.getElementById('dynamic-news-jsonld');
@@ -747,6 +838,17 @@
       } catch (_) {}
     }
 
+    // Refresh Live Wire
+    async function refreshNewsWire() {
+      const btn = document.getElementById('btn-top-refresh');
+      if (btn) btn.innerHTML = '<i data-lucide="rotate-cw" class="h-4 w-4 animate-spin text-slate-700"></i>';
+      if (window.lucide) lucide.createIcons();
+      await fetchNewsFeed();
+      if (btn) btn.innerHTML = '<i data-lucide="rotate-cw" class="h-4 w-4"></i>';
+      if (window.lucide) lucide.createIcons();
+      showToast('Live News Wire Synchronized! ⚡');
+    }
+
     // Filter by Category
     function filterNewsCat(cat) {
       currentCategory = cat;
@@ -757,6 +859,7 @@
           btn.classList.remove('filter-chip-active');
         }
       });
+      closeArticleView();
       applyAllFilters();
     }
 
@@ -770,6 +873,7 @@
           btn.classList.remove('tag-chip-active');
         }
       });
+      closeArticleView();
       applyAllFilters();
     }
 
@@ -782,6 +886,7 @@
         chipText.innerText = handle;
         chipContainer.classList.remove('hidden');
       }
+      closeArticleView();
       applyAllFilters();
       window.scrollTo({ top: 120, behavior: 'smooth' });
     }
@@ -795,26 +900,28 @@
     // Search Handler
     function handleNewsSearch(val) {
       searchQuery = (val || '').toLowerCase().trim();
-      const clearBtn = document.getElementById('clear-search-btn');
+      const clearBtn = document.getElementById('search-clear-btn');
       if (clearBtn) {
         clearBtn.classList.toggle('hidden', searchQuery.length === 0);
       }
-      // If user typed an author tag like @artem
       if (searchQuery.startsWith('@')) {
         currentAuthor = searchQuery;
       }
+      closeArticleView();
       applyAllFilters();
     }
 
     function clearSearch() {
       searchQuery = '';
-      const input1 = document.getElementById('news-search-input');
+      const input1 = document.getElementById('global-news-search');
       const input2 = document.getElementById('sidebar-search-input');
       const input3 = document.getElementById('drawer-search-input');
+      const input4 = document.getElementById('mobile-news-search');
       if (input1) input1.value = '';
       if (input2) input2.value = '';
       if (input3) input3.value = '';
-      document.getElementById('clear-search-btn')?.classList.add('hidden');
+      if (input4) input4.value = '';
+      document.getElementById('search-clear-btn')?.classList.add('hidden');
       applyAllFilters();
     }
 
@@ -882,7 +989,6 @@
       } else if (currentSort === 'oldest') {
         filteredArticles.sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
       } else {
-        // Newest first (default)
         filteredArticles.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
       }
 
@@ -920,11 +1026,12 @@
       if (s1) s1.value = 'newest';
       if (s2) s2.value = 'newest';
 
+      closeArticleView();
       applyAllFilters();
       showToast('Filters reset to default view.');
     }
 
-    // Render News Cards (Replicating exact reference design)
+    // Render News Cards
     function renderNewsGrid() {
       const container = document.getElementById('news-grid-container');
       const emptyState = document.getElementById('news-empty-state');
@@ -958,29 +1065,29 @@
         const cleanSnippet = art.snippet || (art.desc ? art.desc.replace(/<[^>]*>?/gm, '') : 'Deep dive investigation into emerging technology.');
 
         return `
-          <article class="rounded-[28px] bg-white border border-slate-200/80 p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group cursor-pointer" onclick="openArticleReader('${art.id}')">
+          <article class="news-card-webmail p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group cursor-pointer" onclick="openArticleOnSamePage('${art.id}')">
             
-            <!-- Card Top: Author Profile Header (Matches Screenshot) -->
+            <!-- Card Top: Author Profile Header -->
             <div class="flex items-center justify-between pb-3.5 mb-3 border-b border-slate-100">
               <div class="flex items-center gap-3 min-w-0" onclick="event.stopPropagation(); filterByAuthor('${authorHandle}')">
-                <img src="${authorAvatar}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200/80 shadow-2xs" alt="${authorName}" />
+                <img src="${authorAvatar}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200 shadow-2xs" alt="${authorName}" />
                 <div class="truncate">
-                  <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-tight truncate group-hover:text-blue-600 transition">${authorName}</h4>
+                  <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-tight truncate group-hover:text-[#E06748] transition font-display">${authorName}</h4>
                   <div class="flex items-center gap-1.5 text-[10px] text-slate-400 mt-0.5 truncate">
-                    <span class="font-extrabold text-blue-600 hover:underline">${authorHandle}</span>
+                    <span class="font-bold text-[#E06748] hover:underline">${authorHandle}</span>
                     <span>&bull;</span>
                     <span class="truncate">${authorRole}</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Context Dots Menu Button -->
+              <!-- Context Bookmark Button -->
               <button onclick="event.stopPropagation(); toggleCardBookmark('${art.id}')" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition shrink-0" title="${isSaved ? 'Remove Bookmark' : 'Save Bookmark'}">
-                <i data-lucide="${isSaved ? 'bookmark-check' : 'bookmark'}" class="w-4 h-4 ${isSaved ? 'text-blue-600 fill-blue-600' : ''}"></i>
+                <i data-lucide="${isSaved ? 'bookmark-check' : 'bookmark'}" class="w-4 h-4 ${isSaved ? 'text-[#F68D72] fill-[#F68D72]' : ''}"></i>
               </button>
             </div>
 
-            <!-- Card Middle: Cover Image with Floating Category Pill (Matches Screenshot) -->
+            <!-- Card Middle: Cover Image with Floating Category Pill -->
             <div class="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-100 mb-3.5">
               <img 
                 src="${art.image}" 
@@ -997,7 +1104,7 @@
             <!-- Card Content: Published Date, Title & Snippet -->
             <div class="space-y-1.5 flex-1 mb-4">
               <span class="text-[11px] font-mono text-slate-400 block">${dateStr}</span>
-              <h3 class="font-black text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
+              <h3 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-[#E06748] transition leading-snug line-clamp-2 font-display">
                 ${art.title}
               </h3>
               <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
@@ -1005,7 +1112,7 @@
               </p>
             </div>
 
-            <!-- Card Bottom: Social Engagement Row (Matches Screenshot: Likes, Comments, Views, Share) -->
+            <!-- Card Bottom: Social Engagement Row -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-bold select-none" onclick="event.stopPropagation()">
               <div class="flex items-center gap-4">
                 <!-- Like Button -->
@@ -1015,7 +1122,7 @@
                 </button>
 
                 <!-- Comments Count -->
-                <button onclick="openArticleReader('${art.id}')" class="flex items-center gap-1.5 hover:text-blue-600 transition cursor-pointer">
+                <button onclick="openArticleOnSamePage('${art.id}')" class="flex items-center gap-1.5 hover:text-slate-800 transition cursor-pointer">
                   <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
                   <span>${commentsCount}</span>
                 </button>
@@ -1040,41 +1147,56 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    // Interactive Article Reader
-    function openArticleReader(id) {
+    // =========================================================================
+    // SAME-PAGE ARTICLE VIEWER (NO POPUP WINDOW, NO REDIRECTION!)
+    // =========================================================================
+    function openArticleOnSamePage(id) {
       const art = allArticles.find(a => a.id === id);
       if (!art) return;
 
       currentReaderArticle = art;
-      const modal = document.getElementById('article-reader-modal');
-      
-      document.getElementById('reader-image').src = art.image || '';
-      document.getElementById('reader-category').innerText = art.catLabel || art.category || 'Tech';
-      document.getElementById('reader-date').innerText = art.date || '25.10.2026';
-      document.getElementById('reader-title').innerText = art.title || '';
-      document.getElementById('reader-author-name').innerText = art.author || 'Staff Reporter';
-      document.getElementById('reader-author-handle').innerText = art.author_handle || '@raccoon_wire';
-      document.getElementById('reader-author-role').innerText = art.author_role || 'Contributing Columnist';
-      document.getElementById('reader-author-avatar').src = art.author_avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
-      document.getElementById('reader-likes-count').innerText = art.likes || 128;
+      savedScrollPosition = window.scrollY;
 
-      const bodyEl = document.getElementById('reader-body');
+      const feedView = document.getElementById('news-feed-view');
+      const readerView = document.getElementById('news-article-view');
+
+      document.getElementById('inpage-image').src = art.image || '';
+      document.getElementById('inpage-category').innerText = art.catLabel || art.category || 'Tech';
+      document.getElementById('inpage-date').innerText = art.date || '25.10.2026';
+      document.getElementById('inpage-title').innerText = art.title || '';
+      document.getElementById('inpage-author-name').innerText = art.author || 'Staff Reporter';
+      document.getElementById('inpage-author-handle').innerText = art.author_handle || '@raccoon_wire';
+      document.getElementById('inpage-author-role').innerText = art.author_role || 'Contributing Columnist';
+      document.getElementById('inpage-author-avatar').src = art.author_avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
+      document.getElementById('inpage-likes-count').innerText = art.likes || 128;
+
+      const bodyEl = document.getElementById('inpage-body');
       const paragraphs = (art.content || art.snippet || art.desc || '')
         .split('\n')
         .filter(p => p.trim())
-        .map(p => `<p class="text-slate-700 leading-relaxed">${p.trim()}</p>`)
+        .map(p => `<p class="text-slate-700 leading-relaxed text-base">${p.trim()}</p>`)
         .join('');
 
       bodyEl.innerHTML = paragraphs || '<p class="text-slate-500">Full article content is synchronized via the live wire.</p>';
 
-      modal?.classList.remove('hidden');
+      feedView?.classList.add('hidden');
+      readerView?.classList.remove('hidden');
+
       window.location.hash = art.id;
+      window.scrollTo({ top: 120, behavior: 'smooth' });
       if (window.lucide) lucide.createIcons();
     }
 
-    function closeArticleReader() {
-      document.getElementById('article-reader-modal')?.classList.add('hidden');
-      history.pushState('', document.title, window.location.pathname + window.location.search);
+    function closeArticleView() {
+      const feedView = document.getElementById('news-feed-view');
+      const readerView = document.getElementById('news-article-view');
+
+      if (!readerView?.classList.contains('hidden')) {
+        readerView?.classList.add('hidden');
+        feedView?.classList.remove('hidden');
+        history.pushState('', document.title, window.location.pathname + window.location.search);
+        window.scrollTo({ top: savedScrollPosition || 0, behavior: 'smooth' });
+      }
     }
 
     // Social Like Interaction
@@ -1099,7 +1221,7 @@
     function likeCurrentReaderArticle() {
       if (currentReaderArticle) {
         currentReaderArticle.likes = (currentReaderArticle.likes || 0) + 1;
-        document.getElementById('reader-likes-count').innerText = currentReaderArticle.likes;
+        document.getElementById('inpage-likes-count').innerText = currentReaderArticle.likes;
         showToast('Liked this article! ❤️');
       }
     }
@@ -1153,6 +1275,7 @@
         return;
       }
       filteredArticles = allArticles.filter(a => savedBookmarks.includes(a.id));
+      closeArticleView();
       renderNewsGrid();
       showToast('Showing your saved bookmarks.');
     }
@@ -1162,7 +1285,6 @@
       const backdrop = document.getElementById('mobile-filter-backdrop');
       const drawer = document.getElementById('mobile-filter-drawer');
       if (show) {
-        // Mirror categories & tags into mobile drawer
         mirrorFiltersToDrawer();
         backdrop?.classList.remove('hidden');
         requestAnimationFrame(() => {
@@ -1187,22 +1309,23 @@
       if (tagSrc && tagDest) tagDest.innerHTML = tagSrc.innerHTML;
     }
 
-    // Sub-Tabs (Publications | Channels)
+    // Sub-Tabs (Publications | Sources)
     function setNewsSubTab(tab) {
       const t1 = document.getElementById('tab-articles');
       const t2 = document.getElementById('tab-channels');
       if (tab === 'articles') {
-        t1?.classList.add('text-blue-600', 'border-blue-600');
+        t1?.classList.add('text-slate-900', 'border-slate-900');
         t1?.classList.remove('text-slate-400', 'border-transparent');
         t2?.classList.add('text-slate-400', 'border-transparent');
-        t2?.classList.remove('text-blue-600', 'border-blue-600');
+        t2?.classList.remove('text-slate-900', 'border-slate-900');
+        closeArticleView();
         currentCategory = 'all';
         applyAllFilters();
       } else {
-        t2?.classList.add('text-blue-600', 'border-blue-600');
+        t2?.classList.add('text-slate-900', 'border-slate-900');
         t2?.classList.remove('text-slate-400', 'border-transparent');
         t1?.classList.add('text-slate-400', 'border-transparent');
-        t1?.classList.remove('text-blue-600', 'border-blue-600');
+        t1?.classList.remove('text-slate-900', 'border-slate-900');
         showToast('Viewing verified editorial channels.');
       }
     }
@@ -1216,17 +1339,17 @@
       if (mode === 'grid') {
         container?.classList.remove('grid-cols-1');
         container?.classList.add('md:grid-cols-2');
-        btnGrid?.classList.add('bg-slate-100', 'text-blue-600');
-        btnList?.classList.remove('bg-slate-100', 'text-blue-600');
+        btnGrid?.classList.add('bg-slate-100', 'text-slate-900');
+        btnList?.classList.remove('bg-slate-100', 'text-slate-900');
       } else {
         container?.classList.remove('md:grid-cols-2');
         container?.classList.add('grid-cols-1');
-        btnList?.classList.add('bg-slate-100', 'text-blue-600');
-        btnGrid?.classList.remove('bg-slate-100', 'text-blue-600');
+        btnList?.classList.add('bg-slate-100', 'text-slate-900');
+        btnGrid?.classList.remove('bg-slate-100', 'text-slate-900');
       }
     }
 
-    // Toast Notification Banner
+    // Toast Notification Banner (Webmail styling)
     function showToast(msg) {
       let toast = document.getElementById('app-news-toast');
       if (!toast) {
@@ -1246,7 +1369,7 @@
     function setupUrlHashNavigation() {
       const hash = window.location.hash.replace('#', '');
       if (hash) {
-        setTimeout(() => openArticleReader(hash), 500);
+        setTimeout(() => openArticleOnSamePage(hash), 400);
       }
       const params = new URLSearchParams(window.location.search);
       const author = params.get('author');

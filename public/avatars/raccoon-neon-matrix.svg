@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="matrix-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051C14" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="neon-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="100" fill="url(#matrix-bg)" />
+  <circle cx="100" cy="100" r="93" fill="none" stroke="#10B981" stroke-width="2.5" stroke-opacity="0.5" stroke-dasharray="8 6" />
+  <!-- Circuit Nodes -->
+  <circle cx="45" cy="45" r="3" fill="#10B981" />
+  <line x1="45" y1="45" x2="65" y2="45" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.5" />
+  <circle cx="155" cy="45" r="3" fill="#06B6D4" />
+  <line x1="155" y1="45" x2="135" y2="45" stroke="#06B6D4" stroke-width="1.5" stroke-opacity="0.5" />
+  <!-- Ears -->
+  <polygon points="54,76 36,28 84,52" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <polygon points="58,70 46,38 78,54" fill="#10B981" opacity="0.3" />
+  <polygon points="146,76 164,28 116,52" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <polygon points="142,70 154,38 122,54" fill="#10B981" opacity="0.3" />
+  <!-- Face -->
+  <path d="M48,96 Q100,52 152,96 Q170,140 100,165 Q30,140 48,96 Z" fill="#022C22" stroke="#10B981" stroke-width="2" />
+  <!-- Mask -->
+  <path d="M52,94 Q100,80 148,94 Q136,132 100,122 Q64,132 52,94 Z" fill="#011612" stroke="#059669" stroke-width="1.5" />
+  <!-- Digital HUD Eyes -->
+  <rect x="68" y="100" width="22" height="12" rx="4" fill="url(#neon-glow)" />
+  <rect x="110" y="100" width="22" height="12" rx="4" fill="url(#neon-glow)" />
+  <line x1="79" y1="100" x2="79" y2="112" stroke="#011612" stroke-width="2" />
+  <line x1="121" y1="100" x2="121" y2="112" stroke="#011612" stroke-width="2" />
+  <!-- Snout -->
+  <polygon points="92,136 108,136 100,146" fill="#10B981" />
+  <!-- Neon Cheeks -->
+  <line x1="38" y1="124" x2="68" y2="130" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+  <line x1="162" y1="124" x2="132" y2="130" stroke="#10B981" stroke-width="2" stroke-linecap="round" />
+</svg>

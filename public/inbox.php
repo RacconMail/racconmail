@@ -494,18 +494,34 @@ try {
 
       <!-- Proton User Account Pill -->
       <div class="relative ml-1">
-        <button onclick="toggleUserDropdown(event)" id="user-profile-btn" class="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-full border border-slate-200/90 hover:bg-slate-50 transition cursor-pointer select-none shadow-2xs">
-          <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-6 w-6 rounded-full object-cover shrink-0 border border-slate-200" />
+        <button onclick="toggleUserDropdown(event)" id="user-profile-btn" class="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-full border border-slate-200/90 hover:bg-slate-50 transition cursor-pointer select-none shadow-2xs group" title="Account & Profile">
+          <img id="header-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-6 w-6 rounded-full object-cover shrink-0 border border-slate-200 group-hover:ring-1 group-hover:ring-[#F68D72] transition" />
           <span id="header-user-email" class="text-xs font-medium text-slate-700 hidden lg:inline max-w-[130px] truncate"><?php echo htmlspecialchars($currentUser['email']); ?></span>
           <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
         </button>
 
         <!-- Account Popover Dropdown -->
-        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2 z-50 text-slate-900 space-y-1">
-          <div class="px-3 py-2.5 border-b border-slate-100">
-            <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
-            <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
-            <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+        <div id="account-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2.5 z-50 text-slate-900 space-y-1">
+          <!-- User Profile Hero inside Dropdown -->
+          <div class="p-3 border-b border-slate-100 bg-linear-to-b from-slate-50/70 to-white rounded-xl mb-1">
+            <div class="flex items-center gap-3">
+              <div class="relative group cursor-pointer" onclick="openAvatarModal(); toggleUserDropdown();" title="Click to change profile photo">
+                <img id="dropdown-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-12 w-12 rounded-full object-cover ring-2 ring-slate-200 group-hover:ring-[#F68D72] shadow-xs transition" />
+                <div class="absolute inset-0 bg-black/45 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white backdrop-blur-2xs">
+                  <i data-lucide="camera" class="h-4 w-4"></i>
+                </div>
+                <span class="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p id="dropdown-user-name" class="font-bold text-xs text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+                <p id="dropdown-user-email" class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
+                <button type="button" onclick="openAvatarModal(); toggleUserDropdown();" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#E06748] hover:text-[#c45336] transition cursor-pointer">
+                  <i data-lucide="sparkles" class="h-3 w-3"></i>
+                  <span>Change Photo</span>
+                </button>
+              </div>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
               <span>Storage: <strong>12.5 MB / 1 GB</strong></span>
               <span class="text-emerald-500 font-bold">1%</span>
             </div>
@@ -513,6 +529,15 @@ try {
               <div class="bg-slate-900 h-full w-[2%] rounded-full"></div>
             </div>
           </div>
+
+          <!-- Dropdown Navigation Items -->
+          <button onclick="openAvatarModal(); toggleUserDropdown()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-orange-50/70 hover:text-[#E06748] transition cursor-pointer text-left">
+            <div class="flex items-center gap-2">
+              <i data-lucide="image" class="h-4 w-4 text-[#F68D72]"></i>
+              <span>Change Profile Photo</span>
+            </div>
+            <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-[#FFEFEA] text-[#E06748]">New</span>
+          </button>
           <button onclick="openSettingsModal(); toggleUserDropdown()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-700 hover:bg-slate-50 transition cursor-pointer text-left">
             <i data-lucide="user" class="h-4 w-4 text-slate-400"></i>
             <span>Profile & Settings</span>
@@ -774,9 +799,9 @@ try {
       <div class="mt-auto pt-4 border-t border-slate-100">
         <div onclick="toggleUserDropdown(event)" class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-50 transition cursor-pointer select-none">
           <div class="flex items-center gap-2.5 min-w-0">
-            <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full object-cover shrink-0 border border-slate-200" />
+            <img id="sidebar-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-8 w-8 rounded-full object-cover shrink-0 border border-slate-200" />
             <div class="sidebar-text min-w-0 flex-1">
-              <p class="text-xs font-bold text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+              <p id="sidebar-user-name" class="text-xs font-bold text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
               <p class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
             </div>
           </div>
@@ -804,8 +829,11 @@ try {
             <button onclick="toggleAppSwitcher()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Filter & Tools">
               <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
             </button>
-            <button onclick="toggleUserDropdown(event)" class="relative cursor-pointer" title="User Profile">
-              <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="w-9 h-9 rounded-xl object-cover ring-2 ring-slate-100 shadow-xs" alt="User Avatar" />
+            <button onclick="openAvatarModal()" class="relative cursor-pointer group" title="Change Profile Avatar">
+              <img id="col-inbox-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-9 h-9 rounded-xl object-cover ring-2 ring-slate-100 shadow-xs group-hover:ring-[#F68D72] transition" alt="User Avatar" />
+              <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]">
+                <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+              </div>
             </button>
           </div>
         </div>
@@ -940,6 +968,26 @@ try {
         <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="h-4 w-4"></i></button>
       </div>
       <div class="space-y-4 text-xs">
+        <!-- Profile Avatar Card inside Settings -->
+        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div class="flex items-center gap-3">
+            <div class="relative group cursor-pointer" onclick="openAvatarModal()" title="Change avatar">
+              <img id="settings-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-12 w-12 rounded-full object-cover ring-2 ring-slate-200 group-hover:ring-[#F68D72] transition" />
+              <div class="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white">
+                <i data-lucide="camera" class="h-4 w-4"></i>
+              </div>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-slate-900">Profile Photo</p>
+              <p class="text-[11px] text-slate-400">Custom photo, exclusive mascot badges, or dice generator</p>
+            </div>
+          </div>
+          <button type="button" onclick="openAvatarModal()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition cursor-pointer flex items-center gap-1.5 shadow-2xs">
+            <i data-lucide="camera" class="h-3.5 w-3.5 text-[#F68D72]"></i>
+            <span>Change</span>
+          </button>
+        </div>
+
         <div>
           <label class="block font-bold text-slate-700 mb-1">Your Display Name</label>
           <input id="setting-name" type="text" value="<?php echo htmlspecialchars($currentUser['name']); ?>" class="w-full border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-slate-800" />
@@ -957,6 +1005,179 @@ try {
           <button onclick="saveSettingsAction()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold cursor-pointer">Save Changes</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODERN PROFILE PHOTO MODAL (#modal-change-avatar)                         -->
+  <!-- ========================================================================= -->
+  <div id="modal-change-avatar" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-60 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 relative my-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#FFEFEA] text-[#E06748] flex items-center justify-center shrink-0 shadow-2xs">
+            <i data-lucide="camera" class="h-5 w-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-slate-900 leading-tight">Change Profile Photo</h3>
+            <p class="text-[11px] text-slate-400">Personalize your identity across Raccon Mail & Community</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAvatarModal()" class="w-8 h-8 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition flex items-center justify-center cursor-pointer">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <!-- Live Interactive Avatar Preview -->
+      <div class="mb-4 p-4 rounded-2xl bg-linear-to-b from-slate-50/80 to-white border border-slate-100 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+        <div class="relative group shrink-0">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-slate-100 shadow-md overflow-hidden bg-slate-100 relative">
+            <img id="avatar-preview-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="w-full h-full object-cover" alt="Avatar Preview" />
+            <div id="avatar-preview-loading" class="hidden absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center text-[10px] font-bold">
+              <i data-lucide="loader-2" class="h-5 w-5 animate-spin mb-1"></i>
+              <span>Processing...</span>
+            </div>
+          </div>
+          <span class="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-emerald-500 ring-2 ring-white flex items-center justify-center text-white text-[9px]" title="Online Status">
+            <i data-lucide="check" class="h-3 w-3 stroke-[3]"></i>
+          </span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider mb-1">
+            <i data-lucide="sparkles" class="h-3 w-3 text-[#F68D72]"></i>
+            <span>Interactive Live Preview</span>
+          </div>
+          <p class="font-bold text-sm text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
+          <p class="text-xs text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
+          <p class="text-[11px] text-slate-500 mt-1">Changes are synced across Webmail, Forum discussions, and Stories.</p>
+        </div>
+      </div>
+
+      <!-- Segmented Tab Navigation -->
+      <div class="flex items-center p-1 bg-slate-100/90 rounded-2xl gap-1 mb-4 text-xs font-bold text-slate-600 select-none">
+        <button type="button" onclick="switchAvatarTab('upload')" id="tab-btn-upload" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer bg-white text-slate-900 shadow-2xs">
+          <i data-lucide="upload-cloud" class="h-3.5 w-3.5 text-[#F68D72]"></i>
+          <span>Upload</span>
+        </button>
+        <button type="button" onclick="switchAvatarTab('presets')" id="tab-btn-presets" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
+          <i data-lucide="shield" class="h-3.5 w-3.5"></i>
+          <span>Badges</span>
+        </button>
+        <button type="button" onclick="switchAvatarTab('dice')" id="tab-btn-dice" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
+          <i data-lucide="dices" class="h-3.5 w-3.5"></i>
+          <span>Dice Roll</span>
+        </button>
+        <button type="button" onclick="switchAvatarTab('url')" id="tab-btn-url" class="flex-1 py-2 px-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer text-slate-500 hover:text-slate-900">
+          <i data-lucide="link-2" class="h-3.5 w-3.5"></i>
+          <span>Link</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: UPLOAD PHOTO -->
+      <div id="tab-panel-upload" class="space-y-3">
+        <div id="avatar-dropzone" onclick="document.getElementById('avatar-file-input').click()" class="border-2 border-dashed border-slate-200 hover:border-[#F68D72] hover:bg-[#FFEFEA]/20 transition-all rounded-2xl p-6 text-center cursor-pointer group">
+          <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" class="hidden" onchange="handleAvatarFileSelect(event)" />
+          <div class="w-12 h-12 mx-auto mb-2 rounded-2xl bg-orange-50 group-hover:bg-[#FFEFEA] text-[#E06748] flex items-center justify-center transition">
+            <i data-lucide="image-plus" class="h-6 w-6"></i>
+          </div>
+          <p class="font-bold text-xs text-slate-800 mb-0.5">Click to choose image or drag & drop</p>
+          <p class="text-[11px] text-slate-400">PNG, JPG, WEBP, GIF, SVG (Up to 10MB) &bull; Auto square cropped</p>
+        </div>
+        <div id="upload-status-msg" class="hidden text-xs px-3 py-2 rounded-xl"></div>
+      </div>
+
+      <!-- TAB 2: EXCLUSIVE RACCON BADGES & MASCOTS -->
+      <div id="tab-panel-presets" class="hidden">
+        <div class="grid grid-cols-4 gap-2.5 max-h-56 overflow-y-auto pr-1">
+          <!-- Preset 1 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-default.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-default.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Classic</span>
+          </button>
+          <!-- Preset 2 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-gold-gear.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-gold-gear.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Gold Gear</span>
+          </button>
+          <!-- Preset 3 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-cyber-mechanic.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-cyber-mechanic.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mechanic</span>
+          </button>
+          <!-- Preset 4 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-mascot.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-mascot.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Mascot</span>
+          </button>
+          <!-- Preset 5 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-portrait.png', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-portrait.png" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Portrait</span>
+          </button>
+          <!-- Preset 6 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-stealth-agent.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-stealth-agent.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Stealth</span>
+          </button>
+          <!-- Preset 7 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-sunset-coral.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-sunset-coral.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Coral Badge</span>
+          </button>
+          <!-- Preset 8 -->
+          <button type="button" onclick="selectPresetAvatar('/avatars/raccoon-neon-matrix.svg', this)" class="preset-avatar-btn p-2 rounded-2xl border-2 border-slate-200 hover:border-[#F68D72] flex flex-col items-center gap-1.5 transition text-center cursor-pointer group hover:bg-slate-50">
+            <img src="/avatars/raccoon-neon-matrix.svg" class="w-12 h-12 rounded-full object-cover group-hover:scale-105 transition" />
+            <span class="text-[10px] font-bold text-slate-700 truncate w-full">Neon Operative</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 3: DICE GENERATOR -->
+      <div id="tab-panel-dice" class="hidden space-y-3">
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+          <div>
+            <p class="font-bold text-xs text-slate-800">Generative Avatar Studio</p>
+            <p class="text-[11px] text-slate-400">Roll the dice to generate unique avatar variations</p>
+          </div>
+          <button type="button" onclick="rollDiceAvatars()" id="dice-roll-btn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs transition active:scale-95 cursor-pointer">
+            <i data-lucide="dices" class="h-4 w-4 text-[#F68D72] transition-transform duration-300" id="dice-icon-spin"></i>
+            <span>Roll Dice</span>
+          </button>
+        </div>
+        <div id="dice-grid" class="grid grid-cols-6 gap-2 pt-1">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- TAB 4: WEB LINK -->
+      <div id="tab-panel-url" class="hidden space-y-3">
+        <div>
+          <label class="block font-bold text-xs text-slate-700 mb-1">Image URL</label>
+          <div class="flex gap-2">
+            <input type="url" id="avatar-url-input" placeholder="https://example.com/photo.jpg" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-slate-800" />
+            <button type="button" onclick="previewCustomUrl()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-xs text-slate-700 transition cursor-pointer">Preview</button>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-400">Enter a direct link to any public image (HTTPS recommended).</p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-5">
+        <button type="button" onclick="resetAvatarToDefault()" class="text-xs font-semibold text-slate-400 hover:text-rose-600 hover:bg-rose-50 px-3 py-2 rounded-xl transition cursor-pointer flex items-center gap-1.5" title="Revert to original mascot">
+          <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+          <span>Reset Default</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeAvatarModal()" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 font-semibold text-xs text-slate-700 cursor-pointer">Cancel</button>
+          <button type="button" id="save-avatar-btn" onclick="saveSelectedAvatar()" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2">
+            <i data-lucide="check" class="h-4 w-4"></i>
+            <span>Save Photo</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -2764,6 +2985,334 @@ function cleanMimeEmailContent(raw) {
     function closeSettingsModal() {
       document.getElementById('settings-modal')?.classList.add('hidden');
     }
+
+    // =========================================================================
+    // MODERN PROFILE PHOTO MANAGER (Raccon Mail Studio)
+    // =========================================================================
+    let currentSelectedAvatar = '<?php echo htmlspecialchars($currentUser['avatar']); ?>';
+    let pendingAvatarBlob = null;
+    let pendingAvatarUploadFile = null;
+    let currentActiveAvatarTab = 'upload';
+
+    function openAvatarModal() {
+      const modal = document.getElementById('modal-change-avatar');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      pendingAvatarBlob = null;
+      pendingAvatarUploadFile = null;
+
+      const currentAvatar = document.getElementById('header-user-avatar')?.src || '<?php echo htmlspecialchars($currentUser['avatar']); ?>';
+      currentSelectedAvatar = currentAvatar;
+      const previewImg = document.getElementById('avatar-preview-img');
+      if (previewImg) previewImg.src = currentAvatar;
+
+      const statusMsg = document.getElementById('upload-status-msg');
+      if (statusMsg) {
+        statusMsg.className = 'hidden text-xs px-3 py-2 rounded-xl';
+        statusMsg.innerText = '';
+      }
+
+      switchAvatarTab(currentActiveAvatarTab || 'upload');
+      initAvatarDragAndDrop();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeAvatarModal() {
+      const modal = document.getElementById('modal-change-avatar');
+      if (modal) modal.classList.add('hidden');
+      pendingAvatarBlob = null;
+      pendingAvatarUploadFile = null;
+    }
+
+    function switchAvatarTab(tab) {
+      currentActiveAvatarTab = tab;
+      const tabs = ['upload', 'presets', 'dice', 'url'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const panel = document.getElementById(`tab-panel-${t}`);
+        if (t === tab) {
+          btn?.classList.add('bg-white', 'text-slate-900', 'shadow-2xs');
+          btn?.classList.remove('text-slate-500');
+          panel?.classList.remove('hidden');
+        } else {
+          btn?.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs');
+          btn?.classList.add('text-slate-500');
+          panel?.classList.add('hidden');
+        }
+      });
+      if (tab === 'dice') {
+        const diceGrid = document.getElementById('dice-grid');
+        if (diceGrid && diceGrid.children.length === 0) {
+          rollDiceAvatars();
+        }
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function selectPresetAvatar(url, btnElement) {
+      currentSelectedAvatar = url;
+      pendingAvatarBlob = null;
+      pendingAvatarUploadFile = null;
+
+      const preview = document.getElementById('avatar-preview-img');
+      if (preview) preview.src = url;
+
+      document.querySelectorAll('.preset-avatar-btn').forEach(btn => {
+        btn.classList.remove('border-[#F68D72]', 'bg-orange-50/40', 'ring-2', 'ring-[#F68D72]/30');
+        btn.classList.add('border-slate-200');
+      });
+      if (btnElement) {
+        btnElement.classList.remove('border-slate-200');
+        btnElement.classList.add('border-[#F68D72]', 'bg-orange-50/40', 'ring-2', 'ring-[#F68D72]/30');
+      }
+    }
+
+    function initAvatarDragAndDrop() {
+      const dropzone = document.getElementById('avatar-dropzone');
+      if (!dropzone || dropzone.dataset.dndBound) return;
+      dropzone.dataset.dndBound = 'true';
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('border-[#F68D72]', 'bg-[#FFEFEA]/40', 'scale-[1.01]');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('border-[#F68D72]', 'bg-[#FFEFEA]/40', 'scale-[1.01]');
+        });
+      });
+
+      dropzone.addEventListener('drop', e => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processAvatarFile(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    function handleAvatarFileSelect(e) {
+      if (e.target && e.target.files && e.target.files.length > 0) {
+        processAvatarFile(e.target.files[0]);
+      }
+    }
+
+    function processAvatarFile(file) {
+      const statusMsg = document.getElementById('upload-status-msg');
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        if (statusMsg) {
+          statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
+          statusMsg.innerText = 'Please select a valid image file (PNG, JPG, WEBP, GIF, SVG).';
+        }
+        return;
+      }
+
+      if (file.size > 12 * 1024 * 1024) {
+        if (statusMsg) {
+          statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
+          statusMsg.innerText = 'Image size exceeds 12MB. Please select a smaller photo.';
+        }
+        return;
+      }
+
+      const reader = new FileReader();
+      const loading = document.getElementById('avatar-preview-loading');
+      if (loading) loading.classList.remove('hidden');
+
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 400;
+          canvas.width = maxDim;
+          canvas.height = maxDim;
+          const ctx = canvas.getContext('2d');
+
+          const minSide = Math.min(img.width, img.height);
+          const startX = (img.width - minSide) / 2;
+          const startY = (img.height - minSide) / 2;
+
+          ctx.drawImage(img, startX, startY, minSide, minSide, 0, 0, maxDim, maxDim);
+
+          canvas.toBlob(blob => {
+            if (loading) loading.classList.add('hidden');
+            if (blob) {
+              pendingAvatarBlob = blob;
+              pendingAvatarUploadFile = file;
+              const croppedUrl = URL.createObjectURL(blob);
+              currentSelectedAvatar = croppedUrl;
+              const preview = document.getElementById('avatar-preview-img');
+              if (preview) preview.src = croppedUrl;
+
+              if (statusMsg) {
+                statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-semibold flex items-center gap-1.5';
+                statusMsg.innerHTML = '<i data-lucide="check-circle-2" class="h-4 w-4"></i> Photo auto-cropped and ready! Click "Save Photo" below to apply.';
+                if (window.lucide) lucide.createIcons();
+              }
+            }
+          }, 'image/jpeg', 0.92);
+        };
+        img.onerror = function() {
+          if (loading) loading.classList.add('hidden');
+          if (statusMsg) {
+            statusMsg.className = 'text-xs px-3 py-2 rounded-xl bg-rose-50 text-rose-600 font-semibold block';
+            statusMsg.innerText = 'Unable to decode image. Please try another file.';
+          }
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function rollDiceAvatars() {
+      const diceIcon = document.getElementById('dice-icon-spin');
+      if (diceIcon) {
+        diceIcon.classList.add('rotate-180');
+        setTimeout(() => diceIcon.classList.remove('rotate-180'), 300);
+      }
+
+      const styles = ['bottts', 'adventurer', 'lorelei', 'fun-emoji', 'croodles', 'thumbs'];
+      const diceGrid = document.getElementById('dice-grid');
+      if (!diceGrid) return;
+      diceGrid.innerHTML = '';
+
+      styles.forEach(style => {
+        const seed = 'raccon_' + Math.random().toString(36).substring(2, 8);
+        const url = `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}&backgroundColor=f1f5f9`;
+        
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'p-1.5 rounded-xl border border-slate-200 hover:border-[#F68D72] bg-slate-50 hover:bg-white flex flex-col items-center gap-1 transition cursor-pointer hover:scale-105 active:scale-95 group';
+        card.innerHTML = `<img src="${url}" class="w-10 h-10 rounded-full object-cover group-hover:scale-110 transition" loading="lazy" /><span class="text-[9px] font-bold text-slate-500 truncate w-full text-center capitalize">${style}</span>`;
+        card.onclick = () => selectPresetAvatar(url, card);
+        diceGrid.appendChild(card);
+      });
+    }
+
+    function previewCustomUrl() {
+      const urlInput = document.getElementById('avatar-url-input');
+      const url = urlInput?.value.trim();
+      if (!url) return;
+
+      const testImg = new Image();
+      const loading = document.getElementById('avatar-preview-loading');
+      if (loading) loading.classList.remove('hidden');
+
+      testImg.onload = function() {
+        if (loading) loading.classList.add('hidden');
+        selectPresetAvatar(url, null);
+      };
+      testImg.onerror = function() {
+        if (loading) loading.classList.add('hidden');
+        alert('Could not load image from that URL. Please verify the URL is public and CORS-accessible.');
+      };
+      testImg.src = url;
+    }
+
+    function resetAvatarToDefault() {
+      const defaultAvatar = '/avatars/raccoon-default.svg';
+      selectPresetAvatar(defaultAvatar, null);
+    }
+
+    async function saveSelectedAvatar() {
+      const saveBtn = document.getElementById('save-avatar-btn');
+      const originalHtml = saveBtn?.innerHTML;
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i><span>Saving...</span>';
+        if (window.lucide) lucide.createIcons();
+      }
+
+      try {
+        let finalAvatarUrl = null;
+
+        if (pendingAvatarBlob) {
+          const formData = new FormData();
+          formData.append('avatar', pendingAvatarBlob, 'avatar.jpg');
+          const res = await fetch('/api/user/avatar', {
+            method: 'POST',
+            body: formData
+          });
+          const d = await res.json();
+          if (d.success && d.avatar) {
+            finalAvatarUrl = d.avatar;
+          } else {
+            throw new Error(d.error || 'Avatar upload failed.');
+          }
+        } else if (currentSelectedAvatar) {
+          const res = await fetch('/api/user/avatar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ avatar: currentSelectedAvatar })
+          });
+          const d = await res.json();
+          if (d.success && d.avatar) {
+            finalAvatarUrl = d.avatar;
+          } else {
+            throw new Error(d.error || 'Failed to save avatar.');
+          }
+        }
+
+        if (finalAvatarUrl) {
+          // Instantly update ALL user avatars in DOM
+          const cacheBuster = (finalAvatarUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+          document.querySelectorAll('.user-avatar-img').forEach(img => {
+            img.src = finalAvatarUrl + cacheBuster;
+          });
+          
+          closeAvatarModal();
+          showAvatarToast('Profile photo updated successfully! 🦝');
+        }
+      } catch (err) {
+        alert('Could not save profile photo: ' + err.message);
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalHtml;
+          if (window.lucide) lucide.createIcons();
+        }
+      }
+    }
+
+    function showAvatarToast(message) {
+      let toast = document.getElementById('avatar-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'avatar-toast';
+        toast.className = 'fixed bottom-6 right-6 z-70 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 flex items-center gap-3 transition-all duration-300 transform translate-y-10 opacity-0 pointer-events-none';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-[#FFEFEA] text-[#E06748] flex items-center justify-center shrink-0">
+          <i data-lucide="check" class="h-4 w-4 stroke-[3]"></i>
+        </div>
+        <span class="text-xs font-bold text-slate-100">${message}</span>
+      `;
+      if (window.lucide) lucide.createIcons();
+      toast.classList.remove('translate-y-10', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-10', 'opacity-0');
+      }, 4000);
+    }
+
+    // Close avatar modal on Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('modal-change-avatar');
+        if (modal && !modal.classList.contains('hidden')) {
+          closeAvatarModal();
+        }
+      }
+    });
 
     async function saveSettingsAction() {
       const name = document.getElementById('setting-name')?.value.trim();

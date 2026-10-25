@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" fill="none">
+  <defs>
+    <!-- Master Gradients -->
+    <radialGradient id="bodyFur" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#64748B"/>
+      <stop offset="70%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </radialGradient>
+
+    <radialGradient id="headFur" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#64748B"/>
+      <stop offset="60%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </radialGradient>
+
+    <linearGradient id="earDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <linearGradient id="earInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFEFEA"/>
+      <stop offset="60%" stop-color="#FCD9CE"/>
+      <stop offset="100%" stop-color="#F68D72"/>
+    </linearGradient>
+
+    <linearGradient id="maskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#090D16"/>
+    </linearGradient>
+
+    <radialGradient id="eyeGrad" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#2D3748"/>
+      <stop offset="60%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+
+    <linearGradient id="whiteFur" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="85%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+
+    <linearGradient id="coralSeal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9B82"/>
+      <stop offset="60%" stop-color="#F68D72"/>
+      <stop offset="100%" stop-color="#DE5E41"/>
+    </linearGradient>
+
+    <linearGradient id="envelopeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#EDF2F7"/>
+    </linearGradient>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#0F172A" flood-opacity="0.22"/>
+    </filter>
+
+    <filter id="glowSeal" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#F68D72" flood-opacity="0.45"/>
+    </filter>
+
+    <filter id="envelopeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- ==================== TAIL (Peeking left behind body) ==================== -->
+  <g id="tail" filter="url(#softShadow)">
+    <!-- Base Tail Shape -->
+    <path d="M 340 680 C 240 680, 100 620, 80 500 C 60 400, 140 330, 240 350 C 300 360, 350 420, 360 520 C 365 570, 360 630, 340 680 Z" fill="url(#bodyFur)" stroke="#1E293B" stroke-width="14" stroke-linejoin="round"/>
+    
+    <!-- Tail Stripes -->
+    <!-- Dark Tip -->
+    <path d="M 80 500 C 60 400, 140 330, 200 345 C 160 390, 130 450, 135 520 C 100 520, 85 510, 80 500 Z" fill="url(#earDark)"/>
+    <!-- Stripe 1 (Dark) -->
+    <path d="M 180 345 C 230 355, 270 380, 280 430 C 230 430, 190 410, 155 375 Z" fill="url(#earDark)"/>
+    <!-- Stripe 2 (Dark) -->
+    <path d="M 270 415 C 320 440, 345 490, 350 560 C 310 560, 270 520, 240 475 Z" fill="url(#earDark)"/>
+    <!-- Stripe 3 (Dark) -->
+    <path d="M 335 540 C 360 580, 360 630, 340 680 C 315 670, 290 620, 295 570 Z" fill="url(#earDark)"/>
+  </g>
+
+  <!-- ==================== BACK EARS ==================== -->
+  <!-- Left Ear -->
+  <g id="left-ear" filter="url(#softShadow)">
+    <path d="M 250 360 C 220 280, 240 130, 360 120 C 420 115, 450 200, 430 290 Z" fill="url(#earDark)" stroke="#0F172A" stroke-width="12" stroke-linejoin="round"/>
+    <!-- Inner Ear Pink/Coral -->
+    <path d="M 280 320 C 270 250, 285 165, 360 155 C 400 150, 415 210, 400 270 Z" fill="url(#earInner)"/>
+    <!-- White Inner Tuft -->
+    <path d="M 330 250 C 300 220, 320 180, 360 170 C 385 165, 395 200, 380 240 C 360 280, 340 260, 330 250 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Right Ear -->
+  <g id="right-ear" filter="url(#softShadow)">
+    <path d="M 774 360 C 804 280, 784 130, 664 120 C 604 115, 574 200, 594 290 Z" fill="url(#earDark)" stroke="#0F172A" stroke-width="12" stroke-linejoin="round"/>
+    <!-- Inner Ear Pink/Coral -->
+    <path d="M 744 320 C 754 250, 739 165, 664 155 C 624 150, 609 210, 624 270 Z" fill="url(#earInner)"/>
+    <!-- White Inner Tuft -->
+    <path d="M 694 250 C 724 220, 704 180, 664 170 C 639 165, 629 200, 644 240 C 664 280, 684 260, 694 250 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ==================== BODY & TORSO ==================== -->
+  <g id="body" filter="url(#softShadow)">
+    <!-- Main Torso -->
+    <path d="M 320 480 C 260 560, 270 780, 320 860 C 370 930, 654 930, 704 860 C 754 780, 764 560, 704 480 Z" fill="url(#bodyFur)" stroke="#1E293B" stroke-width="12"/>
+
+    <!-- White Belly Patch -->
+    <path d="M 380 560 C 340 640, 350 820, 410 870 C 470 910, 554 910, 614 870 C 674 820, 684 640, 644 560 C 584 600, 440 600, 380 560 Z" fill="url(#whiteFur)"/>
+
+    <!-- Left Foot -->
+    <ellipse cx="380" cy="890" rx="90" ry="50" fill="url(#earDark)" stroke="#0F172A" stroke-width="10"/>
+    <path d="M 330 890 C 330 915, 350 935, 365 935" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 375 895 C 375 920, 395 940, 410 940" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Right Foot -->
+    <ellipse cx="644" cy="890" rx="90" ry="50" fill="url(#earDark)" stroke="#0F172A" stroke-width="10"/>
+    <path d="M 614 895 C 629 940, 649 920, 649 895" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 659 890 C 674 935, 694 915, 694 890" stroke="#334155" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- ==================== HEAD ==================== -->
+  <g id="head" filter="url(#softShadow)">
+    <!-- Base Head Circle/Silhouette -->
+    <path d="M 280 430 C 220 330, 320 200, 512 190 C 704 200, 804 330, 744 430 C 794 480, 814 550, 734 600 C 674 640, 584 630, 512 630 C 440 630, 350 640, 290 600 C 210 550, 230 480, 280 430 Z" fill="url(#headFur)" stroke="#1E293B" stroke-width="12" stroke-linejoin="round"/>
+
+    <!-- Fluffy Cheek White Tufts (Side Whiskers) -->
+    <!-- Left Cheek Fluff -->
+    <path d="M 240 450 C 180 500, 190 560, 270 590 C 210 550, 220 480, 260 450 Z" fill="#FFFFFF"/>
+    <!-- Right Cheek Fluff -->
+    <path d="M 784 450 C 844 500, 834 560, 754 590 C 814 550, 804 480, 764 450 Z" fill="#FFFFFF"/>
+
+    <!-- White Forehead & Brow Mask Highlights -->
+    <path d="M 470 200 C 495 195, 529 195, 554 200 C 540 280, 530 330, 512 370 C 494 330, 484 280, 470 200 Z" fill="url(#whiteFur)"/>
+    <path d="M 330 310 C 370 260, 450 250, 480 300 C 430 280, 370 290, 330 310 Z" fill="#FFFFFF" opacity="0.9"/>
+    <path d="M 694 310 C 654 260, 574 250, 544 300 C 594 280, 654 290, 694 310 Z" fill="#FFFFFF" opacity="0.9"/>
+
+    <!-- ==================== ICONIC BANDIT MASK ==================== -->
+    <path d="M 512 385 C 470 340, 360 300, 270 370 C 210 420, 250 510, 330 520 C 400 525, 460 470, 512 430 C 564 470, 624 525, 694 520 C 774 510, 814 420, 754 370 C 664 300, 554 340, 512 385 Z" fill="url(#maskGrad)" stroke="#090D16" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- ==================== EYES ==================== -->
+    <!-- Left Eye Orbit & Eye -->
+    <g id="left-eye">
+      <ellipse cx="395" cy="425" rx="55" ry="65" fill="#0A0E1A" stroke="#1E293B" stroke-width="4"/>
+      <ellipse cx="400" cy="425" rx="46" ry="56" fill="url(#eyeGrad)"/>
+      <!-- Eye Catchlights (Specular shine) -->
+      <circle cx="418" cy="405" r="18" fill="#FFFFFF"/>
+      <circle cx="385" cy="445" r="8" fill="#FFFFFF" opacity="0.8"/>
+      <!-- Soft Iris Glow -->
+      <path d="M 375 450 C 385 470, 420 470, 430 450" stroke="#6C8DF6" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+    </g>
+
+    <!-- Right Eye Orbit & Eye -->
+    <g id="right-eye">
+      <ellipse cx="629" cy="425" rx="55" ry="65" fill="#0A0E1A" stroke="#1E293B" stroke-width="4"/>
+      <ellipse cx="624" cy="425" rx="46" ry="56" fill="url(#eyeGrad)"/>
+      <!-- Eye Catchlights (Specular shine) -->
+      <circle cx="642" cy="405" r="18" fill="#FFFFFF"/>
+      <circle cx="609" cy="445" r="8" fill="#FFFFFF" opacity="0.8"/>
+      <!-- Soft Iris Glow -->
+      <path d="M 599 450 C 609 470, 644 470, 654 450" stroke="#6C8DF6" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+    </g>
+
+    <!-- ==================== MUZZLE & NOSE ==================== -->
+    <!-- White Muzzle -->
+    <path d="M 512 420 C 440 420, 390 480, 400 550 C 410 610, 460 635, 512 635 C 564 635, 614 610, 624 550 C 634 480, 584 420, 512 420 Z" fill="url(#whiteFur)" stroke="#CBD5E1" stroke-width="4"/>
+
+    <!-- Cute Jet Black Nose -->
+    <path d="M 480 490 C 470 475, 554 475, 544 490 C 539 515, 524 530, 512 530 C 500 530, 485 515, 480 490 Z" fill="#0F172A"/>
+    <ellipse cx="504" cy="485" rx="10" ry="5" fill="#FFFFFF" opacity="0.7"/>
+
+    <!-- Smiling Mouth -->
+    <path d="M 512 530 L 512 555" stroke="#1E293B" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 470 555 C 490 580, 512 575, 512 555 C 512 575, 534 580, 554 555" stroke="#1E293B" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+    <!-- Rosy Cheek Blush -->
+    <circle cx="340" cy="520" r="22" fill="#F68D72" opacity="0.25"/>
+    <circle cx="684" cy="520" r="22" fill="#F68D72" opacity="0.25"/>
+  </g>
+
+  <!-- ==================== POSTAL ENVELOPE (HELD IN PAWS) ==================== -->
+  <g id="envelope-group" filter="url(#envelopeShadow)">
+    <!-- Main Envelope Body -->
+    <rect x="330" y="580" width="364" height="240" rx="28" fill="url(#envelopeGrad)" stroke="#CBD5E1" stroke-width="8"/>
+    
+    <!-- Envelope Flap / Letter Folds -->
+    <path d="M 334 584 L 512 715 L 690 584" stroke="#94A3B8" stroke-width="7" stroke-linejoin="round" fill="none"/>
+    <path d="M 334 816 L 470 700" stroke="#CBD5E1" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 690 816 L 554 700" stroke="#CBD5E1" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- WARM CORAL WAX SEAL (Embossed Branding with Paw Print) -->
+    <g id="wax-seal" filter="url(#glowSeal)">
+      <circle cx="512" cy="710" r="42" fill="url(#coralSeal)" stroke="#FFFFFF" stroke-width="5"/>
+      <!-- Embossed Stamp Border -->
+      <circle cx="512" cy="710" r="34" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="4 3" opacity="0.6" fill="none"/>
+      
+      <!-- Mini Pawprint on Seal -->
+      <!-- Main Pad -->
+      <path d="M 502 722 C 496 714, 528 714, 522 722 C 518 728, 506 728, 502 722 Z" fill="#FFFFFF"/>
+      <!-- 4 Toe Beans -->
+      <circle cx="496" cy="704" r="4.5" fill="#FFFFFF"/>
+      <circle cx="506" cy="698" r="4.5" fill="#FFFFFF"/>
+      <circle cx="518" cy="698" r="4.5" fill="#FFFFFF"/>
+      <circle cx="528" cy="704" r="4.5" fill="#FFFFFF"/>
+    </g>
+  </g>
+
+  <!-- ==================== FOREGROUND PAWS (HOLDING ENVELOPE) ==================== -->
+  <g id="front-paws" filter="url(#softShadow)">
+    <!-- Left Paw Holding Left Side of Envelope -->
+    <ellipse cx="330" cy="700" rx="55" ry="45" fill="url(#earDark)" stroke="#0F172A" stroke-width="8"/>
+    <circle cx="310" cy="685" r="10" fill="#334155"/>
+    <circle cx="325" cy="675" r="10" fill="#334155"/>
+    <circle cx="345" cy="675" r="10" fill="#334155"/>
+
+    <!-- Right Paw Holding Right Side of Envelope -->
+    <ellipse cx="694" cy="700" rx="55" ry="45" fill="url(#earDark)" stroke="#0F172A" stroke-width="8"/>
+    <circle cx="714" cy="685" r="10" fill="#334155"/>
+    <circle cx="699" cy="675" r="10" fill="#334155"/>
+    <circle cx="679" cy="675" r="10" fill="#334155"/>
+  </g>
+</svg>

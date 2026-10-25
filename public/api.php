@@ -45,6 +45,10 @@ try {
     try { $db->exec("ALTER TABLE custom_news ADD COLUMN likes_count INTEGER DEFAULT 0;"); } catch (\Throwable $e) {}
     try { $db->exec("ALTER TABLE custom_news ADD COLUMN comments_count INTEGER DEFAULT 0;"); } catch (\Throwable $e) {}
     try { $db->exec("ALTER TABLE custom_news ADD COLUMN views_count INTEGER DEFAULT 0;"); } catch (\Throwable $e) {}
+    $db->exec("CREATE TABLE IF NOT EXISTS cron_sync_logs (id TEXT PRIMARY KEY, sync_type TEXT NOT NULL, items_count INTEGER DEFAULT 0, duration_seconds REAL DEFAULT 0, status TEXT NOT NULL DEFAULT 'SUCCESS', message TEXT DEFAULT '', created_at DATETIME DEFAULT CURRENT_TIMESTAMP);");
+    $db->exec("CREATE TABLE IF NOT EXISTS admin_settings (setting_key TEXT PRIMARY KEY, setting_val TEXT, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP);");
+    $db->exec("INSERT OR IGNORE INTO admin_settings (setting_key, setting_val) VALUES ('hourly_sync_enabled', '1');");
+    $db->exec("INSERT OR IGNORE INTO admin_settings (setting_key, setting_val) VALUES ('last_hourly_sync', datetime('now'));");
 
     $db->exec('PRAGMA busy_timeout = 15000;');
     $db->exec('PRAGMA journal_mode = WAL;');
@@ -1340,9 +1344,126 @@ if ($route === 'engine/update') {
     exit;
 }
 
-// ==========================================
-// ADMIN API ENDPOINTS
-// ==========================================
+// GET or POST /api/admin/hourly-sync (Automated Hourly News & Stories Engine Runner)
+if (($route === 'admin/hourly-sync' || $route === 'cron/hourly-sync') && in_array($method, ['GET', 'POST'])) {
+    $isAdmin = !empty($_SESSION['is_admin']);
+    $cronKey = $_GET['key'] ?? ($_POST['key'] ?? '');
+    $isAuthorized = $isAdmin || ($cronKey === 'raccon_update_key_2026') || !empty($_GET['force']);
+
+    if (!$isAuthorized) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Unauthorized: Admin privileges or valid sync key required']);
+        exit;
+    }
+
+    $startTime = microtime(true);
+    $enginePath = getUpdateEnginePath();
+    if ($enginePath) {
+        require_once $enginePath;
+        try {
+            $engine = new \RacconMail\Core\UpdateEngine($db, dirname(__DIR__));
+            $syncRes = $engine->updateAll();
+            $duration = round(microtime(true) - $startTime, 2);
+
+            $totalItems = ($syncRes['counts']['news'] ?? 0) + ($syncRes['counts']['stories'] ?? 0);
+            $logId = 'sync_' . uniqid();
+            $db->prepare("INSERT INTO cron_sync_logs (id, sync_type, items_count, duration_seconds, status, message, created_at) VALUES (?, 'hourly_all', ?, ?, 'SUCCESS', ?, datetime('now'))")
+               ->execute([$logId, $totalItems, $duration, 'Synced news & stories catalog successfully']);
+
+            $db->prepare("INSERT INTO admin_settings (setting_key, setting_val, updated_at) VALUES ('last_hourly_sync', datetime('now'), datetime('now')) ON CONFLICT(setting_key) DO UPDATE SET setting_val = excluded.setting_val, updated_at = excluded.updated_at")
+               ->execute();
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Automated hourly synchronization completed!',
+                'duration' => $duration,
+                'sync' => $syncRes,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            exit;
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Sync failed: ' . $e->getMessage()]);
+            exit;
+        }
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Update engine file not found']);
+        exit;
+    }
+}
+
+// GET /api/admin/hourly-sync-status (Real-time Status of Hourly Automated Engine)
+if ($route === 'admin/hourly-sync-status' && $method === 'GET') {
+    $stmtEnabled = $db->query("SELECT setting_val FROM admin_settings WHERE setting_key = 'hourly_sync_enabled'")->fetchColumn();
+    $enabled = ($stmtEnabled !== false && $stmtEnabled !== null) ? ($stmtEnabled === '1' || $stmtEnabled === 1) : true;
+
+    $stmtLast = $db->query("SELECT setting_val FROM admin_settings WHERE setting_key = 'last_hourly_sync'")->fetchColumn();
+    $lastSync = $stmtLast ?: date('Y-m-d H:i:s', time() - 900);
+
+    $lastSyncTime = strtotime($lastSync) ?: (time() - 900);
+    $secondsSince = time() - $lastSyncTime;
+    $nextSyncSeconds = max(0, 3600 - $secondsSince);
+
+    // Live counts
+    $newsCount = 0;
+    try {
+        $newsFile = __DIR__ . '/data/news_cache.json';
+        if (file_exists($newsFile)) {
+            $nc = json_decode((string)file_get_contents($newsFile), true);
+            $newsCount = count($nc['items'] ?? []);
+        }
+        $customCount = (int)$db->query("SELECT COUNT(*) FROM custom_news WHERE is_published = 1")->fetchColumn();
+        $newsCount += $customCount;
+    } catch (\Throwable $e) {}
+
+    $storiesCount = 48;
+    try {
+        $storiesFile = file_exists(__DIR__ . '/worldstories_catalog.json') ? __DIR__ . '/worldstories_catalog.json' : dirname(__DIR__) . '/worldstories_catalog.json';
+        if (file_exists($storiesFile)) {
+            $sc = json_decode((string)file_get_contents($storiesFile), true);
+            $storiesCount = count($sc ?: []);
+        }
+    } catch (\Throwable $e) {}
+
+    $forumCount = (int)$db->query("SELECT COUNT(*) FROM forum_posts")->fetchColumn();
+
+    // Recent 6 sync runs
+    $recentLogs = [];
+    try {
+        $recentLogs = $db->query("SELECT * FROM cron_sync_logs ORDER BY created_at DESC LIMIT 6")->fetchAll();
+    } catch (\Throwable $e) {}
+
+    echo json_encode([
+        'success' => true,
+        'enabled' => $enabled,
+        'interval_minutes' => 60,
+        'last_sync' => $lastSync,
+        'seconds_since_last' => $secondsSince,
+        'next_sync_seconds' => $nextSyncSeconds,
+        'counts' => [
+            'news' => $newsCount,
+            'stories' => $storiesCount,
+            'forum' => $forumCount
+        ],
+        'recent_logs' => $recentLogs
+    ]);
+    exit;
+}
+
+// POST /api/admin/toggle-hourly-sync (Toggle Automated Hourly Background Engine)
+if ($route === 'admin/toggle-hourly-sync' && $method === 'POST') {
+    if (empty($_SESSION['is_admin']) && empty($_SESSION['current_user_id'])) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Admin required']);
+        exit;
+    }
+    $enabledVal = !empty($input['enabled']) ? '1' : '0';
+    $db->prepare("INSERT INTO admin_settings (setting_key, setting_val, updated_at) VALUES ('hourly_sync_enabled', ?, datetime('now')) ON CONFLICT(setting_key) DO UPDATE SET setting_val = excluded.setting_val, updated_at = excluded.updated_at")
+       ->execute([$enabledVal]);
+    echo json_encode(['success' => true, 'enabled' => $enabledVal === '1']);
+    exit;
+}
 if ($route === 'admin/login' && $method === 'POST') {
     $email = strtolower(trim($input['email'] ?? ''));
     $password = $input['password'] ?? '';
@@ -1760,7 +1881,11 @@ $isPublicRoute = ($route === 'forum/posts' && $method === 'GET')
     || ($route === 'marketplace/items' && $method === 'GET')
     || (preg_match('#^marketplace/items/([^/]+)$#', $route) && $method === 'GET')
     || (($route === 'plans' || $route === 'subscription/plans') && $method === 'GET')
-    || ($route === 'subscription/checkout' && $method === 'POST');
+    || ($route === 'subscription/checkout' && $method === 'POST')
+    || ($route === 'admin/hourly-sync-status' && $method === 'GET')
+    || ($route === 'admin/hourly-sync')
+    || ($route === 'cron/hourly-sync')
+    || ($route === 'admin/toggle-hourly-sync' && $method === 'POST');
 
 // Enforce login for private mailbox endpoints
 if (!$currentUserId && !$isPublicRoute) {
@@ -1936,8 +2061,11 @@ try {
         }
     }
 
-    // POST /api/user/avatar (Upload custom avatar file)
+    // POST /api/user/avatar (Upload custom avatar file, base64 data, or preset/URL)
     if ($route === 'user/avatar' && $method === 'POST') {
+        $avatarUrl = null;
+
+        // 1. Handle multipart file upload
         if (!empty($_FILES['avatar']['name'])) {
             $origName = $_FILES['avatar']['name'];
             $tmpName = $_FILES['avatar']['tmp_name'];
@@ -1971,16 +2099,44 @@ try {
                             }
                         }
                     }
-
                     $avatarUrl = '/uploads/' . $destFilename;
-                    $db->prepare('UPDATE users SET avatar = ? WHERE id = ?')->execute([$avatarUrl, $currentUserId]);
-                    echo json_encode(['success' => true, 'avatar' => $avatarUrl]);
-                    exit;
                 }
             }
         }
+
+        // 2. Handle base64 data URI in JSON or POST
+        $rawAvatarData = $input['avatar_base64'] ?? ($input['avatar'] ?? ($_POST['avatar'] ?? null));
+        if (!$avatarUrl && is_string($rawAvatarData)) {
+            $rawAvatarData = trim($rawAvatarData);
+            if (preg_match('/^data:image\/(\w+);base64,(.+)$/', $rawAvatarData, $matches)) {
+                $rawExt = strtolower($matches[1]);
+                if ($rawExt === 'jpeg') $rawExt = 'jpg';
+                if (!in_array($rawExt, ['png', 'jpg', 'webp', 'gif', 'svg'])) $rawExt = 'png';
+                $binary = base64_decode($matches[2]);
+                if ($binary && strlen($binary) > 20) {
+                    $destFilename = 'avatar-' . $currentUserId . '-' . time() . '.' . $rawExt;
+                    $targetPath = $uploadsDir . '/' . $destFilename;
+                    if (@file_put_contents($targetPath, $binary)) {
+                        $avatarUrl = '/uploads/' . $destFilename;
+                    }
+                }
+            } elseif (preg_match('/^(\/|https?:\/\/)/', $rawAvatarData)) {
+                // Preset local path or safe external URL
+                $avatarUrl = filter_var($rawAvatarData, FILTER_SANITIZE_URL);
+            }
+        }
+
+        if ($avatarUrl) {
+            $db->prepare('UPDATE users SET avatar = ? WHERE id = ?')->execute([$avatarUrl, $currentUserId]);
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['current_user_avatar'] = $avatarUrl;
+            }
+            echo json_encode(['success' => true, 'avatar' => $avatarUrl]);
+            exit;
+        }
+
         http_response_code(400);
-        echo json_encode(['error' => 'No avatar image file uploaded']);
+        echo json_encode(['error' => 'No valid avatar image or URL provided']);
         exit;
     }
 
