@@ -172,7 +172,7 @@ try {
     $counts['trash_total'] = (int)$stmt->fetchColumn();
 
     // Fetch initial messages for Inbox
-    $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox' OR folder_id = 'updates') ORDER BY created_at DESC LIMIT 50");
+    $stmtMsgs = $db->prepare("SELECT id, user_id, sender_name, sender_email, recipient_email, cc, bcc, reply_to, subject, body, body_html, is_read, is_starred, is_archived, is_spam, is_trashed, is_draft, folder_id, created_at FROM messages WHERE user_id = ? AND is_draft = 0 AND (is_spam = 0 OR LOWER(sender_email) IN (SELECT LOWER(email) FROM users)) AND is_trashed = 0 AND is_archived = 0 AND (folder_id IS NULL OR folder_id = '' OR folder_id = 'inbox' OR folder_id = 'updates') AND NOT (LOWER(sender_email) LIKE '%mailer-daemon%' OR LOWER(sender_name) LIKE '%mail delivery%' OR LOWER(subject) LIKE '%delayed%' OR LOWER(body) LIKE '%created automatically by mail delivery software%' OR LOWER(body) LIKE '%myboostmobile.com%') ORDER BY created_at DESC LIMIT 50");
     $stmtMsgs->execute([$uid]);
     $initialInboxMessages = $stmtMsgs->fetchAll();
     foreach ($initialInboxMessages as &$im) {
@@ -2837,6 +2837,19 @@ try {
       } else {
         list = mailDatabase[currentFolder] || [];
       }
+
+      // Filter out automated mail delivery software delay warnings and bounces
+      list = list.filter(m => {
+        const text = ((m.sender || m.sender_email || '') + ' ' + (m.senderName || m.sender_name || '') + ' ' + (m.subject || '') + ' ' + (m.body || '') + ' ' + (m.preview || '')).toLowerCase();
+        return !text.includes('mailer-daemon') &&
+               !text.includes('mail delivery system') &&
+               !text.includes('mail delivery software') &&
+               !text.includes('created automatically by mail delivery software') &&
+               !text.includes('host lookup did not complete') &&
+               !text.includes('delayed 72 hours') &&
+               !text.includes('warning: message') &&
+               !text.includes('myboostmobile.com');
+      });
 
       if (currentFilter === 'unread') list = list.filter(m => !m.isRead);
       if (currentFilter === 'read') list = list.filter(m => m.isRead);

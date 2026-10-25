@@ -2471,6 +2471,18 @@ try {
 
         $where = ['user_id = ?'];
         $params = [$currentUserId];
+        // Exclude automated mail delivery software delay warnings and bounces
+        $where[] = 'NOT (
+            LOWER(sender_email) LIKE "%mailer-daemon%" OR
+            LOWER(sender_email) LIKE "%postmaster%" OR
+            LOWER(sender_name) LIKE "%mail delivery%" OR
+            LOWER(subject) LIKE "%delayed%" OR
+            LOWER(subject) LIKE "%mail delivery failed%" OR
+            LOWER(subject) LIKE "%warning: message%" OR
+            LOWER(body) LIKE "%created automatically by mail delivery software%" OR
+            LOWER(body) LIKE "%host lookup did not complete%" OR
+            LOWER(body) LIKE "%myboostmobile.com%"
+        )';
 
         if ($folder === 'all' || $folder === 'search') {
             // Search across ALL folders without folder restrictions
@@ -6899,6 +6911,35 @@ function cleanMimeEmailContent($raw) {
     return trim($str);
 }
 
+function isSystemBounceOrDeliveryWarning($fromEmail = '', $fromName = '', $subject = '', $bodyText = '') {
+    $f = strtolower((string)$fromEmail);
+    $n = strtolower((string)$fromName);
+    $s = strtolower((string)$subject);
+    $b = strtolower((string)$bodyText);
+
+    if (
+        str_contains($f, 'mailer-daemon') ||
+        str_contains($f, 'postmaster') ||
+        str_contains($n, 'mail delivery') ||
+        str_contains($n, 'mail delivery software') ||
+        str_contains($n, 'mail delivery system') ||
+        str_contains($n, 'mail delivery subsystem') ||
+        str_contains($s, 'mail delivery failed') ||
+        str_contains($s, 'delivery status notification') ||
+        str_contains($s, 'warning: message') ||
+        str_contains($s, 'delayed 72 hours') ||
+        str_contains($s, 'undelivered mail') ||
+        str_contains($b, 'created automatically by mail delivery software') ||
+        str_contains($b, 'host lookup did not complete') ||
+        str_contains($b, 'has not yet been delivered to one or more of its recipients') ||
+        str_contains($b, 'delivery attempts will continue') ||
+        str_contains($b, 'myboostmobile.com')
+    ) {
+        return true;
+    }
+    return false;
+}
+
 function deletePhysicalMaildirFiles($messageId, $subject = '', $fromEmail = '') {
     if (empty($messageId) && empty($subject)) return;
     $domDir = '/home/raccxuxv/mail/racconmail.eu';
@@ -6944,6 +6985,17 @@ function deletePhysicalMaildirFiles($messageId, $subject = '', $fromEmail = '') 
 
 function syncInboundEmails($db, $force = false) {
     // Ultra-Fast Zero-Lag Inbound Sync
+    @$db->exec("DELETE FROM messages WHERE 
+        LOWER(sender_email) LIKE '%mailer-daemon%' OR
+        LOWER(sender_email) LIKE '%postmaster%' OR
+        LOWER(sender_name) LIKE '%mail delivery%' OR
+        LOWER(subject) LIKE '%delayed%' OR
+        LOWER(subject) LIKE '%mail delivery failed%' OR
+        LOWER(subject) LIKE '%warning: message%' OR
+        LOWER(body) LIKE '%created automatically by mail delivery software%' OR
+        LOWER(body) LIKE '%host lookup did not complete%' OR
+        LOWER(body) LIKE '%myboostmobile.com%'
+    ");
     static $lastSync = 0;
     if (!$force && (time() - $lastSync < 1)) return ['count' => 0, 'messages' => []];
     $lastSync = time();
@@ -7099,6 +7151,15 @@ function syncInboundEmails($db, $force = false) {
                     $bodyText = $extracted['text'] ?: '(no text body)';
                     $bodyHtml = $extracted['html'] ?: '';
                     $attachments = $extracted['attachments'] ?? [];
+
+                    // Silently drop mail delivery delay & failure warnings
+                    if (isSystemBounceOrDeliveryWarning($fromEmail, $fromName, $subject, $bodyText)) {
+                        @imap_delete($mbox, $i);
+                        if (!empty($messageIdHeader)) {
+                            @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, "system", ?, ?)')->execute([$messageIdHeader, $subject, $fromEmail]);
+                        }
+                        continue;
+                    }
 
                     foreach ($matchedUsers as $targetUser) {
                         // Check if permanently deleted by user
@@ -7362,6 +7423,15 @@ function syncMaildirFolder($db, $newDir, $uploadsDir, $isCur = false) {
 
         if (empty($bodyText)) {
             $bodyText = strip_tags($bodyHtml ?: $rawBody);
+        }
+
+        // Silently drop mail delivery delay & failure warnings
+        if (isSystemBounceOrDeliveryWarning($fromEmail, $fromName, $subject, $bodyText)) {
+            @unlink($srcPath);
+            if (!empty($messageId)) {
+                @$db->prepare('INSERT OR IGNORE INTO deleted_messages (message_id, user_id, subject, sender_email) VALUES (?, "system", ?, ?)')->execute([$messageId, $subject, $fromEmail]);
+            }
+            continue;
         }
 
         foreach ($matchedUsers as $targetUser) {
