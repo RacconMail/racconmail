@@ -2752,9 +2752,13 @@ try {
 
     if (preg_match('#^messages/([^/]+)/read$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
         $msgId = trim(explode('?', $matches[1])[0]);
-        $read = isset($input['is_read']) ? (!empty($input['is_read']) ? 1 : 0) : 1;
+        $bodyInput = json_decode(file_get_contents('php://input'), true);
+        if (is_array($bodyInput)) {
+            $input = array_merge($input, $bodyInput);
+        }
+        $read = isset($input['is_read']) ? ((int)$input['is_read'] === 1 ? 1 : 0) : 1;
         $db->prepare('UPDATE messages SET is_read = ? WHERE id = ? AND user_id = ?')->execute([$read, $msgId, $currentUserId]);
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'id' => $msgId, 'is_read' => $read]);
         exit;
     }
 
