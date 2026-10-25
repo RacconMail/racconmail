@@ -701,11 +701,6 @@ try {
     <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-white border-r border-slate-200/80 shrink-0 items-center py-3 select-none text-slate-400 z-30 justify-between h-full overflow-y-auto overflow-x-hidden scrollbar-none">
       <!-- Top Apps -->
       <div class="flex flex-col items-center gap-2.5 w-full">
-        <!-- Logo -->
-        <a href="/inbox" onclick="window.location.reload(); return false;" class="p-1 mb-2 hover:scale-105 transition cursor-pointer" title="Raccon Mail">
-          <img src="/raccoon-logo.svg" alt="Raccon" class="w-8 h-8 object-contain" />
-        </a>
-
         <!-- 1. Dashboard -->
         <a href="/inbox" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Dashboard">
           <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:scale-110 transition"></i>
