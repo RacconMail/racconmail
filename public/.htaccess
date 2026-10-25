@@ -32,7 +32,8 @@ RewriteRule ^.*$ /inbox? [R=302,L]
 RewriteRule ^inbox/?$ inbox.php [L]
 RewriteRule ^webmail/?$ inbox.php [L]
 RewriteRule ^mail/?$ inbox.php [L]
-RewriteRule ^(login|signin)/?$ inbox.php [L]
+RewriteRule ^(login|signin)/?$ auth.html?tab=login [QSA,L]
+RewriteRule ^(register|signup)/?$ auth.html?tab=register [QSA,L]
 
 # 4. Admin & API routes
 RewriteRule ^admin/?$ admin.html [L]
