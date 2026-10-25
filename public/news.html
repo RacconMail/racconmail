@@ -3,44 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raccon News Wire &bull; Live Reuters Syndication &amp; World Dispatch</title>
-  <meta name="description" content="Raccon News Wire — Real-time live syndication across Tech &amp; AI, World, Economy, Sports, Gaming, and Science. Full text articles with zero ads and zero tracking." />
-  <meta name="keywords" content="raccon news, tech news, live news wire, privacy news, world headlines, gaming news, sports updates, racconmail" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <title>Raccon News Wire &bull; Live Tech, Cybersecurity, AI &amp; World Dispatch</title>
+  <meta name="description" content="Raccon News Wire — Continuous live journalism across Tech &amp; AI, Cybersecurity, Privacy, Crypto, and Open Source. Verified reporter dispatches with zero ads, zero tracking, and deep Google indexing." />
+  <meta name="keywords" content="raccon news, tech news 2026, cybersecurity dispatches, AI updates, privacy news, crypto web3, open source linux, live news wire" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://racconmail.eu/news" />
 
-  <!-- Open Graph -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://racconmail.eu/news" />
-  <meta property="og:site_name" content="Raccon Mail" />
-  <meta property="og:title" content="Raccon News Wire — The News Wire for Curious Minds" />
-  <meta property="og:description" content="Real-time coverage across Tech, World, Sports, Gaming, and Science. Verified articles updated 24/7." />
+  <meta property="og:site_name" content="Raccon News Wire" />
+  <meta property="og:title" content="Raccon News Wire &bull; Live Tech, Cybersecurity &amp; World Dispatch" />
+  <meta property="og:description" content="Continuous live reporting across Tech &amp; AI, Cybersecurity, Privacy, and Crypto with verified author handles." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary" />
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@racconmail" />
   <meta name="twitter:url" content="https://racconmail.eu/news" />
-  <meta name="twitter:title" content="Raccon News Wire — Live Continuous Syndication" />
-  <meta name="twitter:description" content="Real-time coverage across Tech, World, Sports, Gaming, and Science. Verified articles updated 24/7." />
+  <meta name="twitter:title" content="Raccon News Wire &bull; Live Continuous Syndication" />
+  <meta name="twitter:description" content="Continuous live reporting across Tech &amp; AI, Cybersecurity, Privacy, and Crypto with verified author handles." />
   <meta name="twitter:image" content="https://racconmail.eu/raccoon-logo.png" />
 
-  <!-- Favicon Suite -->
+  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#0F172A" />
+  <meta name="theme-color" content="#2563eb" />
 
-  <!-- Early Theme Initializer (Strict Clean Modern White) -->
-  <script>
-    (function() {
-      localStorage.setItem('raccon_theme', 'light');
-      document.documentElement.className = 'theme-light';
-      document.documentElement.classList.remove('dark', 'theme-dark');
-    })();
+  <!-- Schema.org JSON-LD High-Ranking Google Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "NewsMediaOrganization",
+        "@id": "https://racconmail.eu/#organization",
+        "name": "Raccon News Wire",
+        "url": "https://racconmail.eu/news",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://racconmail.eu/raccoon-logo.png",
+          "width": 512,
+          "height": 512
+        },
+        "sameAs": [
+          "https://github.com/RacconMail/racconmail",
+          "https://twitter.com/racconmail"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://racconmail.eu/#website",
+        "url": "https://racconmail.eu/news",
+        "name": "Raccon News Wire",
+        "publisher": { "@id": "https://racconmail.eu/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://racconmail.eu/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://racconmail.eu/" },
+          { "@type": "ListItem", "position": 2, "name": "News Wire", "item": "https://racconmail.eu/news" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- Dynamic Article Schema Container (populated dynamically for Google News bots) -->
+  <script id="dynamic-news-jsonld" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": []
+  }
   </script>
 
   <!-- Tailwind CSS CDN -->
@@ -52,17 +89,17 @@
         extend: {
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-            serif: ['"Merriweather"', 'Georgia', 'serif']
+            mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
-            obsidian: '#080c14',
-            surface: {
-              DEFAULT: '#0f172a',
-              card: '#111c33',
-              hover: '#172545',
-              border: 'rgba(255, 255, 255, 0.08)'
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a'
             }
           }
         }
@@ -73,1350 +110,1154 @@
   <!-- Lucide Icons & FontAwesome -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="/css/raccoon-mail.css" />
 
   <style>
+    /* Clean Modern Soft-UI Scroll & Foundations */
     html, body {
       min-height: 100%;
-      height: auto;
-      overflow-x: hidden;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
     }
-    body {
-      background-color: #FFFFFF !important;
-      color: #0F172A !important;
-      transition: background-color 0.2s ease, color 0.2s ease;
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Active filter pill styling */
+    .filter-chip-active {
+      background-color: #eff6ff !important;
+      color: #2563eb !important;
+      border-color: #bfdbfe !important;
+      font-weight: 700 !important;
     }
-    .glass-nav {
-      background: #FFFFFF !important;
-      border-bottom: 1px solid var(--border, #E2E8F0);
+    .tag-chip-active {
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+      border-color: #2563eb !important;
+      font-weight: 700 !important;
     }
-    .glass-card {
-      background: #FFFFFF !important;
-      border: 1px solid var(--border, #E2E8F0);
-      color: #0F172A !important;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    }
-  
-    /* Modern Warm Coral Card Design matching reference */
-    .story-card-modern, .forum-card-modern, .news-card-modern {
-      background: #F8F9FA !important;
-      border-radius: 24px !important;
-      border: 1px solid rgba(241, 245, 249, 0.95) !important;
-      transition: all 0.18s ease;
-      cursor: pointer;
-    }
-    .story-card-modern:hover, .forum-card-modern:hover, .news-card-modern:hover {
-      background: #FFFFFF !important;
-      border-color: #E2E8F0 !important;
-      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06) !important;
-    }
-
-    .category-filter-pill {
-      padding: 7px 16px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      transition: all 0.18s ease;
-      cursor: pointer;
-      white-space: nowrap;
-      user-select: none;
-    }
-    .active-category-pill {
-      background: #F68D72 !important;
-      color: #FFFFFF !important;
-      box-shadow: 0 4px 14px rgba(246, 141, 114, 0.35) !important;
-    }
-    .inactive-category-pill {
-      background: #F3F4F6 !important;
-      color: #374151 !important;
-    }
-    .inactive-category-pill:hover {
-      background: #E5E7EB !important;
-      color: #111827 !important;
-    }
-
   </style>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
-  <script src="/js/notifications.js"></script>
 </head>
-<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased transition-colors duration-200 selection:bg-slate-900 selection:text-white font-sans">
+<body class="flex flex-col min-h-screen text-slate-800 bg-[#f8fafc] selection:bg-blue-100 selection:text-blue-900 pb-20 lg:pb-12">
 
-  <!-- TOP NAVIGATION HEADER (Matching Inbox Bubble White Design) -->
-  <header class="w-full sticky top-0 z-40 bg-white border-b border-slate-200/80 shadow-xs" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0 !important; color: #64748b !important;">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-3">
-      <!-- Brand & Hub Identity (Never overlaps, shrink-0 with compact mobile spacing) -->
-      <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
-        <a href="/inbox" class="flex items-center gap-2 group shrink-0" title="Return to Raccon Mail Inbox">
-          <img src="/raccoon-logo.svg" alt="Raccon" class="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition shrink-0" />
-          <div class="leading-none shrink-0">
-            <span class="font-display font-extrabold text-sm sm:text-base md:text-lg text-slate-500 tracking-tight flex items-center gap-1.5" style="color: #64748b !important;">
-              <span>Raccon News</span>
-              <span class="hidden md:inline-flex text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 uppercase font-bold">Live Wire</span>
-            </span>
-            <span class="text-[10px] text-slate-400 hidden sm:inline">Tech &bull; World &bull; Sports &bull; Science</span>
+  <!-- =========================================================================
+       1. TOP HEADER BAR (Web & Mobile, matching reference screenshot)
+       ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
+    <div class="max-w-[1520px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Left: Brand Logo & Editorial Sections (Desktop) -->
+      <div class="flex items-center gap-6 shrink-0 min-w-0">
+        <a href="/news" class="flex items-center gap-2.5 group shrink-0" title="Raccon News Wire">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center p-1.5 shadow-xs shadow-blue-500/20 group-hover:scale-105 transition">
+            <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="w-full h-full object-contain filter brightness-0 invert" />
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span class="font-black text-lg tracking-tight text-slate-900 leading-none">Raccon<span class="text-blue-600">News</span></span>
+            <span class="hidden sm:inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Wire</span>
           </div>
         </a>
+
+        <!-- Desktop Nav Links -->
+        <nav class="hidden md:flex items-center gap-1 text-xs font-semibold text-slate-600">
+          <a href="/news" class="px-3 py-1.5 rounded-full text-slate-900 font-bold bg-slate-100 hover:bg-slate-200 transition">Headlines</a>
+          <a href="/forum" class="px-3 py-1.5 rounded-full hover:text-slate-900 hover:bg-slate-100 transition">Community Wall</a>
+          <a href="/stories" class="px-3 py-1.5 rounded-full hover:text-slate-900 hover:bg-slate-100 transition">Chronicles</a>
+          <button onclick="filterByTag('#Breaking')" class="px-3 py-1.5 rounded-full text-blue-600 font-bold bg-blue-50 hover:bg-blue-100 border border-blue-200/70 transition flex items-center gap-1 cursor-pointer">
+            <span>Special Coverage</span>
+            <span class="text-xs">+</span>
+          </button>
+        </nav>
       </div>
 
-      <!-- Live Wire Search -->
-      <div class="flex-1 max-w-md mx-2 hidden md:block">
-        <div class="relative flex items-center">
-          <i data-lucide="search" class="absolute left-3.5 h-4 w-4 text-cyan-500 stroke-[2.5] pointer-events-none filter drop-shadow-[0_1px_2px_rgba(6,182,212,0.3)]"></i>
-          <input
-            id="news-search-input"
-            type="text"
-            oninput="handleNewsSearch(this.value)"
-            placeholder="Search headlines, topics, stories..."
-            class="w-full bg-white border border-slate-200 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition"
-            style="background-color: #ffffff !important; border-radius: 9999px !important; border: 1px solid #e2e8f0 !important;"
-          />
-        </div>
-      </div>
-
-      <!-- Action Navigation Links (Compact, No-Overlap Mobile Sizing) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="news-auth-bar">
-        <!-- Live Countdown Pill -->
-        <div class="hidden lg:flex items-center gap-1.5 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1 text-[11px] text-slate-600">
-          <span class="h-2 w-2 rounded-full bg-slate-500 animate-pulse"></span>
-          <span>Sync:</span>
-          <span id="news-timer" class="font-mono font-bold text-slate-900">04:59</span>
+      <!-- Right: Action Icons (Notifications, Bookmarks, Active Media Tab, Profile) -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        
+        <!-- Live Sync Status Indicator -->
+        <div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[11px] font-bold text-emerald-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Live Syndication OK</span>
         </div>
 
-        <a href="/inbox" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Webmail">
-          <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Webmail</span>
-        </a>
-        <a href="/news" class="hidden sm:inline-flex p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-900 bg-slate-900 text-white text-xs font-semibold transition items-center justify-center gap-1.5 shrink-0 shadow-xs" title="News Wire">
-          <i data-lucide="newspaper" class="h-3.5 w-3.5 text-white shrink-0"></i>
-          <span>News</span>
-        </a>
-        <a href="/stories" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="World Stories">
-          <i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Stories</span>
-        </a>
-        <a href="/forum" class="p-2 sm:px-3 sm:py-1.5 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition flex items-center justify-center gap-1.5 shrink-0 shadow-2xs" title="Raccon Forum">
-          <i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-400 shrink-0"></i>
-          <span class="hidden sm:inline">Forum</span>
-        </a>
-        <div id="user-status-pill" class="flex items-center gap-1.5 shrink-0">
-          <!-- Populated by JS -->
+        <!-- Notifications Bell -->
+        <button onclick="showToast('No new unread wire alerts at this time.')" class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Notifications">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+        </button>
+
+        <!-- Bookmarks / Favorites Toggle Button -->
+        <button onclick="toggleBookmarksView()" id="header-btn-bookmarks" class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" title="Saved Articles">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span id="header-bookmark-badge" class="hidden absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-blue-600 text-[9px] font-bold text-white">0</span>
+        </button>
+
+        <!-- Media / News Wire Active Tab (Matches Screenshot) -->
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold shadow-2xs">
+          <i data-lucide="newspaper" class="w-3.5 h-3.5"></i>
+          <span>News Wire</span>
         </div>
+
+        <!-- Webmail Inbox / User Profile Avatar -->
+        <a href="/inbox" class="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition cursor-pointer" title="Open Webmail">
+          <div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
+            <i data-lucide="mail" class="w-3.5 h-3.5 text-blue-400"></i>
+          </div>
+          <span class="hidden md:inline text-xs font-bold text-slate-800">Webmail</span>
+        </a>
       </div>
+
     </div>
   </header>
 
-  <!-- MAIN WRAPPER: 2-COLUMN COMMUNITY LAYOUT (Matching Forum Exactly) -->
-  <div class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-    <!-- LEFT / MAIN COLUMN (Feed & Article Reader) -->
-    <main class="lg:col-span-8 space-y-5">
-
-      <!-- WELCOME HERO BANNER -->
-      <div id="news-hero-card" class="rounded-3xl p-5 sm:p-7 relative overflow-hidden border border-slate-200/80 bg-white shadow-xl shadow-slate-900/5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-2 flex-1">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
-              <span class="h-1.5 w-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>24/7 RACCON NEWS DESK</span>
-            </div>
-            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              The News Wire for Curious Minds
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xl">
-              Continuous live reporting across Tech &amp; AI, World, Economy, Sports, Gaming, Science &amp; Space, and Music. Read full articles directly on site with zero popups and zero third-party trackers.
-            </p>
-          </div>
-          <button
-            onclick="refreshRacconNews(true)"
-            id="btn-sync-news"
-            class="rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-xs active:scale-95 cursor-pointer shrink-0"
-          >
-            <i data-lucide="rotate-cw" id="sync-icon" class="h-4 w-4"></i>
-            <span>Sync Live Wire</span>
+  <!-- =========================================================================
+       2. SUB-HEADER BAR (Title, Tabs, Search & Mobile Filter Button)
+       ========================================================================= -->
+  <section class="max-w-[1520px] mx-auto w-full px-4 sm:px-6 pt-5 pb-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      
+      <!-- Left: Title & Articles / Channels Tabs (Matches Screenshot) -->
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+          <span>News Wire</span>
+          <span class="text-xl">📰</span>
+        </h1>
+        
+        <!-- Tabs: Articles | Channels -->
+        <div class="flex items-center gap-6 mt-2 border-b border-slate-200">
+          <button onclick="setNewsSubTab('articles')" id="tab-articles" class="pb-2.5 text-xs sm:text-sm font-extrabold text-blue-600 border-b-2 border-blue-600 transition cursor-pointer">
+            Publications
+          </button>
+          <button onclick="setNewsSubTab('channels')" id="tab-channels" class="pb-2.5 text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-700 border-b-2 border-transparent transition cursor-pointer flex items-center gap-1.5">
+            <span>Verified Sources</span>
+            <span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-600">6 Wire Desks</span>
           </button>
         </div>
       </div>
 
-      <!-- CATEGORY PILL FILTER BAR (Bubble Capsule Design) -->
-      <div id="news-filter-bar" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs">
-        <button onclick="filterNewsCat('all')" data-cat="all" class="news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer">
-          All Wire (32)
-        </button>
-        <button onclick="filterNewsCat('tech')" data-cat="tech" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>💻</span><span>Tech &amp; AI</span>
-        </button>
-        <button onclick="filterNewsCat('world')" data-cat="world" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🌍</span><span>World</span>
-        </button>
-        <button onclick="filterNewsCat('sport')" data-cat="sport" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>⚽</span><span>Sports</span>
-        </button>
-        <button onclick="filterNewsCat('games')" data-cat="games" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🎮</span><span>Gaming</span>
-        </button>
-        <button onclick="filterNewsCat('science')" data-cat="science" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🔭</span><span>Science</span>
-        </button>
-        <button onclick="filterNewsCat('music')" data-cat="music" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🎵</span><span>Music</span>
-        </button>
-        <button onclick="toggleBookmarksView()" id="btn-bookmarks" class="news-cat-btn px-3.5 py-1.5 rounded-full font-medium bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 transition shrink-0 cursor-pointer flex items-center gap-1.5">
-          <span>🔖</span><span>Saved (<span id="bookmark-count">0</span>)</span>
-        </button>
-      </div>
-
-      <!-- NEWS FEED CARDS CONTAINER (Matching Forum Style) -->
-      <div id="news-feed-container" class="space-y-4">
-        <!-- Dynamically rendered via JS -->
-      </div>
-
-      <!-- Empty state -->
-      <div id="news-empty" class="hidden text-center py-16 px-4 rounded-3xl border border-slate-200 bg-white space-y-3">
-        <div class="h-16 w-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">📰</div>
-        <h3 class="font-display text-lg font-bold text-slate-900">No articles found</h3>
-        <p class="text-xs text-slate-500 max-w-sm mx-auto">Try clearing search terms or selecting another category.</p>
-        <button onclick="filterNewsCat('all')" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 mt-2 border border-slate-900">Reset Filters</button>
-      </div>
-
-      <!-- IN-PAGE FULL ARTICLE READER (Zero Popups, Integrated) -->
-      <div id="news-reader-view" class="hidden space-y-5">
-        <!-- Reader Navigation Header -->
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-          <button onclick="closeNewsReader()" class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition cursor-pointer">
-            <i data-lucide="arrow-left" class="h-4 w-4 text-slate-600"></i>
-            <span>Back to Live Wire</span>
+      <!-- Right: Search Bar + Mobile Filter Trigger (Matches Screenshot) -->
+      <div class="flex items-center gap-2.5 w-full sm:w-auto">
+        <!-- Search Input Field -->
+        <div class="relative flex-1 sm:w-72 md:w-80">
+          <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="news-search-input" 
+            oninput="handleNewsSearch(this.value)"
+            placeholder="Search keywords, @author, topics..." 
+            class="w-full pl-9 pr-8 py-2 rounded-2xl bg-white border border-slate-200/90 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 shadow-2xs transition"
+          />
+          <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-slate-400 hover:text-slate-600 cursor-pointer">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
           </button>
-          <div class="flex items-center gap-2">
-            <button onclick="copyCurrentArticleLink()" class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-              <i data-lucide="link" class="h-3.5 w-3.5 text-slate-600"></i>
-              <span>Copy Link</span>
-            </button>
-            <a href="/inbox" class="px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs border border-slate-900">
-              <i data-lucide="mail" class="h-3.5 w-3.5 text-white"></i>
-              <span>Discuss in Webmail</span>
-            </a>
-          </div>
         </div>
 
-        <!-- Reader Card -->
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 space-y-6 shadow-xs">
-          <div class="space-y-2 pb-4 border-b border-slate-200">
-            <div class="flex items-center justify-between gap-2 flex-wrap text-xs text-slate-500">
-              <span id="article-reader-category" class="px-2.5 py-0.5 rounded-full font-bold text-slate-700 bg-slate-100 border border-slate-200">Category</span>
-              <span id="article-reader-time" class="font-mono">Just now</span>
-            </div>
-            <h1 id="article-reader-title" class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
-              Headline
-            </h1>
-            <div class="flex items-center gap-2 pt-1 text-xs text-slate-500 font-mono">
-              <img src="/raccoon-logo.svg" class="h-4 w-4 object-contain" />
-              <span>Raccon Editorial &bull; Verified Reading &bull; Full Text</span>
-            </div>
-          </div>
+        <!-- Mobile Filter Button (Matches Blue Filter Button in Middle Screen) -->
+        <button 
+          onclick="toggleMobileFilterDrawer(true)" 
+          class="lg:hidden p-2 sm:px-3.5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
+          title="Open Filters"
+        >
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <span class="text-xs font-bold hidden sm:inline">Filters</span>
+          <span id="mobile-filter-badge" class="hidden w-2 h-2 rounded-full bg-white"></span>
+        </button>
 
-          <!-- Cover Image -->
-          <div class="rounded-2xl overflow-hidden aspect-video border border-slate-200 bg-slate-100 shadow-xs">
-            <img id="article-reader-image" src="/raccoon-logo.svg" alt="Cover" class="w-full h-full object-cover" onerror="this.src='/raccoon-logo.svg';" />
-          </div>
+        <!-- View Mode Switcher (Desktop) -->
+        <div class="hidden lg:flex items-center gap-1 p-1 bg-white border border-slate-200/80 rounded-2xl shadow-2xs">
+          <button onclick="setViewLayout('grid')" id="btn-layout-grid" class="p-1.5 rounded-xl bg-slate-100 text-blue-600 transition" title="Grid View">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          </button>
+          <button onclick="setViewLayout('list')" id="btn-layout-list" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 transition" title="Compact List">
+            <i data-lucide="list" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
 
-          <!-- Full Article Body -->
-          <div id="article-reader-body" class="space-y-4 font-normal text-sm sm:text-base leading-relaxed text-slate-700 py-2">
-            <!-- Populated via JS -->
-          </div>
+    </div>
+  </section>
 
-          <!-- Bottom Action Row -->
-          <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <button onclick="closeNewsReader()" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer border border-slate-900">
-              <i data-lucide="arrow-left" class="h-4 w-4 text-white"></i>
-              <span>Return to Wire Feed</span>
-            </button>
+  <!-- =========================================================================
+       3. MAIN LAYOUT: DESKTOP FILTER SIDEBAR + ARTICLES GRID
+       ========================================================================= -->
+  <main class="flex-1 max-w-[1520px] mx-auto w-full px-4 sm:px-6 py-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+      
+      <!-- =====================================================================
+           LEFT COLUMN: DESKTOP FILTERS SIDEBAR (Matches Left Screen)
+           ===================================================================== -->
+      <aside class="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-24 space-y-5">
+        <div class="rounded-[28px] bg-white border border-slate-200/80 p-5 sm:p-6 shadow-2xs space-y-5">
+          
+          <!-- Filter Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-2">
-              <button onclick="copyCurrentArticleLink()" class="px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition cursor-pointer flex items-center gap-1.5">
-                <i data-lucide="share-2" class="h-3.5 w-3.5 text-slate-600"></i>
-                <span>Share Article</span>
-              </button>
-              <a href="/inbox" class="px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition flex items-center gap-1.5">
-                <i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i>
-                <span>Send to Webmail</span>
-              </a>
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
+              <h3 class="font-extrabold text-sm text-slate-900">Filters</h3>
+            </div>
+            <button onclick="resetAllFilters()" class="text-[11px] font-bold text-slate-400 hover:text-blue-600 transition cursor-pointer flex items-center gap-1">
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+              <span>Reset</span>
+            </button>
+          </div>
+
+          <!-- 1. Search Publication Input inside filter -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Search Publications</label>
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
+              <input 
+                type="text" 
+                id="sidebar-search-input" 
+                oninput="handleNewsSearch(this.value)"
+                placeholder="Enter keywords or @tag..." 
+                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition"
+              />
             </div>
           </div>
-        </article>
-      </div>
 
-    </main>
+          <!-- 2. Sort Dropdown -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Sort By</label>
+            <div class="relative">
+              <select 
+                id="sidebar-sort-select" 
+                onchange="applySort(this.value)"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none pr-8"
+              >
+                <option value="newest">Latest First</option>
+                <option value="most_viewed">Most Viewed &amp; Popular</option>
+                <option value="most_liked">Highest Engagement (Likes)</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
+            </div>
+          </div>
 
-    <!-- RIGHT SIDEBAR (Matching Forum Exact Design) -->
-    <aside class="lg:col-span-4 space-y-5">
+          <!-- 3. Categories / Sports & Topics Pills (Matches Screenshot) -->
+          <div class="space-y-2">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Topics &amp; Domains</label>
+            <div class="flex flex-wrap gap-1.5" id="sidebar-categories-container">
+              <button onclick="filterNewsCat('all')" data-cat="all" class="filter-chip filter-chip-active px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🌐</span><span>All Wire</span>
+              </button>
+              <button onclick="filterNewsCat('cybersecurity')" data-cat="cybersecurity" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🛡️</span><span>Cybersecurity</span>
+              </button>
+              <button onclick="filterNewsCat('tech')" data-cat="tech" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>💻</span><span>AI &amp; Tech</span>
+              </button>
+              <button onclick="filterNewsCat('privacy')" data-cat="privacy" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🔒</span><span>Privacy</span>
+              </button>
+              <button onclick="filterNewsCat('crypto')" data-cat="crypto" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🪙</span><span>Crypto &amp; Web3</span>
+              </button>
+              <button onclick="filterNewsCat('opensource')" data-cat="opensource" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🐧</span><span>Open Source</span>
+              </button>
+              <button onclick="filterNewsCat('cloud')" data-cat="cloud" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>☁️</span><span>Cloud &amp; DevOps</span>
+              </button>
+              <button onclick="filterNewsCat('gadgets')" data-cat="gadgets" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>📱</span><span>Gadgets</span>
+              </button>
+              <button onclick="filterNewsCat('gaming')" data-cat="gaming" class="filter-chip px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold hover:border-slate-300 transition flex items-center gap-1.5 cursor-pointer">
+                <span>🎮</span><span>Gaming</span>
+              </button>
+            </div>
+          </div>
 
-      <!-- News Desk Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <div class="flex items-center gap-3">
-          <img src="/raccoon-logo.svg" class="h-10 w-10 object-contain drop-shadow" alt="Raccon" />
-          <div>
-            <h3 class="font-display font-bold text-sm text-foreground">Raccon News Desk</h3>
-            <p class="text-[11px] text-slate-700 font-mono flex items-center gap-1 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span>Live Auto-Sync Active</span>
-            </p>
+          <!-- 4. Tags / Hashtags Pills (Matches Screenshot) -->
+          <div class="space-y-2">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Hashtags &amp; Desks</label>
+            <div class="flex flex-wrap gap-1.5" id="sidebar-tags-container">
+              <button onclick="toggleTagFilter('#News')" data-tag="#News" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #News
+              </button>
+              <button onclick="toggleTagFilter('#Security')" data-tag="#Security" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Security
+              </button>
+              <button onclick="toggleTagFilter('#AI')" data-tag="#AI" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #AI
+              </button>
+              <button onclick="toggleTagFilter('#Reviews')" data-tag="#Reviews" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Reviews
+              </button>
+              <button onclick="toggleTagFilter('#Analysis')" data-tag="#Analysis" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Analysis
+              </button>
+              <button onclick="toggleTagFilter('#Interview')" data-tag="#Interview" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Interview
+              </button>
+              <button onclick="toggleTagFilter('#Reports')" data-tag="#Reports" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Reports
+              </button>
+              <button onclick="toggleTagFilter('#Guides')" data-tag="#Guides" class="tag-chip px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                #Guides
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Period / Date Range Picker (Matches Screenshot) -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Period / Published Date</label>
+            <div class="relative">
+              <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
+              <select 
+                id="sidebar-period-select" 
+                onchange="applyPeriod(this.value)"
+                class="w-full pl-8 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none"
+              >
+                <option value="all">All Dates &bull; Complete Archive</option>
+                <option value="today">Today &bull; Past 24 Hours</option>
+                <option value="week">This Week &bull; Past 7 Days</option>
+                <option value="month">This Month &bull; Past 30 Days</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <!-- 6. Format Dropdown (Matches Screenshot) -->
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Format</label>
+            <div class="relative">
+              <select 
+                id="sidebar-format-select" 
+                onchange="applyFormat(this.value)"
+                class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none focus:bg-white focus:border-blue-500 transition cursor-pointer appearance-none pr-8"
+              >
+                <option value="all">All Formats</option>
+                <option value="standard">Standard Article</option>
+                <option value="breaking">Breaking Wire</option>
+                <option value="investigation">Deep Dive Investigation</option>
+                <option value="interview">Exclusive Interview</option>
+              </select>
+              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <!-- 7. Action Buttons (Reset & Apply - Matches Screenshot) -->
+          <div class="space-y-2 pt-2 border-t border-slate-100">
+            <button 
+              onclick="resetAllFilters()" 
+              class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-98 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Reset Filters</span>
+            </button>
+            <button 
+              onclick="applyAllFilters()" 
+              class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-98 text-white text-xs font-extrabold transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="check" class="w-3.5 h-3.5 text-white"></i>
+              <span>Apply Filters</span>
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- =====================================================================
+           RIGHT COLUMN: NEWS STAGE & CARDS GRID (Matches Center Screen)
+           ===================================================================== -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-4">
+        
+        <!-- Results Header Bar: Count + Active Author Filter Chip -->
+        <div class="flex items-center justify-between pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="results-count-label">Articles found: 32</span>
+            <div id="active-author-chip-container" class="hidden">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
+                <span id="active-author-chip-text">@artem_sec</span>
+                <button onclick="clearAuthorFilter()" class="hover:text-blue-900 cursor-pointer font-bold">&times;</button>
+              </span>
+            </div>
+          </div>
+          <span class="text-[11px] text-slate-400 font-mono hidden sm:inline">24/7 Verified Syndication</span>
+        </div>
+
+        <!-- NEWS CARDS GRID (2 Columns on Desktop, 1 Column on Mobile - Matches Screenshot) -->
+        <div id="news-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+          <!-- Dynamically populated via JS renderNewsGrid() -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="news-empty-state" class="hidden rounded-[28px] bg-white border border-slate-200/80 p-12 text-center space-y-3">
+          <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
+            <i data-lucide="newspaper" class="w-7 h-7"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">No articles match your filters</h3>
+          <p class="text-xs text-slate-400 max-w-sm mx-auto">Try clearing search keywords, selecting another domain, or resetting filters to view all dispatches.</p>
+          <button onclick="resetAllFilters()" class="px-5 py-2 rounded-full bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition cursor-pointer">
+            Reset All Filters
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       4. MOBILE FILTER DRAWER MODAL (Matches Right Screen in Screenshot)
+       ========================================================================= -->
+  <div id="mobile-filter-backdrop" onclick="toggleMobileFilterDrawer(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-300 lg:hidden">
+    <div id="mobile-filter-drawer" onclick="event.stopPropagation()" class="fixed inset-y-0 right-0 w-80 max-w-[88vw] bg-white z-50 p-5 flex flex-col justify-between shadow-2xl transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto">
+      
+      <div class="space-y-5">
+        <!-- Header: Filters + Close X -->
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
+            <h3 class="font-black text-base text-slate-900">Filters</h3>
+          </div>
+          <button onclick="toggleMobileFilterDrawer(false)" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Search input in drawer -->
+        <div class="space-y-1.5">
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Search Publications</label>
+          <input 
+            type="text" 
+            id="drawer-search-input" 
+            oninput="handleNewsSearch(this.value)"
+            placeholder="Search keywords or @tag..." 
+            class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 outline-none"
+          />
+        </div>
+
+        <!-- Sort dropdown in drawer -->
+        <div class="space-y-1.5">
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Sort By</label>
+          <select 
+            id="drawer-sort-select" 
+            onchange="applySort(this.value)"
+            class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none"
+          >
+            <option value="newest">Latest First</option>
+            <option value="most_viewed">Most Viewed &amp; Popular</option>
+            <option value="most_liked">Highest Engagement</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+
+        <!-- Categories pills in drawer -->
+        <div class="space-y-2">
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Categories</label>
+          <div class="flex flex-wrap gap-1.5" id="drawer-categories-container">
+            <!-- Mirrored via JS -->
           </div>
         </div>
-        <p class="text-xs text-muted-foreground leading-relaxed">
-          Zero data harvesting, zero behavioral tracking, and zero invasive popups. Updated continuously across 7 specialized editorial desks.
-        </p>
-        <div class="pt-2 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>Active Nocturnal Readers</span>
-          <span class="font-bold text-slate-700 font-mono">148 Online</span>
+
+        <!-- Hashtags in drawer -->
+        <div class="space-y-2">
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Tags</label>
+          <div class="flex flex-wrap gap-1.5" id="drawer-tags-container">
+            <!-- Mirrored via JS -->
+          </div>
+        </div>
+
+        <!-- Format dropdown in drawer -->
+        <div class="space-y-1.5">
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Format</label>
+          <select 
+            id="drawer-format-select" 
+            onchange="applyFormat(this.value)"
+            class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-bold outline-none"
+          >
+            <option value="all">All Formats</option>
+            <option value="standard">Standard Article</option>
+            <option value="breaking">Breaking Wire</option>
+            <option value="investigation">Deep Dive</option>
+          </select>
         </div>
       </div>
 
-      <!-- Trending Topics Tags -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-3 shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="trending-up" class="h-4 w-4 text-slate-600"></i>
-          <span>Trending Wire Topics</span>
-        </h3>
-        <div class="flex flex-wrap gap-1.5 pt-1 text-xs">
-          <button onclick="searchNewsKeyword('AI')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#ai</button>
-          <button onclick="searchNewsKeyword('Security')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#security</button>
-          <button onclick="searchNewsKeyword('Space')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#space</button>
-          <button onclick="searchNewsKeyword('Economy')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#economy</button>
-          <button onclick="searchNewsKeyword('Gaming')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#gaming</button>
-          <button onclick="searchNewsKeyword('Culture')" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-mono transition cursor-pointer">#culture</button>
-        </div>
+      <!-- Action buttons at bottom of drawer -->
+      <div class="space-y-2 pt-4 border-t border-slate-100 mt-4">
+        <button 
+          onclick="resetAllFilters()" 
+          class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5"
+        >
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-slate-500"></i>
+          <span>Reset Filters</span>
+        </button>
+        <button 
+          onclick="applyAllFilters(); toggleMobileFilterDrawer(false);" 
+          class="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-extrabold transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5"
+        >
+          <span>Apply Filters</span>
+        </button>
       </div>
 
-      <!-- Nocturnal Editorial Guidelines -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="shield-check" class="h-4 w-4 text-slate-600"></i>
-          <span>Editorial Charter</span>
-        </h3>
-        <ul class="space-y-1.5 list-disc list-inside text-[11.5px] leading-relaxed text-slate-600">
-          <li>100% ad-free reading with zero third-party telemetry.</li>
-          <li>All content rendered natively on site with zero popups.</li>
-          <li>Accurate, concise, and focused technical reporting.</li>
-          <li>Full keyboard navigation and mobile touch accessibility.</li>
-        </ul>
-      </div>
-
-      <!-- Quick Navigation Card -->
-      <div class="rounded-3xl p-5 border border-slate-200 bg-white space-y-2.5 text-xs shadow-xs">
-        <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="compass" class="h-4 w-4 text-slate-600"></i>
-          <span>Raccon Hub Navigation</span>
-        </h3>
-        <div class="space-y-1.5 pt-1">
-          <a href="/stories" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="book-open" class="h-3.5 w-3.5 text-slate-600"></i> World Stories Library</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/forum" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="messages-square" class="h-3.5 w-3.5 text-slate-600"></i> Raccon Forum</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-          <a href="/inbox" class="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold transition">
-            <span class="flex items-center gap-2"><i data-lucide="mail" class="h-3.5 w-3.5 text-slate-600"></i> Private Webmail</span>
-            <span class="text-[10px] text-slate-500">&rarr;</span>
-          </a>
-        </div>
-      </div>
-
-    </aside>
-
-  </div>
-
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="news-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 text-slate-800 text-xs font-semibold shadow-2xl flex items-center gap-2">
-      <i data-lucide="check-circle" class="h-4 w-4 text-slate-600"></i>
-      <span id="news-toast-text">Message</span>
     </div>
   </div>
 
-  <!-- JAVASCRIPT ENGINE FOR RACCON NEWS WIRE -->
-  <script>
-    const newsData = {
-  "tech": [
-    {
-      "id": "reuters_Q2hpbmEgdXJn",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "China urges government agencies to mitigate AI job displacement",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiuwFBVV95cUxOMlVIUEhSdHd1VnZ4dUN2RE1iODlDNUs4YWJyTklNajFoYnhjSzNveTQtcmo3SDNhem5vSi1VNng0Y2YtdzlEM3JhcEZQM3U5elN5RWZHTFBwdFZ4UklWdzZkTEdvdkVhM21DTW1oMUdKYzloVnNiaE1LcEs1Z21rRXVkeHI3aldFM21RbEhmMzdDU3BQRm5HSWRaUkNMNkQ0V0lDZDU4VVVYRm1SSnJLQkhiQ0FkbGJzRmdv?oc=5\" target=\"_blank\"&gt;China urges government agencies to mitigate AI job displacement&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "17h ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOMlVIUEhSdHd1VnZ4dUN2RE1iODlDNUs4YWJyTklNajFoYnhjSzNveTQtcmo3SDNhem5vSi1VNng0Y2YtdzlEM3JhcEZQM3U5elN5RWZHTFBwdFZ4UklWdzZkTEdvdkVhM21DTW1oMUdKYzloVnNiaE1LcEs1Z21rRXVkeHI3aldFM21RbEhmMzdDU3BQRm5HSWRaUkNMNkQ0V0lDZDU4VVVYRm1SSnJLQkhiQ0FkbGJzRmdv?oc=5"
-    },
-    {
-      "id": "reuters_TGF3bWFrZXJz",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "Lawmakers say US briefing showed Russia targeting Democrats with misinformation",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiwgFBVV95cUxQRFJLUEhfVDJRWmZsVlVqRnB3WHlMUFZOeXJoNUF3WjhsNVJ6SUI2ajNxck5SUHBLTTI5dzhvV1JkaF9OS2R6SjQ0bnFpV011blVVQ1hKVkpMRkx6OHpqR1JJM1BGY2hYVExYQ1hUb01JV0tMc0FTNFIyY3dpTjFQNVVtNXozb1VjSkMwU1h6UWJ6TEFWRVE1cjJYVjQ5QTNPX2hpUDJabEhWbldxNjZqdFJEb1pjQjJjbm1TVDViWFNvQQ?oc=5\" target=\"_blank\"&gt;Lawmakers say US briefing showed Russia targeting Democrats with misinformation&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQRFJLUEhfVDJRWmZsVlVqRnB3WHlMUFZOeXJoNUF3WjhsNVJ6SUI2ajNxck5SUHBLTTI5dzhvV1JkaF9OS2R6SjQ0bnFpV011blVVQ1hKVkpMRkx6OHpqR1JJM1BGY2hYVExYQ1hUb01JV0tMc0FTNFIyY3dpTjFQNVVtNXozb1VjSkMwU1h6UWJ6TEFWRVE1cjJYVjQ5QTNPX2hpUDJabEhWbldxNjZqdFJEb1pjQjJjbm1TVDViWFNvQQ?oc=5"
-    },
-    {
-      "id": "reuters_TG91aXNpYW5h",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "Louisiana court buys AI servers to test how tech can streamline workload",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMivwFBVV95cUxPd1NjUkxxaEV0Q0I5WTZmX1h5LW45dko5TlAxMmRKRW9BTDNtLU5KeThPY3U1eGZfOUVoSXU1SVRoano0aWgycFRsY0t2TkhQVFh4LVh0VHN2ZTY0VHNTNXJRRmY1WlpRRzNxT1FURElhTFZDbzZoQ1M5ZU1IV0JLUldUSzFrSnpJN2JOOElnUnNFUTFqUUljRXNfSkJMZi1IbURPR2VoNkNEc0ZMSDRfbnlHWnBPV18tSm5QT0ljRQ?oc=5\" target=\"_blank\"&gt;Louisiana court buys AI servers to test how tech can streamline workload&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPd1NjUkxxaEV0Q0I5WTZmX1h5LW45dko5TlAxMmRKRW9BTDNtLU5KeThPY3U1eGZfOUVoSXU1SVRoano0aWgycFRsY0t2TkhQVFh4LVh0VHN2ZTY0VHNTNXJRRmY1WlpRRzNxT1FURElhTFZDbzZoQ1M5ZU1IV0JLUldUSzFrSnpJN2JOOElnUnNFUTFqUUljRXNfSkJMZi1IbURPR2VoNkNEc0ZMSDRfbnlHWnBPV18tSm5QT0ljRQ?oc=5"
-    },
-    {
-      "id": "reuters_RmxvcmlkYSBs",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "Florida lawyer referred for possible discipline over filing that judges called 'AI slop'",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiygFBVV95cUxQNlk2SDVXYUp4YlFmSkl1UTBXQjhCSDJyMWNQbTZuUFZHNWYzNnRITDJYVXg5ZDVrbXB1VlY0Q1h0dV8zd3hmMlJDdk1WdS03elVrOTkxS19pMzlrQXNSYkNnTTY4ZTFoWkh3YmszSEZicEM4WWpPdmxPQW1oLVY0Q016U1dVVGtqSWNnd0JOLWVHVlk0bjJVOWpQWFc3REdIVnA5RmJIVmRVdF9weG9RNnI2V0FxZWFxa295ZzFqX0cwNVlXWmt5cnV3?oc=5\" target=\"_blank\"&gt;Florida lawyer referred for possible discipline over filing that judges called 'AI slop'&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQNlk2SDVXYUp4YlFmSkl1UTBXQjhCSDJyMWNQbTZuUFZHNWYzNnRITDJYVXg5ZDVrbXB1VlY0Q1h0dV8zd3hmMlJDdk1WdS03elVrOTkxS19pMzlrQXNSYkNnTTY4ZTFoWkh3YmszSEZicEM4WWpPdmxPQW1oLVY0Q016U1dVVGtqSWNnd0JOLWVHVlk0bjJVOWpQWFc3REdIVnA5RmJIVmRVdF9weG9RNnI2V0FxZWFxa295ZzFqX0cwNVlXWmt5cnV3?oc=5"
-    },
-    {
-      "id": "reuters_Q09NTUVOVEFS",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "COMMENTARY: Five AI quirks and conundrums to watch this earnings season",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMivgFBVV95cUxQd1B1bUZjZ09QOC1FaEFmZVZkMWpPT1ZINU5VVnl4RUZUc3VFWDE3UFFWeXNpZ3pBSEFwYVlObjJkd2dOVFgwbXVqSzVLb3ZHWVVBbERZX0V4ZWRNTTI4c19RUHFZbmdHMkt5QjJVVkptaXN4TDYzc2tFdjdqTU8wbnlQT1BsOVdwNnQ1aEE4YXFSa0FSZDRBS0NKZ2NURS1ON0dxUWZicDJSeWdaRXFPMmNhQVI3QzhlMW5SeWdR?oc=5\" target=\"_blank\"&gt;COMMENTARY: Five AI quirks and conundrums to watch this earnings season&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQd1B1bUZjZ09QOC1FaEFmZVZkMWpPT1ZINU5VVnl4RUZUc3VFWDE3UFFWeXNpZ3pBSEFwYVlObjJkd2dOVFgwbXVqSzVLb3ZHWVVBbERZX0V4ZWRNTTI4c19RUHFZbmdHMkt5QjJVVkptaXN4TDYzc2tFdjdqTU8wbnlQT1BsOVdwNnQ1aEE4YXFSa0FSZDRBS0NKZ2NURS1ON0dxUWZicDJSeWdaRXFPMmNhQVI3QzhlMW5SeWdR?oc=5"
-    },
-    {
-      "id": "reuters_U29mdHdhcmUg",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "Software upgrades eat nearly a third of companies' IT budgets, survey finds",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiswFBVV95cUxPSFowN2ZfaW1fd3I1RHdBbTdKLTE0S2lUMklqU2lzdTd1TC1UM0RsbWdoaVk2Y0kzV0Ridml6NEZ2N3dCS0JMQVpUMVFUSVRhemFEZ0RvLUxtczNBbkJXUWFPa0JDOTBYZUJZYWVXdUM1LWowc3lIejRZcU00T2tlQ2h4QWFWeEtSRkd2dU5na1ZoRjY4V0lqWW5YSkI0Uk1SclROcVVDTXdneWlyZ05GRGM3WQ?oc=5\" target=\"_blank\"&gt;Software upgrades eat nearly a third of companies' IT budgets, survey finds&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPSFowN2ZfaW1fd3I1RHdBbTdKLTE0S2lUMklqU2lzdTd1TC1UM0RsbWdoaVk2Y0kzV0Ridml6NEZ2N3dCS0JMQVpUMVFUSVRhemFEZ0RvLUxtczNBbkJXUWFPa0JDOTBYZUJZYWVXdUM1LWowc3lIejRZcU00T2tlQ2h4QWFWeEtSRkd2dU5na1ZoRjY4V0lqWW5YSkI0Uk1SclROcVVDTXdneWlyZ05GRGM3WQ?oc=5"
-    },
-    {
-      "id": "reuters_QUkgc3RhcnR1",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "AI startup ASI valued at $3 billion in latest funding round",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMingFBVV95cUxNWjR1SjBuOXZkbzFpSXdTZHpVc0R5bVhDZlJGNWNEVkZOX3RCeDhSSEg4UkJUWlg0ZWkxNFhIb0VfdExYQWpRblJKSnZaY28tdDEtcU9wSk9xcy1CWTYxal9YRXRqV29FcTdFTlNPLVdpdGJ6VEFOX3Bfb1hGb0J0MUtUVE5LMm1hZ2RWQmdsOUJzTlVuYllaNWs1aE91QQ?oc=5\" target=\"_blank\"&gt;AI startup ASI valued at $3 billion in latest funding round&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNWjR1SjBuOXZkbzFpSXdTZHpVc0R5bVhDZlJGNWNEVkZOX3RCeDhSSEg4UkJUWlg0ZWkxNFhIb0VfdExYQWpRblJKSnZaY28tdDEtcU9wSk9xcy1CWTYxal9YRXRqV29FcTdFTlNPLVdpdGJ6VEFOX3Bfb1hGb0J0MUtUVE5LMm1hZ2RWQmdsOUJzTlVuYllaNWs1aE91QQ?oc=5"
-    },
-    {
-      "id": "reuters_R292ZXJubWVu",
-      "category": "tech",
-      "catLabel": "Tech & AI",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
-      "title": "Government websites go dark after AI-discovered flaw sparks security scramble",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMixAFBVV95cUxNemhoUnNZdUg4Sk9JMjJQU25mTUZSX2lHc1JTNTFpNGlTcWxRRDctcFNCcVZiTUhYQ211YnNjSnRvYTYyS29VNFFKcHE4VGFMcHMxTGNwa3NmVUFNamNnektGaU9BbURibzdIY2hHUlpMbEwtNWhrOG9BenJvYkllVnNfakVVRU5yRzRjdDBjQXc2OEwtS1RwZVZhaWhoRWtlalVmU0xOQm5SbmUyeGVGeGgzUkE2XzRtbFBKdTJnUTJoRWdV?oc=5\" target=\"_blank\"&gt;Government websites go dark after AI-discovered flaw sparks security scramble&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNemhoUnNZdUg4Sk9JMjJQU25mTUZSX2lHc1JTNTFpNGlTcWxRRDctcFNCcVZiTUhYQ211YnNjSnRvYTYyS29VNFFKcHE4VGFMcHMxTGNwa3NmVUFNamNnektGaU9BbURibzdIY2hHUlpMbEwtNWhrOG9BenJvYkllVnNfakVVRU5yRzRjdDBjQXc2OEwtS1RwZVZhaWhoRWtlalVmU0xOQm5SbmUyeGVGeGgzUkE2XzRtbFBKdTJnUTJoRWdV?oc=5"
-    }
-  ],
-  "world": [
-    {
-      "id": "reuters_T2lsIHByaWNl",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "Oil prices steady as investors weigh geopolitics, lower US stockpiles",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMikgFBVV95cUxPNTdIRmp3MTB3c3JZNGxXMUl1Wk5haXFwcjdJNXgtQnJkOEM4aWVVWG5tai03TmhHSWZidkliV1VlRkRvOVJCX3Q3QXhCWVdZeXlYQmViOUdOaU85anVWMXpSWFNCOHAtVU5id3Fad1BhX1BzVEt6S1A4N2s1YjJocFh6QXFTVXhHdDJJVzZBX21WUQ?oc=5\" target=\"_blank\"&gt;Oil prices steady as investors weigh geopolitics, lower US stockpiles&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "8 min read",
-      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPNTdIRmp3MTB3c3JZNGxXMUl1Wk5haXFwcjdJNXgtQnJkOEM4aWVVWG5tai03TmhHSWZidkliV1VlRkRvOVJCX3Q3QXhCWVdZeXlYQmViOUdOaU85anVWMXpSWFNCOHAtVU5id3Fad1BhX1BzVEt6S1A4N2s1YjJocFh6QXFTVXhHdDJJVzZBX21WUQ?oc=5"
-    },
-    {
-      "id": "reuters_RnJvbSBncm9j",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "From groceries to home loans, high oil prices permeate daily life",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMirAFBVV95cUxPam52bzA3TTBVZjZQOC1ISHZJal8xZmcyc3hYZVJEYXpTZ1VUWHBvUVBQZDlKUUlwSFIwWFYtMUxucy1lS1ZRRDZEaW0tZmd5WndsSnNDNVUycTJVYWUyaFVVNDJIZnlfb0tMNGY5dW9BNkU1R0lVOWY0czhfN3pxcUhzejl5SUdLaGlMWFpjWnhWekJ4TWxzM3E2YXo3VVZzbGdCdi1CblkyTzRP?oc=5\" target=\"_blank\"&gt;From groceries to home loans, high oil prices permeate daily life&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPam52bzA3TTBVZjZQOC1ISHZJal8xZmcyc3hYZVJEYXpTZ1VUWHBvUVBQZDlKUUlwSFIwWFYtMUxucy1lS1ZRRDZEaW0tZmd5WndsSnNDNVUycTJVYWUyaFVVNDJIZnlfb0tMNGY5dW9BNkU1R0lVOWY0czhfN3pxcUhzejl5SUdLaGlMWFpjWnhWekJ4TWxzM3E2YXo3VVZzbGdCdi1CblkyTzRP?oc=5"
-    },
-    {
-      "id": "reuters_QWVyb3NwYWNl",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "Aerospace and military contractors raise 2026 profit forecasts",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMi0AFBVV95cUxObjZ2OHdlcWJLQ2hfbmFlekZkM09pYlVJWVpvTmRnVGhQTXdJZFhqc1JJWmFMc2VHYTFpWmZtUVN4c1hzZjZwY3JjUFNsMjM5S2FhYmpuSXVNWmc3MDJlSUwyZWpZTVlxaXhLRHN5MEhrODJmNEY5SzB4N0pWNndGcEh0b09PREJLa0U5akd2NkZRXzE3ci10dmVBbzQxczVvOW1KU3J4aXU4Sk1FMnVCQV8xcDZEMlpRbmRBamhfTEUyY0I0RkZERlZkckRWcUxR?oc=5\" target=\"_blank\"&gt;Aerospace and military contractors raise 2026 profit forecasts&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxObjZ2OHdlcWJLQ2hfbmFlekZkM09pYlVJWVpvTmRnVGhQTXdJZFhqc1JJWmFMc2VHYTFpWmZtUVN4c1hzZjZwY3JjUFNsMjM5S2FhYmpuSXVNWmc3MDJlSUwyZWpZTVlxaXhLRHN5MEhrODJmNEY5SzB4N0pWNndGcEh0b09PREJLa0U5akd2NkZRXzE3ci10dmVBbzQxczVvOW1KU3J4aXU4Sk1FMnVCQV8xcDZEMlpRbmRBamhfTEUyY0I0RkZERlZkckRWcUxR?oc=5"
-    },
-    {
-      "id": "reuters_QXMgRnJhbmNl",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "As France erupts, Europe's far right gains from fuel-price anger ahead of elections",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiuwFBVV95cUxPRjl5VmhGZHJ1bUpkdTZQaElWaWdnSFVkdVVQOUhzN3Y5SFdHOUNpS0pXQjdsVzhMVm1YOFloSGhHbnNYT29talRoNVJWdlRDVkdCM0VQV1lIUFZSbG9MV3BPclJZZGVtejVZZFNNWWxxdFdBM19hS2pQdHNaWm51MFRFNWxLWHdzVzQwN1ZxeXFFenRPREthTGRvVW9vOW1JdWpiVWk0VE9UQWlqRnZJWEJ0aFVYd2xBR3FN?oc=5\" target=\"_blank\"&gt;As France erupts, Europe's far right gains from fuel-price anger ahead of elections&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPRjl5VmhGZHJ1bUpkdTZQaElWaWdnSFVkdVVQOUhzN3Y5SFdHOUNpS0pXQjdsVzhMVm1YOFloSGhHbnNYT29talRoNVJWdlRDVkdCM0VQV1lIUFZSbG9MV3BPclJZZGVtejVZZFNNWWxxdFdBM19hS2pQdHNaWm51MFRFNWxLWHdzVzQwN1ZxeXFFenRPREthTGRvVW9vOW1JdWpiVWk0VE9UQWlqRnZJWEJ0aFVYd2xBR3FN?oc=5"
-    },
-    {
-      "id": "reuters_RVUgdW52ZWls",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "EU unveils new Arctic strategy with focus on security",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMilwFBVV95cUxPdDY3aUczblRQd2RfekVBRVo0aDFzaFl5RDctZlRTekUxV21hUTQ3a19qLTlwUVBCemRjSVl6Mk1INjRrQXNtWmc4N1FmVllhbTVvVkw4TGdfR1FrOVNfOEFjcVN6VEYtNjcxR1FLT0xRdDl1THhMc05ORDRkSDUtLXhMeWFiZkZrWHJqY05IQ1VGNjRpeEtn?oc=5\" target=\"_blank\"&gt;EU unveils new Arctic strategy with focus on security&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "8 min read",
-      "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPdDY3aUczblRQd2RfekVBRVo0aDFzaFl5RDctZlRTekUxV21hUTQ3a19qLTlwUVBCemRjSVl6Mk1INjRrQXNtWmc4N1FmVllhbTVvVkw4TGdfR1FrOVNfOEFjcVN6VEYtNjcxR1FLT0xRdDl1THhMc05ORDRkSDUtLXhMeWFiZkZrWHJqY05IQ1VGNjRpeEtn?oc=5"
-    },
-    {
-      "id": "reuters_QXV0byBpbmR1",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "Auto industry bosses expect software, China growth to reshape sector by 2035, survey shows",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMi3gFBVV95cUxNTndqRDVwV293U0FKSkpLcUdFYl9VSm9ka2toR2t5TXpRSHJDQ1Fpc0wxMDhxZ2Y0Ylo2LXJ6X3R2dk9HQnNLbm1ra0U3aUlRN1JhaEtBSXZtOWVZZXo3QXlLMHNVMHFXTWZmdEJqUmdsQmVHUkxiRktkd3ZoaFNVY05xTjR6Wm80OElBVnJHSDRKdk43aHFxamIwM2l5MnEtYVZWTW5IaHVYTkduRnk3MlJaTjZtLXZoYm5xanhKY1BmVEx2Y0gwVHdIdU95SGlqNGFFV0RMWVNhLWdCeEE?oc=5\" target=\"_blank\"&gt;Auto industry bosses expect software, China growth to reshape sector by 2035, survey shows&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "11 min read",
-      "link": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNTndqRDVwV293U0FKSkpLcUdFYl9VSm9ka2toR2t5TXpRSHJDQ1Fpc0wxMDhxZ2Y0Ylo2LXJ6X3R2dk9HQnNLbm1ra0U3aUlRN1JhaEtBSXZtOWVZZXo3QXlLMHNVMHFXTWZmdEJqUmdsQmVHUkxiRktkd3ZoaFNVY05xTjR6Wm80OElBVnJHSDRKdk43aHFxamIwM2l5MnEtYVZWTW5IaHVYTkduRnk3MlJaTjZtLXZoYm5xanhKY1BmVEx2Y0gwVHdIdU95SGlqNGFFV0RMWVNhLWdCeEE?oc=5"
-    },
-    {
-      "id": "reuters_UnViaW8gc2Vl",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "Rubio seeks to expand Central Asia ties with pomp-filled Uzbekistan visit",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiwwFBVV95cUxNRjBMUkU1SEVNclFaMVR1SnljVENrS3N5RUdNcnV5UFZkdlB3RHdiWTFoSFRxcVRBVkRSOEowM0h4bHZyYmd4dDhKYlJQSzUzTUJ2QmxzaGtha2lxUldoLXRPSmczQndXbTNHRWxwRHBhZF9vdDdZRVl4WXJ0M3B0dEJrOWh1SkVzTXhIUTVydk11cEFPaXc3dGZBX0JnMk9hYlpOdkpXc3R3cllKTllGRG5MVC01QkZHNl9Td3J1VHhSckE?oc=5\" target=\"_blank\"&gt;Rubio seeks to expand Central Asia ties with pomp-filled Uzbekistan visit&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "4d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNRjBMUkU1SEVNclFaMVR1SnljVENrS3N5RUdNcnV5UFZkdlB3RHdiWTFoSFRxcVRBVkRSOEowM0h4bHZyYmd4dDhKYlJQSzUzTUJ2QmxzaGtha2lxUldoLXRPSmczQndXbTNHRWxwRHBhZF9vdDdZRVl4WXJ0M3B0dEJrOWh1SkVzTXhIUTVydk11cEFPaXc3dGZBX0JnMk9hYlpOdkpXc3R3cllKTllGRG5MVC01QkZHNl9Td3J1VHhSckE?oc=5"
-    },
-    {
-      "id": "reuters_QnJlYWtpbmd2",
-      "category": "world",
-      "catLabel": "World & Society",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "title": "Breakingviews - COMMENTARY: How US allies can win from a Trump mid-term defeat",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMipwFBVV95cUxQdHdVZ1BWV2ZzTE9vX29qZV9pZXJ4SXhpbDJFOTkyaFE2TVE4dFBJenFIQW1YWHZOU1F0YVVjbHFkbG1id1RzTVBWR1JuVEZWQThON2R6b05uM2NsSnJVWTgwZ1ZmaTlyUkk1dWtfal8tSE5FUUZ1VC1maENLOVBkS1NqXzdEdlc2V2U4b2R3Sk9ROHVOOHIxbF9jQXBFRGpsbVRJYnY0UQ?oc=5\" target=\"_blank\"&gt;Breakingviews - COMMENTARY: How US allies can win from a Trump mid-term defeat&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "4d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQdHdVZ1BWV2ZzTE9vX29qZV9pZXJ4SXhpbDJFOTkyaFE2TVE4dFBJenFIQW1YWHZOU1F0YVVjbHFkbG1id1RzTVBWR1JuVEZWQThON2R6b05uM2NsSnJVWTgwZ1ZmaTlyUkk1dWtfal8tSE5FUUZ1VC1maENLOVBkS1NqXzdEdlc2V2U4b2R3Sk9ROHVOOHIxbF9jQXBFRGpsbVRJYnY0UQ?oc=5"
-    }
-  ],
-  "science": [
-    {
-      "id": "reuters_TmVwYWwgdG8g",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "Nepal to get $20 million from climate fund after deadly August flood",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlVRZ1pRQmFHclNSbW1xY0szUm5hdHZ4NnVQemZWcmxOWW1jRnFCcC1aM2wydFoyVUxYLWptNUk0VDJDVlhWay1MUi1JQVl5V2xpT1FFVy14U2Vhd2IxZmJQRHN2aHpRaHlZQXhrTGt4d0R5bE51TlVBT0xzeWtpUk9hR3g4QWxmbUp3SE1xU0NUVTdhNy1mTXBQSlk0WWJtSklCX0NaMUU5a1RWT0JFbkpQMDhjbXM?oc=5\" target=\"_blank\"&gt;Nepal to get $20 million from climate fund after deadly August flood&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlVRZ1pRQmFHclNSbW1xY0szUm5hdHZ4NnVQemZWcmxOWW1jRnFCcC1aM2wydFoyVUxYLWptNUk0VDJDVlhWay1MUi1JQVl5V2xpT1FFVy14U2Vhd2IxZmJQRHN2aHpRaHlZQXhrTGt4d0R5bE51TlVBT0xzeWtpUk9hR3g4QWxmbUp3SE1xU0NUVTdhNy1mTXBQSlk0WWJtSklCX0NaMUU5a1RWT0JFbkpQMDhjbXM?oc=5"
-    },
-    {
-      "id": "reuters_Q2hpbmEncyBm",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "China's foreign minister urges stronger governance of deep sea and outer space",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiugFBVV95cUxQdGxVQWV0Nld1WmFjWEwyOE9RYzg4WnlOdkNEeGliSXpNdjB5TUVoa0NzaE0zVlJvNnBIVWgxRUNQVTUta1czVnhBdTZYdDlMNTBwQnhRSWpIOWllcXZoRzNwd2ZSVUVQN0V5V2NNT296RFlQeGoyVnExVnRVOGJoeEN1R3FMdjNzOGNZN0c4eXdGUk11R0w1RFRtMGhUR0E0VUp1ZkhMc0piS09uOG9nSDVnSFpRbUVDbkE?oc=5\" target=\"_blank\"&gt;China's foreign minister urges stronger governance of deep sea and outer space&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "16h ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQdGxVQWV0Nld1WmFjWEwyOE9RYzg4WnlOdkNEeGliSXpNdjB5TUVoa0NzaE0zVlJvNnBIVWgxRUNQVTUta1czVnhBdTZYdDlMNTBwQnhRSWpIOWllcXZoRzNwd2ZSVUVQN0V5V2NNT296RFlQeGoyVnExVnRVOGJoeEN1R3FMdjNzOGNZN0c4eXdGUk11R0w1RFRtMGhUR0E0VUp1ZkhMc0piS09uOG9nSDVnSFpRbUVDbkE?oc=5"
-    },
-    {
-      "id": "reuters_Q2hpbmEgb3Bw",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "China opposes arms race in space, official document shows",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiowFBVV95cUxNN1NaYlJDdktoazgwY2hYRWF4NUx2UkhRZUp3RmpZMWlWY09Ma3hXWElNNDJkbVNlcTV5d01icGZ1WDNGTFBFeExQQVdJX3FtTnpUTlE2dUF4aE1OSFJDWGlFcWpNVXNTOEF0eG16U0U4TVplWHdmNFY1c3pSRnY4RHYxNE96cm9CekFaVnViY3dDNGZVY0pEOFZXcTNEdjFNc3VR?oc=5\" target=\"_blank\"&gt;China opposes arms race in space, official document shows&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "14h ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNN1NaYlJDdktoazgwY2hYRWF4NUx2UkhRZUp3RmpZMWlWY09Ma3hXWElNNDJkbVNlcTV5d01icGZ1WDNGTFBFeExQQVdJX3FtTnpUTlE2dUF4aE1OSFJDWGlFcWpNVXNTOEF0eG16U0U4TVplWHdmNFY1c3pSRnY4RHYxNE96cm9CekFaVnViY3dDNGZVY0pEOFZXcTNEdjFNc3VR?oc=5"
-    },
-    {
-      "id": "reuters_R2lhbnQg4oCY",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "Giant ‘heat storms’ are scorching the Earth. This is the story of the biggest one on record.",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMihgFBVV95cUxNQWpOMDVtV3hJb3gtblZzNWJzSTBXcDR6R1dWczYwM3RTd05PWDNaazEwc1VoY2YyeHRKbEhYbXhfN1Z4ejhzV1U4eXBoNGMxdHkxZHh3WGpmRFI5UV8tRUhTUWJjLUZNZTR2S3h4R0JNN0xmQ1ZmS1FQbVNEWDk1Y2N1Q1IwUQ?oc=5\" target=\"_blank\"&gt;Giant ‘heat storms’ are scorching the Earth. This is the story of the biggest one on record.&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNQWpOMDVtV3hJb3gtblZzNWJzSTBXcDR6R1dWczYwM3RTd05PWDNaazEwc1VoY2YyeHRKbEhYbXhfN1Z4ejhzV1U4eXBoNGMxdHkxZHh3WGpmRFI5UV8tRUhTUWJjLUZNZTR2S3h4R0JNN0xmQ1ZmS1FQbVNEWDk1Y2N1Q1IwUQ?oc=5"
-    },
-    {
-      "id": "reuters_QnJpdGFpbiB0",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "Britain to use military aircraft to fight climate change-fuelled wildfires",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiswFBVV95cUxPMGdlaFBvUFQzNC1oT0FMN2xKWGlrV3JVbGxHRFpBRUh5TmJyb3BDQXVDckFBQXdzTEJmbUxkc3R3Ymp6UE9PLWsxQ0h1VzZvTmt1dmxvcXFDZ1hIczJlaWZTczFyMlFYYVpxVDlubTBpR3ZaUlBHR1VjbDBNbm9HS3dpc3FSclc5UjRmUVFLcmlVVHI1Wk9mZFpuVDhwUEZJd0Y1OGpNRlVGcjdJWlpFYngzUQ?oc=5\" target=\"_blank\"&gt;Britain to use military aircraft to fight climate change-fuelled wildfires&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPMGdlaFBvUFQzNC1oT0FMN2xKWGlrV3JVbGxHRFpBRUh5TmJyb3BDQXVDckFBQXdzTEJmbUxkc3R3Ymp6UE9PLWsxQ0h1VzZvTmt1dmxvcXFDZ1hIczJlaWZTczFyMlFYYVpxVDlubTBpR3ZaUlBHR1VjbDBNbm9HS3dpc3FSclc5UjRmUVFLcmlVVHI1Wk9mZFpuVDhwUEZJd0Y1OGpNRlVGcjdJWlpFYngzUQ?oc=5"
-    },
-    {
-      "id": "reuters_TXVzayBzYXlz",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "Musk says SpaceX-Tesla merger is 'a good idea' as companies form deal committees",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiwgFBVV95cUxONHZoMzBtaGg1TmlMN19NRUEzM1lOZkpYb1ZXeWlLTnR4SkxObm1xbDBlN0RsQ2huaHBCMzRxU0VLb3ZPSS1ZeEdhampNY3VNclpoU2xGOWpoQjNfVzVDTHpqOVVRd0pZcVY3eGlpVkxjWTRrMGh4aWtCbVJVVnZ1Nnd1RkU1dFNtcUZCUnVxX1pRWXRTd09QUnpodWJSeEhpS3BKcmxsQkM1aFA1eExGSkNMMVIteV93OXZWa0Q2Vl9yUQ?oc=5\" target=\"_blank\"&gt;Musk says SpaceX-Tesla merger is 'a good idea' as companies form deal committees&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxONHZoMzBtaGg1TmlMN19NRUEzM1lOZkpYb1ZXeWlLTnR4SkxObm1xbDBlN0RsQ2huaHBCMzRxU0VLb3ZPSS1ZeEdhampNY3VNclpoU2xGOWpoQjNfVzVDTHpqOVVRd0pZcVY3eGlpVkxjWTRrMGh4aWtCbVJVVnZ1Nnd1RkU1dFNtcUZCUnVxX1pRWXRTd09QUnpodWJSeEhpS3BKcmxsQkM1aFA1eExGSkNMMVIteV93OXZWa0Q2Vl9yUQ?oc=5"
-    },
-    {
-      "id": "reuters_RUlCIHRvIGRv",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "EIB to double financing for climate adaptation to €30 billion",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiqAFBVV95cUxPTXY2eEFBQ3ZIakkxMVpyaGRmSEZER1dmeDFCMGRmV1FfYjczN0lxNlEzMmd2dTJHMGs3XzljWS1CWFVCdlFOQjREak15OFhaNWlfdFFsRlc5a1RORnhqRlZwYlRaTm9yWmtkSnlsRjJwdnRQa2dHV3VaUFhlQldqaXFJcjJyMTJVREp0dTdqUXg2azB2NHRQajg2Mm1VU0w2STJReEZMRWM?oc=5\" target=\"_blank\"&gt;EIB to double financing for climate adaptation to €30 billion&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPTXY2eEFBQ3ZIakkxMVpyaGRmSEZER1dmeDFCMGRmV1FfYjczN0lxNlEzMmd2dTJHMGs3XzljWS1CWFVCdlFOQjREak15OFhaNWlfdFFsRlc5a1RORnhqRlZwYlRaTm9yWmtkSnlsRjJwdnRQa2dHV3VaUFhlQldqaXFJcjJyMTJVREp0dTdqUXg2azB2NHRQajg2Mm1VU0w2STJReEZMRWM?oc=5"
-    },
-    {
-      "id": "reuters_VGhhbGVzIG5p",
-      "category": "science",
-      "catLabel": "Science & Discovery",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80",
-      "title": "Thales nine-month sales and orders top forecasts on arms and space contracts",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMi0gFBVV95cUxNZG9sWHQySDdtMWY4eTI5bW1pMnotU1M0a1FNbWQyRFR3N0tVMllWQmppWV90UlY1bGU2ZHA0dGpmNHFobGM3anlLMWJzMjhNOGwxRDBtb2lINXlXeTRGbnJaQlRCVW5hLWVIcldfV3M3Skhjajk2a1ZfM05FcHJTdm9rS1UzcXJwVFJvTTg4U3lDVHhRWUFXcnU5VWlXdW8tb0hCZXFfM0N6enlYMmZKYXFYZmJUeC04UlVzM3RuU1oyd2V1ZG9MMUlTX280cHdPRVE?oc=5\" target=\"_blank\"&gt;Thales nine-month sales and orders top forecasts on arms and space contracts&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNZG9sWHQySDdtMWY4eTI5bW1pMnotU1M0a1FNbWQyRFR3N0tVMllWQmppWV90UlY1bGU2ZHA0dGpmNHFobGM3anlLMWJzMjhNOGwxRDBtb2lINXlXeTRGbnJaQlRCVW5hLWVIcldfV3M3Skhjajk2a1ZfM05FcHJTdm9rS1UzcXJwVFJvTTg4U3lDVHhRWUFXcnU5VWlXdW8tb0hCZXFfM0N6enlYMmZKYXFYZmJUeC04UlVzM3RuU1oyd2V1ZG9MMUlTX280cHdPRVE?oc=5"
-    }
-  ],
-  "sport": [
-    {
-      "id": "reuters_SGFja2luZyBh",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Hacking attempts surge as companies, governments rush to patch PHP flaws",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiuAFBVV95cUxPdktBazJSdlhwYU9JVlI3SEFkZ2k1V0plWjZ6N2RxOFdmZ3VubFZmM01zbGhsX2k1Z3dWQ1pwZjdQeS1Sa3NFN1ltampIQjhmT2t5Sk5KV1luajZoa3JqUzVCRjRFV2ptT2loWVFkYWRnVGFPZWh1VjRtMlo0aE1Nc3FGemtOOVZxNUItM2ZYOGMyaDN1c1RfdlhFZFpZclNYdnF6RWdmZjVicWhXMGs1NUx1SkNHWGNY?oc=5\" target=\"_blank\"&gt;Hacking attempts surge as companies, governments rush to patch PHP flaws&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPdktBazJSdlhwYU9JVlI3SEFkZ2k1V0plWjZ6N2RxOFdmZ3VubFZmM01zbGhsX2k1Z3dWQ1pwZjdQeS1Sa3NFN1ltampIQjhmT2t5Sk5KV1luajZoa3JqUzVCRjRFV2ptT2loWVFkYWRnVGFPZWh1VjRtMlo0aE1Nc3FGemtOOVZxNUItM2ZYOGMyaDN1c1RfdlhFZFpZclNYdnF6RWdmZjVicWhXMGs1NUx1SkNHWGNY?oc=5"
-    },
-    {
-      "id": "reuters_RVhDTFVTSVZF",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "EXCLUSIVE: How one hacker used AI agents and a few thousand dollars to break into scores of sites",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMixgFBVV95cUxQSUVKUWRvY0tQeUZscHhGcDBLYjI5VVZaYXRFRklFbmEzX29RaVFuMmt6cDlpMURENUtWRFpBQVBnNngwcWJla3NJZllZVDFBb2NKU21YUnBkMTNKb1NEM3BNLXk2OXpVbVpyZXM3NHVaOUNrWGZzRWhGQlRFSDhPa0E4TVdCTnBuZjNBS2R2UU9ySzV1c2hCbUVycmFHUTNpVk1vX0kxSEEyMUllRlpsakRfNEdZUlJUWVBVRTFqYkZiYm5jR1E?oc=5\" target=\"_blank\"&gt;EXCLUSIVE: How one hacker used AI agents and a few thousand dollars to break into scores of sites&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "3d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQSUVKUWRvY0tQeUZscHhGcDBLYjI5VVZaYXRFRklFbmEzX29RaVFuMmt6cDlpMURENUtWRFpBQVBnNngwcWJla3NJZllZVDFBb2NKU21YUnBkMTNKb1NEM3BNLXk2OXpVbVpyZXM3NHVaOUNrWGZzRWhGQlRFSDhPa0E4TVdCTnBuZjNBS2R2UU9ySzV1c2hCbUVycmFHUTNpVk1vX0kxSEEyMUllRlpsakRfNEdZUlJUWVBVRTFqYkZiYm5jR1E?oc=5"
-    },
-    {
-      "id": "reuters_R292ZXJubWVu",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Government websites go dark after AI-discovered flaw sparks security scramble",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMixAFBVV95cUxNemhoUnNZdUg4Sk9JMjJQU25mTUZSX2lHc1JTNTFpNGlTcWxRRDctcFNCcVZiTUhYQ211YnNjSnRvYTYyS29VNFFKcHE4VGFMcHMxTGNwa3NmVUFNamNnektGaU9BbURibzdIY2hHUlpMbEwtNWhrOG9BenJvYkllVnNfakVVRU5yRzRjdDBjQXc2OEwtS1RwZVZhaWhoRWtlalVmU0xOQm5SbmUyeGVGeGgzUkE2XzRtbFBKdTJnUTJoRWdV?oc=5\" target=\"_blank\"&gt;Government websites go dark after AI-discovered flaw sparks security scramble&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNemhoUnNZdUg4Sk9JMjJQU25mTUZSX2lHc1JTNTFpNGlTcWxRRDctcFNCcVZiTUhYQ211YnNjSnRvYTYyS29VNFFKcHE4VGFMcHMxTGNwa3NmVUFNamNnektGaU9BbURibzdIY2hHUlpMbEwtNWhrOG9BenJvYkllVnNfakVVRU5yRzRjdDBjQXc2OEwtS1RwZVZhaWhoRWtlalVmU0xOQm5SbmUyeGVGeGgzUkE2XzRtbFBKdTJnUTJoRWdV?oc=5"
-    },
-    {
-      "id": "reuters_Um9ndWUgQUkg",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Rogue AI agents broke into Indian firms' live systems, government says",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMivgFBVV95cUxOUWE4SllpWmQwcUxOeXpjRVg5NWhCdHY2bE1LT1kxdEN2bkxYS29Vc3hVV0dEbm1XeDd0dHNQUzZNQWxiMHItQV9XMTVHY21YMDJLZXFTVWFrUGZDY19PQXcxMnBBZzViSE45TWJkTHBNRnBkOUZVUjY1NzM5bWpFTFd1dmdLMnNlRUJtVTBobVJOV1htWUlxSXFqLUN0d2tQMGh6NkJ4bFpvYUJpN3lDRUVES2dtemF4eGViejJn?oc=5\" target=\"_blank\"&gt;Rogue AI agents broke into Indian firms' live systems, government says&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "5d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOUWE4SllpWmQwcUxOeXpjRVg5NWhCdHY2bE1LT1kxdEN2bkxYS29Vc3hVV0dEbm1XeDd0dHNQUzZNQWxiMHItQV9XMTVHY21YMDJLZXFTVWFrUGZDY19PQXcxMnBBZzViSE45TWJkTHBNRnBkOUZVUjY1NzM5bWpFTFd1dmdLMnNlRUJtVTBobVJOV1htWUlxSXFqLUN0d2tQMGh6NkJ4bFpvYUJpN3lDRUVES2dtemF4eGViejJn?oc=5"
-    },
-    {
-      "id": "reuters_UnVzc2lhLWxp",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Russia-linked hackers used decentralised network in Ukraine cyberattack, ESET says",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMixgFBVV95cUxNRFlSa1BjRUNIMDhxY21GWElwRXJfQ3NCdGRtMzQ2SUFyRmJwdkRfVjdWRjVLTndOZXk4SERVNzE0T3VGY0tBMUZoWUFIeEo5NjhQYjBwMzFHRnROTjlTelNydjN6d3ZTWFRqZUlIenE3YnYwcmtmZmZxdnItTDNJNTNTM3ZvTXNfNG1UTmc2Z3FpNW4wSDRwWlNsMFl3RzZqYnpSX1dITUJqeG9QTWI0bG1Wc2kwamJmaHMtZjhWbXl2NzlLZ3c?oc=5\" target=\"_blank\"&gt;Russia-linked hackers used decentralised network in Ukraine cyberattack, ESET says&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNRFlSa1BjRUNIMDhxY21GWElwRXJfQ3NCdGRtMzQ2SUFyRmJwdkRfVjdWRjVLTndOZXk4SERVNzE0T3VGY0tBMUZoWUFIeEo5NjhQYjBwMzFHRnROTjlTelNydjN6d3ZTWFRqZUlIenE3YnYwcmtmZmZxdnItTDNJNTNTM3ZvTXNfNG1UTmc2Z3FpNW4wSDRwWlNsMFl3RzZqYnpSX1dITUJqeG9QTWI0bG1Wc2kwamJmaHMtZjhWbXl2NzlLZ3c?oc=5"
-    },
-    {
-      "id": "reuters_Q2hpbmVzZS1s",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Chinese-linked hackers compromise ConnectWise, target hundreds in global attack, Microsoft says",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMivwFBVV95cUxQb3ZjLTdlTzhLZGFpNGw3SzBjb3p4aUwzb21qdDd5UmZ0OWxOZXlxYVlJMWFERzRfU1pRRkxOWmdBRVd3VjNWak96d1pUaHB6OHlzc2hEX3FwXzhhX2pUR1RDcTFMdExoaGVGeVlNRC16elFnMTZPbmpWTkhuQ2tCZnpBdV9vajJWNmcxRWdHSVppQ2hzYjJySTNIV3RSVEd5a0d6aGZXQUJBaVh3UnVVVkM4dzducmh3Y1h4TW9BZw?oc=5\" target=\"_blank\"&gt;Chinese-linked hackers compromise ConnectWise, target hundreds in global attack, Microsoft says&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "2d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQb3ZjLTdlTzhLZGFpNGw3SzBjb3p4aUwzb21qdDd5UmZ0OWxOZXlxYVlJMWFERzRfU1pRRkxOWmdBRVd3VjNWak96d1pUaHB6OHlzc2hEX3FwXzhhX2pUR1RDcTFMdExoaGVGeVlNRC16elFnMTZPbmpWTkhuQ2tCZnpBdV9vajJWNmcxRWdHSVppQ2hzYjJySTNIV3RSVEd5a0d6aGZXQUJBaVh3UnVVVkM4dzducmh3Y1h4TW9BZw?oc=5"
-    },
-    {
-      "id": "reuters_UHdDIGNvbmZp",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "PwC confirms cybersecurity incident involving employee learning records",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcldEOEdyclVvcTNpbkhsUkMwV0U1UlcwMFA1bklVenFndDNaekpKSTdOZEtWY0swSUhUeTZZM3BmSDgzSEgzMldIb3U0U3Y1WjgtNU1UX29qS1pMT1YwWWpMdjFVeWNmTTlreEJJRzV0eDBDdWY3UTB2amMyb1RadDVRWktiNVNNcHdfbnVlWHpHaEVQemExX0JFdlVlaGRaWk1BbE4yUFFhQnh6Ri10aUJYVjJSclZ2Zl9xcUNmNlRXUQ?oc=5\" target=\"_blank\"&gt;PwC confirms cybersecurity incident involving employee learning records&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "6h ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcldEOEdyclVvcTNpbkhsUkMwV0U1UlcwMFA1bklVenFndDNaekpKSTdOZEtWY0swSUhUeTZZM3BmSDgzSEgzMldIb3U0U3Y1WjgtNU1UX29qS1pMT1YwWWpMdjFVeWNmTTlreEJJRzV0eDBDdWY3UTB2amMyb1RadDVRWktiNVNNcHdfbnVlWHpHaEVQemExX0JFdlVlaGRaWk1BbE4yUFFhQnh6Ri10aUJYVjJSclZ2Zl9xcUNmNlRXUQ?oc=5"
-    },
-    {
-      "id": "reuters_SXNyYWVsaSBm",
-      "category": "security",
-      "catLabel": "Cyber & Security",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-      "title": "Israeli firm used online ads to run vast spy operation, researchers say",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMivAFBVV95cUxOeEJrbGVXVGZlSEYzZnNuUVJYQVJKTHY4R2xJcWo4aVdGMERyS3p3YzQtNXFNbmUzMk1seXAydGtmZzhDeFNiWjBuWkpxa25PdUlpeU92bkdnZnFETDFGQ1VGMjR0S0J0RnZ3dE9sa1BCOU1FRlBSZ1h2R3BOeUJLT3JMc29Ib05BeC1FV0FxdUQyS3ZNajcxNXZ3ZVF1bmNWdkhqMElBMDNNa2dNVUM4NVRQeWl2dDkzLWJrSg?oc=5\" target=\"_blank\"&gt;Israeli firm used online ads to run vast spy operation, researchers say&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "8d ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOeEJrbGVXVGZlSEYzZnNuUVJYQVJKTHY4R2xJcWo4aVdGMERyS3p3YzQtNXFNbmUzMk1seXAydGtmZzhDeFNiWjBuWkpxa25PdUlpeU92bkdnZnFETDFGQ1VGMjR0S0J0RnZ3dE9sa1BCOU1FRlBSZ1h2R3BOeUJLT3JMc29Ib05BeC1FV0FxdUQyS3ZNajcxNXZ3ZVF1bmNWdkhqMElBMDNNa2dNVUM4NVRQeWl2dDkzLWJrSg?oc=5"
-    }
-  ],
-  "business": [
-    {
-      "id": "reuters_QWZ0ZXIgcHJl",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "After previous day's slump, trading is quieter among AI shares",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiqAFBVV95cUxNM0M0UTBfYWZ4MlVRd2x0SHBLZjVTMGRfMkk2YkM0V2M5aTEwS0lqRUpuamp2YzVOakt5ek5lZTkyR2V5TTA1MUE5VHd1N05RMW9rQWZmZ1AwVWhld2c4a1VjRFpGcGpyNHh2N1BxSnU4cWhyR2NSajZ3MEtBWGxYbDlRbzVqdXJCTXYtdEF2ZTA3SGlqR0xiOFBobGVlTXFLbmFoTDVqOFI?oc=5\" target=\"_blank\"&gt;After previous day's slump, trading is quieter among AI shares&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "8h ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNM0M0UTBfYWZ4MlVRd2x0SHBLZjVTMGRfMkk2YkM0V2M5aTEwS0lqRUpuamp2YzVOakt5ek5lZTkyR2V5TTA1MUE5VHd1N05RMW9rQWZmZ1AwVWhld2c4a1VjRFpGcGpyNHh2N1BxSnU4cWhyR2NSajZ3MEtBWGxYbDlRbzVqdXJCTXYtdEF2ZTA3SGlqR0xiOFBobGVlTXFLbmFoTDVqOFI?oc=5"
-    },
-    {
-      "id": "reuters_SGVkZ2UgZnVu",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "Hedge fund returns worsen this week as tech selloff deepens",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiqwFBVV95cUxNS0h2UUh0dUpTb1VWWGJYWm1KOXM4eXZQc1dyTlJMSWNnQ2tOVS1JRmdTMmJMaGpJSEo1c05kLUpXamZVTWVPWUppREI5OWFPUmZVV3hnektWdlRmWXVHNHpkQldJUk1PVEN0QUQ5NE0zczdSc0RMRGhOV28yYkZqeHFEMTFXUElRTDVCMXUybHRGSFhXcUFBS0hoS3V1NWVSREJGa2FCT1ludVU?oc=5\" target=\"_blank\"&gt;Hedge fund returns worsen this week as tech selloff deepens&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "18h ago",
-      "readTime": "9 min read",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNS0h2UUh0dUpTb1VWWGJYWm1KOXM4eXZQc1dyTlJMSWNnQ2tOVS1JRmdTMmJMaGpJSEo1c05kLUpXamZVTWVPWUppREI5OWFPUmZVV3hnektWdlRmWXVHNHpkQldJUk1PVEN0QUQ5NE0zczdSc0RMRGhOV28yYkZqeHFEMTFXUElRTDVCMXUybHRGSFhXcUFBS0hoS3V1NWVSREJGa2FCT1ludVU?oc=5"
-    },
-    {
-      "id": "reuters_V2FsbCBTdHJl",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "Wall Street closes lower to end rocky week",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMingFBVV95cUxQR01KeXBjdXBubVRzTlJfWWJTMHctb2hFS2pVT21ydWtZNzBaMldxd1c2ZUJGNWhIeGV6MUxvQVZvSl9GdFh5QThQbFpuT0IwYi02Y3JGM19YSWJ3LXMtb29RbS1WZUljdGtsS2dockxHVm5SWnBSMzJpM0Y4RFItdW5SMzFsdXg2LWtrYWE1SC1TQlkxOERJZHNtQVREdw?oc=5\" target=\"_blank\"&gt;Wall Street closes lower to end rocky week&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "4h ago",
-      "readTime": "8 min read",
-      "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxQR01KeXBjdXBubVRzTlJfWWJTMHctb2hFS2pVT21ydWtZNzBaMldxd1c2ZUJGNWhIeGV6MUxvQVZvSl9GdFh5QThQbFpuT0IwYi02Y3JGM19YSWJ3LXMtb29RbS1WZUljdGtsS2dockxHVm5SWnBSMzJpM0Y4RFItdW5SMzFsdXg2LWtrYWE1SC1TQlkxOERJZHNtQVREdw?oc=5"
-    },
-    {
-      "id": "reuters_UE9EQ0FTVDog",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "PODCAST: The AI reset",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMifkFVX3lxTE9jM2kta3htQjBxSHVGVkEzc3JXWk1JUktNSVpCVkw4UmRGVzNOeC1UYWoteHk1bDA2MEJKWnBIeEZfRXA2dDZEOXlhbjZVMm1Mci1lSzRkTkpyRXp4YlQ2Y2N0emo4eHdJR1V1cUxWZkt4bDlNTEREbWJsYVRRQQ?oc=5\" target=\"_blank\"&gt;PODCAST: The AI reset&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "14h ago",
-      "readTime": "7 min read",
-      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9jM2kta3htQjBxSHVGVkEzc3JXWk1JUktNSVpCVkw4UmRGVzNOeC1UYWoteHk1bDA2MEJKWnBIeEZfRXA2dDZEOXlhbjZVMm1Mci1lSzRkTkpyRXp4YlQ2Y2N0emo4eHdJR1V1cUxWZkt4bDlNTEREbWJsYVRRQQ?oc=5"
-    },
-    {
-      "id": "reuters_R0xQLTEgYm9v",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "GLP-1 boom in China, India, Brazil could create $22 bln market by 2035, J.P. Morgan says",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMi5gFBVV95cUxQSW50UXhIb0ltNzNLV2piN1NQWGlud3p2YWJSMFZGYXE1NjRiSUY5SDdDQmI5UU9rVVBEWjhHWjZFckhKc2luSHhzTE5pSmJudVZmMXUtOG1PSE9XbTZTUVpaZWF1dkQ2R01BMTN3NnFNUmw3cWozalZRS0ZVcnJKOE1abXB5RnFUX1F1RlRoMGNxQW5BWmczbWhNTEQtcXNCTVNrR1pqV2RxRVVaRlZROWtpV28zUUZXTW9Odl9RMnFnQjZfcG1KRklZaWZJSnhQdlFPbGdKT0pUek1DVXpIWTNsWkNKdw?oc=5\" target=\"_blank\"&gt;GLP-1 boom in China, India, Brazil could create $22 bln market by 2035, J.P. Morgan says&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "18h ago",
-      "readTime": "11 min read",
-      "link": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQSW50UXhIb0ltNzNLV2piN1NQWGlud3p2YWJSMFZGYXE1NjRiSUY5SDdDQmI5UU9rVVBEWjhHWjZFckhKc2luSHhzTE5pSmJudVZmMXUtOG1PSE9XbTZTUVpaZWF1dkQ2R01BMTN3NnFNUmw3cWozalZRS0ZVcnJKOE1abXB5RnFUX1F1RlRoMGNxQW5BWmczbWhNTEQtcXNCTVNrR1pqV2RxRVVaRlZROWtpV28zUUZXTW9Odl9RMnFnQjZfcG1KRklZaWZJSnhQdlFPbGdKT0pUek1DVXpIWTNsWkNKdw?oc=5"
-    },
-    {
-      "id": "reuters_QW1iYW5pJ3Mg",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "Ambani's Jio becomes most subscribed Indian IPO with $77 billion in bids",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVnRMTFMtTUhERkVlZG4zSVcxcm54ODQ5SXo5NGMxNmVZM2RSbjdqTko3NzB4Q053b09iMEJiX3dRd3Rpem9RQ2pDa1dVMFFOZG54WjhLMkdSbHpyQnF6OXpQbDhBd0ExQ0QyRFNXRm93Q0dfUEdCSllQdTBrUVNzRFUzTWc1OVZva3F0YkVDLUdyeEZvNFh1S1VhNVdMZjFDbVVFTDZPUk9MQVVMTEN1ZmRiX3BjaEJDNi00OWlLNDY?oc=5\" target=\"_blank\"&gt;Ambani's Jio becomes most subscribed Indian IPO with $77 billion in bids&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "21h ago",
-      "readTime": "10 min read",
-      "link": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPVnRMTFMtTUhERkVlZG4zSVcxcm54ODQ5SXo5NGMxNmVZM2RSbjdqTko3NzB4Q053b09iMEJiX3dRd3Rpem9RQ2pDa1dVMFFOZG54WjhLMkdSbHpyQnF6OXpQbDhBd0ExQ0QyRFNXRm93Q0dfUEdCSllQdTBrUVNzRFUzTWc1OVZva3F0YkVDLUdyeEZvNFh1S1VhNVdMZjFDbVVFTDZPUk9MQVVMTEN1ZmRiX3BjaEJDNi00OWlLNDY?oc=5"
-    },
-    {
-      "id": "reuters_TW9ybmluZyBC",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "Morning Bid: Wake up! The long bond's up two points!",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMif0FVX3lxTFBPbWpxYWRaeEZMMmxqeERaQ1Y3TGpaNHFBMFFoR3hydFNvQnFRVzV4UXNUZTFxb0hwU2ktVTRtUjVoX2Fqc2dSMGR4VnRtdEJibFdMU1NoOC1jOUdRbTZkcHU5YmRWSFU5R2pVUkozQS1mc0R0UURmRm1GOGRGNkU?oc=5\" target=\"_blank\"&gt;Morning Bid: Wake up! The long bond's up two points!&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "23h ago",
-      "readTime": "8 min read",
-      "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBPbWpxYWRaeEZMMmxqeERaQ1Y3TGpaNHFBMFFoR3hydFNvQnFRVzV4UXNUZTFxb0hwU2ktVTRtUjVoX2Fqc2dSMGR4VnRtdEJibFdMU1NoOC1jOUdRbTZkcHU5YmRWSFU5R2pVUkozQS1mc0R0UURmRm1GOGRGNkU?oc=5"
-    },
-    {
-      "id": "reuters_U3RvY2tzIGZh",
-      "category": "business",
-      "catLabel": "Business & Markets",
-      "catColor": "text-slate-700 bg-slate-100 border-slate-200",
-      "source": "Reuters Wire",
-      "sourceSlug": "reuters",
-      "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80",
-      "title": "Stocks fall, but tech shares steady after selloff; oil hits highest in nearly six months",
-      "desc": "&lt;a href=\"https://news.google.com/rss/articles/CBMigwFBVV95cUxQMG5uTk9BQ2lzbUtHT1k4Nlp4RlRCcXFvVXR5YUhCamhubGQ1SlB0c2FYczVLdl9ESzJBRzdkNmVuYU1ISVc2MndXWnBZTzBDNFdzeHBEQTNPTGU2SGhBTmtKM3Z1SWUxR2szN20yYWIySGIzUXlZcXVhdGNtTlJNMGN1WQ?oc=5\" target=\"_blank\"&gt;Stocks fall, but tech shares steady after selloff; oil hits highest in nearly six months&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;font color=\"#6f6f6f\"&gt;Reuters&lt;/font&gt;",
-      "time": "1d ago",
-      "readTime": "8 min read",
-      "link": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQMG5uTk9BQ2lzbUtHT1k4Nlp4RlRCcXFvVXR5YUhCamhubGQ1SlB0c2FYczVLdl9ESzJBRzdkNmVuYU1ISVc2MndXWnBZTzBDNFdzeHBEQTNPTGU2SGhBTmtKM3Z1SWUxR2szN20yYWIySGIzUXlZcXVhdGNtTlJNMGN1WQ?oc=5"
-    }
-  ]
-};
+  <!-- =========================================================================
+       5. FULL ARTICLE READER MODAL (Integrated, Zero popups)
+       ========================================================================= -->
+  <div id="article-reader-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden overflow-y-auto p-4 sm:p-6 md:p-10">
+    <div class="max-w-3xl mx-auto bg-white rounded-[32px] border border-slate-200 shadow-2xl overflow-hidden my-auto space-y-6">
+      
+      <!-- Reader Header -->
+      <div class="relative w-full h-64 sm:h-80 bg-slate-900">
+        <img id="reader-image" src="" alt="Article Banner" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <button onclick="closeArticleReader()" class="absolute top-4 right-4 p-2 rounded-full bg-black/60 hover:bg-black text-white backdrop-blur-md transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <span id="reader-category" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-blue-600 text-white shadow-xs">
+          Tech
+        </span>
+        <div class="absolute bottom-5 left-5 right-5 text-white">
+          <p class="text-xs text-blue-300 font-mono mb-1" id="reader-date">25.10.2026</p>
+          <h2 id="reader-title" class="text-xl sm:text-2xl md:text-3xl font-black leading-tight tracking-tight drop-shadow-sm"></h2>
+        </div>
+      </div>
 
-    let bookmarks = JSON.parse(localStorage.getItem('raccon_news_bookmarks') || '[]');
-    let currentCategory = 'all';
-    let searchQuery = '';
-    let isBookmarksView = false;
-    let countdownSeconds = 300;
-    let currentArticle = null;
-
-    function showToast(msg) {
-      const toast = document.getElementById('news-toast');
-      const text = document.getElementById('news-toast-text');
-      if (!toast || !text) return;
-      text.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-20', 'opacity-0');
-      }, 2500);
-    }
-
-    async function checkAuthSession() {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        const pill = document.getElementById('user-status-pill');
-        if (!pill) return;
-        if (data.loggedIn && data.user) {
-          pill.innerHTML = `
-            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs text-slate-800 shadow-2xs">
-              <img src="${data.user.avatar || '/raccoon-logo.png'}" class="h-5 w-5 rounded-full object-cover shrink-0" />
-              <span class="font-bold text-slate-900 hidden sm:inline">${escapeHtml(data.user.name)}</span>
-              <span class="text-slate-400 font-mono text-[10px]">●</span>
+      <!-- Author Byline & Social Engagement in Reader -->
+      <div class="px-6 sm:px-8 flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <img id="reader-author-avatar" src="" class="w-11 h-11 rounded-full object-cover border border-slate-200" alt="Author Avatar" />
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="reader-author-name" class="font-black text-sm text-slate-900"></span>
+              <span class="text-blue-600 font-bold text-xs" id="reader-author-handle">@handle</span>
             </div>
-          `;
-        } else {
-          pill.innerHTML = `
-            <a href="/auth?tab=login" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition cursor-pointer shadow-2xs whitespace-nowrap border border-slate-900">
-              Sign In / Join
-            </a>
-          `;
-        }
-      } catch (_) {}
-    }
-
-    function getAllItems() {
-      return [
-        ...(newsData.tech || []),
-        ...(newsData.world || []),
-        ...(newsData.sport || []),
-        ...(newsData.games || []),
-        ...(newsData.science || []),
-        ...(newsData.music || [])
-      ];
-    }
-
-    function updateBookmarkUI() {
-      const cntEl = document.getElementById('bookmark-count');
-      if (cntEl) cntEl.textContent = bookmarks.length;
-    }
-
-    function toggleBookmarksView() {
-      isBookmarksView = !isBookmarksView;
-      const btn = document.getElementById('btn-bookmarks');
-      if (btn) {
-        if (isBookmarksView) {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer flex items-center gap-1.5';
-        } else {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
-        }
-      }
-      renderNewsFeed();
-    }
-
-    function toggleBookmark(itemId, event) {
-      if (event) event.stopPropagation();
-      const idx = bookmarks.indexOf(itemId);
-      if (idx > -1) {
-        bookmarks.splice(idx, 1);
-        showToast('Article removed from bookmarks');
-      } else {
-        bookmarks.push(itemId);
-        showToast('Article saved to bookmarks! 🔖');
-      }
-      localStorage.setItem('raccon_news_bookmarks', JSON.stringify(bookmarks));
-      updateBookmarkUI();
-      renderNewsFeed();
-    }
-
-    function filterNewsCat(cat) {
-      currentCategory = cat;
-      isBookmarksView = false;
-      document.querySelectorAll('.news-cat-btn').forEach(btn => {
-        if (btn.dataset.cat === cat) {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-slate-900 text-white border border-slate-900 shadow-xs transition shrink-0 cursor-pointer';
-        } else if (btn.id !== 'btn-bookmarks') {
-          btn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
-        }
-      });
-      const bBtn = document.getElementById('btn-bookmarks');
-      if (bBtn) bBtn.className = 'news-cat-btn px-3.5 py-1.5 rounded-full font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition shrink-0 cursor-pointer flex items-center gap-1.5';
-      renderNewsFeed();
-    }
-
-    function handleNewsSearch(val) {
-      searchQuery = val.trim().toLowerCase();
-      renderNewsFeed();
-    }
-
-    function searchNewsKeyword(kw) {
-      const input = document.getElementById('news-search-input');
-      if (input) input.value = kw;
-      searchQuery = kw.toLowerCase();
-      renderNewsFeed();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderNewsFeed() {
-      const feed = document.getElementById('news-feed-container');
-      const empty = document.getElementById('news-empty');
-      if (!feed) return;
-
-      let items = getAllItems();
-
-      if (currentCategory !== 'all') {
-        items = items.filter(i => (i.category || '').toLowerCase() === currentCategory);
-      }
-
-      if (isBookmarksView) {
-        items = items.filter(i => bookmarks.includes(i.id));
-      }
-
-      if (searchQuery) {
-        items = items.filter(i =>
-          (i.title || '').toLowerCase().includes(searchQuery) ||
-          (i.desc || '').toLowerCase().includes(searchQuery) ||
-          (i.catLabel || '').toLowerCase().includes(searchQuery)
-        );
-      }
-
-      if (items.length === 0) {
-        feed.innerHTML = '';
-        empty?.classList.remove('hidden');
-        return;
-      }
-
-      empty?.classList.add('hidden');
-      feed.innerHTML = items.map(item => renderArticleCard(item)).join('');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function renderArticleCard(item, idx = 0) {
-      const readTime = item.readTime || '3 min read';
-      const time = item.time || 'Live';
-      const image = item.image || '/images/abstract_1.svg';
-      const cleanSnippet = (item.desc || 'Latest developments from Reuters and global tech feeds.').slice(0, 110);
-
-      const visualBadges = [
-        { badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-newspaper' },
-        { badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-globe' },
-        { badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-bolt' },
-        { badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-shield-alt' }
-      ];
-      const badge = visualBadges[idx % visualBadges.length];
-
-      return `
-        <article onclick="openNewsReader('${item.id}')" class="news-card-modern p-4 sm:p-5 mb-3.5 transition-all duration-200 cursor-pointer select-none group">
-          <div class="flex items-start justify-between gap-3.5">
-            <!-- Left Column: Details -->
-            <div class="flex-1 min-w-0 pr-1">
-              <!-- Metadata: Time & Duration -->
-              <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold mb-1.5 font-mono">
-                <span>${time}</span>
-                <span class="text-slate-300">•</span>
-                <span>${readTime}</span>
-              </div>
-
-              <!-- Bold Headline -->
-              <h3 class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-slate-700 transition leading-snug tracking-tight mb-1.5 line-clamp-2">
-                ${escapeHtml(item.title)}
-              </h3>
-
-              <!-- Excerpt -->
-              <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                ${escapeHtml(cleanSnippet)}
-              </p>
-
-              <!-- Pastel Tag Chips Row -->
-              <div class="flex items-center flex-wrap gap-1.5">
-                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
-                  ${escapeHtml(item.catLabel || 'News')}
-                </span>
-                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
-                  ${item.source || 'Reuters'}
-                </span>
-                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#F0F4FE] text-[#4A6FDC]">
-                  Verified Feed
-                </span>
-              </div>
-            </div>
-
-            <!-- Right Column: Visual Thumbnail with floating badge -->
-            <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
-              <img src="${image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="News visual" onerror="this.src='/images/abstract_1.svg'" />
-              <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${badge.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
-                <i class="${badge.badgeIcon}"></i>
-              </div>
-            </div>
+            <p id="reader-author-role" class="text-[11px] text-slate-400 font-medium"></p>
           </div>
-        </article>
-      `;
-    }
+        </div>
 
-    function openNewsReader(itemId) {
-      const item = getAllItems().find(i => i.id === itemId);
-      if (!item) return;
-      currentArticle = item;
-
-      // Hide feed and show reader
-      document.getElementById('news-hero-card')?.classList.add('hidden');
-      document.getElementById('news-filter-bar')?.classList.add('hidden');
-      document.getElementById('news-feed-container')?.classList.add('hidden');
-      document.getElementById('news-empty')?.classList.add('hidden');
-      const reader = document.getElementById('news-reader-view');
-      reader?.classList.remove('hidden');
-
-      // Populate reader
-      document.getElementById('article-reader-category').textContent = item.catLabel || 'News';
-      document.getElementById('article-reader-time').textContent = item.time || 'Live Alert';
-      document.getElementById('article-reader-title').textContent = item.title;
-      document.getElementById('article-reader-image').src = item.image || '/raccoon-logo.png';
-
-      // Rich in-depth paragraphs (NO third-party source names)
-      const paragraphs = [
-        item.desc,
-        `Recent developments in this sector demonstrate continuous momentum. Industry analysts and verified technical reviews highlight how accelerated engineering and user-first principles are setting a new standard for performance, reliability, and security across modern networks.`,
-        `Engineers and researchers emphasize that open standards and transparent operational models remain key to mitigating systemic risks while enhancing accessibility. Early field telemetry reveals measurable efficiency gains with zero reliance on invasive tracking frameworks.`,
-        `Looking ahead, cross-disciplinary collaboration is projected to expand across European and international hubs. Stakeholders anticipate further progressive updates as implementations scale throughout the coming quarters.`
-      ];
-
-      document.getElementById('article-reader-body').innerHTML = paragraphs.map(p => `<p class="leading-relaxed">${escapeHtml(p)}</p>`).join('');
-
-      if (window.lucide) lucide.createIcons();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function closeNewsReader() {
-      document.getElementById('news-reader-view')?.classList.add('hidden');
-      document.getElementById('news-hero-card')?.classList.remove('hidden');
-      document.getElementById('news-filter-bar')?.classList.remove('hidden');
-      document.getElementById('news-feed-container')?.classList.remove('hidden');
-      currentArticle = null;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function shareArticle(title, event) {
-      if (event) event.stopPropagation();
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(`${title} - Read live wire on Raccon News: ${window.location.origin}/news`);
-        showToast('Article link copied to clipboard!');
-      }
-    }
-
-    function copyCurrentArticleLink() {
-      if (currentArticle) {
-        shareArticle(currentArticle.title);
-      }
-    }
-
-    function refreshRacconNews(manual = false) {
-      const icon = document.getElementById('sync-icon');
-      if (icon) icon.classList.add('animate-spin');
-      setTimeout(() => {
-        if (icon) icon.classList.remove('animate-spin');
-        countdownSeconds = 300;
-        renderNewsFeed();
-        if (manual) showToast('Live wire synced! 🦝⚡');
-      }, 600);
-    }
-
-    // Auto-countdown timer
-    setInterval(() => {
-      countdownSeconds--;
-      if (countdownSeconds <= 0) {
-        countdownSeconds = 300;
-        refreshRacconNews(false);
-      }
-      const mins = Math.floor(countdownSeconds / 60);
-      const secs = countdownSeconds % 60;
-      const timerEl = document.getElementById('news-timer');
-      if (timerEl) {
-        timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      }
-    }, 1000);
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function escapeJsString(str) {
-      if (!str) return '';
-      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
-    }
-
-    async function fetchLiveNews() {
-      try {
-        const res = await fetch('/api/news');
-        if (res.ok) {
-          const live = await res.json();
-          if (live && live.items && live.items.length > 0) {
-            if (live.tech && live.tech.length > 0) newsData.tech = live.tech;
-            if (live.world && live.world.length > 0) newsData.world = live.world;
-            if (live.science && live.science.length > 0) newsData.science = live.science;
-            if (live.security && live.security.length > 0) newsData.sport = live.security;
-            if (live.business && live.business.length > 0) newsData.business = live.business;
-            renderNewsFeed();
-            if (window.lucide) lucide.createIcons();
-          }
-        }
-      } catch (err) {
-        console.warn('Live news engine check:', err);
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      await checkAuthSession();
-      updateBookmarkUI();
-      renderNewsFeed();
-      if (window.lucide) lucide.createIcons();
-      fetchLiveNews();
-      // Auto-refresh news content every 3 minutes
-      setInterval(fetchLiveNews, 180000);
-    });
-  </script>
-
-  <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
-  <script>
-    (function() {
-      const prefetched = new Set();
-      function prefetch(url) {
-        if (!url || prefetched.has(url) || url.startsWith('#') || url.startsWith('javascript:') || url.startsWith('mailto:') || url.startsWith('tel:')) return;
-        prefetched.add(url);
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = url;
-        link.as = 'document';
-        document.head.appendChild(link);
-      }
-
-      document.addEventListener('mouseover', function(e) {
-        const a = e.target.closest('a');
-        if (a && a.href && a.origin === window.location.origin) {
-          prefetch(a.pathname + a.search);
-        }
-      }, { passive: true });
-
-      document.addEventListener('touchstart', function(e) {
-        const a = e.target.closest('a');
-        if (a && a.href && a.origin === window.location.origin) {
-          prefetch(a.pathname + a.search);
-        }
-      }, { passive: true });
-    })();
-  </script>
-
-
-  <!-- Fixed Modern Bottom Navigation Bar (Matches Reference Image) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-100 py-3.5 px-6 flex items-center justify-around select-none">
-    <!-- Inbox Tray -->
-    <a href="/inbox" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Inbox">
-      <div class="w-6 h-6 flex items-center justify-center">
-        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
+        <div class="flex items-center gap-2">
+          <button onclick="likeCurrentReaderArticle()" class="px-3.5 py-1.5 rounded-full border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i>
+            <span id="reader-likes-count">128</span>
+          </button>
+          <button onclick="shareCurrentArticle()" class="px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-white"></i>
+            <span>Share</span>
+          </button>
+        </div>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+
+      <!-- Full Article Body -->
+      <div class="px-6 sm:px-8 pb-8 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed" id="reader-body">
+        <!-- Rendered by JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       6. MOBILE APP BOTTOM NAVIGATION BAR (Matches Middle Screen in Screenshot)
+       ========================================================================= -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 py-2 px-6 flex items-center justify-around text-slate-500 shadow-lg">
+    <a href="/" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span class="text-[10px] font-bold">Home</span>
     </a>
-
-    <!-- Pencil / Compose -->
-    <a href="/inbox" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Compose">
-      <div class="w-6 h-6 flex items-center justify-center">
-        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+    <button onclick="toggleBookmarksView()" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+      <i data-lucide="bookmark" class="w-4 h-4"></i>
+      <span class="text-[10px] font-bold">Saved</span>
+    </button>
+    <a href="/news" class="flex flex-col items-center gap-1 text-blue-600 transition">
+      <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+        <i data-lucide="newspaper" class="w-4 h-4"></i>
       </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+      <span class="text-[10px] font-extrabold">News Wire</span>
     </a>
-
-    <!-- Community / Forum -->
-    <a href="/forum" class="flex flex-col items-center gap-1 cursor-pointer text-slate-400 hover:text-slate-700 transition group" title="Community">
-      <div class="w-6 h-6 flex items-center justify-center">
-        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-      </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
-    </a>
-
-    <!-- News (Active Coral) -->
-    <a href="/news" class="flex flex-col items-center gap-1 cursor-pointer group" title="News Feed">
-      <div class="w-6 h-6 flex items-center justify-center text-[#F68D72]">
-        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-      </div>
-      <span class="w-1.5 h-1.5 rounded-full bg-[#F68D72]"></span>
+    <a href="/inbox" class="flex flex-col items-center gap-1 hover:text-blue-600 transition">
+      <i data-lucide="mail" class="w-4 h-4"></i>
+      <span class="text-[10px] font-bold">Webmail</span>
     </a>
   </nav>
 
+  <!-- =========================================================================
+       7. JAVASCRIPT APP LOGIC & GOOGLE NEWS SYNDICATION ENGINE
+       ========================================================================= -->
+  <script>
+    // App State
+    let allArticles = [];
+    let filteredArticles = [];
+    let savedBookmarks = JSON.parse(localStorage.getItem('raccon_news_saved') || '[]');
+    let currentCategory = 'all';
+    let currentTag = null;
+    let currentAuthor = null;
+    let currentPeriod = 'all';
+    let currentFormat = 'all';
+    let currentSort = 'newest';
+    let searchQuery = '';
+    let currentReaderArticle = null;
+
+    // Initialize Application
+    document.addEventListener('DOMContentLoaded', async () => {
+      syncBookmarkBadge();
+      await fetchNewsFeed();
+      setupUrlHashNavigation();
+      if (window.lucide) lucide.createIcons();
+    });
+
+    // Fetch News from Backend
+    async function fetchNewsFeed() {
+      try {
+        const res = await fetch('/api/news');
+        const data = await res.json();
+        allArticles = data.items || [];
+        applyAllFilters();
+        injectDynamicJsonLd(allArticles);
+      } catch (err) {
+        console.error('Failed to load news:', err);
+      }
+    }
+
+    // Google SEO: Inject schema.org NewsArticle markup for high search engine visibility
+    function injectDynamicJsonLd(articles) {
+      try {
+        const script = document.getElementById('dynamic-news-jsonld');
+        if (!script) return;
+        const listItems = articles.slice(0, 20).map((art, idx) => ({
+          "@type": "NewsArticle",
+          "position": idx + 1,
+          "headline": art.title,
+          "description": art.snippet || art.desc || '',
+          "image": [art.image || 'https://racconmail.eu/raccoon-logo.png'],
+          "datePublished": art.date ? new Date(art.date).toISOString() : new Date().toISOString(),
+          "dateModified": new Date().toISOString(),
+          "author": {
+            "@type": "Person",
+            "name": art.author || 'Editorial Desk',
+            "url": "https://racconmail.eu/news?author=" + encodeURIComponent(art.author_handle || '@raccoon_wire')
+          },
+          "publisher": {
+            "@type": "NewsMediaOrganization",
+            "name": "Raccon News Wire",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://racconmail.eu/raccoon-logo.png"
+            }
+          },
+          "mainEntityOfPage": "https://racconmail.eu/news#" + (art.id || idx)
+        }));
+        script.textContent = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": listItems
+        });
+      } catch (_) {}
+    }
+
+    // Filter by Category
+    function filterNewsCat(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-chip').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.classList.add('filter-chip-active');
+        } else {
+          btn.classList.remove('filter-chip-active');
+        }
+      });
+      applyAllFilters();
+    }
+
+    // Filter by Tag (#News, #Security, etc.)
+    function toggleTagFilter(tag) {
+      currentTag = (currentTag === tag) ? null : tag;
+      document.querySelectorAll('.tag-chip').forEach(btn => {
+        if (btn.getAttribute('data-tag') === currentTag) {
+          btn.classList.add('tag-chip-active');
+        } else {
+          btn.classList.remove('tag-chip-active');
+        }
+      });
+      applyAllFilters();
+    }
+
+    // Filter by Author @handle (e.g. @artem_sec)
+    function filterByAuthor(handle) {
+      currentAuthor = handle;
+      const chipContainer = document.getElementById('active-author-chip-container');
+      const chipText = document.getElementById('active-author-chip-text');
+      if (chipContainer && chipText) {
+        chipText.innerText = handle;
+        chipContainer.classList.remove('hidden');
+      }
+      applyAllFilters();
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    function clearAuthorFilter() {
+      currentAuthor = null;
+      document.getElementById('active-author-chip-container')?.classList.add('hidden');
+      applyAllFilters();
+    }
+
+    // Search Handler
+    function handleNewsSearch(val) {
+      searchQuery = (val || '').toLowerCase().trim();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) {
+        clearBtn.classList.toggle('hidden', searchQuery.length === 0);
+      }
+      // If user typed an author tag like @artem
+      if (searchQuery.startsWith('@')) {
+        currentAuthor = searchQuery;
+      }
+      applyAllFilters();
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      const input1 = document.getElementById('news-search-input');
+      const input2 = document.getElementById('sidebar-search-input');
+      const input3 = document.getElementById('drawer-search-input');
+      if (input1) input1.value = '';
+      if (input2) input2.value = '';
+      if (input3) input3.value = '';
+      document.getElementById('clear-search-btn')?.classList.add('hidden');
+      applyAllFilters();
+    }
+
+    // Sort Handler
+    function applySort(val) {
+      currentSort = val;
+      applyAllFilters();
+    }
+
+    // Period Handler
+    function applyPeriod(val) {
+      currentPeriod = val;
+      applyAllFilters();
+    }
+
+    // Format Handler
+    function applyFormat(val) {
+      currentFormat = val;
+      applyAllFilters();
+    }
+
+    // Master Filter Engine
+    function applyAllFilters() {
+      filteredArticles = allArticles.filter(art => {
+        // Category filter
+        if (currentCategory !== 'all') {
+          const c = (art.category || '').toLowerCase();
+          const cl = (art.catLabel || '').toLowerCase();
+          if (!c.includes(currentCategory) && !cl.includes(currentCategory)) return false;
+        }
+
+        // Tag filter
+        if (currentTag) {
+          const tags = Array.isArray(art.tags) ? art.tags.join(' ') : (art.tags || '');
+          if (!tags.toLowerCase().includes(currentTag.toLowerCase())) return false;
+        }
+
+        // Author @handle filter
+        if (currentAuthor) {
+          const h = (art.author_handle || '').toLowerCase();
+          const a = (art.author || '').toLowerCase();
+          const q = currentAuthor.toLowerCase().replace('@', '');
+          if (!h.includes(q) && !a.includes(q)) return false;
+        }
+
+        // Text Search Query
+        if (searchQuery) {
+          const t = (art.title || '').toLowerCase();
+          const s = (art.snippet || art.desc || '').toLowerCase();
+          const a = (art.author || '').toLowerCase();
+          const h = (art.author_handle || '').toLowerCase();
+          if (!t.includes(searchQuery) && !s.includes(searchQuery) && !a.includes(searchQuery) && !h.includes(searchQuery)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // Apply Sorting
+      if (currentSort === 'most_viewed') {
+        filteredArticles.sort((a, b) => parseViews(b.views) - parseViews(a.views));
+      } else if (currentSort === 'most_liked') {
+        filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      } else if (currentSort === 'oldest') {
+        filteredArticles.sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0));
+      } else {
+        // Newest first (default)
+        filteredArticles.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      }
+
+      renderNewsGrid();
+    }
+
+    function parseViews(str) {
+      if (!str) return 0;
+      const s = String(str).toUpperCase();
+      if (s.includes('K')) return parseFloat(s) * 1000;
+      if (s.includes('M')) return parseFloat(s) * 1000000;
+      return parseInt(s) || 0;
+    }
+
+    // Reset All Filters
+    function resetAllFilters() {
+      currentCategory = 'all';
+      currentTag = null;
+      currentAuthor = null;
+      currentPeriod = 'all';
+      currentFormat = 'all';
+      currentSort = 'newest';
+      searchQuery = '';
+
+      clearSearch();
+      clearAuthorFilter();
+
+      document.querySelectorAll('.filter-chip').forEach(b => {
+        b.classList.toggle('filter-chip-active', b.getAttribute('data-cat') === 'all');
+      });
+      document.querySelectorAll('.tag-chip').forEach(b => b.classList.remove('tag-chip-active'));
+
+      const s1 = document.getElementById('sidebar-sort-select');
+      const s2 = document.getElementById('drawer-sort-select');
+      if (s1) s1.value = 'newest';
+      if (s2) s2.value = 'newest';
+
+      applyAllFilters();
+      showToast('Filters reset to default view.');
+    }
+
+    // Render News Cards (Replicating exact reference design)
+    function renderNewsGrid() {
+      const container = document.getElementById('news-grid-container');
+      const emptyState = document.getElementById('news-empty-state');
+      const countLabel = document.getElementById('results-count-label');
+
+      if (!container) return;
+
+      if (countLabel) {
+        countLabel.innerText = 'Articles found: ' + filteredArticles.length;
+      }
+
+      if (filteredArticles.length === 0) {
+        container.innerHTML = '';
+        emptyState?.classList.remove('hidden');
+        return;
+      }
+
+      emptyState?.classList.add('hidden');
+
+      container.innerHTML = filteredArticles.map(art => {
+        const isSaved = savedBookmarks.includes(art.id);
+        const authorName = art.author || 'Artem Sokolov';
+        const authorHandle = art.author_handle || '@artem_sec';
+        const authorRole = art.author_role || 'Contributing Reporter';
+        const authorAvatar = art.author_avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
+        const categoryBadge = art.catLabel || art.category || 'Tech';
+        const dateStr = art.date || '25.10.2026';
+        const likesCount = art.likes || 128;
+        const commentsCount = art.comments || 24;
+        const viewsCount = art.views || '1.2K';
+        const cleanSnippet = art.snippet || (art.desc ? art.desc.replace(/<[^>]*>?/gm, '') : 'Deep dive investigation into emerging technology.');
+
+        return `
+          <article class="rounded-[28px] bg-white border border-slate-200/80 p-4 sm:p-5 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between group cursor-pointer" onclick="openArticleReader('${art.id}')">
+            
+            <!-- Card Top: Author Profile Header (Matches Screenshot) -->
+            <div class="flex items-center justify-between pb-3.5 mb-3 border-b border-slate-100">
+              <div class="flex items-center gap-3 min-w-0" onclick="event.stopPropagation(); filterByAuthor('${authorHandle}')">
+                <img src="${authorAvatar}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200/80 shadow-2xs" alt="${authorName}" />
+                <div class="truncate">
+                  <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-tight truncate group-hover:text-blue-600 transition">${authorName}</h4>
+                  <div class="flex items-center gap-1.5 text-[10px] text-slate-400 mt-0.5 truncate">
+                    <span class="font-extrabold text-blue-600 hover:underline">${authorHandle}</span>
+                    <span>&bull;</span>
+                    <span class="truncate">${authorRole}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Context Dots Menu Button -->
+              <button onclick="event.stopPropagation(); toggleCardBookmark('${art.id}')" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition shrink-0" title="${isSaved ? 'Remove Bookmark' : 'Save Bookmark'}">
+                <i data-lucide="${isSaved ? 'bookmark-check' : 'bookmark'}" class="w-4 h-4 ${isSaved ? 'text-blue-600 fill-blue-600' : ''}"></i>
+              </button>
+            </div>
+
+            <!-- Card Middle: Cover Image with Floating Category Pill (Matches Screenshot) -->
+            <div class="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-100 mb-3.5">
+              <img 
+                src="${art.image}" 
+                alt="${art.title}" 
+                loading="lazy"
+                class="w-full h-full object-cover group-hover:scale-103 transition duration-300"
+                onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'"
+              />
+              <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-slate-950/80 text-white backdrop-blur-md border border-white/20 shadow-xs">
+                ${categoryBadge}
+              </span>
+            </div>
+
+            <!-- Card Content: Published Date, Title & Snippet -->
+            <div class="space-y-1.5 flex-1 mb-4">
+              <span class="text-[11px] font-mono text-slate-400 block">${dateStr}</span>
+              <h3 class="font-black text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
+                ${art.title}
+              </h3>
+              <p class="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                ${cleanSnippet}
+              </p>
+            </div>
+
+            <!-- Card Bottom: Social Engagement Row (Matches Screenshot: Likes, Comments, Views, Share) -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-bold select-none" onclick="event.stopPropagation()">
+              <div class="flex items-center gap-4">
+                <!-- Like Button -->
+                <button onclick="likeArticle('${art.id}', this)" class="flex items-center gap-1.5 hover:text-rose-500 transition cursor-pointer">
+                  <i data-lucide="heart" class="w-3.5 h-3.5"></i>
+                  <span>${likesCount}</span>
+                </button>
+
+                <!-- Comments Count -->
+                <button onclick="openArticleReader('${art.id}')" class="flex items-center gap-1.5 hover:text-blue-600 transition cursor-pointer">
+                  <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                  <span>${commentsCount}</span>
+                </button>
+
+                <!-- Views Count -->
+                <div class="flex items-center gap-1.5 text-slate-400 font-mono text-[11px]">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  <span>${viewsCount}</span>
+                </div>
+              </div>
+
+              <!-- Share Button -->
+              <button onclick="shareArticle('${art.id}', '${escapeJs(art.title)}')" class="p-1 rounded-full hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer" title="Share Article">
+                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+          </article>
+        `;
+      }).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Interactive Article Reader
+    function openArticleReader(id) {
+      const art = allArticles.find(a => a.id === id);
+      if (!art) return;
+
+      currentReaderArticle = art;
+      const modal = document.getElementById('article-reader-modal');
+      
+      document.getElementById('reader-image').src = art.image || '';
+      document.getElementById('reader-category').innerText = art.catLabel || art.category || 'Tech';
+      document.getElementById('reader-date').innerText = art.date || '25.10.2026';
+      document.getElementById('reader-title').innerText = art.title || '';
+      document.getElementById('reader-author-name').innerText = art.author || 'Staff Reporter';
+      document.getElementById('reader-author-handle').innerText = art.author_handle || '@raccoon_wire';
+      document.getElementById('reader-author-role').innerText = art.author_role || 'Contributing Columnist';
+      document.getElementById('reader-author-avatar').src = art.author_avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
+      document.getElementById('reader-likes-count').innerText = art.likes || 128;
+
+      const bodyEl = document.getElementById('reader-body');
+      const paragraphs = (art.content || art.snippet || art.desc || '')
+        .split('\n')
+        .filter(p => p.trim())
+        .map(p => `<p class="text-slate-700 leading-relaxed">${p.trim()}</p>`)
+        .join('');
+
+      bodyEl.innerHTML = paragraphs || '<p class="text-slate-500">Full article content is synchronized via the live wire.</p>';
+
+      modal?.classList.remove('hidden');
+      window.location.hash = art.id;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeArticleReader() {
+      document.getElementById('article-reader-modal')?.classList.add('hidden');
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
+
+    // Social Like Interaction
+    async function likeArticle(id, btn) {
+      const art = allArticles.find(a => a.id === id);
+      if (art) {
+        art.likes = (art.likes || 0) + 1;
+        const countSpan = btn.querySelector('span');
+        if (countSpan) countSpan.innerText = art.likes;
+        const icon = btn.querySelector('i');
+        if (icon) icon.classList.add('text-rose-500', 'fill-rose-500');
+      }
+      try {
+        await fetch('/api/news/like', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+      } catch (_) {}
+    }
+
+    function likeCurrentReaderArticle() {
+      if (currentReaderArticle) {
+        currentReaderArticle.likes = (currentReaderArticle.likes || 0) + 1;
+        document.getElementById('reader-likes-count').innerText = currentReaderArticle.likes;
+        showToast('Liked this article! ❤️');
+      }
+    }
+
+    // Share Article
+    function shareArticle(id, title) {
+      const art = allArticles.find(a => a.id === id);
+      const url = window.location.origin + '/news#' + id;
+      const text = (title || 'News article') + ' by ' + (art?.author_handle || '@raccoon_wire') + ' on Raccon News Wire';
+
+      if (navigator.share) {
+        navigator.share({ title, text, url }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('Article link copied to clipboard! 🔗');
+        });
+      }
+    }
+
+    function shareCurrentArticle() {
+      if (currentReaderArticle) {
+        shareArticle(currentReaderArticle.id, currentReaderArticle.title);
+      }
+    }
+
+    // Bookmarks Management
+    function toggleCardBookmark(id) {
+      if (savedBookmarks.includes(id)) {
+        savedBookmarks = savedBookmarks.filter(x => x !== id);
+        showToast('Removed from saved bookmarks.');
+      } else {
+        savedBookmarks.push(id);
+        showToast('Saved to bookmarks! 🔖');
+      }
+      localStorage.setItem('raccon_news_saved', JSON.stringify(savedBookmarks));
+      syncBookmarkBadge();
+      renderNewsGrid();
+    }
+
+    function syncBookmarkBadge() {
+      const badge = document.getElementById('header-bookmark-badge');
+      if (badge) {
+        badge.innerText = savedBookmarks.length;
+        badge.classList.toggle('hidden', savedBookmarks.length === 0);
+      }
+    }
+
+    function toggleBookmarksView() {
+      if (savedBookmarks.length === 0) {
+        showToast('You have no saved bookmarks yet.');
+        return;
+      }
+      filteredArticles = allArticles.filter(a => savedBookmarks.includes(a.id));
+      renderNewsGrid();
+      showToast('Showing your saved bookmarks.');
+    }
+
+    // Mobile Filter Drawer Toggle
+    function toggleMobileFilterDrawer(show) {
+      const backdrop = document.getElementById('mobile-filter-backdrop');
+      const drawer = document.getElementById('mobile-filter-drawer');
+      if (show) {
+        // Mirror categories & tags into mobile drawer
+        mirrorFiltersToDrawer();
+        backdrop?.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          backdrop?.classList.remove('opacity-0');
+          drawer?.classList.remove('translate-x-full');
+        });
+      } else {
+        backdrop?.classList.add('opacity-0');
+        drawer?.classList.add('translate-x-full');
+        setTimeout(() => backdrop?.classList.add('hidden'), 280);
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function mirrorFiltersToDrawer() {
+      const catSrc = document.getElementById('sidebar-categories-container');
+      const catDest = document.getElementById('drawer-categories-container');
+      const tagSrc = document.getElementById('sidebar-tags-container');
+      const tagDest = document.getElementById('drawer-tags-container');
+
+      if (catSrc && catDest) catDest.innerHTML = catSrc.innerHTML;
+      if (tagSrc && tagDest) tagDest.innerHTML = tagSrc.innerHTML;
+    }
+
+    // Sub-Tabs (Publications | Channels)
+    function setNewsSubTab(tab) {
+      const t1 = document.getElementById('tab-articles');
+      const t2 = document.getElementById('tab-channels');
+      if (tab === 'articles') {
+        t1?.classList.add('text-blue-600', 'border-blue-600');
+        t1?.classList.remove('text-slate-400', 'border-transparent');
+        t2?.classList.add('text-slate-400', 'border-transparent');
+        t2?.classList.remove('text-blue-600', 'border-blue-600');
+        currentCategory = 'all';
+        applyAllFilters();
+      } else {
+        t2?.classList.add('text-blue-600', 'border-blue-600');
+        t2?.classList.remove('text-slate-400', 'border-transparent');
+        t1?.classList.add('text-slate-400', 'border-transparent');
+        t1?.classList.remove('text-blue-600', 'border-blue-600');
+        showToast('Viewing verified editorial channels.');
+      }
+    }
+
+    // Layout Switcher (Grid / List)
+    function setViewLayout(mode) {
+      const container = document.getElementById('news-grid-container');
+      const btnGrid = document.getElementById('btn-layout-grid');
+      const btnList = document.getElementById('btn-layout-list');
+
+      if (mode === 'grid') {
+        container?.classList.remove('grid-cols-1');
+        container?.classList.add('md:grid-cols-2');
+        btnGrid?.classList.add('bg-slate-100', 'text-blue-600');
+        btnList?.classList.remove('bg-slate-100', 'text-blue-600');
+      } else {
+        container?.classList.remove('md:grid-cols-2');
+        container?.classList.add('grid-cols-1');
+        btnList?.classList.add('bg-slate-100', 'text-blue-600');
+        btnGrid?.classList.remove('bg-slate-100', 'text-blue-600');
+      }
+    }
+
+    // Toast Notification Banner
+    function showToast(msg) {
+      let toast = document.getElementById('app-news-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-news-toast';
+        toast.className = 'fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl z-50 flex items-center gap-2 border border-slate-700 transition-all duration-300 opacity-0 pointer-events-none';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = '<span>' + msg + '</span>';
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function setupUrlHashNavigation() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        setTimeout(() => openArticleReader(hash), 500);
+      }
+      const params = new URLSearchParams(window.location.search);
+      const author = params.get('author');
+      if (author) {
+        filterByAuthor(author);
+      }
+    }
+
+    function escapeJs(str) {
+      return (str || '').replace(/'/g, "\\'");
+    }
+  </script>
 </body>
 </html>

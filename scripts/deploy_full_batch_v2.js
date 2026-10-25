@@ -68,7 +68,8 @@ async function main() {
     { local: 'public/admin.html', remoteDir: '/home/raccxuxv/public_html', name: 'admin.html' },
     { local: 'public/api.php', remoteDir: '/home/raccxuxv/public_html', name: 'api.php' },
     { local: 'public/forum.html', remoteDir: '/home/raccxuxv/public_html', name: 'forum.html' },
-    { local: 'public/stories.html', remoteDir: '/home/raccxuxv/public_html', name: 'stories.html' }
+    { local: 'public/stories.html', remoteDir: '/home/raccxuxv/public_html', name: 'stories.html' },
+    { local: 'public/news.html', remoteDir: '/home/raccxuxv/public_html', name: 'news.html' }
   ];
 
   for (const t of targets) {

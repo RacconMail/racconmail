@@ -1091,19 +1091,38 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Author Name *</label>
+            <input type="text" id="news-author" required value="Artem Sokolov" placeholder="e.g. Artem Sokolov" class="w-full px-3.5 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-800 font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Author @handle *</label>
+            <input type="text" id="news-author-handle" required value="@artem_sec" placeholder="e.g. @artem_sec" class="w-full px-3.5 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-blue-600 font-mono font-bold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Category</label>
             <select id="news-category" class="w-full px-3 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-800 font-semibold">
-              <option value="Tech & AI">Tech & AI</option>
-              <option value="World">World</option>
-              <option value="Economy">Economy</option>
-              <option value="Privacy">Privacy & Security</option>
-              <option value="Community">Community Dispatch</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Tech & AI" selected>AI & Tech</option>
+              <option value="Privacy">Privacy & Rights</option>
+              <option value="Crypto">Crypto & Web3</option>
+              <option value="Open Source">Open Source & Linux</option>
+              <option value="Cloud">Cloud & DevOps</option>
+              <option value="Gadgets">Gadgets</option>
+              <option value="Gaming">Gaming & Culture</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Source / Editorial</label>
-            <input type="text" id="news-source" value="Raccon Editorial" class="w-full px-3 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-800" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">Hashtags (#tag)</label>
+            <input type="text" id="news-tags" value="#News, #Security, #AI" placeholder="#News, #Security" class="w-full px-3 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-800 font-mono text-[11px]" />
           </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Cover Image URL</label>
+          <input type="url" id="news-image" value="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" placeholder="https://..." class="w-full px-3.5 py-2 text-xs bg-[#f8f9fd] border border-slate-200/80 rounded-xl focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-800 font-mono text-[11px]" />
         </div>
 
         <div>
@@ -1619,7 +1638,10 @@
                 <td class="p-3.5">
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">${this.escapeHtml(a.category || 'Tech')}</span>
                 </td>
-                <td class="p-3.5 font-semibold text-slate-600">${this.escapeHtml(a.source || a.author || 'Editorial')}</td>
+                <td class="p-3.5">
+                  <div class="font-bold text-slate-800">${this.escapeHtml(a.author || a.source || 'Editorial')}</div>
+                  <div class="text-[10px] font-mono text-blue-600 font-bold">${this.escapeHtml(a.author_handle || '@raccoon_wire')}</div>
+                </td>
                 <td class="p-3.5 text-slate-400 text-[11px]">${a.created_at ? new Date(a.created_at).toLocaleDateString() : (a.date || 'Recent')}</td>
                 <td class="p-3.5 text-right">
                   ${isCustom ? `
@@ -1675,8 +1697,11 @@
       async publishNews(e) {
         e.preventDefault();
         const title = document.getElementById('news-title').value.trim();
+        const author = document.getElementById('news-author') ? document.getElementById('news-author').value.trim() : 'Artem Sokolov';
+        const author_handle = document.getElementById('news-author-handle') ? document.getElementById('news-author-handle').value.trim() : '@artem_sec';
         const category = document.getElementById('news-category').value;
-        const source = document.getElementById('news-source').value.trim();
+        const tags = document.getElementById('news-tags') ? document.getElementById('news-tags').value.trim() : '#News, #Security';
+        const image_url = document.getElementById('news-image') ? document.getElementById('news-image').value.trim() : 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80';
         const snippet = document.getElementById('news-snippet').value.trim();
         const content = document.getElementById('news-content').value.trim();
 
@@ -1684,14 +1709,14 @@
           const res = await fetch('/api/admin/news', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, category, source, snippet, content })
+            body: JSON.stringify({ title, author, author_handle, category, tags, image_url, snippet, content })
           });
           const d = await res.json();
           if (!res.ok) throw new Error(d.error || 'Failed to publish article');
 
           this.closeNewsModal();
           this.loadNews();
-          this.showToast('Article published to live news wire! 📰');
+          this.showToast('Article published with @tag to live news wire! 📰');
         } catch (err) {
           alert('Publish error: ' + err.message);
         }
