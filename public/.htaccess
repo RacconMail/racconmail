@@ -39,13 +39,15 @@ RewriteRule ^admin/?$ admin.html [L]
 RewriteRule ^api/(.*)$ api.php?route=$1 [QSA,L]
 RewriteRule ^api/?$ api.php [QSA,L]
 
-# 5. Landing subpages
+# 5. Landing subpages & Legal documents
 RewriteRule ^stories/?$ stories.html [L]
 RewriteRule ^news/?$ news.html [L]
 RewriteRule ^forum/?$ forum.html [L]
 RewriteRule ^auth/?$ auth.html [L]
-RewriteRule ^legal/terms/?$ legal_terms.html [L]
-RewriteRule ^legal/privacy/?$ legal_privacy.html [L]
+RewriteRule ^terms(\.html)?/?$ legal_terms.html [L]
+RewriteRule ^privacy(\.html)?/?$ legal_privacy.html [L]
+RewriteRule ^legal/terms(\.html)?/?$ legal_terms.html [L]
+RewriteRule ^legal/privacy(\.html)?/?$ legal_privacy.html [L]
 
 # 6. App Downloads
 RewriteRule ^downloads/(.*)$ downloads/$1 [L]

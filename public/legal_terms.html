@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
   <title>Terms of Service — Raccon Mail</title>
   <meta name="description" content="Official Terms of Service for RacconMail. Transparent, privacy-first nocturnal communication with zero lock-in.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://racconmail.eu/legal/terms" />
+  
+  <meta property="og:title" content="Terms of Service — Raccon Mail" />
+  <meta property="og:description" content="Clear, honest, and respectful service terms for all nocturnal accounts on racconmail.eu." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://racconmail.eu/legal/terms" />
-  <meta property="og:title" content="Terms of Service — Raccon Mail 🐾" />
-  <meta property="og:description" content="Official Terms of Service for RacconMail. Transparent, privacy-first nocturnal communication with zero lock-in." />
   <meta property="og:image" content="https://racconmail.eu/raccoon-logo.png" />
   <meta name="twitter:card" content="summary" />
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
@@ -20,36 +22,53 @@
   
   <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
-  <!-- Google Fonts: Plus Jakarta Sans -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Custom Styles -->
   <link rel="stylesheet" href="/css/raccoon-mail.css" />
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; background-color: #FFFFFF; color: #0F172A; }
+    :root {
+      color-scheme: light;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #F8FAFC !important;
+      color: #0F172A !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-display {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+    }
+    p, li, span, h1, h2, h3, h4, div {
+      -webkit-text-size-adjust: 100%;
+    }
   </style>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" />
 </head>
-<body class="min-h-screen bg-white text-slate-900 flex flex-col antialiased selection:bg-slate-900 selection:text-white font-sans">
+<body class="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex flex-col antialiased selection:bg-slate-900 selection:text-white">
 
   <!-- Header Navbar -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
-    <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-      <a href="/" class="flex items-center gap-2.5 font-display text-xl font-bold text-slate-900 hover:opacity-95 transition">
-        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-9 w-9 object-contain shrink-0" />
-        <span class="tracking-tight text-lg sm:text-xl font-bold">Raccon Mail</span>
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4">
+      <a href="/" class="flex items-center gap-2.5 font-display text-lg sm:text-xl font-extrabold text-slate-900 hover:opacity-90 transition">
+        <img src="/raccoon-logo.svg" alt="Raccon Mail" class="h-8 w-8 sm:h-9 sm:w-9 object-contain shrink-0" />
+        <span class="tracking-tight text-slate-900 font-extrabold">Raccon <span class="text-[#E06748]">Mail</span></span>
       </a>
 
-      <div class="flex items-center gap-3">
-        <a href="/" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition px-3 py-1.5 flex items-center gap-1.5">
-          <i class="fas fa-arrow-left text-xs"></i>
-          <span>Back to Home</span>
+      <!-- Quick Nav Links -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="/legal/privacy" class="hidden sm:inline-flex text-xs font-bold text-slate-600 hover:text-slate-900 transition px-2.5 py-1.5 rounded-lg hover:bg-slate-100">
+          Privacy Policy
         </a>
-        <a href="/auth?tab=login" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 text-xs sm:text-sm font-bold transition shadow-sm border border-slate-900">
+        <a href="/" class="text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 transition px-2.5 sm:px-3 py-1.5 flex items-center gap-1.5 rounded-xl hover:bg-slate-100">
+          <i class="fas fa-arrow-left text-xs text-slate-500"></i>
+          <span>Home</span>
+        </a>
+        <a href="/auth?tab=login" class="rounded-full bg-slate-900 hover:bg-black text-white px-4 sm:px-5 py-1.5 sm:py-2 text-xs font-bold transition shadow-xs">
           Sign In
         </a>
       </div>
@@ -57,105 +76,107 @@
   </header>
 
   <!-- Legal Content Container -->
-  <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-12 sm:py-16">
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-12 shadow-xs space-y-8">
+  <main class="flex-1 max-w-4xl mx-auto w-full px-3.5 sm:px-6 py-6 sm:py-12">
+    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 p-5 sm:p-10 md:p-12 shadow-xs space-y-8 sm:space-y-10">
       
       <!-- Document Header -->
-      <div class="border-b border-slate-200 pb-6">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200 mb-3">
-          <i class="fas fa-file-contract text-xs text-slate-600"></i>
+      <div class="border-b border-slate-200 pb-6 text-center sm:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-900 border border-slate-200 mb-3 shadow-2xs">
+          <i class="fas fa-file-contract text-xs text-[#E06748]"></i>
           <span>LEGAL AGREEMENT &bull; LAST REVISED OCTOBER 2026</span>
         </div>
-        <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-slate-900">Terms of Service</h1>
-        <p class="text-sm sm:text-base text-slate-600 mt-2">
-          Clear, honest, and respectful service terms for all nocturnal accounts on racconmail.eu.
+        <h1 class="font-display text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          Terms of Service
+        </h1>
+        <p class="text-sm sm:text-base text-slate-700 mt-2 font-medium leading-relaxed">
+          Clear, honest, and respectful service terms for all nocturnal accounts across webmail, android app, and desktop clients on racconmail.eu.
         </p>
       </div>
 
       <!-- Section 1: Overview -->
       <section class="space-y-3">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">1</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">1</span>
           <span>Acceptance of Terms</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
-          By registering for, downloading, or using Raccon Mail (including our web platform at <code class="bg-slate-100 px-2 py-0.5 rounded text-xs text-slate-900 font-mono font-bold border border-slate-200">racconmail.eu</code> and our mobile applications for Android and iOS), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not create an account or use the service.
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+          By registering for, downloading, or using Raccon Mail (including our web platform at <code class="bg-slate-100 px-2 py-0.5 rounded text-xs text-slate-900 font-mono font-bold border border-slate-200">racconmail.eu</code>, our desktop client, and our mobile applications for Android and iOS), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not create an account or use the service.
         </p>
       </section>
 
       <!-- Section 2: Privacy Guarantee -->
       <section class="space-y-3">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">2</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">2</span>
           <span>Privacy &amp; Data Sovereignty Commitment</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
           Raccon Mail is architected around absolute zero-knowledge privacy. We do not sell your personal data, we do not build behavioral advertising profiles, and we never inject tracking pixels into your correspondence. Your emails belong entirely to you.
         </p>
       </section>
 
       <!-- Section 3: Account Responsibilities -->
       <section class="space-y-3">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">3</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">3</span>
           <span>Account Security &amp; Access</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
           You are responsible for safeguarding your password and account credentials. Raccon Mail stores passwords using one-way cryptographic hashing (Argon2 / Bcrypt). If you lose your credentials and have not configured a verified recovery email, account contents cannot be recovered by our team due to our zero-knowledge encryption design.
         </p>
       </section>
 
       <!-- Section 4: Acceptable Use Policy -->
       <section class="space-y-3">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">4</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">4</span>
           <span>Acceptable Use &amp; Anti-Abuse Standards</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
-          To protect our nocturnal mail deliverability for all honest members, you agree NOT to use Raccon Mail to:
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+          To protect our nocturnal mail deliverability for all honest members, you agree <strong>NOT</strong> to use Raccon Mail to:
         </p>
-        <ul class="list-disc pl-6 space-y-2 text-sm text-slate-600">
+        <ul class="list-disc pl-5 sm:pl-6 space-y-2 text-xs sm:text-sm text-slate-700">
           <li>Send unsolicited mass commercial emails (spam), phishing attempts, or malware attachments.</li>
           <li>Engage in illegal activities, child sexual abuse material (CSAM), or harassment.</li>
           <li>Attempt unauthorized access or denial-of-service attacks against Raccon Mail infrastructure.</li>
         </ul>
-        <p class="text-sm text-slate-600 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
           Accounts identified as automated spam bots or phishing transmitters will be terminated immediately.
         </p>
       </section>
 
       <!-- Section 5: Service Availability & Modifications -->
       <section class="space-y-3">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">5</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">5</span>
           <span>Service Availability &amp; Right to Erase</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
           We strive for 99.9% nocturnal uptime. You have the right to close your Raccon Mail account at any time. Upon account deletion, all messages, contacts, and custom folders are permanently erased from our primary active storage arrays within 24 hours.
         </p>
       </section>
 
       <!-- Section 6: Contact Information -->
       <section class="space-y-3 border-t border-slate-200 pt-6">
-        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-800 border border-slate-200 text-xs flex items-center justify-center font-bold">6</span>
-          <span>Questions &amp; Contact</span>
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-bold shrink-0">6</span>
+          <span>Contact &amp; Legal Notices</span>
         </h2>
-        <p class="text-sm text-slate-600 leading-relaxed">
-          If you have questions regarding these Terms, contact our security and legal team directly:
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+          For any legal inquiries, abuse reports, or terms clarification:
         </p>
-        <div class="mt-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+        <div class="mt-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-800 flex items-center justify-center font-bold">
-              <i class="fas fa-envelope"></i>
+            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0">
+              <i class="fas fa-file-contract"></i>
             </div>
             <div>
-              <p class="text-xs font-bold text-slate-900">Raccon Mail Legal Support</p>
-              <a href="mailto:support@racconmail.eu" class="text-xs text-slate-900 font-mono hover:underline">support@racconmail.eu</a>
+              <p class="text-xs font-extrabold text-slate-900">Raccon Mail Legal Department</p>
+              <a href="mailto:support@racconmail.eu" class="text-xs text-slate-700 font-mono font-bold hover:underline">support@racconmail.eu</a>
             </div>
           </div>
-          <a href="mailto:support@racconmail.eu" class="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 text-xs font-bold transition border border-slate-900">
-            Send Email
+          <a href="mailto:support@racconmail.eu" class="rounded-full bg-slate-900 hover:bg-black text-white px-4 py-2 text-xs font-bold transition shadow-2xs">
+            Email Legal Team
           </a>
         </div>
       </section>
@@ -163,52 +184,36 @@
     </div>
   </main>
 
-  <!-- Clean Footer -->
-  <footer class="w-full border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-600">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <img src="/raccoon-logo.svg" alt="Raccon" class="h-5 w-5 object-contain" />
-        <span>&copy; 2026 Raccon Mail. All rights reserved.</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="/legal/terms" class="text-slate-900 font-bold">Terms of Service</a>
+  <!-- Complete Site Footer -->
+  <footer class="w-full border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-600 mt-auto">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-bold text-slate-700">
+        <a href="/" class="hover:text-slate-900 transition">Home</a>
+        <span>&bull;</span>
+        <a href="/legal/terms" class="text-[#E06748] font-black">Terms of Service</a>
+        <span>&bull;</span>
         <a href="/legal/privacy" class="hover:text-slate-900 transition">Privacy Policy</a>
-        <a href="https://github.com/racconmail/racconmail" target="_blank" class="hover:text-slate-900 transition">Open Source</a>
-        <a href="mailto:support@racconmail.eu" class="hover:text-slate-900 transition">Contact</a>
+        <span>&bull;</span>
+        <a href="/news" class="hover:text-[#E06748] transition">News Wire</a>
+        <span>&bull;</span>
+        <a href="/stories" class="hover:text-[#4A6FDC] transition">Stories</a>
+        <span>&bull;</span>
+        <a href="/forum" class="hover:text-[#7052ff] transition">Forum</a>
+        <span>&bull;</span>
+        <a href="/inbox" class="hover:text-slate-900 transition">Webmail</a>
+      </div>
+
+      <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-slate-100 text-[11px] text-slate-500 font-medium">
+        <div class="flex items-center gap-2">
+          <img src="/raccoon-logo.svg" alt="Raccon" class="h-4 w-4 object-contain" />
+          <span>&copy; 2026 Raccon Mail. All rights reserved. Zero Trackers &bull; Client-Side Encrypted.</span>
+        </div>
+        <div>
+          <span>Hosted in European Union &bull; GDPR Compliant</span>
+        </div>
       </div>
     </div>
   </footer>
-
-
-  <!-- Ultra-Fast Zero-Lag Instant Navigation Prefetch Engine -->
-  <script>
-    (function() {
-      const prefetched = new Set();
-      function prefetch(url) {
-        if (!url || prefetched.has(url) || url.startsWith('#') || url.startsWith('javascript:') || url.startsWith('mailto:') || url.startsWith('tel:')) return;
-        prefetched.add(url);
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
-        link.href = url;
-        link.as = 'document';
-        document.head.appendChild(link);
-      }
-
-      document.addEventListener('mouseover', function(e) {
-        const a = e.target.closest('a');
-        if (a && a.href && a.origin === window.location.origin) {
-          prefetch(a.pathname + a.search);
-        }
-      }, { passive: true });
-
-      document.addEventListener('touchstart', function(e) {
-        const a = e.target.closest('a');
-        if (a && a.href && a.origin === window.location.origin) {
-          prefetch(a.pathname + a.search);
-        }
-      }, { passive: true });
-    })();
-  </script>
 
 </body>
 </html>
