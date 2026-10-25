@@ -495,6 +495,51 @@ try {
     ::-webkit-scrollbar-thumb:hover {
       background: #CBD5E1;
     }
+  
+    /* ========================================================================= */
+    /* MOBILE BOUNCE SEARCH ANIMATION                                            */
+    /* ========================================================================= */
+    @keyframes mobileSearchBounceIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-24px) scale(0.92);
+      }
+      55% {
+        opacity: 1;
+        transform: translateY(6px) scale(1.02);
+      }
+      75% {
+        transform: translateY(-2px) scale(0.99);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes mobileSearchBounceOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      30% {
+        transform: translateY(4px) scale(1.01);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-24px) scale(0.92);
+      }
+    }
+    .search-bounce-enter {
+      display: flex !important;
+      animation: mobileSearchBounceIn 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .search-bounce-exit {
+      display: flex !important;
+      animation: mobileSearchBounceOut 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
   </style>
 </head>
 <body class="flex flex-col h-screen w-screen overflow-hidden bg-white text-slate-900 select-none">
@@ -502,7 +547,7 @@ try {
   <!-- ========================================================================= -->
   <!-- PROTONMAIL-STYLE TOP TOGGLEBAR (WHITE BG, SUBTLE BORDER, GRAY WRITE, BLACK BUTTONS) -->
   <!-- ========================================================================= -->
-  <header id="proton-togglebar" class="h-14 border-b border-slate-200/90 bg-white flex items-center justify-between px-3 sm:px-6 shrink-0 z-30 w-full select-none" style="background-color: #FFFFFF !important; border-bottom: 1px solid #E2E8F0 !important;">
+  <header id="proton-togglebar" class="hidden md:flex h-14 border-b border-slate-200/90 bg-white items-center justify-between px-3 sm:px-6 shrink-0 z-30 w-full select-none" style="background-color: #FFFFFF !important; border-bottom: 1px solid #E2E8F0 !important;">
     
     <!-- Left Section: App Switcher + Logo + Brand + Sidebar Toggle -->
     <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -892,8 +937,93 @@ try {
     <!-- ========================================================================= -->
     <section id="col-inbox" class="w-full md:w-[370px] lg:w-[410px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
       
-      <!-- Top Header matching reference: Large Bold Title + Funnel Filter + User Avatar -->
-      <div class="px-5 pt-5 pb-3 shrink-0">
+      <!-- ========================================================================= -->
+      <!-- MOBILE TOP HEADER (MATCHING NATIVE ANDROID REFERENCE APP SCREENSHOT)      -->
+      <!-- ========================================================================= -->
+      <div id="mobile-top-bar" class="md:hidden bg-white border-b border-slate-100 px-4 py-3 shrink-0 z-30 relative select-none">
+        <div class="flex items-center justify-between">
+          
+          <!-- Left: Hamburger Menu (3 lines stacked) + Folder Title + Synced Subtitle -->
+          <div class="flex items-center gap-3 min-w-0">
+            <button type="button" onclick="toggleSidebarAction()" class="p-1.5 -ml-1.5 text-slate-800 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition cursor-pointer" title="Open Folders">
+              <i data-lucide="menu" class="w-6 h-6 stroke-[2.2] text-slate-800"></i>
+            </button>
+            <div class="min-w-0">
+              <h1 id="mobile-top-folder-title" class="text-xl font-bold text-slate-900 leading-tight tracking-tight truncate">Inbox</h1>
+              <p id="mobile-top-sync-subtitle" class="text-[11px] text-slate-500 font-medium leading-tight mt-0.5">Synced: 10/25/26 16:44</p>
+            </div>
+          </div>
+
+          <!-- Right: Sliders (Tune/Filter) + Search (Bounce) + User Avatar Initial Circle -->
+          <div class="flex items-center gap-1 shrink-0">
+            
+            <!-- Sliders / Filter Tune Icon -->
+            <div class="relative">
+              <button type="button" onclick="toggleMobileFilterMenu(event)" class="p-2 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Filter emails">
+                <i data-lucide="sliders-horizontal" class="w-5 h-5 text-slate-700"></i>
+              </button>
+              
+              <!-- Filter Dropdown Popover -->
+              <div id="mobile-filter-popover" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl p-2 z-50 text-slate-800 space-y-1">
+                <button onclick="switchCategoryFilter('All'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                  <span>All Messages</span>
+                  <i data-lucide="check" class="w-3.5 h-3.5 text-sky-600"></i>
+                </button>
+                <button onclick="switchCategoryFilter('Unread'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                  <span>Unread Only</span>
+                </button>
+                <button onclick="switchCategoryFilter('Starred'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                  <span>Starred Only</span>
+                </button>
+                <button onclick="openProductivityDrawer('attachments'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                  <span>With Attachments</span>
+                </button>
+                <div class="border-t border-slate-100 my-1"></div>
+                <button onclick="markAllAsReadAction(); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl text-sky-600 hover:bg-sky-50 transition cursor-pointer">
+                  Mark all as read
+                </button>
+              </div>
+            </div>
+
+            <!-- Search Icon (Triggers Bouncing Search Bar) -->
+            <button type="button" onclick="toggleMobileBounceSearch(true)" id="mobile-search-toggle-btn" class="p-2 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Search emails">
+              <i data-lucide="search" class="w-5 h-5 text-slate-700"></i>
+            </button>
+
+            <!-- User Avatar Initial Circle (Matching Screenshot initial badge) -->
+            <button type="button" onclick="toggleUserDropdown(event)" class="relative ml-0.5 cursor-pointer" title="Account profile">
+              <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs overflow-hidden ring-1 ring-slate-200">
+                <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover" onerror="this.classList.add('hidden')" alt="Avatar" />
+                <span class="user-avatar-initial font-bold uppercase"><?php echo strtoupper(substr($currentUser['name'] ?? $currentUser['email'] ?? 'C', 0, 1)); ?></span>
+              </div>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- BOUNCING SEARCH BAR OVERLAY (Opens with bounce animation when search is clicked) -->
+        <div id="mobile-bounce-search-bar" class="hidden absolute inset-0 bg-white px-3 flex items-center gap-2 z-40">
+          <button type="button" onclick="toggleMobileBounceSearch(false)" class="p-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Back">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          </button>
+          <div class="flex-1 relative flex items-center">
+            <input
+              id="mobile-bounce-search-input"
+              type="text"
+              placeholder="Search in emails..."
+              oninput="handleMobileBounceSearch(this.value)"
+              class="w-full bg-slate-100 focus:bg-white rounded-full pl-4 pr-9 py-2 text-sm text-slate-800 placeholder-slate-400 border border-transparent focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition outline-none"
+            />
+            <button type="button" onclick="clearMobileBounceSearch()" id="mobile-bounce-search-clear" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      
+      <!-- Top Header matching reference: Large Bold Title + Funnel Filter + User Avatar (Desktop Only) -->
+      <div class="hidden md:block px-5 pt-5 pb-3 shrink-0">
         <div class="flex items-center justify-between mb-3.5">
           <div class="flex items-center gap-2.5">
             <h1 id="current-folder-display-title" class="text-3xl font-black text-slate-900 tracking-tight">Inbox</h1>
@@ -1572,6 +1702,7 @@ try {
         switchFolder('Inbox');
       } else {
         renderMessageList();
+      updateMobileSyncTime(); // initial run
       }
       if (latestIncomingMsgId) {
         const list = mailDatabase['Inbox'] || [];
@@ -1869,6 +2000,153 @@ try {
 
     // Switch Folder (Inbox, Unread, Starred, Sent, Drafts, Archive, Spam, Trash, All)
     window.selectFolder = function(f) { return switchFolder(f); };
+    async 
+    // =========================================================================
+    // MOBILE REFERENCE APP HELPER FUNCTIONS
+    // =========================================================================
+    function getSenderAvatarColor(name) {
+      const colors = [
+        'bg-blue-100 text-blue-700',
+        'bg-emerald-100 text-emerald-700',
+        'bg-indigo-100 text-indigo-700',
+        'bg-violet-100 text-violet-700',
+        'bg-amber-100 text-amber-800',
+        'bg-rose-100 text-rose-700',
+        'bg-cyan-100 text-cyan-700',
+        'bg-teal-100 text-teal-700'
+      ];
+      let hash = 0;
+      for (let i = 0; i < (name || '').length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return colors[Math.abs(hash) % colors.length];
+    }
+
+    function formatMobileTime(timeStr) {
+      if (!timeStr) return 'Today';
+      const m = String(timeStr).match(/\d{1,2}:\d{2}(\s*(?:AM|PM))?/i);
+      if (m) return m[0];
+      return String(timeStr).replace(/Today,?\s*/i, '');
+    }
+
+    function updateMobileSyncTime() {
+      const el = document.getElementById('mobile-top-sync-subtitle');
+      if (!el) return;
+      const now = new Date();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const y = String(now.getFullYear()).slice(-2);
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      el.innerText = `Synced: ${m}/${d}/${y} ${hh}:${mm}`;
+    }
+
+    // Mobile Bounce Search Controls
+    function toggleMobileBounceSearch(open) {
+      const bar = document.getElementById('mobile-bounce-search-bar');
+      const input = document.getElementById('mobile-bounce-search-input');
+      if (!bar) return;
+
+      if (open) {
+        bar.classList.remove('hidden', 'search-bounce-exit');
+        bar.classList.add('search-bounce-enter');
+        if (input) {
+          setTimeout(() => input.focus(), 120);
+        }
+      } else {
+        bar.classList.remove('search-bounce-enter');
+        bar.classList.add('search-bounce-exit');
+        setTimeout(() => {
+          bar.classList.add('hidden');
+          bar.classList.remove('search-bounce-exit');
+        }, 220);
+        clearMobileBounceSearch();
+      }
+    }
+
+    function handleMobileBounceSearch(query) {
+      const clearBtn = document.getElementById('mobile-bounce-search-clear');
+      if (clearBtn) {
+        if (query && query.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      const desktopSearch = document.getElementById('global-search');
+      if (desktopSearch) desktopSearch.value = query;
+      handleSearch(query);
+    }
+
+    function clearMobileBounceSearch() {
+      const input = document.getElementById('mobile-bounce-search-input');
+      const clearBtn = document.getElementById('mobile-bounce-search-clear');
+      if (input) input.value = '';
+      if (clearBtn) clearBtn.classList.add('hidden');
+      const desktopSearch = document.getElementById('global-search');
+      if (desktopSearch) desktopSearch.value = '';
+      handleSearch('');
+    }
+
+    // Mobile Filter Popover Controls
+    function toggleMobileFilterMenu(e) {
+      if (e) e.stopPropagation();
+      const popover = document.getElementById('mobile-filter-popover');
+      if (popover) {
+        popover.classList.toggle('hidden');
+      }
+    }
+
+    function closeMobileFilterPopover() {
+      const popover = document.getElementById('mobile-filter-popover');
+      if (popover) popover.classList.add('hidden');
+    }
+
+    // Mobile Bottom Tab Switcher
+    function switchMobileTab(tab) {
+      const emailPill = document.getElementById('mobile-tab-email-pill');
+      const emailLabel = document.getElementById('mobile-tab-email-label');
+      const filesPill = document.getElementById('mobile-tab-files-pill');
+      const filesLabel = document.getElementById('mobile-tab-files-label');
+
+      if (tab === 'email') {
+        closeProductivityDrawer();
+        backToMobileInbox();
+        if (emailPill) {
+          emailPill.className = 'px-5 py-1 rounded-full bg-blue-100 text-blue-700 transition';
+          const icon = emailPill.querySelector('i');
+          if (icon) icon.className = 'w-5 h-5 text-blue-700';
+        }
+        if (emailLabel) emailLabel.className = 'text-[11px] font-bold text-blue-700 mt-0.5';
+
+        if (filesPill) {
+          filesPill.className = 'px-5 py-1 rounded-full text-slate-500 hover:text-slate-900 transition';
+          const icon = filesPill.querySelector('i');
+          if (icon) icon.className = 'w-5 h-5 text-slate-500';
+        }
+        if (filesLabel) filesLabel.className = 'text-[11px] font-medium text-slate-500 mt-0.5';
+      } else if (tab === 'files') {
+        openProductivityDrawer('attachments');
+        if (filesPill) {
+          filesPill.className = 'px-5 py-1 rounded-full bg-blue-100 text-blue-700 transition';
+          const icon = filesPill.querySelector('i');
+          if (icon) icon.className = 'w-5 h-5 text-blue-700';
+        }
+        if (filesLabel) filesLabel.className = 'text-[11px] font-bold text-blue-700 mt-0.5';
+
+        if (emailPill) {
+          emailPill.className = 'px-5 py-1 rounded-full text-slate-500 hover:text-slate-900 transition';
+          const icon = emailPill.querySelector('i');
+          if (icon) icon.className = 'w-5 h-5 text-slate-500';
+        }
+        if (emailLabel) emailLabel.className = 'text-[11px] font-medium text-slate-500 mt-0.5';
+      }
+    }
+
+    // Close popover when clicking anywhere else
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#mobile-filter-popover') && !e.target.closest('button[onclick*="toggleMobileFilterMenu"]')) {
+        closeMobileFilterPopover();
+      }
+    });
+
     async function switchFolder(folderName) {
       currentFolder = folderName;
       currentSelectedThreadIndex = 0;
@@ -2003,87 +2281,65 @@ try {
         return;
       }
 
-      const visualArtworks = [
-        { img: '/images/abstract_1.svg', badgeColor: 'bg-[#F45E86]', badgeIcon: 'fas fa-gem' },
-        { img: '/images/abstract_2.svg', badgeColor: 'bg-[#6C8DF6]', badgeIcon: 'fas fa-star' },
-        { img: '/images/abstract_3.svg', badgeColor: 'bg-[#FF7D54]', badgeIcon: 'fas fa-sync-alt' },
-        { img: '/images/abstract_4.svg', badgeColor: 'bg-[#8B5CF6]', badgeIcon: 'fas fa-bolt' }
-      ];
-
       container.innerHTML = list.map((msg, idx) => {
         const isActive = idx === currentSelectedThreadIndex;
         const isRead = !!msg.isRead;
+        const isStarred = !!msg.isStarred;
         const rawSnippet = cleanMimeEmailContent(msg.thread && msg.thread.length > 0 ? (msg.thread[msg.thread.length - 1]?.body || "") : (msg.preview || ""));
         const parsedReply = parseEmailReplyAndQuote(rawSnippet);
         const snippetText = (parsedReply.isReply && parsedReply.replyText) ? parsedReply.replyText : (msg.reply_text || rawSnippet);
-        const cleanSnippet = snippetText.replace(/<[^>]+>/g, '').slice(0, 95).trim() + (snippetText.length > 95 ? '...' : '');
-        const art = visualArtworks[idx % visualArtworks.length];
-        const readMinutes = Math.max(1, Math.ceil((cleanSnippet.length + (msg.subject || '').length) / 25));
-
-        const cardClass = isActive
-          ? 'msg-card-active p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group select-none shadow-sm'
-          : (isRead
-              ? 'msg-card-inactive p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group select-none opacity-90'
-              : 'msg-card-inactive p-4 sm:p-5 transition-all duration-200 cursor-pointer mb-3.5 relative overflow-hidden group select-none bg-white border-l-[3px] border-l-[#E06748] shadow-2xs');
+        const cleanSnippet = snippetText.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').slice(0, 95).trim();
+        const senderDisplayName = msg.senderName || (msg.sender ? msg.sender.split('@')[0] : 'Raccon Mail');
+        const initial = (senderDisplayName || 'R').trim().charAt(0).toUpperCase();
+        const avatarColor = getSenderAvatarColor(senderDisplayName);
+        const timeDisplay = formatMobileTime(msg.time);
 
         return `
-          <div onclick="selectThreadItem(${idx})" 
+          <div onclick="selectThreadItem(${idx})"
                ontouchstart="handleCardTouchStart(event, '${msg.id}', ${idx})"
                ontouchmove="handleCardTouchMove(event)"
                ontouchend="handleCardTouchEnd(event, ${idx})"
                oncontextmenu="handleCardContextMenu(event, '${msg.id}', ${idx})"
-               id="thread-item-${idx}" 
-               class="${cardClass}">
-            <div class="flex items-start justify-between gap-3.5">
-              <!-- Left Column: Content -->
-              <div class="flex-1 min-w-0 pr-1">
-                <!-- Metadata Row: Date & Reading indicator & Quick Delete -->
-                <div class="flex items-center justify-between mb-1.5">
-                  <div class="flex items-center gap-2 text-xs text-slate-400 font-semibold font-mono">
-                    ${!isRead ? '<span class="unread-dot w-2 h-2 rounded-full bg-[#E06748] inline-block shrink-0 shadow-2xs" title="Unread message"></span>' : ''}
-                    <span>${msg.time || 'Today, 08:15 PM'}</span>
-                    <span class="text-slate-300">•</span>
-                    <span>${readMinutes} min read</span>
-                  </div>
-                  <!-- Quick delete button for smartphone & desktop -->
-                  <button type="button" 
-                          onclick="event.stopPropagation(); triggerCardDelete('${msg.id}', ${idx});" 
-                          class="p-1.5 -mr-1 text-slate-300 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition cursor-pointer" 
-                          title="${currentFolder.toLowerCase() === 'trash' ? 'Delete Permanently' : 'Delete / Move to Trash'}">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
+               id="thread-item-${idx}"
+               class="flex items-start gap-3.5 px-4 py-3.5 border-b border-slate-100 hover:bg-slate-50/80 active:bg-slate-100 transition cursor-pointer relative select-none ${isActive ? 'bg-sky-50/70 border-l-[3px] border-l-sky-500' : 'bg-white'}">
+            
+            <!-- Left: Circular Sender Avatar with Initial Letter or Photo (Matching Reference App) -->
+            <div class="w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center shrink-0 font-bold text-sm shadow-2xs overflow-hidden mt-0.5">
+              ${msg.senderAvatar ? `<img src="${escapeHtml(msg.senderAvatar)}" class="w-full h-full object-cover" onerror="this.remove()">` : ''}
+              <span>${initial}</span>
+            </div>
 
-                <!-- Bold Title -->
-                <h3 class="${isRead ? 'font-semibold text-slate-700' : 'font-extrabold text-slate-900'} text-[15px] sm:text-base leading-snug tracking-tight mb-1.5 line-clamp-2">
-                  ${escapeHtml(msg.subject || '(no subject)')}
-                </h3>
+            <!-- Middle: 3-line Content (Sender/Date, Subject, Snippet/Star) -->
+            <div class="flex-1 min-w-0 pr-0.5">
+              
+              <!-- Row 1: Sender Name + Timestamp -->
+              <div class="flex items-center justify-between gap-2 mb-0.5">
+                <span class="${isRead ? 'font-semibold text-slate-700' : 'font-extrabold text-slate-900'} text-[14px] sm:text-sm truncate max-w-[calc(100vw-150px)] sm:max-w-xs">
+                  ${escapeHtml(senderDisplayName)}
+                </span>
+                <span class="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0 ml-auto font-mono">
+                  ${escapeHtml(timeDisplay)}
+                </span>
+              </div>
 
-                <!-- Body / Snippet Text -->
-                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                  ${escapeHtml(cleanSnippet || 'Dive into the email thread to review communication and attachments.')}
+              <!-- Row 2: Subject Line (Highlighted in blue/primary matching screenshot) -->
+              <h4 class="text-[13px] sm:text-sm ${isRead ? 'font-medium text-slate-700' : 'font-semibold text-sky-600'} truncate mb-0.5 leading-snug">
+                ${escapeHtml(msg.subject || '(no subject)')}
+              </h4>
+
+              <!-- Row 3: Preview Snippet + Quick Star Action on right -->
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-xs text-slate-500 truncate flex-1 min-w-0">
+                  ${escapeHtml(cleanSnippet || 'No additional text')}
                 </p>
-
-                <!-- Tags / Category Chips Row -->
-                <div class="flex items-center flex-wrap gap-1.5">
-                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFEFEA] text-[#E06748]">
-                    ${escapeHtml(msg.senderName || 'Raccon Mail')}
-                  </span>
-                  <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FEF9EE] text-[#B48328]">
-                    ${escapeHtml(currentFolder)}
-                  </span>
-                  ${msg.isStarred ? '<span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#FFF4ED] text-[#D96B43] flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> Starred</span>' : ''}
-                </div>
+                <button type="button"
+                        onclick="event.stopPropagation(); toggleStarItem('${msg.id}')"
+                        class="p-1 -mr-1 text-slate-300 hover:text-amber-400 transition cursor-pointer shrink-0 ml-1.5"
+                        title="Star email">
+                  <i class="${isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-slate-300 hover:text-amber-400'} text-xs sm:text-sm"></i>
+                </button>
               </div>
 
-              <!-- Right Column: Visual Thumbnail with floating badge -->
-              <div class="relative shrink-0 w-24 sm:w-28 h-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200/60 bg-slate-100">
-                <img src="${art.img}" class="w-full h-full object-cover transition-transform duration-200" alt="Artwork visual" />
-                <!-- Floating Colorful Corner Icon Badge -->
-                <div class="absolute top-2 right-2 w-7 h-7 rounded-xl ${art.badgeColor} flex items-center justify-center text-white text-xs shadow-sm">
-                  <i class="${art.badgeIcon}"></i>
-                </div>
-              </div>
             </div>
           </div>
         `;
@@ -3304,6 +3560,7 @@ try {
 
     // Refresh Mailbox
     async function refreshMailbox() {
+      updateMobileSyncTime();
       const refreshBtn = document.getElementById('btn-top-refresh');
       if (refreshBtn) refreshBtn.classList.add('animate-spin');
       try {
@@ -5423,6 +5680,53 @@ try {
       </button>
     </div>
   </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE FLOATING ACTION BUTTON (COMPOSE EMAIL - PENCIL ICON)               -->
+  <!-- ========================================================================= -->
+  <button
+    type="button"
+    id="mobile-compose-fab"
+    onclick="openComposeCard()"
+    class="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-2xl bg-[#1d4ed8] hover:bg-blue-800 active:scale-95 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 transition-all z-30 cursor-pointer"
+    title="Compose Email"
+  >
+    <i data-lucide="pencil" class="w-6 h-6 stroke-[2.2] text-white"></i>
+  </button>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE BOTTOM NAVIGATION (E-MAIL & PHOTOS/FILES TABS - MATCHING SCREENSHOT)-->
+  <!-- ========================================================================= -->
+  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 inset-x-0 h-16 bg-white border-t border-slate-200/90 flex items-center justify-around z-40 select-none pb-safe shadow-xs">
+    
+    <!-- Tab 1: E-Mail -->
+    <button
+      type="button"
+      id="mobile-tab-email"
+      onclick="switchMobileTab('email')"
+      class="flex flex-col items-center justify-center py-1 flex-1 cursor-pointer group"
+    >
+      <div id="mobile-tab-email-pill" class="px-5 py-1 rounded-full bg-blue-100 text-blue-700 transition">
+        <i data-lucide="mail" class="w-5 h-5 text-blue-700"></i>
+      </div>
+      <span id="mobile-tab-email-label" class="text-[11px] font-bold text-blue-700 mt-0.5">E-Mail</span>
+    </button>
+
+    <!-- Tab 2: Photos/Files -->
+    <button
+      type="button"
+      id="mobile-tab-files"
+      onclick="switchMobileTab('files')"
+      class="flex flex-col items-center justify-center py-1 flex-1 cursor-pointer group"
+    >
+      <div id="mobile-tab-files-pill" class="px-5 py-1 rounded-full text-slate-500 hover:text-slate-900 transition">
+        <i data-lucide="images" class="w-5 h-5 text-slate-500"></i>
+      </div>
+      <span id="mobile-tab-files-label" class="text-[11px] font-medium text-slate-500 mt-0.5">Photos/Files</span>
+    </button>
+
+  </nav>
 
 </body>
 </html>
