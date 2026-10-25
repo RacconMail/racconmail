@@ -2748,7 +2748,7 @@ try {
 
     if (preg_match('#^messages/([^/]+)/read$#', $route, $matches) && ($method === 'PUT' || $method === 'POST')) {
         $msgId = trim(explode('?', $matches[1])[0]);
-        $read = !empty($input['is_read']) ? 1 : 0;
+        $read = isset($input['is_read']) ? (!empty($input['is_read']) ? 1 : 0) : 1;
         $db->prepare('UPDATE messages SET is_read = ? WHERE id = ? AND user_id = ?')->execute([$read, $msgId, $currentUserId]);
         echo json_encode(['success' => true]);
         exit;

@@ -653,18 +653,13 @@ try {
           <span id="badge-spam" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['spam_total']; ?></span>
         </button>
 
-        <!-- 8. TRASH (Perfect Right Alignment) -->
-        <button onclick="switchFolder('Trash')" id="folder-btn-trash" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group cursor-pointer">
+        <!-- 8. TRASH (100% Identical Structure and Column Alignment) -->
+        <button onclick="switchFolder('Trash')" id="folder-btn-trash" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive">
           <div class="flex items-center gap-2.5 truncate">
             <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Trash</span>
           </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['trash_total']; ?></span>
-            <span onclick="event.stopPropagation(); emptyTrashAction();" title="Empty Trash" class="opacity-0 group-hover:opacity-100 p-1 hover:text-rose-600 rounded transition cursor-pointer text-slate-400">
-              <i data-lucide="eraser" class="h-3 w-3"></i>
-            </span>
-          </div>
+          <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400"><?php echo $counts['trash_total']; ?></span>
         </button>
 
         <!-- 9. ALL MAIL -->
@@ -826,6 +821,10 @@ try {
           <div class="flex items-center gap-2.5">
             <h1 id="current-folder-display-title" class="text-3xl font-black text-slate-900 tracking-tight">Inbox</h1>
             <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs"><?php echo $counts['inbox_unread']; ?></span>
+            <button id="trash-empty-btn" onclick="emptyTrashAction()" class="hidden px-2.5 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold border border-rose-200 transition cursor-pointer flex items-center gap-1 shadow-2xs" title="Empty Trash">
+              <i data-lucide="eraser" class="h-3 w-3"></i>
+              <span>Empty Trash</span>
+            </button>
           </div>
 
           <!-- Top Right Controls: Funnel Filter + User Profile Picture -->
@@ -1811,6 +1810,15 @@ function cleanMimeEmailContent(raw) {
       const titleEl = document.getElementById('current-folder-display-title');
       if (titleEl) titleEl.innerText = folderName;
 
+      const trashEmptyBtn = document.getElementById('trash-empty-btn');
+      if (trashEmptyBtn) {
+        if (folderName.toLowerCase() === 'trash') {
+          trashEmptyBtn.classList.remove('hidden');
+        } else {
+          trashEmptyBtn.classList.add('hidden');
+        }
+      }
+
       renderMessageList();
       await fetchFolderMessages(folderName);
     }
@@ -1863,9 +1871,16 @@ function cleanMimeEmailContent(raw) {
         );
       }
 
-      // Update Coral Badge count
+      // Update Coral Badge count (show unread count for Inbox and Unread, total for others)
       const badge = document.getElementById('coral-inbox-badge');
-      if (badge) badge.innerText = list.length;
+      if (badge) {
+        if (currentFolder === 'Inbox' || currentFolder === 'Unread') {
+          const unreadCount = (mailDatabase['Inbox'] || []).filter(m => !m.isRead).length;
+          badge.innerText = unreadCount;
+        } else {
+          badge.innerText = list.length;
+        }
+      }
 
       if (list.length === 0) {
         container.innerHTML = `
@@ -2021,9 +2036,34 @@ function cleanMimeEmailContent(raw) {
       if (selected) {
         if (!selected.isRead) {
           selected.isRead = true;
-          // Optimistically show dot as read
-          const dot = nextActive?.querySelector('.ring-cyan-400\/20');
-          if (dot) dot.classList.add('opacity-0');
+          
+          // Mark as read in all folders in memory
+          Object.values(mailDatabase).forEach(arr => {
+            if (Array.isArray(arr)) {
+              const found = arr.find(m => m.id === selected.id);
+              if (found) found.isRead = true;
+            }
+          });
+
+          // Optimistically update middle list card classes
+          if (nextActive) {
+            nextActive.classList.remove('bg-white');
+            nextActive.classList.add('bg-slate-50/50');
+            const dot = nextActive.querySelector('.ring-cyan-400\/20, .w-2.h-2.rounded-full');
+            if (dot) dot.classList.add('opacity-0', 'hidden');
+          }
+
+          // Immediately decrement & update badge counts on the UI!
+          updateBadgeCounts();
+
+          // Persist read state to backend SQLite database
+          fetch('/api/messages/' + encodeURIComponent(selected.id) + '/read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_read: 1 })
+          }).then(() => {
+            refreshFolderCounts();
+          }).catch(() => {});
         }
         renderConversationThread(selected);
       }
@@ -2276,13 +2316,32 @@ function cleanMimeEmailContent(raw) {
     }
 
     function updateBadgeCounts() {
-      const unreadInbox = (mailDatabase['Inbox'] || []).filter(m => !m.isRead).length;
+      const inboxList = mailDatabase['Inbox'] || [];
+      const unreadInbox = inboxList.filter(m => !m.isRead).length;
+      
       const bInbox = document.getElementById('badge-inbox');
       if (bInbox) bInbox.innerText = unreadInbox;
+      
+      const bUnread = document.getElementById('badge-unread');
+      if (bUnread) bUnread.innerText = unreadInbox;
+
       const bCoral = document.getElementById('coral-inbox-badge');
-      if (bCoral && currentFolder === 'Inbox') bCoral.innerText = unreadInbox;
+      if (bCoral) {
+        if (currentFolder === 'Inbox' || currentFolder === 'Unread') {
+          bCoral.innerText = unreadInbox;
+        } else {
+          bCoral.innerText = (mailDatabase[currentFolder] || []).length;
+        }
+      }
+
       const bTrash = document.getElementById('badge-trash');
       if (bTrash && mailDatabase['Trash']) bTrash.innerText = mailDatabase['Trash'].length;
+      
+      const bStarred = document.getElementById('badge-starred');
+      if (bStarred) {
+        const totalStarred = [].concat(...Object.values(mailDatabase)).filter(m => m.isStarred).length;
+        bStarred.innerText = totalStarred;
+      }
     }
 
     // Delete single message permanently or move to trash
