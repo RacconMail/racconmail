@@ -347,13 +347,13 @@
        STORIES HEADER NAVIGATION (MATCHING FORUM)
        ========================================================================= -->
   <header class="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
       
       <!-- Brand Logo & Shortcuts -->
-      <div class="flex items-center gap-3 shrink-0">
-        <a href="/stories" class="flex items-center gap-2.5 font-display text-lg sm:text-xl font-extrabold text-slate-900 hover:opacity-90 transition" title="Raccon Stories Home">
-          <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-xs" />
-          <span class="tracking-tight font-extrabold text-slate-900">Raccon <span class="text-purple-600 font-bold">Stories</span></span>
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+        <a href="/stories" class="flex items-center gap-2 sm:gap-2.5 font-display text-base sm:text-xl font-extrabold text-slate-900 hover:opacity-90 transition min-w-0" title="Raccon Stories Home">
+          <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="h-7 w-7 sm:h-9 sm:w-9 object-contain drop-shadow-xs shrink-0" />
+          <span class="tracking-tight font-extrabold text-slate-900 truncate">Raccon <span class="text-purple-600 font-bold">Stories</span></span>
         </a>
         <a href="/news" class="hidden sm:inline-flex items-center gap-1.5 ml-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="Go to Raccon News Wire">
           <i class="fas fa-newspaper text-[10px]"></i>
@@ -387,7 +387,7 @@
       </div>
 
       <!-- Auth & User Actions -->
-      <div class="flex items-center gap-2 shrink-0" id="header-auth-container">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0" id="header-auth-container">
         <button 
           style="display:none;" 
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-violet-600 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer mr-1"
@@ -398,12 +398,12 @@
           <span class="sm:hidden">Pro</span>
         </button>
         <!-- Guest View -->
-        <div id="auth-guest-group" class="flex items-center gap-2">
-          <button onclick="openAuthModal('login');" class="px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer">
+        <div id="auth-guest-group" class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button onclick="openAuthModal('login');" class="px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer whitespace-nowrap">
             Sign In
           </button>
-          <button onclick="openAuthModal('register');" class="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5">
-            <i class="fas fa-user-plus text-[11px]"></i>
+          <button onclick="openAuthModal('register');" class="px-3 sm:px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-black rounded-full shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0">
+            <i class="fas fa-user-plus text-[10px] sm:text-[11px]"></i>
             <span>Sign Up</span>
           </button>
         </div>

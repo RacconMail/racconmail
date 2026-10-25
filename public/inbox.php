@@ -698,7 +698,7 @@ try {
     <!-- ========================================================================= -->
     <!-- DESKTOP APP RAIL (COLUMN 1: RISE SAAS STYLE APP SWITCHER)                 -->
     <!-- ========================================================================= -->
-    <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-slate-700 border-r border-slate-600/60 shrink-0 items-center py-3 select-none text-white z-30 justify-between h-full overflow-y-auto overflow-x-hidden scrollbar-none">
+    <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-white border-r border-slate-200/80 shrink-0 items-center py-3 select-none text-slate-400 z-30 justify-between h-full overflow-y-auto overflow-x-hidden scrollbar-none">
       <!-- Top Apps -->
       <div class="flex flex-col items-center gap-2.5 w-full">
         <!-- Logo -->
@@ -707,59 +707,49 @@ try {
         </a>
 
         <!-- 1. Dashboard -->
-        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Dashboard">
+        <a href="/inbox" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Dashboard">
           <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
-        <!-- 2. Mailbox (Active Blue Squircle) -->
-        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500 text-white shadow-lg shadow-sky-500/30 transition cursor-pointer" title="Mailbox">
+        <!-- 2. Mailbox (Active) -->
+        <a href="/inbox" class="w-10 h-10 flex items-center justify-center text-sky-600 hover:text-sky-700 transition cursor-pointer" title="Mailbox">
           <i data-lucide="mail" class="w-5 h-5"></i>
         </a>
 
-        <!-- 3. Sheets -->
-        <button type="button" onclick="openProductivityDrawer('sheets')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Sheets / Spreadsheets">
-          <i data-lucide="table" class="w-5 h-5 group-hover:scale-110 transition"></i>
-        </button>
-
-        <!-- 4. Docs -->
-        <button type="button" onclick="openProductivityDrawer('notes')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Docs & Notes">
+        <!-- 3. Docs -->
+        <button type="button" onclick="openProductivityDrawer('notes')" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Docs & Notes">
           <i data-lucide="file-text" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
-        <!-- 5. Whiteboards -->
-        <button type="button" onclick="openWhiteboard()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Whiteboards">
-          <i data-lucide="presentation" class="w-5 h-5 group-hover:scale-110 transition"></i>
-        </button>
-
-        <!-- 6. Contacts -->
-        <button type="button" onclick="openContactsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Contacts">
+        <!-- 4. Contacts -->
+        <button type="button" onclick="openContactsModal()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Contacts">
           <i data-lucide="users" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
-        <!-- 7. Forum -->
-        <a href="/forum" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Raccon Forum">
+        <!-- 5. Forum -->
+        <a href="/forum" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Raccon Forum">
           <i data-lucide="messages-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
-        <!-- 8. Stories -->
-        <a href="/stories" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Raccon Stories">
+        <!-- 6. Stories -->
+        <a href="/stories" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Raccon Stories">
           <i data-lucide="book-open" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
-        <!-- 9. Tasks -->
-        <button type="button" onclick="openProductivityDrawer('tasks')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Tasks">
+        <!-- 7. Tasks -->
+        <button type="button" onclick="openProductivityDrawer('tasks')" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Tasks">
           <i data-lucide="check-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
-        <!-- 10. News -->
-        <a href="/news" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="News Portal">
+        <!-- 8. News -->
+        <a href="/news" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="News Portal">
           <i data-lucide="newspaper" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
       </div>
 
       <!-- Bottom: Settings -->
-      <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-slate-600">
-        <button type="button" onclick="openSettingsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Settings">
+      <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-slate-200/80">
+        <button type="button" onclick="openSettingsModal()" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 transition cursor-pointer group" title="Settings">
           <i data-lucide="settings" class="w-5 h-5 group-hover:rotate-45 transition"></i>
         </button>
       </div>
@@ -985,19 +975,6 @@ try {
           <span class="sidebar-text truncate">Templates</span>
         </button>
 
-        <!-- 7. Whiteboard Studio Canvas -->
-        <button onclick="openWhiteboard()" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group cursor-pointer hover:bg-slate-50 transition rounded-xl">
-          <div class="flex items-center gap-2.5 truncate">
-            <div class="w-6 h-6 rounded-lg bg-violet-50 border border-violet-200/80 flex items-center justify-center text-violet-600 group-hover:bg-violet-100 transition shrink-0">
-              <i data-lucide="presentation" class="h-3.5 w-3.5"></i>
-            </div>
-            <span class="sidebar-text truncate">Whiteboards</span>
-          </div>
-          <span class="sidebar-badge text-[9px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-auto">Canvas</span>
-        </button>
-
-        
-
       </div>
 
       <!-- Section: ECOSYSTEM (Distinct Colors & Zero Shadow) -->
@@ -1027,20 +1004,6 @@ try {
           </div>
           <span class="sidebar-text truncate">Address Book</span>
         </button>
-      </div>
-
-      <!-- Bottom User Profile Card -->
-      <div class="mt-auto pt-4 border-t border-slate-100">
-        <div onclick="toggleUserDropdown(event)" class="flex items-center justify-between p-2 rounded-2xl hover:bg-slate-50 transition cursor-pointer select-none">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <img id="sidebar-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img h-8 w-8 rounded-full object-cover shrink-0 border border-slate-200" />
-            <div class="sidebar-text min-w-0 flex-1">
-              <p id="sidebar-user-name" class="text-xs font-bold text-slate-900 truncate"><?php echo htmlspecialchars($currentUser['name']); ?></p>
-              <p class="text-[11px] text-slate-400 truncate"><?php echo htmlspecialchars($currentUser['email']); ?></p>
-            </div>
-          </div>
-          <i data-lucide="chevron-up" class="sidebar-text h-4 w-4 text-slate-400 shrink-0"></i>
-        </div>
       </div>
 
     </aside>
