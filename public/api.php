@@ -1738,7 +1738,7 @@ try {
             'amount' => $amount,
             'cycle' => $cycle,
             'currency' => 'EUR',
-            'message' => 'Plata a fost procesată cu succes! Subscripția ' . $planName . ' este acum activă.'
+            'message' => 'Payment processed successfully! Your subscription to ' . $planName . ' is now active.'
         ]);
         exit;
     }

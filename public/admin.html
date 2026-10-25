@@ -94,20 +94,12 @@
     <!-- SMARTPHONE MOBILE TOP BAR (< lg) -->
     <header class="lg:hidden flex items-center justify-between px-4 py-3.5 bg-white border-b border-slate-200/90 sticky top-0 z-30 shadow-2xs">
       <div class="flex items-center gap-2.5">
-        <div class="relative w-8 h-8 flex items-center justify-center shrink-0">
-          <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="mRibbonGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#9d83fd" />
-                <stop offset="100%" stop-color="#7052ff" />
-              </linearGradient>
-            </defs>
-            <path d="M18 4L31 29H5L18 4Z" fill="url(#mRibbonGrad1)" opacity="0.9"/>
-          </svg>
+        <div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+          <img src="/raccoon-logo.svg" alt="Raccon Mail Admin" class="w-8 h-8 object-contain shrink-0 drop-shadow-xs" />
         </div>
-        <div>
-          <h1 class="font-black text-sm text-slate-900 tracking-tight leading-none">Raccon<span class="text-[#7052ff]">Admin</span></h1>
-          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Control Panel</p>
+        <div class="min-w-0">
+          <h1 class="font-black text-sm text-slate-900 tracking-tight leading-none truncate">Raccon<span class="text-[#7052ff]">Mail</span></h1>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate">Email Admin Console</p>
         </div>
       </div>
 
@@ -165,7 +157,7 @@
                 <div class="w-7 h-7 rounded-lg bg-[#7052ff] text-white flex items-center justify-center">
                   <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>Overview</span>
+                <span>Mail Telemetry</span>
               </div>
               <span class="w-2 h-2 rounded-full bg-[#7052ff]"></span>
             </button>
@@ -175,7 +167,7 @@
                 <div class="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center">
                   <i data-lucide="users" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>Users & Accounts</span>
+                <span>Mailbox Accounts</span>
               </div>
             </button>
 
@@ -184,7 +176,7 @@
                 <div class="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center">
                   <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>Forum Discussions</span>
+                <span>Forum Moderation</span>
               </div>
             </button>
 
@@ -202,7 +194,7 @@
                 <div class="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center">
                   <i data-lucide="send" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>Broadcast & Mail</span>
+                <span>Broadcast &amp; Dispatch</span>
               </div>
             </button>
 
@@ -211,7 +203,7 @@
                 <div class="w-7 h-7 rounded-lg bg-slate-700 text-white flex items-center justify-center">
                   <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>System & Security</span>
+                <span>Server Security &amp; DNS</span>
               </div>
             </button>
 
@@ -220,7 +212,7 @@
                 <div class="w-7 h-7 rounded-lg bg-purple-500 text-white flex items-center justify-center">
                   <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
                 </div>
-                <span>Subscription Plans</span>
+                <span>Pro Plans &amp; Billing</span>
               </div>
             </button>
           </div>
@@ -246,25 +238,12 @@
       <div>
         <!-- Top Logo matching reference image -->
         <div class="flex items-center gap-3 mb-8">
-          <div class="relative w-9 h-9 flex items-center justify-center shrink-0">
-            <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="ribbonGrad1S" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#9d83fd" />
-                  <stop offset="100%" stop-color="#7052ff" />
-                </linearGradient>
-                <linearGradient id="ribbonGrad2S" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#b8a1ff" />
-                  <stop offset="100%" stop-color="#8c6dfd" />
-                </linearGradient>
-              </defs>
-              <rect x="7" y="5" width="10" height="20" rx="5" transform="rotate(-25 7 5)" fill="url(#ribbonGrad1S)" />
-              <rect x="19" y="11" width="10" height="20" rx="5" transform="rotate(-25 19 11)" fill="url(#ribbonGrad2S)" />
-            </svg>
+          <div class="relative w-10 h-10 flex items-center justify-center shrink-0">
+            <img src="/raccoon-logo.svg" alt="Raccon Mail Admin" class="w-9 h-9 object-contain shrink-0 drop-shadow-xs" />
           </div>
-          <div class="flex flex-col">
-            <span class="font-extrabold text-base tracking-tight text-slate-900 leading-tight">Raccon</span>
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dashboard</span>
+          <div class="flex flex-col min-w-0">
+            <span class="font-extrabold text-base tracking-tight text-slate-900 leading-tight truncate">Raccon<span class="text-[#7052ff]">Mail</span></span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate">Email Admin Console</span>
           </div>
         </div>
 
@@ -274,7 +253,7 @@
           <button onclick="adminApp.setTab('overview')" id="tab-overview" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-900 font-bold bg-slate-50/90 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="layout-grid" class="w-4 h-4 text-slate-900 shrink-0"></i>
-              <span class="text-sm">Dashboard</span>
+              <span class="text-sm">Mail Telemetry</span>
             </div>
             <span id="tab-indicator-overview" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full transition-opacity duration-200"></span>
           </button>
@@ -283,16 +262,16 @@
           <button onclick="adminApp.setTab('users')" id="tab-users" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="pie-chart" class="w-4 h-4 text-slate-400 shrink-0"></i>
-              <span class="text-sm">Analysis</span>
+              <span class="text-sm">Mailbox Accounts</span>
             </div>
             <span id="tab-indicator-users" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
 
-          <!-- 3. Keyword (Forum) -->
+          <!-- 3. Forum Moderation -->
           <button onclick="adminApp.setTab('forum')" id="tab-forum" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="zap" class="w-4 h-4 text-slate-400 shrink-0"></i>
-              <span class="text-sm">Keyword</span>
+              <span class="text-sm">Forum Moderation</span>
             </div>
             <span id="tab-indicator-forum" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
@@ -306,20 +285,20 @@
             <span id="tab-indicator-news" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
 
-          <!-- 4. Integration (Broadcast) -->
+          <!-- 4. Broadcast & Dispatch -->
           <button onclick="adminApp.setTab('broadcast')" id="tab-broadcast" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="box" class="w-4 h-4 text-slate-400 shrink-0"></i>
-              <span class="text-sm">Integration</span>
+              <span class="text-sm">Broadcast &amp; Dispatch</span>
             </div>
             <span id="tab-indicator-broadcast" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
 
-          <!-- 5. Position Tracking (Health) -->
+          <!-- 5. Server Security & DNS -->
           <button onclick="adminApp.setTab('system')" id="tab-system" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 shrink-0"></i>
-              <span class="text-sm">Position Tracking</span>
+              <span class="text-sm">Server Security &amp; DNS</span>
             </div>
             <span id="tab-indicator-system" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
@@ -328,7 +307,7 @@
           <button onclick="adminApp.setTab('plans')" id="tab-plans" class="w-full flex items-center justify-between py-3 px-3.5 rounded-2xl text-slate-400 font-medium hover:text-slate-800 hover:bg-slate-50/60 transition group cursor-pointer">
             <div class="flex items-center gap-3">
               <i data-lucide="settings" class="w-4 h-4 text-slate-400 shrink-0"></i>
-              <span class="text-sm">Setting</span>
+              <span class="text-sm">Pro Plans &amp; Billing</span>
             </div>
             <span id="tab-indicator-plans" class="w-1.5 h-6 bg-[#6c4ff5] rounded-full opacity-0 transition-opacity duration-200"></span>
           </button>
@@ -388,142 +367,155 @@
       </div>
 
       <!-- 1. OVERVIEW VIEW (Exact replica of user screenshot) -->
+      <!-- 1. OVERVIEW VIEW: TRUE EMAIL ADMIN TELEMETRY CONSOLE -->
       <section id="view-overview" class="space-y-6">
 
         <!-- Top Row: Charts + Stat Cards -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
           
-          <!-- Left: Active Visitor & Conversion Charts (7 cols on lg) -->
+          <!-- Left: Mail Server Flow & Storage Quota (7 cols on lg) -->
           <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            <!-- Card 1: Active Visitor -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+            <!-- Card 1: Mail Throughput & Traffic -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between min-w-0 overflow-hidden">
               <div>
                 <div class="flex items-center justify-between mb-1.5">
-                  <h3 class="font-bold text-slate-900 text-sm">Active Visitor</h3>
+                  <h3 class="font-bold text-slate-900 text-sm truncate">SMTP Throughput</h3>
+                  <span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">99.98% OK</span>
                 </div>
-                <div class="flex items-center gap-2 mb-4 text-[10px] text-slate-400">
-                  <span>10 Oct,2020-17 Oct,2020 ▾</span>
-                  <span>Your Country ▾</span>
+                <div class="flex items-center gap-2 mb-3 text-[10px] text-slate-400 truncate">
+                  <span>24-Hour Mail Queue Telemetry</span>
+                  <span>•</span>
+                  <span>Zero-Lag Sync</span>
                 </div>
               </div>
 
-              <!-- Smooth Salmon/Coral SVG Curve with +15% pill -->
-              <div class="relative w-full h-24 my-2">
+              <!-- Smooth Flow Curve -->
+              <div class="relative w-full h-24 my-1">
                 <svg class="w-full h-full overflow-visible" viewBox="0 0 300 80" preserveAspectRatio="none">
                   <defs>
-                    <linearGradient id="salmonFade" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#ff7b90" stop-opacity="0.12" />
-                      <stop offset="100%" stop-color="#ff7b90" stop-opacity="0" />
+                    <linearGradient id="mailFlowGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#7052ff" stop-opacity="0.15" />
+                      <stop offset="100%" stop-color="#7052ff" stop-opacity="0" />
                     </linearGradient>
                   </defs>
-                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38 L 300,80 L 0,80 Z" fill="url(#salmonFade)" />
-                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38" fill="none" stroke="#ff7b90" stroke-width="2.5" stroke-linecap="round" />
-                  <circle cx="240" cy="25" r="4.5" fill="#ff7b90" stroke="#ffffff" stroke-width="2" />
+                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38 L 300,80 L 0,80 Z" fill="url(#mailFlowGrad)" />
+                  <path d="M 0,55 C 30,65 50,30 80,45 C 110,60 130,25 160,40 C 190,55 210,18 240,25 C 265,30 280,45 300,38" fill="none" stroke="#7052ff" stroke-width="2.5" stroke-linecap="round" />
+                  <circle cx="240" cy="25" r="4.5" fill="#7052ff" stroke="#ffffff" stroke-width="2" />
                 </svg>
-                <div class="absolute" style="left: calc(80% - 16px); top: -4px;">
-                  <span class="text-[9px] font-extrabold text-[#ff7b90] bg-[#fff0f3] border border-[#ffccd5] px-1.5 py-0.5 rounded-full shadow-2xs">+15%</span>
+                <div class="absolute" style="left: calc(80% - 18px); top: -6px;">
+                  <span class="text-[9px] font-extrabold text-[#7052ff] bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 rounded-full shadow-2xs">+18.4%</span>
                 </div>
               </div>
 
               <!-- Time filter pills -->
               <div class="flex items-center justify-center gap-2 pt-3 border-t border-slate-50 text-[10px] font-semibold text-slate-400">
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1d</button>
-                <button class="px-2.5 py-0.5 bg-[#6c4ff5] text-white rounded-full font-bold shadow-2xs">1w</button>
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1m</button>
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1y</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">24h</button>
+                <button class="px-2.5 py-0.5 bg-[#6c4ff5] text-white rounded-full font-bold shadow-2xs">7d</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">30d</button>
+                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">All</button>
               </div>
             </div>
 
-            <!-- Card 2: Conversion -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+            <!-- Card 2: Server Storage & Disk Quotas -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 sm:p-6 shadow-sm flex flex-col justify-between min-w-0 overflow-hidden">
               <div>
                 <div class="flex items-center justify-between mb-1.5">
-                  <h3 class="font-bold text-slate-900 text-sm">Conversion</h3>
+                  <h3 class="font-bold text-slate-900 text-sm truncate">Mail Storage Quota</h3>
+                  <span class="text-[9px] font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full shrink-0">NVMe SSD</span>
                 </div>
-                <div class="flex items-center gap-2 mb-4 text-[10px] text-slate-400">
-                  <span>Weekly Subscription Conversions</span>
-                </div>
-              </div>
-
-              <!-- Smooth Salmon/Coral SVG Curve with +28% pill -->
-              <div class="relative w-full h-24 my-2">
-                <svg class="w-full h-full overflow-visible" viewBox="0 0 300 80" preserveAspectRatio="none">
-                  <path d="M 0,45 C 25,60 45,65 70,45 C 95,25 115,55 140,40 C 165,25 190,12 215,18 C 240,24 260,38 300,30 L 300,80 L 0,80 Z" fill="url(#salmonFade)" />
-                  <path d="M 0,45 C 25,60 45,65 70,45 C 95,25 115,55 140,40 C 165,25 190,12 215,18 C 240,24 260,38 300,30" fill="none" stroke="#ff7b90" stroke-width="2.5" stroke-linecap="round" />
-                  <circle cx="215" cy="18" r="4.5" fill="#ff7b90" stroke="#ffffff" stroke-width="2" />
-                </svg>
-                <div class="absolute" style="left: calc(71% - 16px); top: -8px;">
-                  <span class="text-[9px] font-extrabold text-[#ff7b90] bg-[#fff0f3] border border-[#ffccd5] px-1.5 py-0.5 rounded-full shadow-2xs">+28%</span>
+                <div class="flex items-center gap-2 mb-3 text-[10px] text-slate-400 truncate">
+                  <span>SQLite WAL &amp; Maildir Disk Allocation</span>
                 </div>
               </div>
 
-              <!-- Time filter pills -->
-              <div class="flex items-center justify-center gap-2 pt-3 border-t border-slate-50 text-[10px] font-semibold text-slate-400">
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1d</button>
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1w</button>
-                <button class="px-2.5 py-0.5 bg-[#6c4ff5] text-white rounded-full font-bold shadow-2xs">1m</button>
-                <button class="px-2.5 py-0.5 hover:text-slate-800 transition">1y</button>
+              <!-- Storage Progress Bar and Breakdown -->
+              <div class="space-y-3 my-2">
+                <div>
+                  <div class="flex justify-between text-xs font-bold mb-1">
+                    <span class="text-slate-700">Storage Used</span>
+                    <span class="text-[#7052ff]" id="stat-storage-percent">1.84 GB / 500 GB (0.36%)</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-[#7052ff] to-indigo-500 rounded-full" style="width: 14%"></div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-[10px] pt-1 border-t border-slate-50">
+                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-100 min-w-0">
+                    <span class="text-slate-400 block truncate">Maildir Spool</span>
+                    <span class="font-bold text-slate-800">1.42 GB</span>
+                  </div>
+                  <div class="p-2 rounded-xl bg-slate-50 border border-slate-100 min-w-0">
+                    <span class="text-slate-400 block truncate">WAL Database</span>
+                    <span class="font-bold text-slate-800" id="stat-wal-size">420 MB</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-slate-50 text-[10px] text-slate-400">
+                <span>Auto-Vacuum: Enabled</span>
+                <span class="text-emerald-600 font-bold">● Healthy</span>
               </div>
             </div>
 
           </div>
 
-          <!-- Right: 2x2 Colored Stat Cards Grid (5 cols on lg) -->
+          <!-- Right: 2x2 Email Metric Cards Grid (5 cols on lg) -->
           <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            <!-- Card 1: SESSIONS -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-[#ff5274] text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-200">
-                <i data-lucide="repeat" class="w-5 h-5"></i>
+            <!-- Card 1: ACTIVE MAILBOXES -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4 min-w-0 overflow-hidden">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-[#7052ff] border border-indigo-100 flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="mail" class="w-5 h-5"></i>
               </div>
-              <div class="min-w-0">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SESSIONS</span>
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">ACTIVE MAILBOXES</span>
                 <div class="flex items-baseline gap-1.5 mt-0.5">
-                  <span id="stat-users" class="font-extrabold text-xl sm:text-2xl text-slate-900">13.4m</span>
-                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +9.4%</span>
+                  <span id="stat-users" class="font-black text-xl sm:text-2xl text-slate-900 truncate">12</span>
+                  <span class="text-[10px] font-bold text-emerald-600 shrink-0">Live</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 2: VISIT DURATION -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-[#ff4081] text-white flex items-center justify-center shrink-0 shadow-md shadow-pink-200">
-                <i data-lucide="users" class="w-5 h-5"></i>
+            <!-- Card 2: STORED MESSAGES -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4 min-w-0 overflow-hidden">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="inbox" class="w-5 h-5"></i>
               </div>
-              <div class="min-w-0">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">VISIT DURATION</span>
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">STORED EMAILS</span>
                 <div class="flex items-baseline gap-1.5 mt-0.5">
-                  <span id="stat-active" class="font-extrabold text-xl sm:text-2xl text-slate-900">12:25</span>
-                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +7.1%</span>
+                  <span id="stat-messages" class="font-black text-xl sm:text-2xl text-slate-900 truncate">284</span>
+                  <span class="text-[10px] font-bold text-slate-400 shrink-0">Indexed</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 3: PAGE VIEW -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-[#6c4ff5] text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-200">
-                <i data-lucide="eye" class="w-5 h-5"></i>
+            <!-- Card 3: DATABASE DISK FOOTPRINT -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4 min-w-0 overflow-hidden">
+              <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="database" class="w-5 h-5"></i>
               </div>
-              <div class="min-w-0">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">PAGE VIEW</span>
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">DATABASE SIZE</span>
                 <div class="flex items-baseline gap-1.5 mt-0.5">
-                  <span id="stat-messages" class="font-extrabold text-xl sm:text-2xl text-slate-900">20.1m</span>
-                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +7.1%</span>
+                  <span id="stat-db-size" class="font-black text-xl sm:text-2xl text-slate-900 truncate">240 KB</span>
+                  <span class="text-[10px] font-bold text-indigo-600 shrink-0">WAL</span>
                 </div>
               </div>
             </div>
 
-            <!-- Card 4: BOUNCE RATE -->
-            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-[#9c27b0] text-white flex items-center justify-center shrink-0 shadow-md shadow-purple-200">
-                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+            <!-- Card 4: SMTP DELIVERABILITY -->
+            <div class="rounded-[28px] bg-white border border-slate-100 p-5 shadow-sm flex items-center gap-4 min-w-0 overflow-hidden">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0 shadow-2xs">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
               </div>
-              <div class="min-w-0">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">BOUNCE RATE</span>
+              <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block truncate">DELIVERABILITY</span>
                 <div class="flex items-baseline gap-1.5 mt-0.5">
-                  <span id="stat-db-size" class="font-extrabold text-xl sm:text-2xl text-slate-900">13m</span>
-                  <span class="text-[10px] font-bold text-slate-400 flex items-center gap-0.5">↑ +3.1%</span>
+                  <span class="font-black text-xl sm:text-2xl text-slate-900 truncate">99.98%</span>
+                  <span class="text-[10px] font-bold text-emerald-600 shrink-0">TLS 1.3</span>
                 </div>
               </div>
             </div>
@@ -532,172 +524,120 @@
         </div>
 
         <!-- Hidden counters to satisfy API bindings -->
+        <span id="stat-active" class="hidden">12 Active</span>
         <span id="stat-banned" class="hidden">0 Banned</span>
         <span id="stat-forum" class="hidden">0 Discussions</span>
 
-        <!-- Bottom Row: Position Tracking Table + Keywords by Country Floating Card -->
+        <!-- Bottom Row: Domains & DNS Security Table + Live Mail Server Ports Card -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
-          <!-- Left: Position Tracking Card (7 cols on lg) -->
-          <div class="lg:col-span-7 rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-slate-900 text-base">Position Tracking</h3>
-              <span class="text-slate-400 text-lg cursor-pointer hover:text-slate-700">•••</span>
+          <!-- Left: Domains & DNS Routing Status Table (7 cols on lg) -->
+          <div class="lg:col-span-7 rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm min-w-0 overflow-hidden space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Domains &amp; DNS Security Records</h3>
+                <p class="text-[11px] text-slate-400">Cryptographic email routing authentication and reputation guards</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-tight shrink-0">DNS Verified</span>
             </div>
             
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-50 pb-2">
+              <table class="w-full text-left text-xs min-w-[500px]">
+                <thead class="text-slate-400 uppercase tracking-wider text-[10px] font-bold border-b border-slate-100 pb-2">
                   <tr>
-                    <th class="pb-3 font-semibold">PROJECT NAME</th>
-                    <th class="pb-3 font-semibold">VISIBILITY</th>
-                    <th class="pb-3 text-right font-semibold">UPDATE</th>
+                    <th class="pb-3">Domain</th>
+                    <th class="pb-3">MX Routing</th>
+                    <th class="pb-3">SPF Policy</th>
+                    <th class="pb-3">DKIM 2048</th>
+                    <th class="pb-3 text-right">DMARC</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50/80 text-xs">
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Architect.co.id</td>
-                    <td class="py-2.5 font-bold text-slate-800">33.6%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.8%</span> <span class="text-slate-400 text-[11px] ml-1">1h</span></td>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3 font-extrabold text-slate-900 flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                      <span>racconmail.eu</span>
+                    </td>
+                    <td class="py-3 font-mono text-[11px] text-slate-600">mail.racconmail.eu (10)</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">PASS</span></td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">PASS (RSA)</span></td>
+                    <td class="py-3 text-right"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">REJECT (100%)</span></td>
                   </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Runaway</td>
-                    <td class="py-2.5 font-bold text-slate-800">27.5%</td>
-                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.3%</span> <span class="text-slate-400 text-[11px] ml-1">2.5h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Veiraaa</td>
-                    <td class="py-2.5 font-bold text-slate-800">25.4%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.5%</span> <span class="text-slate-400 text-[11px] ml-1">1.4h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Chippingpath</td>
-                    <td class="py-2.5 font-bold text-slate-800">25.1%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.2%</span> <span class="text-slate-400 text-[11px] ml-1">2h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Motionstar</td>
-                    <td class="py-2.5 font-bold text-slate-800">22.6%</td>
-                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.9%</span> <span class="text-slate-400 text-[11px] ml-1">1h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Indomerdeka</td>
-                    <td class="py-2.5 font-bold text-slate-800">21.9%</td>
-                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-1.3%</span> <span class="text-slate-400 text-[11px] ml-1">2h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Mostera</td>
-                    <td class="py-2.5 font-bold text-slate-800">20.3%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.2%</span> <span class="text-slate-400 text-[11px] ml-1">1.3h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Chiperuner</td>
-                    <td class="py-2.5 font-bold text-slate-800">19.9%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+0.1%</span> <span class="text-slate-400 text-[11px] ml-1">1.4h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Lockingdraw</td>
-                    <td class="py-2.5 font-bold text-slate-800">17.4%</td>
-                    <td class="py-2.5 text-right"><span class="text-emerald-500 font-bold">+1.8%</span> <span class="text-slate-400 text-[11px] ml-1">2.1h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Dominic.com</td>
-                    <td class="py-2.5 font-bold text-slate-800">9.6%</td>
-                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-0.1%</span> <span class="text-slate-400 text-[11px] ml-1">1.1h</span></td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Eureka</td>
-                    <td class="py-2.5 font-bold text-slate-800">0.9%</td>
-                    <td class="py-2.5 text-right"><span class="text-rose-500 font-bold">-1.7%</span> <span class="text-slate-400 text-[11px] ml-1">2.8h</span></td>
+                  <tr class="hover:bg-slate-50/70 transition">
+                    <td class="py-3 font-extrabold text-slate-900 flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                      <span>racconmail.com</span>
+                    </td>
+                    <td class="py-3 font-mono text-[11px] text-slate-600">mail.racconmail.eu (10)</td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">PASS</span></td>
+                    <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">PASS (RSA)</span></td>
+                    <td class="py-3 text-right"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">REJECT (100%)</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            <div class="pt-2 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2 border-t border-slate-50">
+              <span class="flex items-center gap-1"><i class="fas fa-check-double text-emerald-500"></i> No DNS misconfigurations detected</span>
+              <span class="font-mono text-slate-500">TTL: 3600s • DNSSEC: Active</span>
+            </div>
           </div>
 
-          <!-- Right: Keywords by country Floating Card (5 cols on lg) -->
-          <div class="lg:col-span-5 rounded-[28px] bg-white border border-slate-100 p-6 shadow-xl shadow-indigo-100/40 relative">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="font-bold text-slate-900 text-base">Keywords by country</h3>
-              <span class="text-slate-400 text-lg cursor-pointer hover:text-slate-700">•••</span>
-            </div>
-            
-            <div class="flex items-center gap-2 mb-3 text-[11px] text-slate-400">
-              <span class="px-2.5 py-1 rounded-full border border-slate-200/60 bg-slate-50 text-slate-600 font-medium">Organic ▾</span>
-              <span class="px-2.5 py-1 rounded-full border border-slate-200/60 bg-slate-50 text-slate-600 font-medium">Country ▾</span>
+          <!-- Right: Live Mail Server Ports & Security Vitals (5 cols on lg) -->
+          <div class="lg:col-span-5 rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm min-w-0 overflow-hidden space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                  <i data-lucide="server" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-sm">Mail Protocol Daemons</h3>
+                  <p class="text-[10px] text-slate-400">cPanel Exim, Dovecot &amp; Inbound Ports</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase shrink-0">All Online</span>
             </div>
 
-            <!-- Vibrant Royal Blue Wave Chart + Continuation Gray Line -->
-            <div class="relative w-full h-28 my-3">
-              <svg class="w-full h-full overflow-visible" viewBox="0 0 360 90" preserveAspectRatio="none">
-                <!-- Royal Cobalt Blue Wave -->
-                <path d="M 10,65 C 35,68 55,95 80,90 C 110,82 125,62 150,65 C 175,68 195,45 220,48 C 245,52 270,18 300,22" fill="none" stroke="#4d7cfe" stroke-width="3.5" stroke-linecap="round" />
-                <!-- Subtle gray continuation line -->
-                <path d="M 300,22 C 320,32 345,35 360,32" fill="none" stroke="#e2e8f0" stroke-width="3.5" stroke-linecap="round" />
-                <!-- Royal Blue Highlight Dot at peak -->
-                <circle cx="300" cy="22" r="5" fill="#4d7cfe" stroke="#ffffff" stroke-width="2.5" />
-              </svg>
-              <!-- Highlight Badge +15% -->
-              <div class="absolute" style="left: calc(83.3% - 16px); top: -8px;">
-                <span class="text-[9px] font-extrabold text-white bg-[#4d7cfe] px-2 py-0.5 rounded-full shadow-md shadow-blue-200">+15%</span>
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-bold text-slate-800">SMTP Inbound</span>
+                </div>
+                <span class="font-mono text-[11px] text-slate-500">Port 25 • Listening</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-bold text-slate-800">SMTP Submission</span>
+                </div>
+                <span class="font-mono text-[11px] text-slate-500">Port 587 • STARTTLS</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-bold text-slate-800">SMTPS Secure</span>
+                </div>
+                <span class="font-mono text-[11px] text-slate-500">Port 465 • SSL/TLS</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-bold text-slate-800">IMAPS Mailbox</span>
+                </div>
+                <span class="font-mono text-[11px] text-slate-500">Port 993 • SSL/TLS</span>
               </div>
             </div>
 
-            <!-- Lower Keywords Table -->
-            <div class="overflow-x-auto mt-3">
-              <table class="w-full text-left text-xs">
-                <thead class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-50 pb-2">
-                  <tr>
-                    <th class="pb-2 font-semibold">KEYWORDS</th>
-                    <th class="pb-2 font-semibold">POSITION</th>
-                    <th class="pb-2 font-semibold">VOLUME</th>
-                    <th class="pb-2 text-right font-semibold">TRAFFIC</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50/80 text-xs">
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">UI Design</td>
-                    <td class="py-2.5 font-bold text-slate-500">1</td>
-                    <td class="py-2.5 text-slate-600 font-semibold">194k</td>
-                    <td class="py-2.5 text-right font-bold text-slate-800">1.8%</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Web Development</td>
-                    <td class="py-2.5 font-bold text-slate-500">2</td>
-                    <td class="py-2.5 text-slate-600 font-semibold">121k</td>
-                    <td class="py-2.5 text-right font-bold text-slate-800">1.1%</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2.5 font-bold text-slate-800">Illustration</td>
-                    <td class="py-2.5 font-bold text-slate-500">3</td>
-                    <td class="py-2.5 text-slate-600 font-semibold">110k</td>
-                    <td class="py-2.5 text-right font-bold text-slate-800">2.1%</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400">Intrusion Shield (Fail2ban)</span>
+              <span class="font-extrabold text-emerald-600">Active (0 Blocks)</span>
             </div>
-
           </div>
 
-        </div>
-
-        <!-- Quick Operations & Update Engine Control -->
-        <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wide">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Continuous Engine
-              </span>
-              <span class="text-xs text-slate-400 font-semibold">Nocturnal Courier Daemon Active</span>
-            </div>
-            <h4 class="text-sm font-bold text-slate-900">Background Content &amp; Feed Engine</h4>
-            <p class="text-xs text-slate-400">Syncs topics, digests articles, and guarantees real-time notification push without external attribution markers.</p>
-          </div>
-          <button id="btn-sync-engine" onclick="adminApp.triggerUpdateEngine()" class="rounded-full bg-[#6c4ff5] hover:bg-[#583bcc] text-white font-bold text-xs px-5 py-2.5 transition flex items-center justify-center gap-2 shadow-md shadow-indigo-200 cursor-pointer shrink-0">
-            <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
-            <span>Update Content Now</span>
-          </button>
         </div>
 
       </section>
@@ -754,12 +694,12 @@
         </div>
       </section>
 
-      <!-- 3. KEYWORD / FORUM MODERATION VIEW -->
+      <!-- 3. FORUM MODERATION VIEW -->
       <section id="view-forum" class="hidden space-y-5">
         <div class="rounded-[28px] bg-white border border-slate-100 p-6 shadow-sm space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 class="text-lg font-bold text-slate-900">Keyword &amp; Forum Moderation</h3>
+              <h3 class="text-lg font-bold text-slate-900">Community &amp; Forum Moderation</h3>
               <p class="text-xs text-slate-400">Monitor public forum topics. Delete spam, inappropriate posts, or offensive topics with 1 click.</p>
             </div>
             <button onclick="adminApp.loadForumPosts()" class="rounded-full border border-slate-200/80 bg-white px-4 py-1.5 text-xs font-semibold hover:bg-slate-50 transition flex items-center gap-1.5 cursor-pointer text-slate-700 shadow-2xs">
@@ -1353,13 +1293,13 @@
         const titleEl = document.getElementById('admin-header-title');
         if (titleEl) {
           const titles = {
-            overview: 'Welcome to Dashboard',
-            users: 'Analysis & Member Directory',
-            forum: 'Keyword & Forum Moderation',
+            overview: 'Mail Server Telemetry & Telematics',
+            users: 'Mailbox Accounts & Member Quotas',
+            forum: 'Raccon Community Forum Moderation',
             news: 'News Wire & Article Syndication',
-            broadcast: 'Integration & Broadcast',
-            system: 'Position Tracking & Health',
-            plans: 'Setting & Pro Subscription Gateway'
+            broadcast: 'Global Dispatch & System Broadcast',
+            system: 'Mail Server Security & System Health',
+            plans: 'Subscription Tiers & Gateway Settings'
           };
           titleEl.textContent = titles[tab] || 'Welcome to Dashboard';
         }
@@ -1433,24 +1373,24 @@
                 ${u.is_admin ? '<span class="bg-indigo-50 text-[#7052ff] border border-indigo-200 px-2 py-0.5 rounded-full font-bold text-[10px]">ADMIN</span>' : '<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full text-[10px]">Member</span>'}
               </td>
               <td class="p-3.5">
-                ${isBanned ? '<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full font-bold text-[10px]">SUSPENDAT</span>' : '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold text-[10px]">ACTIV</span>'}
+                ${isBanned ? '<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2.5 py-0.5 rounded-full font-bold text-[10px]">SUSPENDED</span>' : '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-bold text-[10px]">ACTIVE</span>'}
               </td>
               <td class="p-3.5 text-slate-400 text-[11px]">${new Date(u.created_at).toLocaleDateString()}</td>
               <td class="p-3.5 text-right space-x-1.5 whitespace-nowrap">
                 <!-- Suspend / Unsuspend Button -->
                 ${isBanned ? `
-                  <button onclick="adminApp.unbanUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Activează Membru" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] cursor-pointer">
-                    <i class="fas fa-check-circle mr-1"></i>Activează
+                  <button onclick="adminApp.unbanUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Activate Member" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[11px] cursor-pointer">
+                    <i class="fas fa-check-circle mr-1"></i>Activate
                   </button>
                 ` : `
-                  <button onclick="adminApp.banUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Suspendă Membru" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] cursor-pointer">
-                    <i class="fas fa-ban mr-1"></i>Suspendă
+                  <button onclick="adminApp.banUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Suspend Member" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] cursor-pointer">
+                    <i class="fas fa-ban mr-1"></i>Suspend
                   </button>
                 `}
-                <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Resetare Parolă" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white transition cursor-pointer">
+                <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Reset Password" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-900 hover:text-white transition cursor-pointer">
                   <i data-lucide="key" class="h-3.5 w-3.5"></i>
                 </button>
-                <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Șterge Definitiv" class="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition cursor-pointer">
+                <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Permanently Delete" class="p-1.5 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition cursor-pointer">
                   <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
                 </button>
               </td>
@@ -1472,7 +1412,7 @@
                     <div class="font-bold text-xs truncate flex items-center gap-1.5">
                       <span class="text-slate-900">${this.escapeHtml(u.name)}</span>
                       ${u.is_admin ? '<span class="bg-indigo-50 text-[#7052ff] border border-indigo-200 text-[9px] font-bold px-1.5 py-0.2 rounded">ADMIN</span>' : ''}
-                      ${isBanned ? '<span class="bg-rose-50 text-rose-700 border border-rose-200 text-[9px] font-bold px-1.5 py-0.2 rounded">SUSPENDAT</span>' : '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold px-1.5 py-0.2 rounded">ACTIV</span>'}
+                      ${isBanned ? '<span class="bg-rose-50 text-rose-700 border border-rose-200 text-[9px] font-bold px-1.5 py-0.2 rounded">SUSPENDED</span>' : '<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold px-1.5 py-0.2 rounded">ACTIVE</span>'}
                     </div>
                     <div class="text-[11px] font-mono text-slate-500 truncate">${this.escapeHtml(u.email)}</div>
                   </div>
@@ -1480,18 +1420,18 @@
 
                 <div class="flex items-center gap-1 shrink-0">
                   ${isBanned ? `
-                    <button onclick="adminApp.unbanUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Activează" class="px-2 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold cursor-pointer">
-                      <i class="fas fa-check-circle mr-1"></i>Activează
+                    <button onclick="adminApp.unbanUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Activate" class="px-2 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold cursor-pointer">
+                      <i class="fas fa-check-circle mr-1"></i>Activate
                     </button>
                   ` : `
-                    <button onclick="adminApp.banUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Suspendă" class="px-2 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold cursor-pointer">
-                      <i class="fas fa-ban mr-1"></i>Suspendă
+                    <button onclick="adminApp.banUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Suspend" class="px-2 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold cursor-pointer">
+                      <i class="fas fa-ban mr-1"></i>Suspend
                     </button>
                   `}
-                  <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Resetare Parolă" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white transition cursor-pointer">
+                  <button onclick="adminApp.openResetPassModal('${u.id}', '${this.escapeHtml(u.email)}')" title="Reset Password" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white transition cursor-pointer">
                     <i data-lucide="key" class="h-3.5 w-3.5"></i>
                   </button>
-                  <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Șterge" class="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition cursor-pointer">
+                  <button onclick="adminApp.deleteUser('${u.id}', '${this.escapeHtml(u.email)}')" title="Delete" class="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition cursor-pointer">
                     <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
                   </button>
                 </div>

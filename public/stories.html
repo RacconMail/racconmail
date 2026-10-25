@@ -354,7 +354,7 @@
         <button 
           onclick="openSubscriptionPlansModal()" 
           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-orange-500 to-violet-600 shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer mr-1"
-          title="Abonamente &amp; Pro Plans"
+          title="Pro Plans &amp; Subscriptions"
         >
           <i class="fas fa-crown text-amber-200 text-xs"></i>
           <span class="hidden sm:inline">Pro Plans</span>
@@ -374,9 +374,9 @@
         <!-- Authenticated View -->
         <div id="auth-user-group" class="hidden items-center gap-3">
           <div class="relative">
-            <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-2 p-1 pl-2 bg-slate-100 hover:bg-slate-200/80 rounded-full border border-slate-200 transition cursor-pointer">
-              <span id="user-display-name" class="text-xs font-bold text-slate-800 max-w-[110px] truncate">Author</span>
-              <img id="user-display-avatar" src="/raccoon-logo.png" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs" />
+            <button id="user-menu-btn" onclick="toggleUserDropdown()" class="flex items-center gap-1.5 p-1 sm:pl-2.5 bg-slate-100 hover:bg-slate-200/80 rounded-full border border-slate-200 transition cursor-pointer shrink-0" title="Account Profile">
+              <span id="user-display-name" class="hidden sm:inline-block text-xs font-bold text-slate-800 max-w-[100px] truncate">Author</span>
+              <img id="user-display-avatar" src="/raccoon-logo.svg" alt="Avatar" class="h-7 w-7 rounded-full object-cover border border-white shadow-2xs shrink-0" />
             </button>
             
             <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs">
@@ -484,7 +484,7 @@
             >
               <div class="flex items-center gap-2">
                 <i class="fas fa-gem text-amber-500 group-hover:rotate-12 transition-transform"></i>
-                <span>Abonamente &amp; Pro</span>
+                <span>Pro Subscriptions</span>
               </div>
               <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-amber-200 text-amber-900 uppercase">PRO</span>
             </button>
@@ -654,8 +654,8 @@
           </div>
         </div>
 
-        <!-- Sidebar Resource Links -->
-        <div class="text-[11px] text-slate-400 px-3 space-y-1">
+        <!-- Sidebar Resource Links (Desktop Only: Visible on large screens) -->
+        <div class="hidden lg:block text-[11px] text-slate-400 px-3 space-y-1">
           <div class="flex items-center gap-3 font-semibold">
             <a href="/" class="hover:text-slate-700">Home</a>
             <span>&bull;</span>
@@ -1000,6 +1000,22 @@
 
     </div>
   </main>
+
+  <!-- =========================================================================
+       MOBILE & SMARTPHONE FOOTER (Placed cleanly at the bottom for phones/tablets)
+       ========================================================================= -->
+  <footer class="lg:hidden w-full border-t border-slate-200/80 bg-white/60 py-6 px-4 text-center text-xs text-slate-400 mt-6 mb-20 sm:mb-8 select-none">
+    <div class="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2 font-semibold text-slate-600 mb-2">
+      <a href="/" class="hover:text-slate-900 transition">Home</a>
+      <span class="text-slate-300">&bull;</span>
+      <a href="/forum" class="hover:text-slate-900 transition">Forum</a>
+      <span class="text-slate-300">&bull;</span>
+      <a href="/legal/terms" class="hover:text-slate-900 transition">Terms</a>
+      <span class="text-slate-300">&bull;</span>
+      <a href="/legal/privacy" class="hover:text-slate-900 transition">Privacy</a>
+    </div>
+    <p class="text-[11px] text-slate-400">&copy; 2026 Raccon Mail. All rights reserved.</p>
+  </footer>
 
   <!-- =========================================================================
        FLARUM FLOATING / SLIDE-UP COMPOSER DRAWER ("POST A STORY")
@@ -2192,15 +2208,15 @@
             <i class="fas fa-crown text-amber-500"></i>
             <span>Raccon Pro &amp; Premium Upgrades</span>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Alege Planul Tău de Subscripție</h2>
-          <p class="text-xs sm:text-sm text-slate-500 font-medium">Deblochează acces VIP la Forum, Stories complete, stocare extinsă și securitate PGP end-to-end fără limite.</p>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Choose Your Subscription Plan</h2>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium">Unlock VIP Forum access, complete Stories catalog, expanded NVMe storage, and unlimited PGP E2EE privacy.</p>
           
           <!-- Billing Cycle Toggle -->
           <div class="pt-3 inline-flex items-center p-1 rounded-full bg-slate-100 border border-slate-200/80">
-            <button type="button" id="sub-cycle-monthly" onclick="setSubBillingCycle('monthly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition bg-white text-slate-900 shadow-2xs">Lunar</button>
+            <button type="button" id="sub-cycle-monthly" onclick="setSubBillingCycle('monthly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition bg-white text-slate-900 shadow-2xs">Monthly</button>
             <button type="button" id="sub-cycle-yearly" onclick="setSubBillingCycle('yearly')" class="px-4 py-1.5 rounded-full text-xs font-bold transition text-slate-500 hover:text-slate-800 flex items-center gap-1.5">
-              <span>Anual</span>
-              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-tight">-20% Reducere</span>
+              <span>Yearly</span>
+              <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase tracking-tight">-20% Discount</span>
             </button>
           </div>
         </div>
@@ -2214,7 +2230,7 @@
         <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
           <div class="flex items-center gap-2">
             <i class="fas fa-shield-alt text-emerald-500"></i>
-            <span>Garanție de returnare 30 de zile • Zero taxe ascunse</span>
+            <span>30-Day Money-Back Guarantee • Zero Hidden Fees</span>
           </div>
           <div class="flex items-center gap-3">
             <i class="fab fa-cc-visa text-slate-400 text-base"></i>
@@ -2230,11 +2246,11 @@
         <div class="flex items-center justify-between pb-4 border-b border-slate-100">
           <button type="button" onclick="backToPlansSelection()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition cursor-pointer">
             <i class="fas fa-arrow-left text-[10px]"></i>
-            <span>Înapoi la Planuri</span>
+            <span>Back to Plans</span>
           </button>
           <div class="flex items-center gap-2">
             <i class="fas fa-lock text-emerald-600 text-xs"></i>
-            <span class="text-xs font-bold text-slate-700">Checkout Criptat SSL</span>
+            <span class="text-xs font-bold text-slate-700">256-Bit SSL Encrypted Checkout</span>
           </div>
         </div>
 
@@ -2243,15 +2259,15 @@
           <!-- Left Column: Payment Form (7 cols) -->
           <div class="md:col-span-7 space-y-4">
             <div>
-              <h3 class="text-base font-extrabold text-slate-900">Finalizare Plată Securizată</h3>
-              <p class="text-xs text-slate-400 mt-0.5">Selectează metoda de plată pentru a activa subscripția.</p>
+              <h3 class="text-base font-extrabold text-slate-900">Secure Payment Checkout</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Select your payment method to activate your subscription.</p>
             </div>
 
             <!-- Payment Method Tabs -->
             <div class="grid grid-cols-2 gap-3 pt-1">
               <button type="button" id="btn-pay-card" onclick="selectPayMethod('card')" class="p-3 rounded-2xl border-2 border-[#6c4ff5] bg-indigo-50/30 flex items-center justify-center gap-2 text-xs font-bold text-slate-900 transition cursor-pointer">
                 <i class="far fa-credit-card text-[#6c4ff5]"></i>
-                <span>Card Bancar</span>
+                <span>Credit / Debit Card</span>
               </button>
               <button type="button" id="btn-pay-paypal" onclick="selectPayMethod('paypal')" class="p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center gap-2 text-xs font-bold text-slate-700 transition cursor-pointer">
                 <i class="fab fa-paypal text-blue-600"></i>
@@ -2263,12 +2279,12 @@
             <form id="sub-checkout-form" onsubmit="handleSubscriptionPaymentSubmit(event)" class="space-y-3 pt-2">
               <div id="card-fields-container" class="space-y-3">
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Nume pe Card</label>
-                  <input type="text" id="chk-card-name" required placeholder="ex. Alexandru Popescu" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-medium" />
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Cardholder Name</label>
+                  <input type="text" id="chk-card-name" required placeholder="e.g. Alex Hunter" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-medium" />
                 </div>
 
                 <div>
-                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Număr Card</label>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Card Number</label>
                   <div class="relative">
                     <input type="text" id="chk-card-number" required maxlength="19" placeholder="4532 •••• •••• 8892" oninput="formatCardNumberInput(this)" class="w-full pl-3.5 pr-10 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono" />
                     <i class="far fa-credit-card text-slate-400 absolute right-3.5 top-3 text-sm"></i>
@@ -2277,7 +2293,7 @@
 
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Expirare (LL/AA)</label>
+                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Expiration (MM/YY)</label>
                     <input type="text" id="chk-card-exp" required maxlength="5" placeholder="12/28" oninput="formatCardExpInput(this)" class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#6c4ff5]/20 focus:border-[#6c4ff5] outline-none text-slate-900 font-mono text-center" />
                   </div>
                   <div>
@@ -2291,15 +2307,15 @@
               <div id="paypal-notice-container" class="hidden p-4 rounded-2xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1">
                 <div class="font-bold flex items-center gap-1.5">
                   <i class="fab fa-paypal text-blue-600"></i>
-                  <span>Autentificare PayPal Express Checkout</span>
+                  <span>Authenticate PayPal Express Checkout</span>
                 </div>
-                <p class="text-[11px] text-blue-700 leading-relaxed">Vei fi redirecționat în mod securizat către PayPal pentru confirmarea debitării periodice.</p>
+                <p class="text-[11px] text-blue-700 leading-relaxed">You will be securely redirected to PayPal Express to authorize your billing schedule.</p>
               </div>
 
               <div class="pt-3">
                 <button type="submit" id="sub-pay-submit-btn" class="w-full py-3 px-5 rounded-2xl bg-[#6c4ff5] hover:bg-[#583bcc] active:scale-98 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition flex items-center justify-center gap-2 cursor-pointer">
                   <i class="fas fa-lock text-xs"></i>
-                  <span id="sub-pay-btn-label">Plătește Acum €9.99</span>
+                  <span id="sub-pay-btn-label">Pay Now €9.99</span>
                 </button>
               </div>
             </form>
@@ -2308,13 +2324,13 @@
           <!-- Right Column: Order Summary (5 cols) -->
           <div class="md:col-span-5 bg-slate-50 rounded-2xl p-5 border border-slate-200/80 flex flex-col justify-between space-y-4">
             <div>
-              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Sumar Comandă</h4>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Order Summary</h4>
               <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 mb-4">
                 <div class="flex items-center justify-between">
                   <span id="summary-plan-name" class="font-bold text-slate-900 text-sm">Pro Creator</span>
                   <span id="summary-plan-badge" class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-violet-100 text-violet-800 uppercase">POPULAR</span>
                 </div>
-                <div id="summary-plan-period" class="text-xs text-slate-500 font-medium">Facturare lunară • Reînnoire automată</div>
+                <div id="summary-plan-period" class="text-xs text-slate-500 font-medium">Billed monthly • Automatic renewal</div>
               </div>
 
               <div class="space-y-2 text-xs text-slate-600 border-b border-slate-200/80 pb-3">
@@ -2323,22 +2339,22 @@
                   <span id="summary-subtotal" class="font-bold text-slate-900">€9.99</span>
                 </div>
                 <div class="flex justify-between">
-                  <span>TVA / Taxe incluse</span>
+                  <span>Taxes & Fees Included</span>
                   <span class="font-bold text-emerald-600">€0.00</span>
                 </div>
               </div>
 
               <div class="flex justify-between items-center pt-3">
-                <span class="font-bold text-sm text-slate-900">Total de Plată:</span>
+                <span class="font-bold text-sm text-slate-900">Total Amount:</span>
                 <span id="summary-total" class="font-extrabold text-xl text-[#6c4ff5]">€9.99</span>
               </div>
             </div>
 
             <div class="p-3 rounded-xl bg-white border border-slate-200/60 text-[11px] text-slate-500 space-y-1">
               <div class="font-bold text-slate-800 flex items-center gap-1">
-                <i class="fas fa-check-circle text-emerald-500"></i> Beneficii Imediate
+                <i class="fas fa-check-circle text-emerald-500"></i> Instant VIP Benefits
               </div>
-              <p class="leading-relaxed">Activare instantanee pe cont. PGP E2EE, forum VIP badge, și lectură nelimitată Stories.</p>
+              <p class="leading-relaxed">Instant account activation. PGP E2EE vault, Forum VIP Badge, and unlimited Stories reading.</p>
             </div>
           </div>
         </div>
@@ -2350,17 +2366,17 @@
           <i class="fas fa-check"></i>
         </div>
         <div class="space-y-1">
-          <h3 class="text-2xl font-extrabold text-slate-900">Felicitări! Subscripție Activată 🎉</h3>
-          <p id="sub-success-message" class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">Contul tău a fost actualizat cu succes la planul Pro. Beneficiezi acum de toate funcționalitățile VIP!</p>
+          <h3 class="text-2xl font-extrabold text-slate-900">Congratulations! Subscription Activated 🎉</h3>
+          <p id="sub-success-message" class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">Your account has been successfully upgraded. You now enjoy all VIP features across the entire network!</p>
         </div>
         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 max-w-sm mx-auto text-xs space-y-1 text-left font-mono">
-          <div class="flex justify-between"><span class="text-slate-400">Tranzacție:</span><span id="sub-success-txid" class="text-slate-800 font-bold">TX-89214</span></div>
-          <div class="flex justify-between"><span class="text-slate-400">Status:</span><span class="text-emerald-600 font-bold">Activ / Confirmat</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Transaction ID:</span><span id="sub-success-txid" class="text-slate-800 font-bold">TX-89214</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Status:</span><span class="text-emerald-600 font-bold">Active / Confirmed</span></div>
           <div class="flex justify-between"><span class="text-slate-400">Plan:</span><span id="sub-success-plan" class="text-[#6c4ff5] font-bold">Pro Creator</span></div>
         </div>
         <div class="pt-4">
           <button type="button" onclick="closeSubscriptionPlansModal()" class="px-8 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition cursor-pointer">
-            Începe Să Folosești Pro 🦝
+            Start Using Pro 🦝
           </button>
         </div>
       </div>
@@ -2459,7 +2475,7 @@
           <div class="rounded-3xl border transition-all duration-200 p-6 flex flex-col justify-between relative ${isPopular ? 'border-[#6c4ff5] bg-gradient-to-b from-indigo-50/40 via-white to-white shadow-xl shadow-indigo-100 ring-2 ring-[#6c4ff5]/30' : 'border-slate-200/80 bg-white hover:border-slate-300 shadow-sm'}">
             ${isPopular ? `
               <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-[#6c4ff5] text-white font-extrabold text-[9px] uppercase tracking-wider shadow-sm">
-                Cel Mai Popular
+                Most Popular
               </div>
             ` : ''}
 
@@ -2471,11 +2487,11 @@
 
               <div class="my-3">
                 <div class="flex items-baseline gap-1">
-                  <span class="text-3xl font-black text-slate-900">${isFree ? 'Gratuit' : '€' + price}</span>
-                  ${!isFree ? `<span class="text-xs text-slate-400 font-semibold">${activeSubCycle === 'yearly' ? '/an' : '/lună'}</span>` : ''}
+                  <span class="text-3xl font-black text-slate-900">${isFree ? 'Free' : '€' + price}</span>
+                  ${!isFree ? `<span class="text-xs text-slate-400 font-semibold">${activeSubCycle === 'yearly' ? '/yr' : '/mo'}</span>` : ''}
                 </div>
                 <div class="text-[11px] text-slate-400 mt-0.5">
-                  ${isFree ? 'Acces standard comunitar' : (activeSubCycle === 'yearly' ? 'Facturare anuală (€' + (price/12).toFixed(2) + '/lună)' : 'Facturare lunară, anulezi oricând')}
+                  ${isFree ? 'Standard community access' : (activeSubCycle === 'yearly' ? 'Billed annually (€' + (price/12).toFixed(2) + '/mo)' : 'Billed monthly, cancel anytime')}
                 </div>
               </div>
 
@@ -2492,12 +2508,12 @@
             <div class="pt-6">
               ${isFree ? `
                 <button type="button" onclick="closeSubscriptionPlansModal()" class="w-full py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition cursor-pointer">
-                  Plan Curent
+                  Current Plan
                 </button>
               ` : `
                 <button type="button" onclick="startPlanCheckout('${p.id}')" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs transition shadow-md cursor-pointer flex items-center justify-center gap-1.5 ${isPopular ? 'bg-[#6c4ff5] hover:bg-[#583bcc] text-white shadow-indigo-300' : 'bg-slate-900 hover:bg-black text-white'}">
                   <i class="fas fa-bolt text-amber-300 text-[10px]"></i>
-                  <span>Alege &amp; Plătește</span>
+                  <span>Select &amp; Pay</span>
                 </button>
               `}
             </div>
@@ -2517,10 +2533,10 @@
       const formattedPrice = '€' + Number(price).toFixed(2);
 
       document.getElementById('summary-plan-name').textContent = currentSelectedPlan.name;
-      document.getElementById('summary-plan-period').textContent = (activeSubCycle === 'yearly') ? 'Facturare anuală (Reducere inclusă)' : 'Facturare lunară';
+      document.getElementById('summary-plan-period').textContent = (activeSubCycle === 'yearly') ? 'Billed yearly (Discount included)' : 'Billed monthly';
       document.getElementById('summary-subtotal').textContent = formattedPrice;
       document.getElementById('summary-total').textContent = formattedPrice;
-      document.getElementById('sub-pay-btn-label').textContent = 'Plătește Acum ' + formattedPrice;
+      document.getElementById('sub-pay-btn-label').textContent = 'Pay Now ' + formattedPrice;
     }
 
     function backToPlansSelection() {
@@ -2540,13 +2556,13 @@
         btnPaypal.className = 'p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center gap-2 text-xs font-bold text-slate-700 transition cursor-pointer';
         cardFields.classList.remove('hidden');
         paypalNotice.classList.add('hidden');
-        document.getElementById('sub-pay-btn-label').textContent = 'Plătește Acum ' + document.getElementById('summary-total').textContent;
+        document.getElementById('sub-pay-btn-label').textContent = 'Pay Now ' + document.getElementById('summary-total').textContent;
       } else {
         btnPaypal.className = 'p-3 rounded-2xl border-2 border-blue-500 bg-blue-50/30 flex items-center justify-center gap-2 text-xs font-bold text-slate-900 transition cursor-pointer';
         btnCard.className = 'p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center gap-2 text-xs font-bold text-slate-700 transition cursor-pointer';
         cardFields.classList.add('hidden');
         paypalNotice.classList.remove('hidden');
-        document.getElementById('sub-pay-btn-label').textContent = 'Continuă cu PayPal ' + document.getElementById('summary-total').textContent;
+        document.getElementById('sub-pay-btn-label').textContent = 'Continue with PayPal ' + document.getElementById('summary-total').textContent;
       }
     }
 
@@ -2573,7 +2589,7 @@
       e.preventDefault();
       const btn = document.getElementById('sub-pay-submit-btn');
       const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> <span>Se procesează plata...</span>';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> <span>Processing payment...</span>';
       btn.disabled = true;
 
       try {
@@ -2591,15 +2607,15 @@
         });
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.error || 'Plata nu a putut fi finalizată.');
+        if (!res.ok) throw new Error(data.error || 'Payment could not be completed.');
 
         document.getElementById('sub-step-checkout')?.classList.add('hidden');
         document.getElementById('sub-step-success')?.classList.remove('hidden');
         document.getElementById('sub-success-plan').textContent = currentSelectedPlan.name;
         document.getElementById('sub-success-txid').textContent = data.subscription_id || ('TX-' + Math.floor(Math.random()*90000 + 10000));
-        document.getElementById('sub-success-message').textContent = data.message || 'Subscripția a fost activată cu succes pe contul tău!';
+        document.getElementById('sub-success-message').textContent = data.message || 'Subscription successfully activated on your account!';
       } catch (err) {
-        alert('Eroare checkout: ' + err.message);
+        alert('Checkout error: ' + err.message);
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
