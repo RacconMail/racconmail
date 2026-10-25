@@ -694,7 +694,78 @@ try {
     <!-- ========================================================================= -->
     <!-- COLUMN 1: SIDEBAR NAVIGATION WITH ALL MAIL FOLDERS                        -->
     <!-- ========================================================================= -->
-    <aside id="sidebar-panel" class="w-72 max-w-[85vw] border-r border-slate-200 flex flex-col shrink-0 bg-white h-full p-3 overflow-y-auto select-none fixed inset-y-0 left-0 z-50 md:relative md:w-60 md:translate-x-0 transition-transform duration-200 -translate-x-full md:flex shadow-2xl md:shadow-none">
+    
+    <!-- ========================================================================= -->
+    <!-- DESKTOP APP RAIL (COLUMN 1: RISE SAAS STYLE APP SWITCHER)                 -->
+    <!-- ========================================================================= -->
+    <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-slate-900 border-r border-slate-800 shrink-0 items-center py-3 select-none text-slate-400 z-30 justify-between h-full">
+      <!-- Top Apps -->
+      <div class="flex flex-col items-center gap-2.5 w-full">
+        <!-- Logo -->
+        <a href="/inbox" onclick="window.location.reload(); return false;" class="p-1 mb-2 hover:scale-105 transition cursor-pointer" title="Raccon Mail">
+          <img src="/raccoon-logo.svg" alt="Raccon" class="w-8 h-8 object-contain" />
+        </a>
+
+        <!-- 1. Dashboard -->
+        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Dashboard">
+          <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </a>
+
+        <!-- 2. Mailbox (Active Blue Squircle) -->
+        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500 text-white shadow-lg shadow-sky-500/30 transition cursor-pointer" title="Mailbox">
+          <i data-lucide="mail" class="w-5 h-5"></i>
+        </a>
+
+        <!-- 3. Sheets -->
+        <button type="button" onclick="openProductivityDrawer('sheets')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Sheets / Spreadsheets">
+          <i data-lucide="table" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </button>
+
+        <!-- 4. Docs -->
+        <button type="button" onclick="openProductivityDrawer('notes')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Docs & Notes">
+          <i data-lucide="file-text" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </button>
+
+        <!-- 5. Whiteboards -->
+        <button type="button" onclick="openProductivityDrawer('whiteboard')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Whiteboards">
+          <i data-lucide="presentation" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </button>
+
+        <!-- 6. Contacts -->
+        <button type="button" onclick="openContactsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Contacts">
+          <i data-lucide="users" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </button>
+
+        <!-- 7. Forum -->
+        <a href="/forum" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Raccon Forum">
+          <i data-lucide="messages-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </a>
+
+        <!-- 8. Stories -->
+        <a href="/stories" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Raccon Stories">
+          <i data-lucide="book-open" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </a>
+
+        <!-- 9. Tasks -->
+        <button type="button" onclick="openProductivityDrawer('tasks')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Tasks">
+          <i data-lucide="check-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </button>
+
+        <!-- 10. News -->
+        <a href="/news" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="News Portal">
+          <i data-lucide="newspaper" class="w-5 h-5 group-hover:scale-110 transition"></i>
+        </a>
+      </div>
+
+      <!-- Bottom: Settings -->
+      <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-slate-800">
+        <button type="button" onclick="openSettingsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Settings">
+          <i data-lucide="settings" class="w-5 h-5 group-hover:rotate-45 transition"></i>
+        </button>
+      </div>
+    </aside>
+
+<aside id="sidebar-panel" class="w-72 max-w-[85vw] border-r border-slate-200 flex flex-col shrink-0 bg-white h-full p-3 overflow-y-auto select-none fixed inset-y-0 left-0 z-50 md:relative md:w-60 md:translate-x-0 transition-transform duration-200 -translate-x-full md:flex shadow-2xl md:shadow-none">
       
       <!-- Mobile Sidebar Close Header -->
       <div class="flex items-center justify-between pb-3 pt-1 border-b border-slate-100 md:hidden mb-2">
@@ -707,7 +778,38 @@ try {
         </button>
       </div>
 
-      <!-- Primary New Message Black Capsule Button at Top of Sidebar -->
+      
+      <!-- Secondary Rail Header: All Emails Dropdown Selector -->
+      <div class="relative pb-2 select-none">
+        <button type="button" onclick="toggleAllEmailsDropdown(event)" class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer border border-slate-200/60 shadow-2xs">
+          <div class="flex items-center gap-2">
+            <i data-lucide="inbox" class="w-3.5 h-3.5 text-sky-600"></i>
+            <span id="all-emails-dropdown-label">All emails</span>
+          </div>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="all-emails-dropdown-menu" class="hidden absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-xs">
+          <button type="button" onclick="switchFolder('Inbox'); closeAllEmailsDropdown();" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 font-semibold text-slate-700 flex items-center justify-between">
+            <span>Inbox</span>
+            <span class="text-[10px] text-slate-400"><?php echo $counts['inbox_total']; ?></span>
+          </button>
+          <button type="button" onclick="switchFolder('All'); closeAllEmailsDropdown();" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 font-semibold text-slate-700">
+            All Mail
+          </button>
+          <button type="button" onclick="switchFolder('Sent'); closeAllEmailsDropdown();" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 font-semibold text-slate-700">
+            Sent
+          </button>
+          <button type="button" onclick="switchFolder('Starred'); closeAllEmailsDropdown();" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 font-semibold text-slate-700">
+            Starred
+          </button>
+          <button type="button" onclick="switchFolder('Trash'); closeAllEmailsDropdown();" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 font-semibold text-slate-700">
+            Trash
+          </button>
+        </div>
+      </div>
+
+<!-- Primary New Message Black Capsule Button at Top of Sidebar -->
       <div class="pb-3 pt-1">
         <button onclick="openComposeCard()" class="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-black text-white py-2.5 px-4 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer">
           <i data-lucide="plus" class="h-4 w-4 text-white"></i>
@@ -935,7 +1037,7 @@ try {
     <!-- ========================================================================= -->
     <!-- COLUMN 2: MIDDLE INBOX LIST PANEL (~360px)                                -->
     <!-- ========================================================================= -->
-    <section id="col-inbox" class="w-full md:w-[370px] lg:w-[410px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
+    <section id="col-inbox" class="w-full md:w-[500px] lg:w-[580px] xl:w-[680px] border-r border-slate-100 flex flex-col shrink-0 bg-white h-full overflow-hidden select-none">
       
       <!-- ========================================================================= -->
       <!-- MOBILE TOP HEADER (MATCHING NATIVE ANDROID REFERENCE APP SCREENSHOT)      -->
@@ -965,18 +1067,21 @@ try {
               
               <!-- Filter Dropdown Popover -->
               <div id="mobile-filter-popover" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl p-2 z-50 text-slate-800 space-y-1">
-                <button onclick="switchCategoryFilter('All'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                <button type="button" onclick="applyEmailFilter('all')" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
                   <span>All Messages</span>
-                  <i data-lucide="check" class="w-3.5 h-3.5 text-sky-600"></i>
+                  <i id="filter-check-all" data-lucide="check" class="w-3.5 h-3.5 text-sky-600"></i>
                 </button>
-                <button onclick="switchCategoryFilter('Unread'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                <button type="button" onclick="applyEmailFilter('unread')" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
                   <span>Unread Only</span>
+                  <i id="filter-check-unread" data-lucide="check" class="hidden w-3.5 h-3.5 text-sky-600"></i>
                 </button>
-                <button onclick="switchCategoryFilter('Starred'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                <button type="button" onclick="applyEmailFilter('starred')" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
                   <span>Starred Only</span>
+                  <i id="filter-check-starred" data-lucide="check" class="hidden w-3.5 h-3.5 text-sky-600"></i>
                 </button>
-                <button onclick="openProductivityDrawer('attachments'); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
+                <button type="button" onclick="applyEmailFilter('attachments')" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-50 transition flex items-center justify-between cursor-pointer">
                   <span>With Attachments</span>
+                  <i id="filter-check-attachments" data-lucide="check" class="hidden w-3.5 h-3.5 text-sky-600"></i>
                 </button>
                 <div class="border-t border-slate-100 my-1"></div>
                 <button onclick="markAllAsReadAction(); closeMobileFilterPopover();" class="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl text-sky-600 hover:bg-sky-50 transition cursor-pointer">
@@ -1098,7 +1203,72 @@ try {
         </div>
       </div>
 
-      <!-- Messages Thread List Container -->
+      
+      <!-- Desktop Rise SaaS Workspace Header Bar -->
+      <div class="hidden md:flex items-center justify-between px-4 py-3 border-b border-slate-200/80 bg-white shrink-0 select-none">
+        <!-- Left: Title & Filter Pills -->
+        <div class="flex items-center gap-3">
+          <h2 id="desktop-workspace-title" class="text-lg font-bold text-slate-900 tracking-tight">Inbox</h2>
+          
+          <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
+            <button type="button" id="d-filter-all" onclick="applyEmailFilter('all')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-white text-slate-900 shadow-2xs cursor-pointer">
+              All
+            </button>
+            <button type="button" id="d-filter-unread" onclick="applyEmailFilter('unread')" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer">
+              Unread
+            </button>
+            <button type="button" id="d-filter-starred" onclick="applyEmailFilter('starred')" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer">
+              Starred
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Tools: Split-view toggle, Excel, Print, Search -->
+        <div class="flex items-center gap-2">
+          <!-- Split-View Toggle Button [ | ] -->
+          <button type="button" onclick="toggleDesktopSplitView()" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition cursor-pointer flex items-center gap-1 text-xs font-medium" title="Toggle Split View">
+            <i data-lucide="columns" class="w-3.5 h-3.5"></i>
+            <span class="hidden lg:inline text-[11px]">Split</span>
+          </button>
+
+          <!-- Excel CSV Export Button -->
+          <button type="button" onclick="exportEmailsToCSV()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition cursor-pointer flex items-center gap-1.5 text-xs font-medium shadow-2xs" title="Export emails to CSV">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span class="text-xs font-semibold">Excel</span>
+          </button>
+
+          <!-- Print Button -->
+          <button type="button" onclick="printActiveMail()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition cursor-pointer flex items-center gap-1.5 text-xs font-medium shadow-2xs" title="Print email">
+            <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-600"></i>
+            <span class="text-xs font-semibold">Print</span>
+          </button>
+
+          <!-- Search Input Box -->
+          <div class="relative w-40 lg:w-56">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input
+              type="text"
+              id="desktop-search-input"
+              placeholder="Search..."
+              oninput="handleSearch(this.value)"
+              class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg pl-8 pr-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-200 transition"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Rise SaaS Table Header -->
+      <div class="hidden md:flex items-center gap-3 px-4 py-2 border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 select-none">
+        <input type="checkbox" onchange="toggleSelectAllEmails(this)" class="rounded border-slate-300 text-sky-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" title="Select All" />
+        <div class="w-6 text-center shrink-0"><i class="far fa-star text-xs"></i></div>
+        <div class="w-6 text-center shrink-0"><i class="far fa-bookmark text-xs"></i></div>
+        <div class="flex-1 min-w-0 pr-2">Subject</div>
+        <div class="w-32 lg:w-44 shrink-0">From</div>
+        <div class="w-24 text-right shrink-0">Last activity</div>
+        <div class="w-8 text-center shrink-0"><i class="far fa-trash-alt text-xs"></i></div>
+      </div>
+
+<!-- Messages Thread List Container -->
       <div id="threads-container" class="flex-1 overflow-y-auto px-4 py-1 space-y-1.5 pb-24 md:pb-6">
         <!-- Rendered dynamically by renderMessageList() -->
       </div>
@@ -2257,9 +2427,15 @@ try {
         }
       });
 
-      // Update title in middle column
+      // Update title in middle column & desktop workspace & mobile title
       const titleEl = document.getElementById('current-folder-display-title');
       if (titleEl) titleEl.innerText = folderName;
+      const desktopTitle = document.getElementById('desktop-workspace-title');
+      if (desktopTitle) desktopTitle.innerText = folderName;
+      const mobileFolderTitle = document.getElementById('mobile-top-folder-title');
+      if (mobileFolderTitle) mobileFolderTitle.innerText = folderName;
+      const dropdownLabel = document.getElementById('all-emails-dropdown-label');
+      if (dropdownLabel) dropdownLabel.innerText = folderName;
 
       const trashEmptyBtn = document.getElementById('trash-empty-btn');
       if (trashEmptyBtn) {
@@ -2276,21 +2452,190 @@ try {
 
     // Filter message list (All, Unread, Starred)
     function setListFilter(filter) {
-      currentFilter = filter;
-      ['all', 'unread', 'starred'].forEach(f => {
-        const btn = document.getElementById('filter-btn-' + f);
-        if (btn) {
-          if (f === filter) {
-            btn.className = 'px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white cursor-pointer';
-          } else {
-            btn.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer';
-          }
-        }
-      });
-      renderMessageList();
+      applyEmailFilter(filter);
     }
 
     // Render messages in Middle Column
+    
+    // Unified Filter Handler for All, Unread, Starred, Attachments
+    function applyEmailFilter(mode) {
+      currentFilter = mode; // 'all', 'unread', 'starred', 'attachments'
+      
+      // Update checkmarks in mobile filter popover
+      ['all', 'unread', 'starred', 'attachments'].forEach(m => {
+        const checkEl = document.getElementById('filter-check-' + m);
+        if (checkEl) {
+          if (m === mode) checkEl.classList.remove('hidden');
+          else checkEl.classList.add('hidden');
+        }
+      });
+
+      // Update desktop filter buttons if present
+      ['all', 'unread', 'starred'].forEach(m => {
+        const dBtn = document.getElementById('d-filter-' + m);
+        if (dBtn) {
+          if (m === mode) {
+            dBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-2xs';
+          } else {
+            dBtn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100';
+          }
+        }
+      });
+
+      const q = document.getElementById('global-search')?.value || document.getElementById('desktop-search-input')?.value || '';
+      renderMessageList(q);
+      closeMobileFilterPopover();
+
+      if (typeof showToast === 'function') {
+        const label = mode === 'unread' ? 'Filter: Unread only' : (mode === 'starred' ? 'Filter: Starred only' : 'Showing all messages');
+        showToast(label, 'info');
+      }
+    }
+
+    // Export current folder emails to Excel/CSV
+    function exportEmailsToCSV() {
+      const list = (currentFolder === 'All') ? [].concat(...Object.values(mailDatabase)) : (mailDatabase[currentFolder] || []);
+      if (!list.length) {
+        alert('No emails in ' + currentFolder + ' to export.');
+        return;
+      }
+      let csv = 'ID,Sender Name,Sender Email,Subject,Date,Starred,Read\r\n';
+      list.forEach(m => {
+        const sName = (m.senderName || '').replace(/"/g, '""');
+        const sEmail = (m.sender || '').replace(/"/g, '""');
+        const subj = (m.subject || '').replace(/"/g, '""');
+        csv += `"${m.id}","${sName}","${sEmail}","${subj}","${m.time || ''}","${m.isStarred ? 'Yes':'No'}","${m.isRead ? 'Yes':'No'}"\r\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `RacconMail_${currentFolder}_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      if (typeof showToast === 'function') showToast('Exported ' + list.length + ' emails to Excel/CSV! 📊', 'success');
+    }
+
+    // Print active email
+    function printActiveMail() {
+      const list = mailDatabase[currentFolder] || mailDatabase['Inbox'] || [];
+      const msg = list[currentSelectedThreadIndex];
+      if (msg) {
+        const printWindow = window.open('', '_blank');
+        const bodyContent = msg.thread && msg.thread[0] ? (msg.thread[0].body_html || msg.thread[0].body || '') : (msg.body_html || msg.preview || '');
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${msg.subject || 'Print Email'}</title>
+              <style>
+                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; line-height: 1.6; }
+                h1 { font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #0f172a; }
+                .meta { font-size: 13px; color: #64748b; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; }
+                .content { font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <h1>${msg.subject || '(No Subject)'}</h1>
+              <div class="meta">
+                <div><strong>From:</strong> ${msg.senderName || ''} &lt;${msg.sender || ''}&gt;</div>
+                <div><strong>Date:</strong> ${msg.time || ''}</div>
+              </div>
+              <div class="content">${bodyContent}</div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+      } else {
+        window.print();
+      }
+    }
+
+    // Desktop Split-View Toggle
+    let isDesktopSplitActive = true;
+    function toggleDesktopSplitView() {
+      const colReader = document.getElementById('col-reader');
+      const colInbox = document.getElementById('col-inbox');
+      if (!colReader || !colInbox) return;
+      isDesktopSplitActive = !isDesktopSplitActive;
+
+      if (isDesktopSplitActive) {
+        colReader.classList.remove('hidden');
+        colReader.classList.add('md:flex');
+        colInbox.classList.remove('md:w-full');
+        colInbox.classList.add('md:w-[370px]', 'lg:w-[410px]');
+      } else {
+        colReader.classList.add('hidden');
+        colReader.classList.remove('md:flex');
+        colInbox.classList.remove('md:w-[370px]', 'lg:w-[410px]');
+        colInbox.classList.add('md:w-full');
+      }
+    }
+
+    // Toggle Importance
+    function toggleImportantItem(msgId) {
+      for (const f in mailDatabase) {
+        if (Array.isArray(mailDatabase[f])) {
+          const item = mailDatabase[f].find(m => m.id === msgId);
+          if (item) {
+            item.isImportant = !item.isImportant;
+            break;
+          }
+        }
+      }
+      renderMessageList(document.getElementById('global-search')?.value || document.getElementById('desktop-search-input')?.value || '');
+    }
+
+    // Master Checkbox Toggle
+    function toggleSelectAllEmails(masterCb) {
+      const isChecked = masterCb.checked;
+      document.querySelectorAll('.email-checkbox').forEach(cb => {
+        cb.checked = isChecked;
+      });
+    }
+
+    // Toggle Desktop App Rail
+    function toggleDesktopAppRail() {
+      const rail = document.getElementById('sidebar-panel');
+      if (rail) {
+        rail.classList.toggle('hidden');
+        rail.classList.toggle('md:flex');
+      }
+    }
+
+    function toggleAllEmailsDropdown(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('all-emails-dropdown-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function closeAllEmailsDropdown() {
+      const menu = document.getElementById('all-emails-dropdown-menu');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    
+    // Delete single email item with confirmation
+    async function deleteEmailItem(msgId) {
+      if (!confirm('Move this email to Trash?')) return;
+      if (typeof deleteMessageById === 'function') {
+        await deleteMessageById(msgId);
+      } else {
+        try {
+          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/trash', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_trash: 1 })
+          });
+        } catch (_) {}
+      }
+      if (typeof showToast === 'function') showToast('Email moved to Trash 🗑️', 'info');
+    }
+
     function renderMessageList(searchQuery = '') {
       const container = document.getElementById('threads-container');
       if (!container) return;
@@ -2311,6 +2656,7 @@ try {
       // Apply sub-filters
       if (currentFilter === 'unread') list = list.filter(m => !m.isRead);
       if (currentFilter === 'starred') list = list.filter(m => m.isStarred);
+      if (currentFilter === 'attachments') list = list.filter(m => m.hasAttachments || (m.attachments && m.attachments.length > 0));
 
       // Apply search query
       if (searchQuery.trim()) {
@@ -2386,46 +2732,88 @@ try {
                ontouchend="handleCardTouchEnd(event, ${idx})"
                oncontextmenu="handleCardContextMenu(event, '${msg.id}', ${idx})"
                id="thread-item-${idx}"
-               class="flex items-start gap-3.5 px-4 py-3.5 border-b border-slate-100 hover:bg-slate-50/80 active:bg-slate-100 transition cursor-pointer relative select-none ${isActive ? 'bg-sky-50/70 border-l-[3px] border-l-sky-500' : 'bg-white'}">
-            
-            <!-- Left: Circular Sender Avatar with Initial Letter or Photo (Matching Reference App) -->
-            <div class="w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center shrink-0 font-bold text-sm shadow-2xs overflow-hidden mt-0.5">
-              ${msg.senderAvatar ? `<img src="${escapeHtml(msg.senderAvatar)}" class="w-full h-full object-cover" onerror="this.remove()">` : ''}
-              <span>${initial}</span>
+               class="cursor-pointer select-none transition">
+
+            <!-- Mobile 3-line Card View (Preserved exactly for mobile devices) -->
+            <div class="md:hidden flex items-start gap-3.5 px-4 py-3.5 border-b border-slate-100 hover:bg-slate-50/80 active:bg-slate-100 transition relative ${isActive ? 'bg-sky-50/70 border-l-[3px] border-l-sky-500' : 'bg-white'}">
+              <!-- Left: Circular Sender Avatar with Initial Letter or Photo -->
+              <div class="w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center shrink-0 font-bold text-sm shadow-2xs overflow-hidden mt-0.5">
+                ${msg.senderAvatar ? `<img src="${escapeHtml(msg.senderAvatar)}" class="w-full h-full object-cover" onerror="this.remove()">` : ''}
+                <span>${initial}</span>
+              </div>
+
+              <!-- Middle: 3-line Content (Sender/Date, Subject, Snippet/Star) -->
+              <div class="flex-1 min-w-0 pr-0.5">
+                <!-- Row 1: Sender Name + Timestamp -->
+                <div class="flex items-center justify-between gap-2 mb-0.5">
+                  <span class="${isRead ? 'font-semibold text-slate-700' : 'font-extrabold text-slate-900'} text-[14px] sm:text-sm truncate max-w-[calc(100vw-150px)] sm:max-w-xs">
+                    ${escapeHtml(senderDisplayName)}
+                  </span>
+                  <span class="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0 ml-auto font-mono">
+                    ${escapeHtml(timeDisplay)}
+                  </span>
+                </div>
+
+                <!-- Row 2: Subject Line (Highlighted in blue/primary matching screenshot) -->
+                <h4 class="text-[13px] sm:text-sm ${isRead ? 'font-medium text-slate-700' : 'font-semibold text-sky-600'} truncate mb-0.5 leading-snug">
+                  ${escapeHtml(msg.subject || '(no subject)')}
+                </h4>
+
+                <!-- Row 3: Preview Snippet + Quick Star Action on right -->
+                <div class="flex items-center justify-between gap-2">
+                  <p class="text-xs text-slate-500 truncate flex-1 min-w-0">
+                    ${escapeHtml(cleanSnippet || 'No additional text')}
+                  </p>
+                  <button type="button"
+                          onclick="event.stopPropagation(); toggleStarItem('${msg.id}')"
+                          class="p-1 -mr-1 text-slate-300 hover:text-amber-400 transition cursor-pointer shrink-0 ml-1.5"
+                          title="Star email">
+                    <i class="${isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-slate-300 hover:text-amber-400'} text-xs sm:text-sm"></i>
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <!-- Middle: 3-line Content (Sender/Date, Subject, Snippet/Star) -->
-            <div class="flex-1 min-w-0 pr-0.5">
-              
-              <!-- Row 1: Sender Name + Timestamp -->
-              <div class="flex items-center justify-between gap-2 mb-0.5">
-                <span class="${isRead ? 'font-semibold text-slate-700' : 'font-extrabold text-slate-900'} text-[14px] sm:text-sm truncate max-w-[calc(100vw-150px)] sm:max-w-xs">
-                  ${escapeHtml(senderDisplayName)}
-                </span>
-                <span class="text-[11px] sm:text-xs text-slate-500 font-medium shrink-0 ml-auto font-mono">
-                  ${escapeHtml(timeDisplay)}
+            <!-- Desktop Rise SaaS Tabular Row (Shown on md: and above) -->
+            <div class="hidden md:flex items-center gap-3 px-4 py-2.5 border-b border-slate-100 hover:bg-slate-50 transition select-none text-xs ${isActive ? 'bg-sky-50/80 font-semibold text-slate-900 border-l-[3px] border-l-sky-500' : 'bg-white text-slate-600'}">
+              <!-- Checkbox -->
+              <input type="checkbox" onclick="event.stopPropagation()" class="email-checkbox rounded border-slate-300 text-sky-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" />
+
+              <!-- Star Button -->
+              <button type="button" onclick="event.stopPropagation(); toggleStarItem('${msg.id}')" class="p-1 text-slate-300 hover:text-amber-400 transition cursor-pointer shrink-0" title="Star email">
+                <i class="${isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-slate-300 hover:text-amber-400'} text-sm"></i>
+              </button>
+
+              <!-- Important / Bookmark Button -->
+              <button type="button" onclick="event.stopPropagation(); toggleImportantItem('${msg.id}')" class="p-1 text-slate-300 hover:text-rose-500 transition cursor-pointer shrink-0" title="Mark important">
+                <i class="${msg.isImportant ? 'fas fa-bookmark text-rose-500' : 'far fa-bookmark text-slate-300 hover:text-rose-500'} text-sm"></i>
+              </button>
+
+              <!-- Subject (in blue link style matching Rise SaaS) -->
+              <div class="flex-1 min-w-0 pr-2">
+                <span class="text-sky-600 hover:text-sky-700 font-medium hover:underline truncate block text-xs">
+                  ${escapeHtml(msg.subject || '(no subject)')}
                 </span>
               </div>
 
-              <!-- Row 2: Subject Line (Highlighted in blue/primary matching screenshot) -->
-              <h4 class="text-[13px] sm:text-sm ${isRead ? 'font-medium text-slate-700' : 'font-semibold text-sky-600'} truncate mb-0.5 leading-snug">
-                ${escapeHtml(msg.subject || '(no subject)')}
-              </h4>
+              <!-- Sender / From Column -->
+              <div class="w-32 lg:w-44 truncate text-slate-700 font-normal shrink-0">
+                ${escapeHtml(senderDisplayName)}
+              </div>
 
-              <!-- Row 3: Preview Snippet + Quick Star Action on right -->
-              <div class="flex items-center justify-between gap-2">
-                <p class="text-xs text-slate-500 truncate flex-1 min-w-0">
-                  ${escapeHtml(cleanSnippet || 'No additional text')}
-                </p>
-                <button type="button"
-                        onclick="event.stopPropagation(); toggleStarItem('${msg.id}')"
-                        class="p-1 -mr-1 text-slate-300 hover:text-amber-400 transition cursor-pointer shrink-0 ml-1.5"
-                        title="Star email">
-                  <i class="${isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-slate-300 hover:text-amber-400'} text-xs sm:text-sm"></i>
+              <!-- Last Activity Date/Time Column -->
+              <div class="w-24 text-right text-slate-400 text-[11px] font-mono shrink-0">
+                ${escapeHtml(timeDisplay)}
+              </div>
+
+              <!-- Actions / Trash Button -->
+              <div class="w-8 flex justify-center shrink-0">
+                <button type="button" onclick="event.stopPropagation(); deleteEmailItem('${msg.id}')" class="p-1 text-slate-400 hover:text-rose-600 rounded transition cursor-pointer" title="Delete">
+                  <i class="far fa-trash-alt text-xs"></i>
                 </button>
               </div>
-
             </div>
+
           </div>
         `;
       }).join('');
@@ -2445,18 +2833,18 @@ try {
         activeBtn.classList.add('active-category-pill');
       }
 
-      if (catName === 'Starred') {
-        switchFolder('Starred');
-      } else if (catName === 'Sent') {
+      if (catName.toLowerCase() === 'unread') {
+        applyEmailFilter('unread');
+      } else if (catName.toLowerCase() === 'starred') {
+        applyEmailFilter('starred');
+      } else if (catName.toLowerCase() === 'sent') {
         switchFolder('Sent');
-      } else if (catName === 'Updates') {
+        applyEmailFilter('all');
+      } else if (catName.toLowerCase() === 'updates') {
         switchFolder('Updates');
-      } else if (catName === 'All') {
-        switchFolder('Inbox');
-        setListFilter('all');
+        applyEmailFilter('all');
       } else {
-        switchFolder('Inbox');
-        setListFilter('all');
+        applyEmailFilter('all');
       }
     }
 
@@ -5775,14 +6163,17 @@ try {
   <!-- ========================================================================= -->
   <!-- MOBILE FLOATING ACTION BUTTON (COMPOSE EMAIL - PENCIL ICON)               -->
   <!-- ========================================================================= -->
+  <!-- MOBILE FLOATING ACTION BUTTON (COMPOSE EMAIL - SOLID SLATE GRAY SQUIRCLE) -->
+  <!-- ========================================================================= -->
   <button
     type="button"
     id="mobile-compose-fab"
     onclick="openComposeCard()"
-    class="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-2xl bg-slate-700 hover:bg-slate-800 active:scale-95 text-white flex items-center justify-center shadow-xl shadow-slate-900/30 border border-slate-600/40 transition-all z-40 cursor-pointer"
+    style="position: fixed !important; bottom: 84px !important; right: 18px !important; width: 56px !important; height: 56px !important; border-radius: 16px !important; background-color: #334155 !important; background: #334155 !important; color: #ffffff !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.45), 0 4px 6px -4px rgba(15, 23, 42, 0.25) !important; border: 1.5px solid rgba(255, 255, 255, 0.25) !important; z-index: 9999 !important; cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; outline: none !important;"
+    class="md:hidden active:scale-95 transition-transform"
     title="Compose Email"
   >
-    <i data-lucide="pencil" class="w-6 h-6 stroke-[2.5] text-white"></i>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px !important; height: 24px !important; stroke: #ffffff !important; display: block !important;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
   </button>
 
   <!-- ========================================================================= -->
