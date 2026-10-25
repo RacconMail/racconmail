@@ -540,6 +540,19 @@ try {
     .pb-safe {
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
+    /* Mobile-First Layout Protection & Strict No-Overlap Constraints */
+    @media (max-width: 1279px) {
+      #quick-rail {
+        display: none !important;
+      }
+    }
+    #mobile-compose-fab.hidden {
+      display: none !important;
+    }
+    #sidebar-panel .sidebar-badge {
+      flex-shrink: 0 !important;
+      margin-left: auto !important;
+    }
   </style>
 </head>
 <body class="flex flex-col h-screen w-screen overflow-hidden bg-white text-slate-900 select-none">
@@ -812,7 +825,7 @@ try {
             <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Inbox</span>
           </div>
-          <span id="badge-inbox" class="sidebar-badge bg-slate-100 text-slate-700 border border-slate-200/90 text-[10px] font-bold px-2.5 py-0.5 rounded-full <?php echo ($counts['inbox_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_total']; ?></span>
+          <span id="badge-inbox" class="sidebar-badge ml-auto shrink-0 bg-slate-100 text-slate-700 border border-slate-200/90 text-[10px] font-bold px-2.5 py-0.5 rounded-full <?php echo ($counts['inbox_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_total']; ?></span>
         </button>
 
         <!-- 2. UNREAD -->
@@ -821,7 +834,7 @@ try {
             <i data-lucide="mail" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Unread</span>
           </div>
-          <span id="badge-unread" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['unread_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['unread_total']; ?></span>
+          <span id="badge-unread" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['unread_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['unread_total']; ?></span>
         </button>
 
         <!-- 3. STARRED / FAVORITES -->
@@ -830,7 +843,7 @@ try {
             <i data-lucide="star" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Starred</span>
           </div>
-          <span id="badge-starred" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['starred_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['starred_total']; ?></span>
+          <span id="badge-starred" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['starred_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['starred_total']; ?></span>
         </button>
 
         <!-- 4. DRAFTS -->
@@ -839,7 +852,7 @@ try {
             <i data-lucide="file-edit" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Drafts</span>
           </div>
-          <span id="badge-drafts" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['drafts_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['drafts_total']; ?></span>
+          <span id="badge-drafts" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['drafts_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['drafts_total']; ?></span>
         </button>
 
         <!-- 5. SENT -->
@@ -848,7 +861,7 @@ try {
             <i data-lucide="send" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Sent</span>
           </div>
-          <span id="badge-sent" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['sent_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['sent_total']; ?></span>
+          <span id="badge-sent" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['sent_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['sent_total']; ?></span>
         </button>
 
         <!-- 6. ARCHIVE -->
@@ -857,7 +870,7 @@ try {
             <i data-lucide="archive" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Archive</span>
           </div>
-          <span id="badge-archive" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['archive_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['archive_total']; ?></span>
+          <span id="badge-archive" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['archive_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['archive_total']; ?></span>
         </button>
 
         <!-- 7. SPAM -->
@@ -866,7 +879,7 @@ try {
             <i data-lucide="shield-alert" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Spam</span>
           </div>
-          <span id="badge-spam" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['spam_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['spam_total']; ?></span>
+          <span id="badge-spam" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['spam_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['spam_total']; ?></span>
         </button>
 
         <!-- 8. TRASH (100% Identical Structure and Column Alignment) -->
@@ -875,7 +888,7 @@ try {
             <i data-lucide="trash-2" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Trash</span>
           </div>
-          <span id="badge-trash" class="sidebar-badge text-xs font-mono text-slate-400 <?php echo ($counts['trash_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['trash_total']; ?></span>
+          <span id="badge-trash" class="sidebar-badge ml-auto shrink-0 text-xs font-mono text-slate-400 <?php echo ($counts['trash_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['trash_total']; ?></span>
         </button>
 
         <!-- 9. ALL MAIL -->
@@ -1218,7 +1231,7 @@ try {
       </header>
 
       <!-- Thread Conversation View Area -->
-      <div id="thread-conversation-container" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 pb-36">
+      <div id="thread-conversation-container" class="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 space-y-4 sm:space-y-6 pb-32">
         <!-- Rendered dynamically by renderConversationThread() -->
       </div>
 
@@ -2326,6 +2339,11 @@ try {
         document.getElementById('mobile-sidebar-backdrop')?.classList.add('hidden');
         document.getElementById('col-inbox')?.classList.remove('hidden');
         document.getElementById('col-reader')?.classList.add('hidden');
+        const fab = document.getElementById('mobile-compose-fab');
+        if (fab) {
+          fab.classList.remove('hidden');
+          fab.style.removeProperty('display');
+        }
       }
 
       // Update sidebar active highlights
@@ -3082,6 +3100,11 @@ try {
           colReader.classList.remove('hidden');
           colReader.classList.add('flex');
         }
+        const fab = document.getElementById('mobile-compose-fab');
+        if (fab) {
+          fab.classList.add('hidden');
+          fab.style.setProperty('display', 'none', 'important');
+        }
       }
     }
     window.selectThreadItem = selectThreadItem;
@@ -3146,36 +3169,41 @@ try {
         const rawBody = card.body || '';
         const cleanedBody = cleanMimeEmailContent(rawBody);
 
+        const cardSender = card.sender || senderDisplayName;
+        const displaySender = (cardSender || 'Raccon Member').trim();
+        const displayEmail = (senderEmail || '').trim();
+        const isEmailSameAsName = displayEmail.toLowerCase() === displaySender.toLowerCase();
+
         return `
-          <div class="mb-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-7 relative select-text w-full">
+          <div class="mb-4 sm:mb-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs p-4 sm:p-6 md:p-7 relative select-text w-full">
             <!-- Sender & Recipient Information Row -->
-            <div class="flex items-start justify-between gap-3 pb-4 mb-5 border-b border-slate-100 flex-wrap">
-              <div class="flex items-center gap-3.5 min-w-0">
+            <div class="flex items-start justify-between gap-2.5 pb-3.5 mb-4 border-b border-slate-100 flex-wrap sm:flex-nowrap">
+              <div class="flex items-center gap-3 min-w-0 max-w-[calc(100%-110px)] sm:max-w-none">
                 <!-- Circular Avatar -->
-                <div class="w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden shadow-2xs border border-slate-200/80">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ${avatarColor} flex items-center justify-center font-bold text-xs shrink-0 overflow-hidden shadow-2xs border border-slate-200/80">
                   ${card.avatar && card.avatar !== '/raccoon-logo.svg' ? `<img src="${escapeHtml(card.avatar)}" class="w-full h-full object-cover">` : `<span>${initial}</span>`}
                 </div>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="font-bold text-sm sm:text-base text-slate-900 leading-tight">${escapeHtml(card.sender || senderDisplayName)}</h3>
-                    <span class="inline-flex items-center text-sky-500" title="Verified"><i data-lucide="badge-check" class="w-4 h-4 text-sky-500"></i></span>
-                    <span class="text-xs text-slate-400 font-mono">&lt;${escapeHtml(senderEmail)}&gt;</span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <h3 class="font-bold text-sm sm:text-base text-slate-900 leading-tight truncate max-w-[160px] sm:max-w-xs md:max-w-sm">${escapeHtml(displaySender)}</h3>
+                    <span class="inline-flex items-center text-sky-500 shrink-0" title="Verified"><i data-lucide="badge-check" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-500"></i></span>
+                    ${!isEmailSameAsName && displayEmail ? `<span class="text-[11px] sm:text-xs text-slate-400 font-mono truncate max-w-[140px] sm:max-w-none">&lt;${escapeHtml(displayEmail)}&gt;</span>` : ''}
                   </div>
-                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2">
-                    <span>To: <strong class="text-slate-700 font-semibold">${escapeHtml(card.to || recipientText)}</strong></span>
+                  <div class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 truncate">
+                    <span>To: <strong class="text-slate-700 font-semibold truncate">${escapeHtml(card.to || recipientText)}</strong></span>
                   </div>
                 </div>
               </div>
 
               <!-- Date & Relative Time -->
-              <div class="text-right shrink-0">
+              <div class="text-right shrink-0 whitespace-nowrap ml-auto self-start pt-0.5">
                 <div class="text-xs font-semibold text-slate-600">${escapeHtml(dateInfo.full)}</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">(${escapeHtml(dateInfo.relative)})</div>
+                <div class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">(${escapeHtml(dateInfo.relative)})</div>
               </div>
             </div>
 
             <!-- Full Message Body -->
-            <div class="text-[15px] text-slate-800 leading-relaxed space-y-4 whitespace-pre-wrap break-words [word-break:break-word] select-text font-normal pt-1">
+            <div class="text-sm sm:text-[15px] text-slate-800 leading-relaxed space-y-4 whitespace-pre-wrap break-words [word-break:break-word] select-text font-normal pt-1 overflow-hidden">
               ${cleanedBody}
             </div>
           </div>
@@ -3197,25 +3225,25 @@ try {
           <!-- INLINE DOCKED QUICK REPLY CARD (Docked below message canvas matching Blueprint) -->
           <div class="rounded-2xl border border-slate-200/90 bg-white shadow-xs p-4 sm:p-5 mt-6 mb-8 transition focus-within:border-slate-300 focus-within:shadow-sm">
             <!-- Top Row of Reply Card: Reply Dropdown, To: Recipient Pill, Cc, Bcc, Popout -->
-            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 text-xs">
-              <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                <div class="flex items-center gap-1 text-slate-500 font-semibold">
+            <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 text-xs flex-wrap">
+              <div class="flex items-center gap-1.5 min-w-0 max-w-[calc(100%-85px)] sm:max-w-none flex-wrap">
+                <div class="flex items-center gap-1 text-slate-500 font-semibold shrink-0">
                   <i data-lucide="corner-up-left" class="w-3.5 h-3.5 text-slate-600"></i>
                   <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
                 </div>
-                <span class="text-slate-400 font-medium">To:</span>
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-semibold text-slate-800 shadow-2xs">
-                  <div class="w-4 h-4 rounded-full ${avatarColor} flex items-center justify-center text-[9px] font-bold overflow-hidden">
+                <span class="text-slate-400 font-medium shrink-0">To:</span>
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200/80 text-xs font-semibold text-slate-800 shadow-2xs min-w-0 max-w-full">
+                  <div class="w-4 h-4 rounded-full ${avatarColor} flex items-center justify-center text-[9px] font-bold overflow-hidden shrink-0">
                     ${msg.senderAvatar ? `<img src="${escapeHtml(msg.senderAvatar)}" class="w-full h-full object-cover">` : `<span>${initial}</span>`}
                   </div>
-                  <span id="inline-reply-recipient-name" class="truncate max-w-[140px] sm:max-w-xs">${escapeHtml(senderDisplayName)}</span>
-                  <button type="button" onclick="clearInlineReplyRecipient()" class="text-slate-400 hover:text-rose-500 transition cursor-pointer ml-0.5" title="Remove recipient">
+                  <span id="inline-reply-recipient-name" class="truncate max-w-[95px] sm:max-w-xs">${escapeHtml(senderDisplayName)}</span>
+                  <button type="button" onclick="clearInlineReplyRecipient()" class="text-slate-400 hover:text-rose-500 transition cursor-pointer ml-0.5 shrink-0" title="Remove recipient">
                     <i data-lucide="x" class="w-3 h-3"></i>
                   </button>
                 </span>
               </div>
 
-              <div class="flex items-center gap-3 shrink-0 text-slate-500 font-semibold text-xs">
+              <div class="flex items-center gap-3 shrink-0 ml-auto text-slate-500 font-semibold text-xs">
                 <button type="button" onclick="toggleInlineCc()" class="hover:text-slate-900 transition cursor-pointer">Cc</button>
                 <button type="button" onclick="toggleInlineBcc()" class="hover:text-slate-900 transition cursor-pointer">Bcc</button>
                 <button type="button" onclick="replyCurrentThread()" class="text-slate-400 hover:text-slate-800 transition cursor-pointer" title="Expand to popup modal">
@@ -3348,7 +3376,7 @@ try {
       } else {
         colInbox?.classList.remove('hidden');
         sidebar?.classList.remove('hidden');
-        quickRail?.classList.remove('hidden');
+        if (window.innerWidth >= 1280) { quickRail?.classList.remove('hidden'); }
         if (icon) icon.setAttribute('data-lucide', 'maximize-2');
       }
       try { if (window.lucide && lucide.createIcons) lucide.createIcons(); } catch (_) {}
@@ -4566,6 +4594,11 @@ function renderEmptyConversation() {
       }
       if (colInbox) {
         colInbox.classList.remove('hidden');
+      }
+      const fab = document.getElementById('mobile-compose-fab');
+      if (fab) {
+        fab.classList.remove('hidden');
+        fab.style.removeProperty('display');
       }
       window.scrollTo(0, 0);
     }
@@ -6718,8 +6751,8 @@ function renderEmptyConversation() {
     type="button"
     id="mobile-compose-fab"
     onclick="openComposeCard()"
-    style="position: fixed !important; bottom: 84px !important; right: 18px !important; width: 56px !important; height: 56px !important; border-radius: 16px !important; background-color: #334155 !important; background: #334155 !important; color: #ffffff !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.45), 0 4px 6px -4px rgba(15, 23, 42, 0.25) !important; border: 1.5px solid rgba(255, 255, 255, 0.25) !important; z-index: 9999 !important; cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; outline: none !important;"
-    class="md:hidden active:scale-95 transition-transform"
+    style="position: fixed !important; bottom: 84px !important; right: 18px !important; width: 56px !important; height: 56px !important; border-radius: 16px !important; background-color: #334155 !important; background: #334155 !important; color: #ffffff !important; align-items: center !important; justify-content: center !important; box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.45), 0 4px 6px -4px rgba(15, 23, 42, 0.25) !important; border: 1.5px solid rgba(255, 255, 255, 0.25) !important; z-index: 9999 !important; cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; outline: none !important;"
+    class="flex md:hidden active:scale-95 transition-transform"
     title="Compose Email"
   >
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 24px !important; height: 24px !important; stroke: #ffffff !important; display: block !important;"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
