@@ -1396,7 +1396,6 @@
     }
 
     // Initialize Stories App
-    async 
     function toggleMobileStoriesNav(forceState = null) {
       const drawer = document.getElementById('mobile-stories-nav-drawer');
       if (!drawer) return;
@@ -1433,7 +1432,7 @@
       }
     }
 
-    async async function initStories() {
+    async function initStories() {
       await checkAuthStatus();
       handleHashRouting();
       window.addEventListener('hashchange', handleHashRouting);

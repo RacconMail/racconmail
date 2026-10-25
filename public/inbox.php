@@ -1181,7 +1181,7 @@ try {
   <!-- ALL MODALS (SETTINGS, CONTACTS, STORIES, APP SWITCHER) -->
   
   <!-- 1. Settings & Profile Modal -->
-  <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <div id="settings-modal" style="z-index: 99999 !important;" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-[99999] flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
@@ -1237,7 +1237,7 @@ try {
   <!-- ========================================================================= -->
   <!-- MODERN PROFILE PHOTO MODAL (#modal-change-avatar)                         -->
   <!-- ========================================================================= -->
-  <div id="modal-change-avatar" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-60 flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
+  <div id="modal-change-avatar" style="z-index: 99999 !important;" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[99999] flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onclick="if (event.target === this) closeAvatarModal();">
     <div class="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 relative my-auto overflow-hidden">
       
       <!-- Modal Header (Fixed at top) -->
@@ -2157,6 +2157,53 @@ try {
 
     async 
     // Mobile Profile Page Handlers
+    
+    // Direct Photo Upload for Mobile Profile
+    async function handleDirectPhotoUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const largeImg = document.getElementById('mobile-profile-large-img');
+      const originalSrc = largeImg?.src;
+      
+      try {
+        if (typeof showToast === 'function') showToast('Uploading profile photo... ⏳', 'info');
+        
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        const res = await fetch('/api/user/avatar', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        if (data.success && data.avatar) {
+          const cacheBuster = (data.avatar.includes('?') ? '&' : '?') + 't=' + Date.now();
+          document.querySelectorAll('.user-avatar-img').forEach(img => {
+            img.src = data.avatar + cacheBuster;
+            img.style.display = 'block';
+          });
+          if (largeImg) largeImg.src = data.avatar + cacheBuster;
+          const fallback = document.getElementById('mobile-header-initial-fallback');
+          if (fallback) fallback.style.display = 'none';
+          
+          if (typeof showToast === 'function') {
+            showToast('Profile photo updated successfully! 🦝', 'success');
+          } else {
+            alert('Profile photo updated successfully!');
+          }
+        } else {
+          throw new Error(data.error || 'Failed to upload photo.');
+        }
+      } catch (err) {
+        alert('Could not update profile photo: ' + err.message);
+        if (largeImg && originalSrc) largeImg.src = originalSrc;
+      } finally {
+        event.target.value = '';
+      }
+    }
+
     function openMobileProfilePage() {
       const page = document.getElementById('mobile-profile-page');
       if (page) {
@@ -3932,7 +3979,12 @@ try {
           const cacheBuster = (finalAvatarUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
           document.querySelectorAll('.user-avatar-img').forEach(img => {
             img.src = finalAvatarUrl + cacheBuster;
+            img.style.display = 'block';
           });
+          const mobLarge = document.getElementById('mobile-profile-large-img');
+          if (mobLarge) mobLarge.src = finalAvatarUrl + cacheBuster;
+          const fallback = document.getElementById('mobile-header-initial-fallback');
+          if (fallback) fallback.style.display = 'none';
           
           closeAvatarModal();
           showAvatarToast('Profile photo updated successfully! 🦝');
@@ -5794,6 +5846,8 @@ try {
         <div class="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-slate-100 to-transparent"></div>
         
         <!-- Big Profile Avatar with Camera Edit Badge -->
+        <!-- Direct Photo Upload Input -->
+        <input type="file" id="mobile-direct-photo-input" accept="image/*" class="hidden" onchange="handleDirectPhotoUpload(event)" />
         <div class="relative w-24 h-24 mx-auto mb-3 cursor-pointer group" onclick="openAvatarModal()" title="Tap to change profile picture">
           <div class="w-24 h-24 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 relative">
             <img id="mobile-profile-large-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover group-hover:scale-105 transition duration-200" alt="Profile Photo" onerror="this.src='/raccoon-logo.svg'" />

@@ -1656,78 +1656,30 @@
 
     // Render Auth Header
     function renderAuthHeader(isLoggedIn, user = null) {
-      const container = document.getElementById('auth-action-container');
-      const mobileContainer = document.getElementById('mobile-auth-controls');
-      if (!container) return;
+      const guestGroup = document.getElementById('auth-guest-group');
+      const userGroup = document.getElementById('auth-user-group');
 
       if (isLoggedIn && user) {
-        const avatarUrl = user.avatar || '/raccoon-logo.svg';
-        const userName = user.name || user.email?.split('@')[0] || 'Member';
-        const isReputed = (user.reputation || 0) >= 10;
+        guestGroup?.classList.add('hidden');
+        userGroup?.classList.remove('hidden');
+        userGroup?.classList.add('flex');
 
-        container.innerHTML = `
-          <div class="relative">
-            <button onclick="toggleUserDropdown()" class="flex items-center gap-2.5 p-1 sm:px-2.5 sm:py-1.5 rounded-full hover:bg-slate-100 transition cursor-pointer border border-slate-200/80 bg-white shadow-2xs">
-              <div class="relative">
-                <img src="${avatarUrl}" alt="Avatar" class="h-8 w-8 rounded-full object-cover border border-slate-200" />
-                <span class="online-dot absolute bottom-0 right-0"></span>
-              </div>
-              <div class="hidden sm:flex flex-col text-left">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-bold text-slate-800 leading-tight">${userName}</span>
-                  ${isReputed ? '<span class="badge-reputed-member text-[9px] py-0 px-1.5">⭐ Reputed</span>' : ''}
-                </div>
-                <span class="text-[10px] text-slate-400 font-semibold">${user.email || 'racconmail.eu'}</span>
-              </div>
-              <i class="fas fa-chevron-down text-slate-400 text-[10px] hidden sm:block"></i>
-            </button>
+        const nameEl = document.getElementById('user-display-name');
+        const avatarEl = document.getElementById('user-display-avatar');
+        const dropName = document.getElementById('dropdown-user-name');
+        const dropEmail = document.getElementById('dropdown-user-email');
 
-            <!-- Dropdown Menu -->
-            <div id="user-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
-              <div class="px-4 py-2 border-b border-slate-100">
-                <p class="font-extrabold text-slate-900">${userName}</p>
-                <p class="text-slate-400 text-[11px] truncate">${user.email || ''}</p>
-                <div class="mt-2 flex items-center justify-between text-[11px] font-bold text-slate-600 bg-slate-50 p-1.5 rounded-lg border border-slate-200/60">
-                  <span>Reputation:</span>
-                  <span class="text-amber-600">⭐ ${user.reputation || 0}</span>
-                </div>
-              </div>
-              <button onclick="openUserDashboard()" class="w-full text-left px-4 py-2 text-slate-700 hover:bg-[#FFEFEA] hover:text-[#E06748] flex items-center gap-2.5 transition font-bold">
-                <i class="fas fa-gauge-high text-[#E06748] w-4"></i>
-                <span>User Dashboard</span>
-              </button>
-              <button onclick="openAvatarModal()" class="w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition font-semibold">
-                <i class="fas fa-image text-purple-500 w-4"></i>
-                <span>Change Avatar</span>
-              </button>
-              <a href="/inbox" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition font-semibold">
-                <i class="fas fa-inbox text-blue-500 w-4"></i>
-                <span>Go to Webmail</span>
-              </a>
-              <div class="border-t border-slate-100 my-1"></div>
-              <button onclick="logoutForum()" class="w-full text-left px-4 py-2 text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition font-bold">
-                <i class="fas fa-right-from-bracket w-4"></i>
-                <span>Sign Out</span>
-              </button>
-            </div>
-          </div>
-        `;
+        const displayName = user.name || user.email?.split('@')[0] || 'Member';
+        const avatarSrc = user.avatar || '/raccoon-logo.svg';
 
-        // Update wall composer avatar if present
-        const wallAvatar = document.getElementById('wall-composer-avatar');
-        if (wallAvatar) wallAvatar.src = avatarUrl;
-
+        if (nameEl) nameEl.innerText = displayName;
+        if (avatarEl) avatarEl.src = avatarSrc;
+        if (dropName) dropName.innerText = displayName;
+        if (dropEmail) dropEmail.innerText = user.email || '';
       } else {
-        container.innerHTML = `
-          <div class="flex items-center gap-2">
-            <button onclick="openAuthModal('login')" class="text-xs font-bold text-slate-700 hover:text-slate-900 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer">
-              Sign In
-            </button>
-            <button onclick="openAuthModal('register')" class="text-xs font-extrabold text-white bg-[#F68D72] hover:bg-[#E06748] px-3.5 py-1.5 rounded-xl shadow-xs transition transform active:scale-95 cursor-pointer">
-              Join Free
-            </button>
-          </div>
-        `;
+        guestGroup?.classList.remove('hidden');
+        userGroup?.classList.add('hidden');
+        userGroup?.classList.remove('flex');
       }
     }
 
