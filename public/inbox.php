@@ -698,7 +698,7 @@ try {
     <!-- ========================================================================= -->
     <!-- DESKTOP APP RAIL (COLUMN 1: RISE SAAS STYLE APP SWITCHER)                 -->
     <!-- ========================================================================= -->
-    <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-slate-900 border-r border-slate-800 shrink-0 items-center py-3 select-none text-slate-400 z-30 justify-between h-full">
+    <aside id="desktop-app-rail" class="hidden md:flex flex-col w-16 bg-slate-700 border-r border-slate-600/60 shrink-0 items-center py-3 select-none text-white z-30 justify-between h-full overflow-y-auto overflow-x-hidden scrollbar-none">
       <!-- Top Apps -->
       <div class="flex flex-col items-center gap-2.5 w-full">
         <!-- Logo -->
@@ -707,7 +707,7 @@ try {
         </a>
 
         <!-- 1. Dashboard -->
-        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Dashboard">
+        <a href="/inbox" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Dashboard">
           <i data-lucide="layout-dashboard" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
@@ -717,49 +717,49 @@ try {
         </a>
 
         <!-- 3. Sheets -->
-        <button type="button" onclick="openProductivityDrawer('sheets')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Sheets / Spreadsheets">
+        <button type="button" onclick="openProductivityDrawer('sheets')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Sheets / Spreadsheets">
           <i data-lucide="table" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
         <!-- 4. Docs -->
-        <button type="button" onclick="openProductivityDrawer('notes')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Docs & Notes">
+        <button type="button" onclick="openProductivityDrawer('notes')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Docs & Notes">
           <i data-lucide="file-text" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
         <!-- 5. Whiteboards -->
-        <button type="button" onclick="openProductivityDrawer('whiteboard')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Whiteboards">
+        <button type="button" onclick="openWhiteboard()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Whiteboards">
           <i data-lucide="presentation" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
         <!-- 6. Contacts -->
-        <button type="button" onclick="openContactsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Contacts">
+        <button type="button" onclick="openContactsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Contacts">
           <i data-lucide="users" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
         <!-- 7. Forum -->
-        <a href="/forum" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Raccon Forum">
+        <a href="/forum" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Raccon Forum">
           <i data-lucide="messages-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
         <!-- 8. Stories -->
-        <a href="/stories" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Raccon Stories">
+        <a href="/stories" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Raccon Stories">
           <i data-lucide="book-open" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
 
         <!-- 9. Tasks -->
-        <button type="button" onclick="openProductivityDrawer('tasks')" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Tasks">
+        <button type="button" onclick="openProductivityDrawer('tasks')" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Tasks">
           <i data-lucide="check-square" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </button>
 
         <!-- 10. News -->
-        <a href="/news" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="News Portal">
+        <a href="/news" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="News Portal">
           <i data-lucide="newspaper" class="w-5 h-5 group-hover:scale-110 transition"></i>
         </a>
       </div>
 
       <!-- Bottom: Settings -->
-      <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-slate-800">
-        <button type="button" onclick="openSettingsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer group" title="Settings">
+      <div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-slate-600">
+        <button type="button" onclick="openSettingsModal()" class="w-10 h-10 rounded-xl flex items-center justify-center text-white hover:text-white hover:bg-white/20 transition cursor-pointer group" title="Settings">
           <i data-lucide="settings" class="w-5 h-5 group-hover:rotate-45 transition"></i>
         </button>
       </div>
@@ -985,6 +985,17 @@ try {
           <span class="sidebar-text truncate">Templates</span>
         </button>
 
+        <!-- 7. Whiteboard Studio Canvas -->
+        <button onclick="openWhiteboard()" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold nav-pill-inactive group cursor-pointer hover:bg-slate-50 transition rounded-xl">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-6 h-6 rounded-lg bg-violet-50 border border-violet-200/80 flex items-center justify-center text-violet-600 group-hover:bg-violet-100 transition shrink-0">
+              <i data-lucide="presentation" class="h-3.5 w-3.5"></i>
+            </div>
+            <span class="sidebar-text truncate">Whiteboards</span>
+          </div>
+          <span class="sidebar-badge text-[9px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full ml-auto">Canvas</span>
+        </button>
+
         
 
       </div>
@@ -1135,82 +1146,15 @@ try {
 
       </div>
       
-      <!-- Top Header matching reference: Large Bold Title + Funnel Filter + User Avatar (Desktop Only) -->
-      <div class="hidden md:block px-5 pt-5 pb-3 shrink-0">
-        <div class="flex items-center justify-between mb-3.5">
-          <div class="flex items-center gap-2.5">
-            <h1 id="current-folder-display-title" class="text-3xl font-black text-slate-900 tracking-tight">Inbox</h1>
-            <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs" title="Total messages"><?php echo $counts['inbox_total']; ?></span>
-            <span id="inbox-unread-pill" class="bg-rose-100 text-rose-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>" title="Unread messages"><?php echo $counts['inbox_unread']; ?> unread</span>
-            <button id="mark-all-read-btn" onclick="markAllAsReadAction()" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-bold border border-slate-200 transition cursor-pointer flex items-center gap-1 shadow-2xs <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>" title="Mark all as read">
-              <i data-lucide="check-check" class="h-3 w-3"></i>
-              <span>Read All</span>
-            </button>
-            <button id="trash-empty-btn" onclick="emptyTrashAction()" class="hidden px-2.5 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold border border-rose-200 transition cursor-pointer flex items-center gap-1 shadow-2xs" title="Empty Trash">
-              <i data-lucide="eraser" class="h-3 w-3"></i>
-              <span>Empty Trash</span>
-            </button>
-          </div>
-
-          <!-- Top Right Controls: Funnel Filter + User Profile Picture -->
-          <div class="flex items-center gap-3">
-            <button onclick="toggleAppSwitcher()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-700 hover:bg-slate-100 transition cursor-pointer" title="Filter & Tools">
-              <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-            </button>
-            <button onclick="openAvatarModal()" class="relative cursor-pointer group" title="Change Profile Avatar">
-              <img id="col-inbox-user-avatar" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-9 h-9 rounded-xl object-cover ring-2 ring-slate-100 shadow-xs group-hover:ring-[#F68D72] transition" alt="User Avatar" />
-              <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]">
-                <i data-lucide="camera" class="h-3.5 w-3.5"></i>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Search Bar: Full width rounded-2xl bg-[#F3F4F6] with right search magnifying glass -->
-        <div class="relative w-full mb-3.5">
-          <input
-            id="global-search"
-            type="text"
-            placeholder="Search"
-            oninput="handleSearch(this.value)"
-            class="w-full bg-[#F3F4F6] hover:bg-slate-100 focus:bg-white rounded-2xl pl-4 pr-11 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 border border-transparent focus:border-slate-300 transition outline-none font-medium shadow-2xs"
-          />
-          <button type="button" onclick="document.getElementById('global-search').focus()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
-            <i class="fas fa-search text-sm"></i>
-          </button>
-        </div>
-
-        <!-- Category Filter Chips Row: All, Primary, Updates, Promotions, Starred, Sent -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 select-none">
-          <button onclick="switchCategoryFilter('All')" id="pill-filter-all" class="category-filter-pill active-category-pill">
-            All
-          </button>
-          <button onclick="switchCategoryFilter('Primary')" id="pill-filter-primary" class="category-filter-pill inactive-category-pill">
-            Primary
-          </button>
-          <button onclick="switchCategoryFilter('Updates')" id="pill-filter-updates" class="category-filter-pill inactive-category-pill">
-            Updates
-          </button>
-          <button onclick="switchCategoryFilter('Promotions')" id="pill-filter-promotions" class="category-filter-pill inactive-category-pill">
-            Promotions
-          </button>
-          <button onclick="switchCategoryFilter('Starred')" id="pill-filter-starred" class="category-filter-pill inactive-category-pill">
-            Starred
-          </button>
-          <button onclick="switchCategoryFilter('Sent')" id="pill-filter-sent" class="category-filter-pill inactive-category-pill">
-            Sent
-          </button>
-        </div>
-      </div>
-
-      
-      <!-- Desktop Rise SaaS Workspace Header Bar -->
-      <div class="hidden md:flex items-center justify-between px-4 py-3 border-b border-slate-200/80 bg-white shrink-0 select-none">
-        <!-- Left: Title & Filter Pills -->
-        <div class="flex items-center gap-3">
+      <!-- Unified Desktop Workspace Header Bar (Matching Rise SaaS cleanly) -->
+      <div class="hidden md:flex items-center justify-between px-4 py-3 border-b border-slate-200/80 bg-white shrink-0 select-none gap-3">
+        <!-- Left: Title, Counter Badges & Filter Pills -->
+        <div class="flex items-center gap-2.5 min-w-0">
           <h2 id="desktop-workspace-title" class="text-lg font-bold text-slate-900 tracking-tight">Inbox</h2>
+          <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-[11px] font-bold px-2 py-0.5 rounded-full shadow-2xs" title="Total messages"><?php echo $counts['inbox_total']; ?></span>
+          <span id="inbox-unread-pill" class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>" title="Unread messages"><?php echo $counts['inbox_unread']; ?> unread</span>
           
-          <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
+          <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/80 ml-1">
             <button type="button" id="d-filter-all" onclick="applyEmailFilter('all')" class="px-2.5 py-1 rounded-md text-xs font-bold bg-white text-slate-900 shadow-2xs cursor-pointer">
               All
             </button>
@@ -1224,7 +1168,7 @@ try {
         </div>
 
         <!-- Right Tools: Split-view toggle, Excel, Print, Search -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 shrink-0">
           <!-- Split-View Toggle Button [ | ] -->
           <button type="button" onclick="toggleDesktopSplitView()" class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 transition cursor-pointer flex items-center gap-1 text-xs font-medium" title="Toggle Split View">
             <i data-lucide="columns" class="w-3.5 h-3.5"></i>
@@ -1244,31 +1188,31 @@ try {
           </button>
 
           <!-- Search Input Box -->
-          <div class="relative w-40 lg:w-56">
+          <div class="relative w-44 lg:w-60">
             <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
             <input
               type="text"
-              id="desktop-search-input"
-              placeholder="Search..."
+              id="global-search"
+              placeholder="Search in emails..."
               oninput="handleSearch(this.value)"
-              class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg pl-8 pr-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-200 transition"
+              class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-200 transition"
             />
           </div>
         </div>
       </div>
 
       <!-- Desktop Rise SaaS Table Header -->
-      <div class="hidden md:flex items-center gap-3 px-4 py-2 border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 select-none">
+      <div class="hidden md:flex items-center gap-3 px-4 py-2.5 border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 select-none">
         <input type="checkbox" onchange="toggleSelectAllEmails(this)" class="rounded border-slate-300 text-sky-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" title="Select All" />
-        <div class="w-6 text-center shrink-0"><i class="far fa-star text-xs"></i></div>
-        <div class="w-6 text-center shrink-0"><i class="far fa-bookmark text-xs"></i></div>
-        <div class="flex-1 min-w-0 pr-2">Subject</div>
-        <div class="w-32 lg:w-44 shrink-0">From</div>
+        <div class="w-5 text-center shrink-0"><i class="far fa-star text-xs"></i></div>
+        <div class="w-5 text-center shrink-0"><i class="far fa-bookmark text-xs"></i></div>
+        <div class="flex-1 min-w-0 pr-3">Subject</div>
+        <div class="w-36 lg:w-44 shrink-0">From</div>
         <div class="w-24 text-right shrink-0">Last activity</div>
         <div class="w-8 text-center shrink-0"><i class="far fa-trash-alt text-xs"></i></div>
       </div>
 
-<!-- Messages Thread List Container -->
+      <!-- Messages Thread List Container -->
       <div id="threads-container" class="flex-1 overflow-y-auto px-4 py-1 space-y-1.5 pb-24 md:pb-6">
         <!-- Rendered dynamically by renderMessageList() -->
       </div>
@@ -2552,7 +2496,87 @@ try {
                 <div><strong>Date:</strong> ${msg.time || ''}</div>
               </div>
               <div class="content">${bodyContent}</div>
-            </body>
+            
+  <!-- ========================================================================= -->
+  <!-- INTERACTIVE WHITEBOARD STUDIO MODAL                                      -->
+  <!-- ========================================================================= -->
+  <div id="whiteboard-modal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[99999] flex flex-col p-2 sm:p-5 select-none overflow-hidden">
+    <div class="bg-white rounded-3xl w-full h-full flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <!-- Whiteboard Studio Header Bar -->
+      <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <!-- Title & Mascot -->
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-200/80 shrink-0">
+            <i data-lucide="presentation" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-sm text-slate-900 tracking-tight leading-tight">Raccon Whiteboard Studio</h3>
+            <p class="text-[11px] text-slate-400">Sketch ideas, draw diagrams, and brainstorm freely</p>
+          </div>
+        </div>
+
+        <!-- Center Drawing Controls -->
+        <div class="flex items-center gap-2 flex-wrap bg-white p-1 rounded-2xl border border-slate-200/80 shadow-2xs">
+          <!-- Pen Tool -->
+          <button type="button" id="wb-tool-pen" onclick="setWhiteboardTool('pen')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="pen-tool" class="w-3.5 h-3.5"></i>
+            <span>Pen</span>
+          </button>
+
+          <!-- Eraser Tool -->
+          <button type="button" id="wb-tool-eraser" onclick="setWhiteboardTool('eraser')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="eraser" class="w-3.5 h-3.5"></i>
+            <span>Eraser</span>
+          </button>
+
+          <div class="w-px h-5 bg-slate-200 my-auto mx-1"></div>
+
+          <!-- Color Palette -->
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="setWhiteboardColor('#1e293b', this)" class="wb-color-btn w-6 h-6 rounded-full bg-slate-900 ring-2 ring-slate-900 ring-offset-2 transition cursor-pointer" title="Black"></button>
+            <button type="button" onclick="setWhiteboardColor('#2563eb', this)" class="wb-color-btn w-6 h-6 rounded-full bg-blue-600 transition cursor-pointer" title="Blue"></button>
+            <button type="button" onclick="setWhiteboardColor('#7c3aed', this)" class="wb-color-btn w-6 h-6 rounded-full bg-purple-600 transition cursor-pointer" title="Purple"></button>
+            <button type="button" onclick="setWhiteboardColor('#dc2626', this)" class="wb-color-btn w-6 h-6 rounded-full bg-rose-600 transition cursor-pointer" title="Red"></button>
+            <button type="button" onclick="setWhiteboardColor('#16a34a', this)" class="wb-color-btn w-6 h-6 rounded-full bg-emerald-600 transition cursor-pointer" title="Green"></button>
+            <button type="button" onclick="setWhiteboardColor('#d97706', this)" class="wb-color-btn w-6 h-6 rounded-full bg-amber-600 transition cursor-pointer" title="Amber"></button>
+          </div>
+
+          <div class="w-px h-5 bg-slate-200 my-auto mx-1"></div>
+
+          <!-- Brush Size Selector -->
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="setWhiteboardSize(2, this)" class="wb-size-btn px-2 py-1 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Fine (2px)">2px</button>
+            <button type="button" onclick="setWhiteboardSize(5, this)" class="wb-size-btn px-2 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-900" title="Regular (5px)">5px</button>
+            <button type="button" onclick="setWhiteboardSize(12, this)" class="wb-size-btn px-2 py-1 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Bold (12px)">12px</button>
+          </div>
+        </div>
+
+        <!-- Right Action Buttons -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="clearWhiteboardCanvas()" class="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Clear Canvas">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Clear</span>
+          </button>
+          <button type="button" onclick="downloadWhiteboardPNG()" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer" title="Download Image">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Export PNG</span>
+          </button>
+          <button type="button" onclick="closeWhiteboard()" class="w-8 h-8 rounded-xl hover:bg-slate-200/70 text-slate-400 hover:text-slate-800 transition flex items-center justify-center cursor-pointer ml-1" title="Close Whiteboard">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div id="whiteboard-canvas-container" class="flex-1 bg-white relative overflow-hidden cursor-crosshair touch-none">
+        <canvas id="whiteboard-canvas" class="w-full h-full block bg-white"></canvas>
+      </div>
+
+    </div>
+  </div>
+
+</body>
           </html>
         `);
         printWindow.document.close();
@@ -2629,20 +2653,160 @@ try {
     
     // Delete single email item with confirmation
     async function deleteEmailItem(msgId) {
-      if (!confirm('Move this email to Trash?')) return;
-      if (typeof deleteMessageById === 'function') {
-        await deleteMessageById(msgId);
-      } else {
-        try {
-          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/trash', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ is_trash: 1 })
-          });
-        } catch (_) {}
-      }
-      if (typeof showToast === 'function') showToast('Email moved to Trash 🗑️', 'info');
+      if (!confirm('Are you sure you want to permanently delete this email?')) return;
+      await deleteMessageById(msgId);
+      if (typeof showToast === 'function') showToast('Email permanently deleted 🗑️', 'info');
     }
+
+    
+    // =========================================================================
+    // RACCON WHITEBOARD STUDIO ENGINE
+    // =========================================================================
+    let wbCanvas = null;
+    let wbCtx = null;
+    let wbIsDrawing = false;
+    let wbCurrentTool = 'pen';
+    let wbCurrentColor = '#1e293b';
+    let wbCurrentSize = 5;
+
+    function openWhiteboard() {
+      const modal = document.getElementById('whiteboard-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      setTimeout(initWhiteboardCanvas, 50);
+      if (window.lucide) {
+        try { lucide.createIcons(); } catch (_) {}
+      }
+    }
+    window.openWhiteboard = openWhiteboard;
+
+    function closeWhiteboard() {
+      const modal = document.getElementById('whiteboard-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+    window.closeWhiteboard = closeWhiteboard;
+
+    function initWhiteboardCanvas() {
+      wbCanvas = document.getElementById('whiteboard-canvas');
+      if (!wbCanvas) return;
+      const container = document.getElementById('whiteboard-canvas-container');
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      
+      const dpr = window.devicePixelRatio || 1;
+      wbCanvas.width = rect.width * dpr;
+      wbCanvas.height = rect.height * dpr;
+      wbCtx = wbCanvas.getContext('2d');
+      wbCtx.scale(dpr, dpr);
+      wbCtx.lineCap = 'round';
+      wbCtx.lineJoin = 'round';
+
+      // Fill white background so exported PNG is clean
+      wbCtx.fillStyle = '#ffffff';
+      wbCtx.fillRect(0, 0, rect.width, rect.height);
+
+      // Mouse events
+      wbCanvas.onmousedown = function(e) {
+        wbIsDrawing = true;
+        const b = wbCanvas.getBoundingClientRect();
+        wbCtx.beginPath();
+        wbCtx.moveTo(e.clientX - b.left, e.clientY - b.top);
+      };
+
+      wbCanvas.onmousemove = function(e) {
+        if (!wbIsDrawing) return;
+        const b = wbCanvas.getBoundingClientRect();
+        wbCtx.strokeStyle = (wbCurrentTool === 'eraser') ? '#ffffff' : wbCurrentColor;
+        wbCtx.lineWidth = (wbCurrentTool === 'eraser') ? wbCurrentSize * 3 : wbCurrentSize;
+        wbCtx.lineTo(e.clientX - b.left, e.clientY - b.top);
+        wbCtx.stroke();
+      };
+
+      wbCanvas.onmouseup = function() { wbIsDrawing = false; };
+      wbCanvas.onmouseleave = function() { wbIsDrawing = false; };
+
+      // Touch events (mobile & tablets)
+      wbCanvas.ontouchstart = function(e) {
+        if (e.touches.length > 1) return;
+        e.preventDefault();
+        wbIsDrawing = true;
+        const b = wbCanvas.getBoundingClientRect();
+        const t = e.touches[0];
+        wbCtx.beginPath();
+        wbCtx.moveTo(t.clientX - b.left, t.clientY - b.top);
+      };
+
+      wbCanvas.ontouchmove = function(e) {
+        if (!wbIsDrawing || e.touches.length > 1) return;
+        e.preventDefault();
+        const b = wbCanvas.getBoundingClientRect();
+        const t = e.touches[0];
+        wbCtx.strokeStyle = (wbCurrentTool === 'eraser') ? '#ffffff' : wbCurrentColor;
+        wbCtx.lineWidth = (wbCurrentTool === 'eraser') ? wbCurrentSize * 3 : wbCurrentSize;
+        wbCtx.lineTo(t.clientX - b.left, t.clientY - b.top);
+        wbCtx.stroke();
+      };
+
+      wbCanvas.ontouchend = function(e) { wbIsDrawing = false; };
+    }
+
+    function setWhiteboardTool(tool) {
+      wbCurrentTool = tool;
+      const penBtn = document.getElementById('wb-tool-pen');
+      const eraserBtn = document.getElementById('wb-tool-eraser');
+      if (tool === 'pen') {
+        penBtn?.classList.add('bg-slate-900', 'text-white', 'shadow-xs');
+        penBtn?.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        eraserBtn?.classList.remove('bg-slate-900', 'text-white', 'shadow-xs');
+        eraserBtn?.classList.add('text-slate-600', 'hover:bg-slate-100');
+      } else {
+        eraserBtn?.classList.add('bg-slate-900', 'text-white', 'shadow-xs');
+        eraserBtn?.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        penBtn?.classList.remove('bg-slate-900', 'text-white', 'shadow-xs');
+        penBtn?.classList.add('text-slate-600', 'hover:bg-slate-100');
+      }
+    }
+    window.setWhiteboardTool = setWhiteboardTool;
+
+    function setWhiteboardColor(color, el) {
+      wbCurrentColor = color;
+      setWhiteboardTool('pen');
+      document.querySelectorAll('.wb-color-btn').forEach(btn => {
+        btn.classList.remove('ring-2', 'ring-slate-900', 'ring-offset-2');
+      });
+      el?.classList.add('ring-2', 'ring-slate-900', 'ring-offset-2');
+    }
+    window.setWhiteboardColor = setWhiteboardColor;
+
+    function setWhiteboardSize(size, el) {
+      wbCurrentSize = size;
+      document.querySelectorAll('.wb-size-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-100', 'text-slate-900', 'font-bold');
+        btn.classList.add('text-slate-500');
+      });
+      el?.classList.add('bg-slate-100', 'text-slate-900', 'font-bold');
+      el?.classList.remove('text-slate-500');
+    }
+    window.setWhiteboardSize = setWhiteboardSize;
+
+    function clearWhiteboardCanvas() {
+      if (!confirm('Are you sure you want to clear the whiteboard?')) return;
+      if (!wbCanvas || !wbCtx) return;
+      const b = wbCanvas.getBoundingClientRect();
+      wbCtx.fillStyle = '#ffffff';
+      wbCtx.fillRect(0, 0, b.width, b.height);
+    }
+    window.clearWhiteboardCanvas = clearWhiteboardCanvas;
+
+    function downloadWhiteboardPNG() {
+      if (!wbCanvas) return;
+      const link = document.createElement('a');
+      link.download = 'raccon-whiteboard-' + Date.now() + '.png';
+      link.href = wbCanvas.toDataURL('image/png');
+      link.click();
+    }
+    window.downloadWhiteboardPNG = downloadWhiteboardPNG;
+
 
     function renderMessageList(searchQuery = '') {
       const container = document.getElementById('threads-container');
@@ -2783,7 +2947,7 @@ try {
             </div>
 
             <!-- Desktop Rise SaaS Tabular Row (Shown on md: and above) -->
-            <div class="hidden md:flex items-center gap-3 px-4 py-2.5 border-b border-slate-100 hover:bg-slate-50 transition select-none text-xs ${isActive ? 'bg-sky-50/80 font-semibold text-slate-900 border-l-[3px] border-l-sky-500' : 'bg-white text-slate-600'}">
+            <div class="hidden md:flex items-center gap-3 px-4 py-3 border-b border-slate-100 border-l-4 ${isActive ? 'border-l-sky-500 bg-sky-50/70 font-semibold text-slate-900' : 'border-l-transparent bg-white hover:bg-slate-50/80 text-slate-700'} transition select-none text-xs">
               <!-- Checkbox -->
               <input type="checkbox" onclick="event.stopPropagation()" class="email-checkbox rounded border-slate-300 text-sky-600 focus:ring-0 cursor-pointer w-4 h-4 shrink-0" />
 
@@ -2952,7 +3116,6 @@ try {
         if (activeCard) {
           const dot = activeCard.querySelector('.unread-dot');
           if (dot) dot.remove();
-          activeCard.classList.remove('border-l-[3px]', 'border-l-[#E06748]');
         }
         updateBadgeCounts();
         fetch('/api/messages/' + encodeURIComponent(msg.id) + '/read', {
@@ -2971,138 +3134,99 @@ try {
       // Update reader read icon/button
       updateReaderReadButton(msg.isRead);
 
-      const cardsHtml = (msg.thread || []).map((card, i) => {
-        const cleanedBody = cleanMimeEmailContent(card.body);
-        const parsed = parseEmailReplyAndQuote(cleanedBody);
-        const isReply = Boolean(parsed.isReply || msg.is_reply || (msg.subject && msg.subject.toLowerCase().startsWith('re:')));
-        const replyText = parsed.replyText || msg.reply_text || cleanedBody;
-        const quotedText = parsed.quotedText || msg.quoted_text || '';
+      const senderDisplayName = msg.senderName || (msg.sender ? msg.sender.split('@')[0] : 'Raccon Member');
+      const senderEmail = msg.sender || (msg.senderEmail || 'user@racconmail.eu');
+      const recipientText = msg.to || (msg.recipient || 'support@racconmail.eu');
+      const fullTime = msg.date || msg.time || 'Recently';
 
-        if (isReply && replyText) {
-          // Centered, Responsive, Non-overflowing Reply Template
-          return `
-            <div class="mb-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-indigo-50/50 via-white to-slate-50/40 border border-indigo-100/90 p-4 sm:p-6 shadow-xs relative overflow-hidden break-words w-full">
-              <!-- Top Pill & Status Header -->
-              <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-indigo-100/60 mb-4">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#6c4ff5] text-white shadow-2xs">
-                    <i data-lucide="corner-down-left" class="w-3.5 h-3.5 text-white"></i>
-                    <span>Reply Received</span>
-                  </span>
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide">
-                    Updates
-                  </span>
-                </div>
-                <div class="flex items-center gap-2 text-slate-400 shrink-0">
-                  <span class="text-xs font-mono font-medium">${escapeHtml(card.date || msg.date || 'Recently')}</span>
-                </div>
-              </div>
-
-              <!-- Sender Profile Row -->
-              <div class="flex items-start gap-3 mb-4 min-w-0">
-                <div class="w-10 h-10 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
-                  <img src="${card.avatar || '/raccoon-logo.svg'}" class="w-7 h-7 object-contain" alt="Avatar" />
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between gap-2">
-                    <h4 class="font-extrabold text-sm sm:text-base text-slate-900 truncate">${escapeHtml(card.sender)}</h4>
-                    <button onclick="trashCurrentThread()" class="hover:text-rose-600 p-1 text-slate-300 transition" title="Delete"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
-                  </div>
-                  <div class="text-[11px] text-slate-400 flex flex-wrap items-center gap-1.5 mt-0.5 break-all">
-                    <span class="font-mono truncate max-w-full">to ${escapeHtml(card.to)}</span>
-                    <span>•</span>
-                    <span class="text-emerald-600 font-medium inline-flex items-center gap-1 shrink-0">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                      Verified Delivery
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Clean Reply Content Box (ONLY THE ACTUAL REPLY - "Chenar") -->
-              <div class="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs relative overflow-hidden break-words w-full">
-                <div class="text-[10px] font-extrabold text-[#6c4ff5] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                  <i data-lucide="message-square" class="w-3.5 h-3.5 text-[#6c4ff5]"></i>
-                  <span>Response Message</span>
-                </div>
-                <div class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed whitespace-pre-wrap break-words [word-break:break-word] overflow-hidden selection:bg-[#6c4ff5] selection:text-white select-text">
-                  ${escapeHtml(replyText)}
-                </div>
-              </div>
-
-              <!-- Collapsible Quoted Email History -->
-              ${quotedText ? `
-                <div class="mt-4 pt-3 border-t border-slate-100/90 w-full overflow-hidden">
-                  <button type="button" onclick="toggleQuotedHistory(this)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/70 transition cursor-pointer border border-slate-200/60 active:scale-98">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                    <span>Show quoted email history</span>
-                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"></i>
-                  </button>
-                  <div class="quoted-history-panel hidden mt-3 p-3.5 sm:p-5 rounded-2xl bg-slate-50 border-l-4 border-indigo-400 text-xs text-slate-600 font-mono leading-relaxed whitespace-pre-wrap break-words [word-break:break-word] max-h-96 overflow-y-auto overflow-x-hidden select-text w-full">
-                    ${escapeHtml(quotedText)}
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-          `;
+      // Prepare thread message cards
+      const threadList = (Array.isArray(msg.thread) && msg.thread.length > 0) ? msg.thread : [
+        {
+          sender: msg.sender || senderDisplayName,
+          to: recipientText,
+          date: fullTime,
+          body: msg.body || msg.preview || '(No content)',
+          avatar: msg.senderAvatar || '/raccoon-logo.svg'
         }
+      ];
 
-        // Standard card if not a reply (Centered, non-overflowing)
+      const cardsHtml = threadList.map((card, i) => {
+        const rawBody = card.body || '';
+        const cleanedBody = cleanMimeEmailContent(rawBody);
+
         return `
-          <div class="mb-6 rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-6 shadow-2xs relative overflow-hidden break-words w-full">
-            <div class="flex items-start gap-3 mb-3.5 min-w-0">
-              <img src="${card.avatar || '/raccoon-logo.svg'}" class="h-9 w-9 rounded-full object-cover shrink-0 border border-slate-200" />
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="font-bold text-sm text-slate-900 truncate">${escapeHtml(card.sender)}</span>
-                  <div class="flex items-center gap-2 text-slate-400 shrink-0">
-                    <span class="text-[11px] font-mono">${escapeHtml(card.date)}</span>
-                    <button onclick="trashCurrentThread()" class="hover:text-rose-600 p-0.5 text-slate-300 transition" title="Delete"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
+          <div class="mb-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm p-6 sm:p-8 relative select-text w-full">
+            
+            <!-- Sender & Recipient Information Row -->
+            <div class="flex items-start justify-between gap-3 pb-4 mb-5 border-b border-slate-100 flex-wrap">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="w-11 h-11 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0 shadow-2xs">
+                  <img src="${card.avatar || '/raccoon-logo.svg'}" class="w-8 h-8 object-contain" alt="Avatar" onerror="this.src='/raccoon-logo.svg'" />
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="font-extrabold text-base text-slate-900 leading-tight">${escapeHtml(card.sender || senderDisplayName)}</h3>
+                    <span class="text-xs text-slate-400 font-mono">&lt;${escapeHtml(senderEmail)}&gt;</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                    <span class="font-medium text-slate-600">To: <span class="text-slate-800 font-bold">${escapeHtml(card.to || recipientText)}</span></span>
+                    <span class="text-slate-300">•</span>
+                    <span class="text-[11px] font-mono text-slate-400">${escapeHtml(card.date || fullTime)}</span>
                   </div>
                 </div>
-                <div class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                  <span class="truncate">to ${escapeHtml(card.to)}</span>
-                </div>
+              </div>
+
+              <!-- Quick Message Action -->
+              <div class="flex items-center gap-1.5 text-slate-400 shrink-0">
+                <button type="button" onclick="replyCurrentThread()" class="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-700 transition cursor-pointer" title="Reply">
+                  <i data-lucide="reply" class="w-4 h-4"></i>
+                </button>
+                <button type="button" onclick="trashCurrentThread()" class="p-1.5 rounded-lg hover:bg-rose-50 hover:text-rose-600 transition cursor-pointer" title="Delete">
+                  <i data-lucide="trash-2" class="w-4 h-4 text-rose-500"></i>
+                </button>
               </div>
             </div>
-            <div class="text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2 whitespace-pre-wrap break-words [word-break:break-word] overflow-hidden select-text">
+
+            <!-- Full Message Body (Generous line height, readable text, zero text cut-off) -->
+            <div class="text-[15px] sm:text-base text-slate-800 leading-relaxed space-y-3 whitespace-pre-wrap break-words [word-break:break-word] select-text font-normal pt-1">
               ${cleanedBody}
             </div>
+
           </div>
         `;
       }).join('');
 
       container.innerHTML = `
-        <div class="max-w-3xl mx-auto w-full px-1 sm:px-4 py-2">
-          <!-- Prominent Centered Subject Title -->
-          <div class="mb-5 text-center sm:text-left">
-            <h1 class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug break-words [word-break:break-word] overflow-hidden">
+        <div class="w-full max-w-4xl mx-auto px-2 sm:px-6 py-4">
+          <!-- Prominent Subject Header -->
+          <div class="mb-6 pb-4 border-b border-slate-100">
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug break-words">
               ${escapeHtml(msg.subject || '(no subject)')}
             </h1>
-            <div class="flex items-center justify-center sm:justify-start gap-2 mt-2 text-xs text-slate-400 font-mono">
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase bg-slate-100 text-slate-600 border border-slate-200">
+            <div class="flex items-center gap-2 mt-2 text-xs text-slate-400 font-mono">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-bold text-[10px] uppercase bg-slate-100 text-slate-700 border border-slate-200">
                 ${escapeHtml(currentFolder)}
               </span>
               <span>•</span>
-              <span>${escapeHtml(msg.date || msg.time || 'Recently')}</span>
+              <span>${escapeHtml(fullTime)}</span>
             </div>
           </div>
 
-          <!-- Email Thread Cards -->
+          <!-- All Messages in Thread -->
           ${cardsHtml}
 
-          <!-- Quick Reply Box at bottom -->
+          <!-- Quick Reply Composer -->
           <div class="pt-4 flex items-center gap-3">
-            <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-8 w-8 rounded-full border border-slate-200 shrink-0" />
+            <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="h-9 w-9 rounded-full border border-slate-200 shrink-0 shadow-2xs" onerror="this.src='/raccoon-logo.svg'" />
             <div class="flex-1 relative flex items-center min-w-0">
-              <input id="quick-reply-input" type="text" placeholder="Write a quick reply..." class="w-full bg-slate-50 rounded-full border border-slate-200 pl-4 pr-24 py-2 text-xs text-slate-800 outline-none focus:border-slate-400" />
-              <button onclick="sendQuickReply()" class="absolute right-1.5 px-3 py-1 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-semibold cursor-pointer">Reply</button>
+              <input id="quick-reply-input" type="text" placeholder="Write a quick reply..." class="w-full bg-slate-50 hover:bg-white focus:bg-white rounded-full border border-slate-200 pl-4 pr-24 py-2.5 text-xs text-slate-800 outline-none focus:border-slate-400 transition" />
+              <button onclick="sendQuickReply()" class="absolute right-1.5 px-4 py-1.5 bg-slate-900 hover:bg-black text-white rounded-full text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition">Reply</button>
             </div>
           </div>
         </div>
       `;
 
-      try { lucide.createIcons(); } catch (_) {}
+      try { if (window.lucide && lucide.createIcons) lucide.createIcons(); } catch (_) {}
     }
 
     function renderEmptyConversation() {
@@ -3380,39 +3504,42 @@ try {
     // Delete single message permanently or move to trash
     // Delete single message permanently from trash or move to trash
     async function deleteMessageById(msgId) {
-      let removedMsg = null;
+      if (!msgId) return;
+
+      // 1. Remove permanently from all local in-memory folder lists
       for (const f in mailDatabase) {
         if (Array.isArray(mailDatabase[f])) {
           const idx = mailDatabase[f].findIndex(m => m.id === msgId);
           if (idx !== -1) {
-            removedMsg = mailDatabase[f].splice(idx, 1)[0];
+            mailDatabase[f].splice(idx, 1);
           }
         }
       }
 
-      const isCurrentlyTrash = (currentFolder.toLowerCase() === 'trash' || (removedMsg && (removedMsg.is_trashed === 1 || removedMsg.computed_folder === 'Trash')));
-      if (isCurrentlyTrash) {
-        permanentlyDeletedIds.add(msgId);
-        try { localStorage.setItem('raccon_deleted_ids', JSON.stringify(Array.from(permanentlyDeletedIds))); } catch (_) {}
-      }
-      if (!isCurrentlyTrash && removedMsg) {
-        if (!mailDatabase['Trash']) mailDatabase['Trash'] = [];
-        mailDatabase['Trash'].unshift(removedMsg);
-      }
+      // 2. Add to permanently deleted set & persist in localStorage so sync NEVER restores it
+      permanentlyDeletedIds.add(msgId);
+      try {
+        localStorage.setItem('raccon_deleted_ids', JSON.stringify(Array.from(permanentlyDeletedIds)));
+      } catch (_) {}
 
+      // 3. Immediately re-render list and update badges
       currentSelectedThreadIndex = 0;
       renderMessageList(document.getElementById('global-search')?.value || '');
       updateBadgeCounts();
 
+      // 4. Send permanent delete request to backend API
       try {
-        if (isCurrentlyTrash) {
-          await fetch('/api/messages/' + encodeURIComponent(msgId) + '?permanent=1', { method: 'DELETE' });
-        } else {
-          await fetch('/api/messages/' + encodeURIComponent(msgId) + '/trash', { method: 'POST' });
-        }
+        const tok = typeof getAuthToken === 'function' ? getAuthToken() : '';
+        const authHeader = tok ? { 'Authorization': 'Bearer ' + tok } : {};
+        await fetch('/api/messages/' + encodeURIComponent(msgId) + '?permanent=1', {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeader
+        });
       } catch (err) {
         console.error('Delete error:', err);
       }
+
       refreshFolderCounts();
     }
 
@@ -3422,12 +3549,9 @@ try {
                    (mailDatabase[currentFolder] || mailDatabase['Inbox']);
       const msg = list[currentSelectedThreadIndex];
       if (msg) {
-        const isTrash = (currentFolder.toLowerCase() === 'trash' || msg.is_trashed === 1 || msg.computed_folder === 'Trash');
-        if (isTrash) {
-          if (!confirm('Permanently delete this email from Trash?')) return;
-        }
+        if (!confirm('Are you sure you want to permanently delete this email?')) return;
         await deleteMessageById(msg.id);
-        showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+        if (typeof showToast === 'function') showToast('Email permanently deleted 🗑️', 'info');
         if (window.innerWidth < 768) {
           backToMobileInbox();
         }
