@@ -197,6 +197,9 @@ try {
   <title>Raccon Mail &mdash; All Emails</title>
   <meta name="description" content="Clever, minimal, encrypted email inbox with email zen precision." />
 
+  <!-- Google AdSense (Yahoo Mail Style In-Feed & Top Placements) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4083745907535838" crossorigin="anonymous"></script>
+
   <!-- Favicon Suite -->
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -631,7 +634,7 @@ try {
             <i data-lucide="inbox" class="h-4 w-4 shrink-0"></i>
             <span class="sidebar-text truncate">Inbox</span>
           </div>
-          <span id="badge-inbox" class="sidebar-badge bg-slate-100 text-slate-700 border border-slate-200/90 text-[10px] font-bold px-2.5 py-0.5 rounded-full <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_unread']; ?></span>
+          <span id="badge-inbox" class="sidebar-badge bg-slate-100 text-slate-700 border border-slate-200/90 text-[10px] font-bold px-2.5 py-0.5 rounded-full <?php echo ($counts['inbox_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_total']; ?></span>
         </button>
 
         <!-- 2. UNREAD -->
@@ -855,7 +858,8 @@ try {
         <div class="flex items-center justify-between mb-3.5">
           <div class="flex items-center gap-2.5">
             <h1 id="current-folder-display-title" class="text-3xl font-black text-slate-900 tracking-tight">Inbox</h1>
-            <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_unread']; ?></span>
+            <span id="coral-inbox-badge" class="bg-[#FFEFEA] text-[#E06748] text-xs font-black px-2.5 py-0.5 rounded-full shadow-2xs" title="Total messages"><?php echo $counts['inbox_total']; ?></span>
+            <span id="inbox-unread-pill" class="bg-rose-100 text-rose-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>" title="Unread messages"><?php echo $counts['inbox_unread']; ?> unread</span>
             <button id="mark-all-read-btn" onclick="markAllAsReadAction()" class="px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-bold border border-slate-200 transition cursor-pointer flex items-center gap-1 shadow-2xs <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>" title="Mark all as read">
               <i data-lucide="check-check" class="h-3 w-3"></i>
               <span>Read All</span>
@@ -914,6 +918,38 @@ try {
           <button onclick="switchCategoryFilter('Sent')" id="pill-filter-sent" class="category-filter-pill inactive-category-pill">
             Sent
           </button>
+        </div>
+      </div>
+
+      <!-- Yahoo Mail Style Sponsored Google Ad Placement (Above Mails, Below Search Bar in Mobile & Desktop) -->
+      <div id="inbox-sponsored-ad-banner" class="px-4 pt-1.5 pb-2 shrink-0 select-none">
+        <div class="rounded-2xl border border-slate-200/80 bg-gradient-to-r from-slate-50 via-white to-amber-50/20 p-2.5 sm:p-3 shadow-2xs relative overflow-hidden transition-all duration-200 hover:border-slate-300">
+          <!-- Top Row: Yahoo Mail Style Sponsored Badge & Action -->
+          <div class="flex items-center justify-between mb-1.5 px-0.5">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-200/90 text-slate-600 px-1.5 py-0.5 rounded shadow-2xs">Ad</span>
+              <span class="text-[11px] font-semibold text-slate-500">Sponsored</span>
+            </div>
+            <div class="flex items-center gap-1 text-slate-400">
+              <span class="text-[10px] text-slate-400 font-medium">Google AdSense</span>
+              <button type="button" onclick="document.getElementById('inbox-sponsored-ad-banner').style.display='none'" class="p-1 text-slate-300 hover:text-slate-500 rounded-md transition cursor-pointer" title="Hide Ad">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Google AdSense Unit (Client ca-pub-4083745907535838) -->
+          <div class="min-h-[60px] sm:min-h-[85px] w-full flex items-center justify-center overflow-hidden rounded-xl bg-slate-100/40">
+            <ins class="adsbygoogle"
+                 style="display:block; width:100%; text-align:center;"
+                 data-ad-client="ca-pub-4083745907535838"
+                 data-ad-slot="auto"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
+            </script>
+          </div>
         </div>
       </div>
 
@@ -1919,18 +1955,33 @@ try {
         );
       }
 
-      // Update Coral Badge count & Mark All Read button
-      const unreadCount = (mailDatabase['Inbox'] || []).filter(m => !m.isRead).length;
+      // Update Coral Badge count (shows how many emails got in current folder - ALWAYS VISIBLE!)
+      const curFolderList = (currentFolder === 'All') ? [].concat(...Object.values(mailDatabase)) :
+                            (mailDatabase[currentFolder] || list);
+      const folderTotal = curFolderList.length;
+      const folderUnread = curFolderList.filter(m => !m.isRead).length;
+
       const badge = document.getElementById('coral-inbox-badge');
       if (badge) {
-        const count = (currentFolder === 'Inbox' || currentFolder === 'Unread') ? unreadCount : list.length;
-        badge.innerText = count;
-        if (count > 0) badge.classList.remove('hidden');
-        else badge.classList.add('hidden');
+        badge.innerText = folderTotal;
+        badge.classList.remove('hidden'); // ALWAYS VISIBLE! Shows how many emails you got!
       }
+
+      // Middle header Unread Pill (shows when unread emails exist, hides when 0)
+      const unreadPill = document.getElementById('inbox-unread-pill');
+      if (unreadPill) {
+        if (folderUnread > 0) {
+          unreadPill.innerText = folderUnread + ' unread';
+          unreadPill.classList.remove('hidden');
+        } else {
+          unreadPill.classList.add('hidden');
+        }
+      }
+
+      // Read All button (shows when unread emails exist)
       const markAllBtn = document.getElementById('mark-all-read-btn');
       if (markAllBtn) {
-        if (unreadCount > 0 && (currentFolder === 'Inbox' || currentFolder === 'Unread')) markAllBtn.classList.remove('hidden');
+        if (folderUnread > 0) markAllBtn.classList.remove('hidden');
         else markAllBtn.classList.add('hidden');
       }
 
@@ -2442,25 +2493,70 @@ try {
           const data = await res.json();
           if (data && data.standard) {
             const std = data.standard;
-            const unreadCount = (typeof std.inbox?.unread === 'number') ? std.inbox.unread : (std.inbox?.total || 0);
+            const inboxTotal = std.inbox?.total || 0;
+            const inboxUnread = std.inbox?.unread || 0;
 
-            setBadgeValue('badge-inbox', unreadCount);
-            if (currentFolder === 'Inbox' || currentFolder === 'Unread') {
-              setBadgeValue('coral-inbox-badge', unreadCount);
-              const markAllBtn = document.getElementById('mark-all-read-btn');
-              if (markAllBtn) {
-                if (unreadCount > 0) markAllBtn.classList.remove('hidden');
-                else markAllBtn.classList.add('hidden');
+            // 1. Sidebar Inbox badge: shows how many emails you got in Inbox (ALWAYS VISIBLE!)
+            const bInbox = document.getElementById('badge-inbox');
+            if (bInbox) {
+              bInbox.innerText = inboxTotal;
+              if (inboxTotal > 0) bInbox.classList.remove('hidden');
+              else bInbox.classList.add('hidden');
+            }
+
+            // 2. Middle header Coral badge: shows how many emails you got in current folder (ALWAYS VISIBLE!)
+            const bCoral = document.getElementById('coral-inbox-badge');
+            if (bCoral) {
+              let fCount = inboxTotal;
+              if (currentFolder === 'Sent') fCount = std.sent?.total || 0;
+              else if (currentFolder === 'Trash') fCount = std.trash?.total || 0;
+              else if (currentFolder === 'Archive') fCount = std.archive?.total || 0;
+              else if (currentFolder === 'Spam') fCount = std.spam?.total || 0;
+              else if (currentFolder === 'Starred') fCount = std.favorites?.total || 0;
+              else if (currentFolder === 'Drafts') fCount = std.drafts?.total || 0;
+              else if (currentFolder === 'Unread') fCount = std.unread?.total || inboxUnread;
+              bCoral.innerText = fCount;
+              bCoral.classList.remove('hidden'); // ALWAYS VISIBLE! Shows how many emails you got!
+            }
+
+            // 3. Middle header Unread pill: shows unread count if any (hides when 0)
+            const unreadPill = document.getElementById('inbox-unread-pill');
+            if (unreadPill) {
+              const curUnread = (currentFolder === 'Inbox' || currentFolder === 'Unread') ? inboxUnread : 0;
+              if (curUnread > 0) {
+                unreadPill.innerText = curUnread + ' unread';
+                unreadPill.classList.remove('hidden');
+              } else {
+                unreadPill.classList.add('hidden');
               }
             }
-            setBadgeValue('badge-unread', std.unread?.total || std.unread?.unread || 0);
+
+            // 4. Mark all read button
+            const markAllBtn = document.getElementById('mark-all-read-btn');
+            if (markAllBtn) {
+              const curUnread = (currentFolder === 'Inbox' || currentFolder === 'Unread') ? inboxUnread : 0;
+              if (curUnread > 0) markAllBtn.classList.remove('hidden');
+              else markAllBtn.classList.add('hidden');
+            }
+
+            // 5. Sidebar Unread: shows unread count (hides when 0)
+            setBadgeValue('badge-unread', std.unread?.total || inboxUnread || 0);
+
+            // 6. Mobile bottom bar badge: shows how many emails you got
+            const bMobile = document.getElementById('mobile-bottom-inbox-badge');
+            if (bMobile) {
+              bMobile.innerText = inboxTotal;
+              if (inboxTotal > 0) bMobile.classList.remove('hidden');
+              else bMobile.classList.add('hidden');
+            }
+
+            // 7. Other folders
             setBadgeValue('badge-starred', std.favorites?.total || 0);
             setBadgeValue('badge-drafts', std.drafts?.total || 0);
             setBadgeValue('badge-sent', std.sent?.total || 0);
             setBadgeValue('badge-archive', std.archive?.total || 0);
             setBadgeValue('badge-spam', std.spam?.total || 0);
             setBadgeValue('badge-trash', std.trash?.total || 0);
-            setBadgeValue('mobile-bottom-inbox-badge', unreadCount);
           }
         }
       } catch (e) {}
@@ -2468,28 +2564,59 @@ try {
 
     function updateBadgeCounts() {
       const inboxList = mailDatabase['Inbox'] || [];
+      const totalInbox = inboxList.length;
       const unreadInbox = inboxList.filter(m => !m.isRead).length;
 
-      setBadgeValue('badge-inbox', unreadInbox);
-      setBadgeValue('badge-unread', unreadInbox);
-      setBadgeValue('mobile-bottom-inbox-badge', unreadInbox);
-
-      if (currentFolder === 'Inbox' || currentFolder === 'Unread') {
-        setBadgeValue('coral-inbox-badge', unreadInbox);
-      } else {
-        const totalInFolder = (mailDatabase[currentFolder] || []).length;
-        setBadgeValue('coral-inbox-badge', totalInFolder);
+      // 1. Sidebar Inbox badge: shows how many emails you got in Inbox (ALWAYS VISIBLE!)
+      const bInbox = document.getElementById('badge-inbox');
+      if (bInbox) {
+        bInbox.innerText = totalInbox;
+        if (totalInbox > 0) bInbox.classList.remove('hidden');
+        else bInbox.classList.add('hidden');
       }
 
-      const markAllBtn = document.getElementById('mark-all-read-btn');
-      if (markAllBtn) {
-        if (unreadInbox > 0 && (currentFolder === 'Inbox' || currentFolder === 'Unread')) {
-          markAllBtn.classList.remove('hidden');
+      // 2. Middle header Coral badge: shows how many emails you got in current folder (ALWAYS VISIBLE!)
+      const bCoral = document.getElementById('coral-inbox-badge');
+      if (bCoral) {
+        const curList = (currentFolder === 'All') ? [].concat(...Object.values(mailDatabase)) :
+                        (mailDatabase[currentFolder] || []);
+        bCoral.innerText = curList.length;
+        bCoral.classList.remove('hidden'); // ALWAYS VISIBLE! Shows how many emails you got!
+      }
+
+      // 3. Middle header Unread pill: shows unread count if any (hides when 0)
+      const curList = (currentFolder === 'All') ? [].concat(...Object.values(mailDatabase)) :
+                      (mailDatabase[currentFolder] || []);
+      const curUnread = curList.filter(m => !m.isRead).length;
+      const unreadPill = document.getElementById('inbox-unread-pill');
+      if (unreadPill) {
+        if (curUnread > 0) {
+          unreadPill.innerText = curUnread + ' unread';
+          unreadPill.classList.remove('hidden');
         } else {
-          markAllBtn.classList.add('hidden');
+          unreadPill.classList.add('hidden');
         }
       }
 
+      // 4. Mark all read button
+      const markAllBtn = document.getElementById('mark-all-read-btn');
+      if (markAllBtn) {
+        if (curUnread > 0) markAllBtn.classList.remove('hidden');
+        else markAllBtn.classList.add('hidden');
+      }
+
+      // 5. Sidebar Unread: shows unread count (hides when 0)
+      setBadgeValue('badge-unread', unreadInbox);
+
+      // 6. Mobile bottom bar badge: shows how many emails you got
+      const bMobile = document.getElementById('mobile-bottom-inbox-badge');
+      if (bMobile) {
+        bMobile.innerText = totalInbox;
+        if (totalInbox > 0) bMobile.classList.remove('hidden');
+        else bMobile.classList.add('hidden');
+      }
+
+      // 7. Other folders show their counts
       const trashCount = (mailDatabase['Trash'] || []).length;
       setBadgeValue('badge-trash', trashCount);
 
@@ -3764,7 +3891,7 @@ try {
     <button onclick="switchFolder('Inbox'); backToMobileInbox();" class="flex flex-col items-center gap-1 cursor-pointer group relative" title="Inbox">
       <div class="w-6 h-6 flex items-center justify-center text-[#F68D72] relative">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5v-3h3.56c.69 1.19 1.97 2 3.44 2s2.75-.81 3.44-2H19v3zm0-5h-4.99c0 1.1-.9 2-2.01 2s-2.01-.9-2.01-2H5V5h14v9z"/></svg>
-        <span id="mobile-bottom-inbox-badge" class="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 px-1 rounded-full bg-[#E06748] text-white text-[8px] font-black flex items-center justify-center shadow-xs <?php echo ($counts['inbox_unread'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_unread']; ?></span>
+        <span id="mobile-bottom-inbox-badge" class="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 px-1 rounded-full bg-[#E06748] text-white text-[8px] font-black flex items-center justify-center shadow-xs <?php echo ($counts['inbox_total'] > 0) ? '' : 'hidden'; ?>"><?php echo $counts['inbox_total']; ?></span>
       </div>
       <span class="text-[10px] font-bold text-slate-800">Inbox</span>
     </button>

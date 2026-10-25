@@ -57,8 +57,9 @@ async function deployInboxAndApi() {
 
   await uploadOneFile('public/inbox.php', 'inbox.php');
   await uploadOneFile('public/api.php', 'api.php');
+  await uploadOneFile('public/index.html', 'index.html');
 
-  console.log('inbox.php and api.php successfully deployed to production!');
+  console.log('inbox.php, api.php, and index.html successfully deployed to production!');
 }
 
 deployInboxAndApi().catch(console.error);
