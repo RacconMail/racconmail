@@ -3864,12 +3864,16 @@ try {
       <span class="text-[10px] font-bold text-slate-800">Inbox</span>
     </button>
 
-    <!-- Folders / Toggle Menu -->
-    <button onclick="toggleSidebarAction()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Folders & Menu">
+    <!-- Menu / Sidebar Drawer Toggle -->
+    <button onclick="toggleSidebarAction()" class="flex flex-col items-center gap-1 cursor-pointer text-slate-500 hover:text-slate-900 transition group" title="Menu">
       <div class="w-6 h-6 flex items-center justify-center">
-        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
       </div>
-      <span class="text-[10px] font-bold text-slate-600">Folders</span>
+      <span class="text-[10px] font-bold text-slate-600">Menu</span>
     </button>
 
     <!-- Pencil / Compose -->
