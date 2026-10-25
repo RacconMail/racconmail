@@ -990,11 +990,19 @@ try {
               <i data-lucide="search" class="w-5 h-5 text-slate-700"></i>
             </button>
 
-            <!-- User Avatar Initial Circle (Matching Screenshot initial badge) -->
-            <button type="button" onclick="toggleUserDropdown(event)" class="relative ml-0.5 cursor-pointer" title="Account profile">
-              <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs overflow-hidden ring-1 ring-slate-200">
-                <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover" onerror="this.classList.add('hidden')" alt="Avatar" />
-                <span class="user-avatar-initial font-bold uppercase"><?php echo strtoupper(substr($currentUser['name'] ?? $currentUser['email'] ?? 'C', 0, 1)); ?></span>
+            <!-- User Avatar Circle (Opens Full Profile Page on tap) -->
+            <button type="button" onclick="openMobileProfilePage()" class="relative ml-1 cursor-pointer flex items-center justify-center group" title="Account & Profile">
+              <div class="w-9 h-9 rounded-full ring-2 ring-slate-200 group-hover:ring-slate-400 overflow-hidden shadow-xs relative flex items-center justify-center bg-slate-100">
+                <?php if (!empty($currentUser['avatar'])): ?>
+                  <img src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover" alt="Profile" onerror="this.style.display='none'; const fb = document.getElementById('mobile-header-initial-fallback'); if(fb) fb.style.display='flex';" />
+                  <span id="mobile-header-initial-fallback" style="display:none;" class="w-full h-full bg-slate-700 text-white font-bold text-xs items-center justify-center uppercase">
+                    <?php echo strtoupper(substr($currentUser['name'] ?? $currentUser['email'] ?? 'U', 0, 1)); ?>
+                  </span>
+                <?php else: ?>
+                  <span class="w-full h-full bg-slate-700 text-white font-bold text-xs flex items-center justify-center uppercase">
+                    <?php echo strtoupper(substr($currentUser['name'] ?? $currentUser['email'] ?? 'U', 0, 1)); ?>
+                  </span>
+                <?php endif; ?>
               </div>
             </button>
 
@@ -2144,6 +2152,36 @@ try {
     document.addEventListener('click', function(e) {
       if (!e.target.closest('#mobile-filter-popover') && !e.target.closest('button[onclick*="toggleMobileFilterMenu"]')) {
         closeMobileFilterPopover();
+      }
+    });
+
+    async 
+    // Mobile Profile Page Handlers
+    function openMobileProfilePage() {
+      const page = document.getElementById('mobile-profile-page');
+      if (page) {
+        page.classList.remove('hidden');
+        if (window.lucide) {
+          try { lucide.createIcons(); } catch (_) {}
+        }
+        try {
+          history.pushState({ profilePageOpen: true }, '');
+        } catch (_) {}
+      }
+    }
+
+    function closeMobileProfilePage() {
+      const page = document.getElementById('mobile-profile-page');
+      if (page) {
+        page.classList.add('hidden');
+      }
+    }
+
+    // Handle device back button
+    window.addEventListener('popstate', function(e) {
+      const page = document.getElementById('mobile-profile-page');
+      if (page && !page.classList.contains('hidden')) {
+        closeMobileProfilePage();
       }
     });
 
@@ -5689,10 +5727,10 @@ try {
     type="button"
     id="mobile-compose-fab"
     onclick="openComposeCard()"
-    class="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-2xl bg-[#1d4ed8] hover:bg-blue-800 active:scale-95 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 transition-all z-30 cursor-pointer"
+    class="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-2xl bg-slate-700 hover:bg-slate-800 active:scale-95 text-white flex items-center justify-center shadow-xl shadow-slate-900/30 border border-slate-600/40 transition-all z-40 cursor-pointer"
     title="Compose Email"
   >
-    <i data-lucide="pencil" class="w-6 h-6 stroke-[2.2] text-white"></i>
+    <i data-lucide="pencil" class="w-6 h-6 stroke-[2.5] text-white"></i>
   </button>
 
   <!-- ========================================================================= -->
@@ -5727,6 +5765,161 @@ try {
     </button>
 
   </nav>
+
+
+  <!-- ========================================================================= -->
+  <!-- DEDICATED FULL-SCREEN MOBILE PROFILE PAGE (PERFECT FOR ANDROID & MOBILE)   -->
+  <!-- ========================================================================= -->
+  <div id="mobile-profile-page" class="hidden fixed inset-0 z-50 bg-slate-100 flex flex-col overflow-y-auto select-none">
+    
+    <!-- Profile Page Header Bar -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-2xs">
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="closeMobileProfilePage()" class="p-2 -ml-1 text-slate-700 hover:text-slate-900 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Back to Mailbox">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <h2 class="text-base font-extrabold text-slate-900 tracking-tight">Account & Profile</h2>
+      </div>
+      <button type="button" onclick="closeMobileProfilePage()" class="p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 transition cursor-pointer" title="Close">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </header>
+
+    <!-- Profile Content Container -->
+    <main class="flex-1 max-w-lg w-full mx-auto p-4 space-y-4 pb-12">
+      
+      <!-- User Profile Hero Card -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm text-center relative overflow-hidden">
+        <!-- Background subtle gradient accent -->
+        <div class="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-slate-100 to-transparent"></div>
+        
+        <!-- Big Profile Avatar with Camera Edit Badge -->
+        <div class="relative w-24 h-24 mx-auto mb-3 cursor-pointer group" onclick="openAvatarModal()" title="Tap to change profile picture">
+          <div class="w-24 h-24 rounded-full ring-4 ring-white shadow-md overflow-hidden bg-slate-200 relative">
+            <img id="mobile-profile-large-img" src="<?php echo htmlspecialchars($currentUser['avatar']); ?>" class="user-avatar-img w-full h-full object-cover group-hover:scale-105 transition duration-200" alt="Profile Photo" onerror="this.src='/raccoon-logo.svg'" />
+          </div>
+          <!-- Camera badge docked on bottom-right of avatar -->
+          <button type="button" class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-slate-800 hover:bg-black text-white flex items-center justify-center ring-2 ring-white shadow-md transition group-hover:scale-110 cursor-pointer" title="Change Photo">
+            <i data-lucide="camera" class="w-4 h-4 text-white"></i>
+          </button>
+        </div>
+
+        <!-- User Identity -->
+        <h3 class="text-xl font-black text-slate-900 tracking-tight leading-tight">
+          <?php echo htmlspecialchars($currentUser['name'] ?? 'Raccon Member'); ?>
+        </h3>
+        <p class="text-xs text-slate-500 font-mono mt-1">
+          <?php echo htmlspecialchars($currentUser['email'] ?? 'user@racconmail.eu'); ?>
+        </p>
+
+        <!-- Active Status Badge -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[11px] font-bold mt-3 shadow-2xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Active Account</span>
+        </div>
+
+        <!-- Action Buttons Row -->
+        <div class="grid grid-cols-2 gap-2.5 mt-5 pt-4 border-t border-slate-100">
+          <button type="button" onclick="openAvatarModal()" class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition active:scale-95 cursor-pointer">
+            <i data-lucide="camera" class="w-4 h-4 text-slate-600"></i>
+            <span>Change Photo</span>
+          </button>
+          <button type="button" onclick="openSettingsModal()" class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition active:scale-95 cursor-pointer">
+            <i data-lucide="user-cog" class="w-4 h-4 text-slate-600"></i>
+            <span>Edit Profile</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Storage & Mailbox Status Card -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+              <i data-lucide="hard-drive" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-900">Mailbox Storage</h4>
+              <p class="text-[11px] text-slate-400">12.5 MB of 1 GB used</p>
+            </div>
+          </div>
+          <span class="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">1%</span>
+        </div>
+        <!-- Storage Progress Bar -->
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div class="bg-slate-800 h-full w-[2%] rounded-full"></div>
+        </div>
+        <p class="text-[11px] text-slate-400 flex items-center justify-between pt-1">
+          <span>Lifetime Free Cloud Storage</span>
+          <span class="text-slate-600 font-semibold">987.5 MB Free</span>
+        </p>
+      </div>
+
+      <!-- Quick Navigation & App Links -->
+      <div class="bg-white rounded-3xl p-3 border border-slate-200 shadow-sm space-y-1">
+        <button type="button" onclick="openContactsModal()" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition cursor-pointer text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition">
+              <i data-lucide="users" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">Address Book & Contacts</p>
+              <p class="text-[11px] text-slate-400">Manage saved recipients</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+
+        <button type="button" onclick="openProductivityDrawer('attachments')" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition cursor-pointer text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition">
+              <i data-lucide="file-text" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">Attachments & Photos</p>
+              <p class="text-[11px] text-slate-400">Browse all received files</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+
+        <button type="button" onclick="window.location.href='/forum'" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition cursor-pointer text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">Raccon Forum Community</p>
+              <p class="text-[11px] text-slate-400">Discuss with other members</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+
+        <button type="button" onclick="window.location.href='/stories'" class="w-full flex items-center justify-between px-3.5 py-3 rounded-2xl hover:bg-slate-50 transition cursor-pointer text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition">
+              <i data-lucide="book-open" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-800">Raccon Stories</p>
+              <p class="text-[11px] text-slate-400">Discover and read world stories</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </button>
+      </div>
+
+      <!-- Sign Out Button -->
+      <div class="pt-2">
+        <button type="button" onclick="logoutNow()" class="w-full py-3.5 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-sm border border-rose-200/80 flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer shadow-2xs">
+          <i data-lucide="log-out" class="w-4 h-4 text-rose-600"></i>
+          <span>Sign Out of Account</span>
+        </button>
+      </div>
+
+    </main>
+  </div>
 
 </body>
 </html>
