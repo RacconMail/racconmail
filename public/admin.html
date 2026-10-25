@@ -103,16 +103,15 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <span id="mobile-active-tab-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#7052ff]/10 text-[#7052ff] border border-[#7052ff]/20 uppercase">
-          Overview
-        </span>
-        <!-- Admin Profile Badge in Mobile Toggle Bar -->
-        <div class="flex items-center gap-1.5 px-2 py-1 bg-slate-900 rounded-full text-white border border-slate-800 shadow-2xs" title="Admin Active">
-          <img src="/raccoon-logo.svg" class="w-4 h-4 object-contain" alt="Admin" />
-          <span class="text-[10px] font-bold tracking-tight">Admin</span>
-        </div>
-        <button onclick="toggleAdminMobileMenu()" id="admin-mobile-toggle-btn" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer" title="Toggle Menu">
+      <!-- Mobile Toggle Menu Button (Clean, unobstructed on mobile viewports) -->
+      <div class="flex items-center shrink-0">
+        <button 
+          onclick="toggleAdminMobileMenu()" 
+          id="admin-mobile-toggle-btn" 
+          class="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-900 transition cursor-pointer flex items-center justify-center border border-slate-200/90 shadow-2xs" 
+          title="Toggle Navigation Menu" 
+          aria-label="Toggle Navigation Menu"
+        >
           <i data-lucide="menu" id="admin-menu-toggle-icon" class="w-5 h-5"></i>
         </button>
       </div>
