@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) {
     $cookieDomain = (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'racconmail.eu')) ? '.racconmail.eu' : '';
     session_set_cookie_params([
@@ -220,7 +220,7 @@ try {
         RacconNotifications.requestPermission().then(function(perm) {
           if (perm === 'granted') {
             RacconNotifications.show({
-              title: 'Raccoon Mail Notifications Active! 🔔',
+              title: 'Raccoon Mail Notifications Active! ðŸ””',
               body: 'Real-time push alerts for incoming emails and productivity.',
               url: '/inbox'
             });
@@ -230,7 +230,7 @@ try {
         });
       }
       if (typeof showToast === 'function') {
-        showToast('Notifications Active! 🔔');
+        showToast('Notifications Active! ðŸ””');
       }
     }
     window.toggleInboxNotificationPanel = toggleInboxNotificationPanel;
@@ -1521,7 +1521,7 @@ try {
   </div>
 
   <!-- 3. App Switcher Popover (Raccon Mail Ecosystem - Distinct Colors & Zero Shadow) -->
-  <div id="app-switcher-modal" class="hidden fixed top-16 left-4 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 z-50 w-80">
+  <div id="app-switcher-modal" class="hidden fixed top-16 left-16 sm:left-20 md:left-[320px] bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 z-50 w-80 transition-all">
     <div class="flex items-center justify-between mb-3 px-1">
       <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Raccon Mail Ecosystem</p>
     </div>
@@ -1925,7 +1925,7 @@ try {
         var line = lines[i].trim();
 
         // Check for quote header endings like "a scris:", "wrote:", "schrieb:", etc.
-        if (/(?:a\s*scris|wrote|a\s*écrit|schrieb)\s*:$/i.test(line)) {
+        if (/(?:a\s*scris|wrote|a\s*Ã©crit|schrieb)\s*:$/i.test(line)) {
           quoteStartLine = i;
           // Walk backwards up to 6 lines to capture author, date, and email tokens
           for (var j = i - 1; j >= Math.max(0, i - 6); j--) {
@@ -2259,7 +2259,7 @@ try {
       const originalSrc = largeImg?.src;
       
       try {
-        if (typeof showToast === 'function') showToast('Uploading profile photo... ⏳', 'info');
+        if (typeof showToast === 'function') showToast('Uploading profile photo... â³', 'info');
         
         const formData = new FormData();
         formData.append('avatar', file, file.name || 'avatar.jpg');
@@ -2286,7 +2286,7 @@ try {
           if (fallback) fallback.style.display = 'none';
           
           if (typeof showToast === 'function') {
-            showToast('Profile photo updated successfully! 🦝', 'success');
+            showToast('Profile photo updated successfully! ðŸ¦', 'success');
           } else {
             alert('Profile photo updated successfully!');
           }
@@ -2447,7 +2447,7 @@ try {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      if (typeof showToast === 'function') showToast('Exported ' + list.length + ' emails to Excel/CSV! 📊', 'success');
+      if (typeof showToast === 'function') showToast('Exported ' + list.length + ' emails to Excel/CSV! ðŸ“Š', 'success');
     }
 
     // Print active email
@@ -2635,7 +2635,7 @@ try {
     async function deleteEmailItem(msgId) {
       if (!confirm('Are you sure you want to permanently delete this email?')) return;
       await deleteMessageById(msgId);
-      if (typeof showToast === 'function') showToast('Email permanently deleted 🗑️', 'info');
+      if (typeof showToast === 'function') showToast('Email permanently deleted ðŸ—‘ï¸', 'info');
     }
 
     
@@ -3520,7 +3520,7 @@ try {
     function insertInlineEmoji() {
       const inp = document.getElementById('quick-reply-input');
       if (!inp) return;
-      const emojis = ['👍', '😊', '🙏', '🚀', '✅', '👋', '🎉'];
+      const emojis = ['ðŸ‘', 'ðŸ˜Š', 'ðŸ™', 'ðŸš€', 'âœ…', 'ðŸ‘‹', 'ðŸŽ‰'];
       const em = emojis[Math.floor(Math.random() * emojis.length)];
       inp.value += ' ' + em;
       inp.focus();
@@ -3563,7 +3563,7 @@ try {
         pill.innerHTML = `
           <i data-lucide="paperclip" class="w-3 h-3 text-slate-500"></i>
           <span class="truncate max-w-[150px]">${escapeHtml(file.name)}</span>
-          <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500 cursor-pointer ml-1">✕</button>
+          <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500 cursor-pointer ml-1">âœ•</button>
         `;
         container.appendChild(pill);
       });
@@ -3580,7 +3580,7 @@ try {
         pill.innerHTML = `
           <i data-lucide="image" class="w-3 h-3 text-slate-500"></i>
           <span class="truncate max-w-[150px]">${escapeHtml(file.name)}</span>
-          <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500 cursor-pointer ml-1">✕</button>
+          <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-rose-500 cursor-pointer ml-1">âœ•</button>
         `;
         container.appendChild(pill);
       });
@@ -3943,7 +3943,7 @@ function renderEmptyConversation() {
       if (msg) {
         if (!confirm('Are you sure you want to permanently delete this email?')) return;
         await deleteMessageById(msg.id);
-        if (typeof showToast === 'function') showToast('Email permanently deleted 🗑️', 'info');
+        if (typeof showToast === 'function') showToast('Email permanently deleted ðŸ—‘ï¸', 'info');
         if (window.innerWidth < 768) {
           backToMobileInbox();
         }
@@ -4087,7 +4087,7 @@ function renderEmptyConversation() {
         if (!confirm('Permanently delete this email from Trash?')) return;
       }
       await deleteMessageById(msgId);
-      showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+      showToast(isTrash ? 'Permanently deleted from Trash ðŸ—‘ï¸' : 'Moved to Trash ðŸ—‘ï¸');
     }
 
     async function handleSheetStar() {
@@ -4128,7 +4128,7 @@ function renderEmptyConversation() {
         if (!confirm('Permanently delete this email from Trash?')) return;
       }
       await deleteMessageById(msgId);
-      showToast(isTrash ? 'Permanently deleted from Trash 🗑️' : 'Moved to Trash 🗑️');
+      showToast(isTrash ? 'Permanently deleted from Trash ðŸ—‘ï¸' : 'Moved to Trash ðŸ—‘ï¸');
     }
 
     function showToast(message) {
@@ -4952,9 +4952,9 @@ function renderEmptyConversation() {
           
           closeAvatarModal();
           if (typeof showToast === 'function') {
-            showToast('Profile photo updated successfully! 🦝', 'success');
+            showToast('Profile photo updated successfully! ðŸ¦', 'success');
           } else if (typeof showAvatarToast === 'function') {
-            showAvatarToast('Profile photo updated successfully! 🦝');
+            showAvatarToast('Profile photo updated successfully! ðŸ¦');
           } else {
             alert('Profile photo updated successfully!');
           }
@@ -5255,7 +5255,7 @@ function renderEmptyConversation() {
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- RACCOON SUCCESS POPUP MODAL ("Email sent successfully! 🐾")                -->
+  <!-- RACCOON SUCCESS POPUP MODAL ("Email sent successfully! ðŸ¾")                -->
   <!-- ========================================================================= -->
   <div id="raccoon-success-modal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs transition-all duration-200" onclick="if(event.target === this) closeRaccoonSuccessModal()">
     <div class="relative w-full max-w-sm rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200/90 text-center animate-in zoom-in-95 duration-200">
@@ -5264,9 +5264,9 @@ function renderEmptyConversation() {
       </button>
       <div class="relative inline-block mb-3">
         <img src="/raccoon-logo.svg" alt="Raccon Mascot" class="h-24 w-24 mx-auto object-contain filter drop-shadow-md animate-bounce" />
-        <span class="absolute -top-1 -right-1 text-2xl">✨</span>
+        <span class="absolute -top-1 -right-1 text-2xl">âœ¨</span>
       </div>
-      <h3 class="font-display text-xl font-bold text-slate-900">Email sent successfully! 🐾</h3>
+      <h3 class="font-display text-xl font-bold text-slate-900">Email sent successfully! ðŸ¾</h3>
       <p class="text-xs text-slate-500 mt-2 leading-relaxed">
         Your sealed envelope is on its nocturnal flight and has been safely dispatched worldwide!
       </p>
@@ -5407,7 +5407,7 @@ function renderEmptyConversation() {
   </aside>
 
   <!-- ========================================================================= -->
-  <!-- ⚙️ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL (Full Multi-Tab Showcase) -->
+  <!-- âš™ï¸ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL (Full Multi-Tab Showcase) -->
   <!-- ========================================================================= -->
   
 
@@ -5447,7 +5447,7 @@ function renderEmptyConversation() {
         </div>
         <div>
           <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Password / App Key</label>
-          <input type="password" id="new-acc-pass" placeholder="••••••••••••" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
+          <input type="password" id="new-acc-pass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500" />
         </div>
       </div>
 
@@ -5624,7 +5624,7 @@ function renderEmptyConversation() {
                 '<p class="text-xs font-bold text-slate-900 truncate leading-snug">' + escapeHtml(ev.title) + '</p>' +
                 '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
                   '<span class="font-mono font-medium text-slate-600">' + escapeHtml(ev.start_time) + ' - ' + escapeHtml(ev.end_time) + '</span>' +
-                  (ev.location ? '<span>• ' + escapeHtml(ev.location) + '</span>' : '') +
+                  (ev.location ? '<span>â€¢ ' + escapeHtml(ev.location) + '</span>' : '') +
                 '</div>' +
                 (ev.notes ? '<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">' + escapeHtml(ev.notes) + '</p>' : '') +
               '</div>' +
@@ -5767,7 +5767,7 @@ function renderEmptyConversation() {
           '<div class="flex items-start justify-between gap-2">' +
             '<h4 class="text-xs font-bold text-slate-900 leading-snug truncate">' + escapeHtml(n.title) + '</h4>' +
             '<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">' +
-              (n.is_pinned ? '<span title="Pinned Note">📌</span>' : '') +
+              (n.is_pinned ? '<span title="Pinned Note">ðŸ“Œ</span>' : '') +
               '<button onclick="deleteNoteAction(\'' + n.id + '\')" class="p-1 text-slate-400 hover:text-rose-600 transition cursor-pointer">' +
                 '<i data-lucide="trash" class="h-3 w-3"></i>' +
               '</button>' +
@@ -5912,7 +5912,7 @@ function renderEmptyConversation() {
               '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
                 '<span class="px-1.5 py-0.5 rounded border uppercase font-mono font-bold ' + priColor + '">' + escapeHtml(t.priority) + '</span>' +
                 (t.due_date ? '<span class="font-mono text-slate-500">Due: ' + escapeHtml(t.due_date) + '</span>' : '') +
-                (t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">✉️ ' + escapeHtml(t.linked_email_subject) + '</span>' : '') +
+                (t.linked_email_subject ? '<span class="truncate text-cyan-600 font-medium">âœ‰ï¸ ' + escapeHtml(t.linked_email_subject) + '</span>' : '') +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -6017,7 +6017,7 @@ function renderEmptyConversation() {
               '<p class="text-xs font-bold text-slate-800 truncate">' + escapeHtml(att.original_name || att.filename) + '</p>' +
               '<div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">' +
                 '<span class="font-mono font-medium text-slate-600">' + sizeMb + '</span>' +
-                (att.email_subject ? '<span class="truncate">✉️ ' + escapeHtml(att.email_subject) + '</span>' : '<span>☁️ Vault File</span>') +
+                (att.email_subject ? '<span class="truncate">âœ‰ï¸ ' + escapeHtml(att.email_subject) + '</span>' : '<span>â˜ï¸ Vault File</span>') +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -6110,7 +6110,7 @@ function renderEmptyConversation() {
       const feedsPillsHtml = cachedRssFeeds.map(function(f) {
         return '<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-bold border border-slate-200 shrink-0">' +
           '<span>' + escapeHtml(f.title) + '</span>' +
-          '<button onclick="deleteFeedAction(\'' + f.id + '\')" class="text-slate-400 hover:text-rose-600 transition cursor-pointer" title="Unsubscribe">×</button>' +
+          '<button onclick="deleteFeedAction(\'' + f.id + '\')" class="text-slate-400 hover:text-rose-600 transition cursor-pointer" title="Unsubscribe">Ã—</button>' +
         '</div>';
       }).join('');
 
@@ -6402,7 +6402,7 @@ function renderEmptyConversation() {
     }
 
     // =========================================================================
-    // ⚙️ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL
+    // âš™ï¸ PRO FEATURES & ENTERPRISE VALUE SUITE MODAL
     // =========================================================================
     function openProFeaturesModal() {
       const m = document.getElementById('pro-features-modal');
@@ -6502,8 +6502,8 @@ function renderEmptyConversation() {
             '<h4 class="text-xs font-bold text-slate-900">Security Audit Logs & Active Sessions</h4>' +
             '<p class="text-[11px] text-slate-400">Full IP address logging, suspicious login alerts, and remote session termination.</p>' +
             '<div class="text-[10px] text-slate-600 font-mono space-y-1 pt-1">' +
-              '<p>• ' + new Date().toLocaleDateString() + ' 20:54 &mdash; Webmail Authorized &mdash; 178.132.24.11 (Chrome Win11)</p>' +
-              '<p>• Yesterday 14:12 &mdash; Android APK Token Handshake &mdash; Verified</p>' +
+              '<p>â€¢ ' + new Date().toLocaleDateString() + ' 20:54 &mdash; Webmail Authorized &mdash; 178.132.24.11 (Chrome Win11)</p>' +
+              '<p>â€¢ Yesterday 14:12 &mdash; Android APK Token Handshake &mdash; Verified</p>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -6654,7 +6654,7 @@ function renderEmptyConversation() {
           onclick="handleInboxNotificationClick(true)" 
           class="flex-1 py-2.5 rounded-xl bg-[#F68D72] hover:bg-[#F57C60] text-white font-bold text-xs transition shadow-none cursor-pointer text-center"
         >
-          Send Test Alert 🔔
+          Send Test Alert ðŸ””
         </button>
         <button 
           onclick="toggleInboxNotificationPanel()" 
@@ -6950,3 +6950,4 @@ function renderEmptyConversation() {
 
 </body>
 </html>
+
